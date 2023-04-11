@@ -1,0 +1,43 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 70px;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  gap: 25px;
+}
+
+.updatepage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
+}
+
+.card-banner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 50%;
+  border-radius: 10px 0 0 10px;
+  background: linear-gradient(140deg, #7EFFF7 -8%, #3AB8FF 70%);
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 50%;
+}
+
+.update-card-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 75%;
+}

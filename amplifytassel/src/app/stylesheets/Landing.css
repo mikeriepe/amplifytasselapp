@@ -1,0 +1,35 @@
+.Landing {
+    padding-top: 75px;
+    height: 60vh;
+    background: url("../assets/UCSC_mascot.jpeg") no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+.title {
+    width: 600px;
+    height: 220px;
+    position: absolute;
+    top: 50vh;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.39);
+}
+
+.ACmmTitle {
+    color: #F1B521;
+    width: 500px;
+    padding-left: 20px;
+    margin: 15px;
+    font-weight:500;
+    font-size: 45px;
+
+}
+
+.secondaryTitle {
+    margin: 5px;
+    color: rgba(108, 110, 114, 0.8);
+    padding-left: 30px;
+    font-weight:500;
+}

@@ -1,9 +1,171 @@
-# This "input" configures a global authorization rule to enable public access to
-# all models in this schema. Learn more about authorization rules here: https://docs.amplify.aws/cli/graphql/authorization-rules
-input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
-
-type Todo @model {
+type Todo @model @auth(rules: [{allow: public}]) {
   id: ID!
   name: String!
   description: String
 }
+
+type Organization @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String
+  email: AWSEmail
+  website: AWSURL
+  description: String
+  instagram: String
+}
+
+type Comment @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  content: String
+  createdTimestamp: AWSTimestamp
+  postID: ID! @index(name: "byPost")
+  profileID: ID! @index(name: "byProfile")
+}
+
+type Role @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String
+  description: String
+  isFilled: Boolean
+  qualifications: [String]
+  Majors: [Major] @manyToMany(relationName: "RoleMajor")
+  Profiles: [Profile] @manyToMany(relationName: "ProfileRole")
+  opportunityID: ID! @index(name: "byOpportunity")
+  Requests: [Request] @hasMany(indexName: "byRole", fields: ["id"])
+}
+
+type Major @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String
+  profiles: [Profile] @manyToMany(relationName: "ProfileMajor")
+  Roles: [Role] @manyToMany(relationName: "RoleMajor")
+}
+
+type Profile @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  email: AWSEmail!
+  volunteerExperience: [WorkHistory]
+  about: String
+  location: Location
+  availability: Availability
+  picture: AWSURL
+  firstName: String
+  lastName: String
+  status: ProfileStatus
+  graduationYear: String
+  active: Boolean
+  isAdmin: Boolean
+  isApproved: Boolean
+  Majors: [Major] @manyToMany(relationName: "ProfileMajor")
+  Roles: [Role] @manyToMany(relationName: "ProfileRole")
+  Posts: [Post] @hasMany(indexName: "byProfile", fields: ["id"])
+  Comments: [Comment] @hasMany(indexName: "byProfile", fields: ["id"])
+  OpportunitiesOwned: [Opportunity] @manyToMany(relationName: "ProfileOpportunity")
+  Requests: [Request] @hasMany(indexName: "byProfile", fields: ["id"])
+  experience: [WorkHistory]
+  schoolEmail: String
+  infoRequest: String
+  infoResponse: String
+}
+
+type Request @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  status: RequestStatus
+  responseMessage: String
+  requestTime: AWSDateTime
+  responseTime: AWSDateTime
+  requestMessage: String
+  opportunityID: ID! @index(name: "byOpportunity")
+  roleID: ID! @index(name: "byRole")
+  profileID: ID! @index(name: "byProfile")
+}
+
+type Post @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  title: String
+  content: String
+  createdTimestamp: AWSTimestamp
+  profileID: ID! @index(name: "byProfile")
+  Comments: [Comment] @hasMany(indexName: "byPost", fields: ["id"])
+  opportunityID: ID! @index(name: "byOpportunity")
+}
+
+type Opportunity @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  zoomLink: String
+  organizations: [String]
+  description: String
+  isApproved: Boolean
+  eventBanner: AWSURL
+  eventName: String
+  startTime: AWSDateTime
+  endTime: AWSDateTime
+  locationType: String
+  location: Location
+  eventData: String
+  subject: String
+  preferences: [String]
+  Roles: [Role] @hasMany(indexName: "byOpportunity", fields: ["id"])
+  Posts: [Post] @hasMany(indexName: "byOpportunity", fields: ["id"])
+  Owners: [Profile] @manyToMany(relationName: "ProfileOpportunity")
+  Requests: [Request] @hasMany(indexName: "byOpportunity", fields: ["id"])
+}
+
+enum ProfileStatus {
+  PENDING
+  REQUESTED
+  UPDATED
+  APPROVED
+  DENIED
+  ADMIN
+}
+
+type DaysOfWeek {
+  monday: TimeSpan
+  tuesday: TimeSpan
+  wednesday: TimeSpan
+  thrusday: TimeSpan
+  friday: TimeSpan
+  saturday: TimeSpan
+  sunday: TimeSpan
+}
+
+type Location {
+  zip: String
+  city: String
+  state: String
+  address: String
+}
+
+enum RequestStatus {
+  PENDING
+  APPROVED
+  CANCELED
+  REJECTED
+}
+
+type Availability {
+  times: DaysOfWeek
+  year: Int
+}
+
+type TimeSpan {
+  startTime: AWSTime
+  endTime: AWSTime
+}
+
+type WorkHistory {
+  end: String
+  start: String
+  title: String
+  company: String
+  location: String
+  description: String
+  currentPosition: Boolean
+}
+
+type Note @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String!
+  description: String
+}
+ 

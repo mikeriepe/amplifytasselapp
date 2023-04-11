@@ -1,0 +1,26 @@
+{
+    "id": "974dd175-ed38-401d-aa46-7f338002549c",
+    "email": "2001cnote@gmail.com",
+    "about": null,
+    "picture": null,
+    "firstName": "Collin",
+    "lastName": "McColl",
+    "status": "PENDING",
+    "graduationYear": "2023",
+    "active": true,
+    "isAdmin": false,
+    "isApproved": false,
+    "schoolEmail": "ccmccoll@ucsc.edu",
+    "infoRequest": null,
+    "infoResponse": null,
+    "createdAt": "2023-03-08T18:54:10.490Z",
+    "updatedAt": "2023-03-08T18:54:10.490Z",
+    "volunteerExperience": null,
+    "location": null,
+    "availability": null,
+    "experience": null,
+    "_version": 1,
+    "_lastChangedAt": 1678301650521,
+    "_deleted": null
+}
+
