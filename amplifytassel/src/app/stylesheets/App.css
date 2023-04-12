@@ -1,38 +1,327 @@
-.App {
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+:root {
+  --primary-blue-bright: #F1FAFF;
+  --primary-blue-light: #DCF2FF;
+  --primary-blue-main: #00C2FF;
+  --primary-blue-dark: #13A5DC;
+  --secondary-yellow-bright: #FFF9C4;
+  --secondary-yellow-light: #FFE03E;
+  --secondary-yellow-main: #FFBF22;
+  --secondary-yellow-dark: #F9A825;
+  --tertiary-gray-bright: #F0F0F5;
+  --tertiary-gray-light: #C0C4CB;
+  --tertiary-gray-main: #8B95A5;
+  --tertiary-gray-dark: #3C4047;
+  --error-red-light: #EF5350;
+  --error-red-main: #F44336;
+  --error-red-dark: #E53935;
+  --success-green-light: #66BB6A;
+  --success-green-main: #4CAF50;
+  --success-green-dark: #43A047;
+  --info-lightblue-main: #00C2FF;
+  --text-dark: #3C4047;
+  --text-white: #FFFFFF;
+  --text-gray: #7E8694;
+  --text-disabled: #A4A9AF;
+  --background-primary: #F8F8FA;
+}
+
+*::-webkit-scrollbar {
+  width: 0.5em;
+  height: 0.5em;
+}
+
+*::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.00);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.00);
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--text-gray);
+  border-radius: 10px;
+}
+
+/* Remove default margin */
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+p,
+figure,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+
+/* Remove list styles on ul, ol elements with a list role, which suggests default styling will be removed */
+ul[role='list'],
+ol[role='list'] {
+  list-style: none;
+}
+
+/* Set core root defaults */
+html:focus-within {
+  scroll-behavior: smooth;
+}
+
+/* Set core body defaults */
+body {
+  min-height: 100vh;
+  text-rendering: optimizeSpeed;
+  line-height: 1.5;
+}
+
+/* A elements that don't have a class get default styles */
+a:not([class]) {
+  text-decoration-skip-ink: auto;
+}
+
+/* Make images easier to work with */
+img,
+picture {
+  max-width: 100%;
+  display: block;
+}
+
+/* Inherit fonts for inputs and buttons */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+a, a:hover, a:focus, a:active {
+    text-decoration: none;
+    color:inherit;
+}
+
+/* Composition */
+
+.flow-large > :where(:not(:first-child)) {
+  margin-top: var(--flow-large-spacer, 2.5em);
+}
+
+.flow-medium > :where(:not(:first-child)) {
+  margin-top: var(--flow-small-spacer, 1.5em);
+}
+
+.flow-small > :where(:not(:first-child)) {
+  margin-top: var(--flow-small-spacer, 1em);
+}
+
+.flow-tiny > :where(:not(:first-child)) {
+  margin-top: var(--flow-small-spacer, 0.5em);
+}
+
+.grid-flow-small {
+  display: grid;
+  gap: 5px;
+}
+
+.grid-flow-large {
+  display: grid;
+  width: 100%;
+  gap: 10px;
+}
+
+.grid-flow-xlarge {
+  display: grid;
+  gap: 15px;
+}
+
+.grid-center {
+  place-items: center;
+}
+
+.flex-horizontal {
+  display: flex;
+}
+
+.flex-vertical {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-flow-small {
+  display: flex;
+  gap: 5px;
+}
+
+.flex-flow-large {
+  display: flex;
+  gap: 10px;
+}
+
+.flex-flow-xlarge {
+  display: flex;
+  gap: 15px;
+}
+
+.flex-justify-center {
+  display: flex;
+  justify-content: center;
+}
+
+.flex-align-center {
+  display: flex;
+  align-items: center;
+}
+
+.flex-space-between {
+  display: flex;
+  justify-content: space-between;
+}
+
+.flex-space-multi {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
+.flex-start {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.flex-end {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Utility */
+
+.text-center {
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.text-tiny {
+  font-size: 0.6rem;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.text-xsmall {
+  font-size: 0.7rem;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.text-small {
+  font-size: .9rem;
 }
 
-.App-link {
-  color: #61dafb;
+.text-medium {
+  font-size: 1.3rem;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.text-large {
+  font-size: 2rem;
+}
+
+.text-light {
+  font-weight: 400;
+}
+
+.text-normal {
+  font-weight: 500;
+}
+
+.text-bold {
+  font-weight: 600;
+}
+
+.text-xbold {
+  font-weight: 700;
+}
+
+.text-italic {
+  font-style: italic;
+}
+
+.text-dark {
+  color: var(--text-dark);
+}
+
+.text-white {
+  color: var(--text-white);
+}
+
+.text-gray {
+  color: var(--text-gray);
+}
+
+.text-disabled {
+  color: var(--text-disabled);
+}
+
+.text-blue {
+  color: var(--primary-blue-main);
+}
+
+.text-yellow {
+  color: var(--secondary-yellow-main);
+}
+
+.text-warning {
+  color: var(--error-red-main);
+}
+
+.text-lineheight-16 {
+  line-height: 1rem;
+}
+
+.text-lineheight-20 {
+  line-height: 1.25rem;
+}
+
+.text-lineheight-24 {
+  line-height: 1.5rem;
+}
+
+.icon-gray {
+  color: var(--tertiary-gray-main);
+}
+
+.icon-blue {
+  color: var(--primary-blue-main);
+}
+
+.icon-yellow {
+  color: var(--secondary-yellow-main);
+}
+
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.no-highlight {
+  user-select: none;
+}
+
+.hover-underline:hover {
+  text-decoration: underline;
+}
+
+.hover-highlight:hover {
+  background: var(--tertiary-gray-bright);
+}
+
+.hover-highlight-link:hover {
+  color: var(--secondary-yellow-main);
+}
+
+.navbar-height {
+  height: 70px;
+}
+
+.padding-64 {
+  padding: 4rem;
 }
