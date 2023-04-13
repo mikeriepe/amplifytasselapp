@@ -18,29 +18,29 @@ export enum RequestStatus {
   REJECTED = "REJECTED"
 }
 
-type EagerDaysOfWeek = {
-  readonly monday?: TimeSpan | null;
-  readonly tuesday?: TimeSpan | null;
-  readonly wednesday?: TimeSpan | null;
-  readonly thrusday?: TimeSpan | null;
-  readonly friday?: TimeSpan | null;
-  readonly saturday?: TimeSpan | null;
-  readonly sunday?: TimeSpan | null;
+type EagerWorkHistory = {
+  readonly end?: string | null;
+  readonly start?: string | null;
+  readonly title?: string | null;
+  readonly company?: string | null;
+  readonly location?: string | null;
+  readonly description?: string | null;
+  readonly currentPosition?: boolean | null;
 }
 
-type LazyDaysOfWeek = {
-  readonly monday?: TimeSpan | null;
-  readonly tuesday?: TimeSpan | null;
-  readonly wednesday?: TimeSpan | null;
-  readonly thrusday?: TimeSpan | null;
-  readonly friday?: TimeSpan | null;
-  readonly saturday?: TimeSpan | null;
-  readonly sunday?: TimeSpan | null;
+type LazyWorkHistory = {
+  readonly end?: string | null;
+  readonly start?: string | null;
+  readonly title?: string | null;
+  readonly company?: string | null;
+  readonly location?: string | null;
+  readonly description?: string | null;
+  readonly currentPosition?: boolean | null;
 }
 
-export declare type DaysOfWeek = LazyLoading extends LazyLoadingDisabled ? EagerDaysOfWeek : LazyDaysOfWeek
+export declare type WorkHistory = LazyLoading extends LazyLoadingDisabled ? EagerWorkHistory : LazyWorkHistory
 
-export declare const DaysOfWeek: (new (init: ModelInit<DaysOfWeek>) => DaysOfWeek)
+export declare const WorkHistory: (new (init: ModelInit<WorkHistory>) => WorkHistory)
 
 type EagerLocation = {
   readonly zip?: string | null;
@@ -74,6 +74,30 @@ export declare type Availability = LazyLoading extends LazyLoadingDisabled ? Eag
 
 export declare const Availability: (new (init: ModelInit<Availability>) => Availability)
 
+type EagerDaysOfWeek = {
+  readonly monday?: TimeSpan | null;
+  readonly tuesday?: TimeSpan | null;
+  readonly wednesday?: TimeSpan | null;
+  readonly thrusday?: TimeSpan | null;
+  readonly friday?: TimeSpan | null;
+  readonly saturday?: TimeSpan | null;
+  readonly sunday?: TimeSpan | null;
+}
+
+type LazyDaysOfWeek = {
+  readonly monday?: TimeSpan | null;
+  readonly tuesday?: TimeSpan | null;
+  readonly wednesday?: TimeSpan | null;
+  readonly thrusday?: TimeSpan | null;
+  readonly friday?: TimeSpan | null;
+  readonly saturday?: TimeSpan | null;
+  readonly sunday?: TimeSpan | null;
+}
+
+export declare type DaysOfWeek = LazyLoading extends LazyLoadingDisabled ? EagerDaysOfWeek : LazyDaysOfWeek
+
+export declare const DaysOfWeek: (new (init: ModelInit<DaysOfWeek>) => DaysOfWeek)
+
 type EagerTimeSpan = {
   readonly startTime?: string | null;
   readonly endTime?: string | null;
@@ -87,60 +111,6 @@ type LazyTimeSpan = {
 export declare type TimeSpan = LazyLoading extends LazyLoadingDisabled ? EagerTimeSpan : LazyTimeSpan
 
 export declare const TimeSpan: (new (init: ModelInit<TimeSpan>) => TimeSpan)
-
-type EagerWorkHistory = {
-  readonly end?: string | null;
-  readonly start?: string | null;
-  readonly title?: string | null;
-  readonly company?: string | null;
-  readonly location?: string | null;
-  readonly description?: string | null;
-  readonly currentPosition?: boolean | null;
-}
-
-type LazyWorkHistory = {
-  readonly end?: string | null;
-  readonly start?: string | null;
-  readonly title?: string | null;
-  readonly company?: string | null;
-  readonly location?: string | null;
-  readonly description?: string | null;
-  readonly currentPosition?: boolean | null;
-}
-
-export declare type WorkHistory = LazyLoading extends LazyLoadingDisabled ? EagerWorkHistory : LazyWorkHistory
-
-export declare const WorkHistory: (new (init: ModelInit<WorkHistory>) => WorkHistory)
-
-type EagerTodo = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<Todo, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly name: string;
-  readonly description?: string | null;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-type LazyTodo = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<Todo, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly name: string;
-  readonly description?: string | null;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-export declare type Todo = LazyLoading extends LazyLoadingDisabled ? EagerTodo : LazyTodo
-
-export declare const Todo: (new (init: ModelInit<Todo>) => Todo) & {
-  copyOf(source: Todo, mutator: (draft: MutableModel<Todo>) => MutableModel<Todo> | void): Todo;
-}
 
 type EagerOrganization = {
   readonly [__modelMeta__]: {
@@ -358,48 +328,6 @@ export declare const Profile: (new (init: ModelInit<Profile>) => Profile) & {
   copyOf(source: Profile, mutator: (draft: MutableModel<Profile>) => MutableModel<Profile> | void): Profile;
 }
 
-type EagerRequest = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<Request, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly status?: RequestStatus | keyof typeof RequestStatus | null;
-  readonly responseMessage?: string | null;
-  readonly requestTime?: string | null;
-  readonly responseTime?: string | null;
-  readonly requestMessage?: string | null;
-  readonly opportunityID: string;
-  readonly roleID: string;
-  readonly profileID: string;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-type LazyRequest = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<Request, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly status?: RequestStatus | keyof typeof RequestStatus | null;
-  readonly responseMessage?: string | null;
-  readonly requestTime?: string | null;
-  readonly responseTime?: string | null;
-  readonly requestMessage?: string | null;
-  readonly opportunityID: string;
-  readonly roleID: string;
-  readonly profileID: string;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-export declare type Request = LazyLoading extends LazyLoadingDisabled ? EagerRequest : LazyRequest
-
-export declare const Request: (new (init: ModelInit<Request>) => Request) & {
-  copyOf(source: Request, mutator: (draft: MutableModel<Request>) => MutableModel<Request> | void): Request;
-}
-
 type EagerPost = {
   readonly [__modelMeta__]: {
     identifier: ManagedIdentifier<Post, 'id'>;
@@ -496,6 +424,48 @@ export declare type Opportunity = LazyLoading extends LazyLoadingDisabled ? Eage
 
 export declare const Opportunity: (new (init: ModelInit<Opportunity>) => Opportunity) & {
   copyOf(source: Opportunity, mutator: (draft: MutableModel<Opportunity>) => MutableModel<Opportunity> | void): Opportunity;
+}
+
+type EagerRequest = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Request, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly status?: RequestStatus | keyof typeof RequestStatus | null;
+  readonly responseMessage?: string | null;
+  readonly requestTime?: string | null;
+  readonly responseTime?: string | null;
+  readonly requestMessage?: string | null;
+  readonly opportunityID: string;
+  readonly roleID: string;
+  readonly profileID: string;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyRequest = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Request, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly status?: RequestStatus | keyof typeof RequestStatus | null;
+  readonly responseMessage?: string | null;
+  readonly requestTime?: string | null;
+  readonly responseTime?: string | null;
+  readonly requestMessage?: string | null;
+  readonly opportunityID: string;
+  readonly roleID: string;
+  readonly profileID: string;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type Request = LazyLoading extends LazyLoadingDisabled ? EagerRequest : LazyRequest
+
+export declare const Request: (new (init: ModelInit<Request>) => Request) & {
+  copyOf(source: Request, mutator: (draft: MutableModel<Request>) => MutableModel<Request> | void): Request;
 }
 
 type EagerNote = {

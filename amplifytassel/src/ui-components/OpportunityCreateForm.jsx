@@ -35,16 +35,9 @@ function ArrayField({
   defaultFieldValue,
   lengthLimit,
   getBadgeText,
-  errorMessage,
 }) {
   const labelElement = <Text>{label}</Text>;
-  const {
-    tokens: {
-      components: {
-        fieldmessages: { error: errorStyles },
-      },
-    },
-  } = useTheme();
+  const { tokens } = useTheme();
   const [selectedBadgeIndex, setSelectedBadgeIndex] = React.useState();
   const [isEditing, setIsEditing] = React.useState();
   React.useEffect(() => {
@@ -147,11 +140,6 @@ function ArrayField({
           >
             Add item
           </Button>
-          {errorMessage && hasError && (
-            <Text color={errorStyles.color} fontSize={errorStyles.fontSize}>
-              {errorMessage}
-            </Text>
-          )}
         </>
       ) : (
         <Flex justifyContent="flex-end">
@@ -170,6 +158,7 @@ function ArrayField({
           <Button
             size="small"
             variation="link"
+            color={tokens.colors.brand.primary[80]}
             isDisabled={hasError}
             onClick={addItem}
           >
@@ -271,10 +260,9 @@ export default function OpportunityCreateForm(props) {
     currentValue,
     getDisplayValue
   ) => {
-    const value =
-      currentValue && getDisplayValue
-        ? getDisplayValue(currentValue)
-        : currentValue;
+    const value = getDisplayValue
+      ? getDisplayValue(currentValue)
+      : currentValue;
     let validationResponse = validateField(value, validations[fieldName]);
     const customValidator = fetchByPath(onValidate, fieldName);
     if (customValidator) {
@@ -292,7 +280,7 @@ export default function OpportunityCreateForm(props) {
       minute: "2-digit",
       calendar: "iso8601",
       numberingSystem: "latn",
-      hourCycle: "h23",
+      hour12: false,
     });
     const parts = df.formatToParts(date).reduce((acc, part) => {
       acc[part.type] = part.value;
@@ -428,8 +416,7 @@ export default function OpportunityCreateForm(props) {
         currentFieldValue={currentOrganizationsValue}
         label={"Organizations"}
         items={organizations}
-        hasError={errors?.organizations?.hasError}
-        errorMessage={errors?.organizations?.errorMessage}
+        hasError={errors.organizations?.hasError}
         setFieldValue={setCurrentOrganizationsValue}
         inputFieldRef={organizationsRef}
         defaultFieldValue={""}
@@ -802,8 +789,7 @@ export default function OpportunityCreateForm(props) {
         currentFieldValue={currentPreferencesValue}
         label={"Preferences"}
         items={preferences}
-        hasError={errors?.preferences?.hasError}
-        errorMessage={errors?.preferences?.errorMessage}
+        hasError={errors.preferences?.hasError}
         setFieldValue={setCurrentPreferencesValue}
         inputFieldRef={preferencesRef}
         defaultFieldValue={""}

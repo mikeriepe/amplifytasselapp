@@ -21,7 +21,7 @@ import { DataStore } from "aws-amplify";
 export default function ProfileUpdateForm(props) {
   const {
     id: idProp,
-    profile: profileModelProp,
+    profile,
     onSuccess,
     onError,
     onSubmit,
@@ -36,7 +36,7 @@ export default function ProfileUpdateForm(props) {
     picture: "",
     firstName: "",
     lastName: "",
-    status: "",
+    status: undefined,
     graduationYear: "",
     active: false,
     isAdmin: false,
@@ -86,16 +86,14 @@ export default function ProfileUpdateForm(props) {
     setInfoResponse(cleanValues.infoResponse);
     setErrors({});
   };
-  const [profileRecord, setProfileRecord] = React.useState(profileModelProp);
+  const [profileRecord, setProfileRecord] = React.useState(profile);
   React.useEffect(() => {
     const queryData = async () => {
-      const record = idProp
-        ? await DataStore.query(Profile, idProp)
-        : profileModelProp;
+      const record = idProp ? await DataStore.query(Profile, idProp) : profile;
       setProfileRecord(record);
     };
     queryData();
-  }, [idProp, profileModelProp]);
+  }, [idProp, profile]);
   React.useEffect(resetStateValues, [profileRecord]);
   const validations = {
     email: [{ type: "Required" }, { type: "Email" }],
@@ -117,10 +115,9 @@ export default function ProfileUpdateForm(props) {
     currentValue,
     getDisplayValue
   ) => {
-    const value =
-      currentValue && getDisplayValue
-        ? getDisplayValue(currentValue)
-        : currentValue;
+    const value = getDisplayValue
+      ? getDisplayValue(currentValue)
+      : currentValue;
     let validationResponse = validateField(value, validations[fieldName]);
     const customValidator = fetchByPath(onValidate, fieldName);
     if (customValidator) {
@@ -707,7 +704,7 @@ export default function ProfileUpdateForm(props) {
             event.preventDefault();
             resetStateValues();
           }}
-          isDisabled={!(idProp || profileModelProp)}
+          isDisabled={!(idProp || profile)}
           {...getOverrideProps(overrides, "ResetButton")}
         ></Button>
         <Flex
@@ -719,7 +716,7 @@ export default function ProfileUpdateForm(props) {
             type="submit"
             variation="primary"
             isDisabled={
-              !(idProp || profileModelProp) ||
+              !(idProp || profile) ||
               Object.values(errors).some((e) => e?.hasError)
             }
             {...getOverrideProps(overrides, "SubmitButton")}

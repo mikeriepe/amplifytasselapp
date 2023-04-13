@@ -12,11 +12,7 @@
       "AmplifyAppId": "d1kxowt9pyz5tz"
     },
     "categories": {
-      "api": {
-        "amplifytassel": {}
-      },
       "auth": {
-        "amplifytassela04db291": {},
         "amplifytassel": {}
       }
     }
