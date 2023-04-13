@@ -112,6 +112,30 @@ export declare type TimeSpan = LazyLoading extends LazyLoadingDisabled ? EagerTi
 
 export declare const TimeSpan: (new (init: ModelInit<TimeSpan>) => TimeSpan)
 
+type EagerWorkHistory = {
+  readonly end?: string | null;
+  readonly start?: string | null;
+  readonly title?: string | null;
+  readonly company?: string | null;
+  readonly location?: string | null;
+  readonly description?: string | null;
+  readonly currentPosition?: boolean | null;
+}
+
+type LazyWorkHistory = {
+  readonly end?: string | null;
+  readonly start?: string | null;
+  readonly title?: string | null;
+  readonly company?: string | null;
+  readonly location?: string | null;
+  readonly description?: string | null;
+  readonly currentPosition?: boolean | null;
+}
+
+export declare type WorkHistory = LazyLoading extends LazyLoadingDisabled ? EagerWorkHistory : LazyWorkHistory
+
+export declare const WorkHistory: (new (init: ModelInit<WorkHistory>) => WorkHistory)
+
 type EagerOrganization = {
   readonly [__modelMeta__]: {
     identifier: ManagedIdentifier<Organization, 'id'>;

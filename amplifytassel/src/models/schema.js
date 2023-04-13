@@ -1847,6 +1847,6 @@ export const schema = {
             }
         }
     },
-    "codegenVersion": "3.3.5",
+    "codegenVersion": "3.4.0",
     "version": "78349a74d38edd25533bc0db1900bbc1"
 };
