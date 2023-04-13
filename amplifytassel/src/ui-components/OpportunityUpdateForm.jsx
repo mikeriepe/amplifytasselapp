@@ -35,9 +35,16 @@ function ArrayField({
   defaultFieldValue,
   lengthLimit,
   getBadgeText,
+  errorMessage,
 }) {
   const labelElement = <Text>{label}</Text>;
-  const { tokens } = useTheme();
+  const {
+    tokens: {
+      components: {
+        fieldmessages: { error: errorStyles },
+      },
+    },
+  } = useTheme();
   const [selectedBadgeIndex, setSelectedBadgeIndex] = React.useState();
   const [isEditing, setIsEditing] = React.useState();
   React.useEffect(() => {
@@ -140,6 +147,11 @@ function ArrayField({
           >
             Add item
           </Button>
+          {errorMessage && hasError && (
+            <Text color={errorStyles.color} fontSize={errorStyles.fontSize}>
+              {errorMessage}
+            </Text>
+          )}
         </>
       ) : (
         <Flex justifyContent="flex-end">
@@ -158,7 +170,6 @@ function ArrayField({
           <Button
             size="small"
             variation="link"
-            color={tokens.colors.brand.primary[80]}
             isDisabled={hasError}
             onClick={addItem}
           >
@@ -173,7 +184,7 @@ function ArrayField({
 export default function OpportunityUpdateForm(props) {
   const {
     id: idProp,
-    opportunity,
+    opportunity: opportunityModelProp,
     onSuccess,
     onError,
     onSubmit,
@@ -239,16 +250,17 @@ export default function OpportunityUpdateForm(props) {
     setCurrentPreferencesValue("");
     setErrors({});
   };
-  const [opportunityRecord, setOpportunityRecord] = React.useState(opportunity);
+  const [opportunityRecord, setOpportunityRecord] =
+    React.useState(opportunityModelProp);
   React.useEffect(() => {
     const queryData = async () => {
       const record = idProp
         ? await DataStore.query(Opportunity, idProp)
-        : opportunity;
+        : opportunityModelProp;
       setOpportunityRecord(record);
     };
     queryData();
-  }, [idProp, opportunity]);
+  }, [idProp, opportunityModelProp]);
   React.useEffect(resetStateValues, [opportunityRecord]);
   const [currentOrganizationsValue, setCurrentOrganizationsValue] =
     React.useState("");
@@ -275,9 +287,10 @@ export default function OpportunityUpdateForm(props) {
     currentValue,
     getDisplayValue
   ) => {
-    const value = getDisplayValue
-      ? getDisplayValue(currentValue)
-      : currentValue;
+    const value =
+      currentValue && getDisplayValue
+        ? getDisplayValue(currentValue)
+        : currentValue;
     let validationResponse = validateField(value, validations[fieldName]);
     const customValidator = fetchByPath(onValidate, fieldName);
     if (customValidator) {
@@ -295,7 +308,7 @@ export default function OpportunityUpdateForm(props) {
       minute: "2-digit",
       calendar: "iso8601",
       numberingSystem: "latn",
-      hour12: false,
+      hourCycle: "h23",
     });
     const parts = df.formatToParts(date).reduce((acc, part) => {
       acc[part.type] = part.value;
@@ -432,7 +445,8 @@ export default function OpportunityUpdateForm(props) {
         currentFieldValue={currentOrganizationsValue}
         label={"Organizations"}
         items={organizations}
-        hasError={errors.organizations?.hasError}
+        hasError={errors?.organizations?.hasError}
+        errorMessage={errors?.organizations?.errorMessage}
         setFieldValue={setCurrentOrganizationsValue}
         inputFieldRef={organizationsRef}
         defaultFieldValue={""}
@@ -805,7 +819,8 @@ export default function OpportunityUpdateForm(props) {
         currentFieldValue={currentPreferencesValue}
         label={"Preferences"}
         items={preferences}
-        hasError={errors.preferences?.hasError}
+        hasError={errors?.preferences?.hasError}
+        errorMessage={errors?.preferences?.errorMessage}
         setFieldValue={setCurrentPreferencesValue}
         inputFieldRef={preferencesRef}
         defaultFieldValue={""}
@@ -843,7 +858,7 @@ export default function OpportunityUpdateForm(props) {
             event.preventDefault();
             resetStateValues();
           }}
-          isDisabled={!(idProp || opportunity)}
+          isDisabled={!(idProp || opportunityModelProp)}
           {...getOverrideProps(overrides, "ResetButton")}
         ></Button>
         <Flex
@@ -855,7 +870,7 @@ export default function OpportunityUpdateForm(props) {
             type="submit"
             variation="primary"
             isDisabled={
-              !(idProp || opportunity) ||
+              !(idProp || opportunityModelProp) ||
               Object.values(errors).some((e) => e?.hasError)
             }
             {...getOverrideProps(overrides, "SubmitButton")}

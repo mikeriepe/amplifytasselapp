@@ -26,9 +26,9 @@ export {
   Role,
   Major,
   Profile,
+  Request,
   Post,
   Opportunity,
-  Request,
   Note,
   RoleMajor,
   ProfileRole,
@@ -36,9 +36,9 @@ export {
   ProfileOpportunity,
   ProfileStatus,
   RequestStatus,
-  WorkHistory,
+  DaysOfWeek,
   Location,
   Availability,
-  DaysOfWeek,
-  TimeSpan
+  TimeSpan,
+  WorkHistory
 };
