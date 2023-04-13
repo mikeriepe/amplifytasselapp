@@ -1,9 +1,3 @@
-type Todo @model @auth(rules: [{allow: public}]) {
-  id: ID!
-  name: String!
-  description: String
-}
-
 type Organization @model @auth(rules: [{allow: public}]) {
   id: ID!
   name: String

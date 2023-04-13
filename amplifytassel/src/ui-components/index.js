@@ -5,8 +5,6 @@
  **************************************************************************/
 
 export { default as studioTheme } from "./studioTheme";
-export { default as TodoCreateForm } from "./TodoCreateForm";
-export { default as TodoUpdateForm } from "./TodoUpdateForm";
 export { default as OrganizationCreateForm } from "./OrganizationCreateForm";
 export { default as OrganizationUpdateForm } from "./OrganizationUpdateForm";
 export { default as MajorCreateForm } from "./MajorCreateForm";
