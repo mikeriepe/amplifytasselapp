@@ -111,7 +111,7 @@ export default function OpportunityFilters({
   const handleCollapseOrgType = () => {
     setCollapseOrgType(!collapseOrgType);
   };
-
+  /*
   const getOpportunityTypes = () => {
     fetch(`/api/getOpportunityTypes`)
         .then((res) => {
@@ -147,7 +147,7 @@ export default function OpportunityFilters({
           alert('Error retrieving organization types');
         });
   };
-
+  */
   useEffect(() => {
     getOpportunityTypes();
     getOrganizationTypes();
