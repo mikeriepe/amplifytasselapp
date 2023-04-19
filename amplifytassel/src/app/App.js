@@ -31,6 +31,11 @@ const App = () => {
           <Route path='/login' element={<Login />} />
           <Route path='/signup' element={<Signup />} />
           <Route path='/settings' element={<Settings />}/>
+          <Route path='/opportunities' element={<Opportunities />}/>
+          <Route path='/approvals' element={<Approvals />}/>
+          <Route path='/viewopprotunity' element={<ViewOpportunity />}/>
+          <Route path='/myprofile' element={<MyProfile />}/>
+          <Route path='/landing' element={<Landing />}/>
         </Routes>
       </Box>
     </Box>

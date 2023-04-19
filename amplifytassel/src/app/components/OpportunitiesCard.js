@@ -15,6 +15,8 @@ import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import EventNoteRoundedIcon from '@mui/icons-material/EventNoteRounded';
 import FmdGoodOutlinedIcon from '@mui/icons-material/FmdGoodOutlined';
 import TimerOutlinedIcon from '@mui/icons-material/TimerOutlined';
+import { DataStore } from 'aws-amplify';
+import { Profile } from './models';
 
 const IconStyling = {
   fontSize: '0.9rem',
@@ -160,7 +162,8 @@ export default function OpportunitiesCard({type, opportunity}) {
     return 'Error calculating dates';
   };
 
-  const getOpportunityCreator = () => {
+  const getOpportunityCreator = async () => {
+    /*
     fetch(`/api/getProfileName/${opportunity.usersponsors.creator}`)
         .then((res) => {
           if (!res.ok) {
@@ -175,7 +178,11 @@ export default function OpportunitiesCard({type, opportunity}) {
           console.log(err);
           alert('Error retrieving opportunity creators profile');
         });
+      */
+     const creator = await DataStore.query(Profile, opportunity.profileID);
   };
+
+  //const creators = opportunity.Owners;
 
   useEffect(() => {
     getOpportunityCreator(opportunity);
@@ -187,7 +194,7 @@ export default function OpportunitiesCard({type, opportunity}) {
         <Card className='clickable'>
           <CardActionArea
             component={RouterLink}
-            to={`/Opportunity/${opportunity.eventid}`}
+            to={`/Opportunity/${opportunity.id}`}
           >
             <div
               className='flex-space-between flex-align-center'
@@ -195,14 +202,14 @@ export default function OpportunitiesCard({type, opportunity}) {
             >
               <MuiBox>
                 <h4 className='text-dark ellipsis'>
-                  {opportunity.eventname}
+                  {opportunity.eventName}
                 </h4>
                 <div className='flex-flow-large flex-align-center'>
-                  <Avatar image={creator.profilepicture} />
+                  <Avatar image={creator.profilePicture} />
                   <p className='text-bold text-disabled'>
                     Hosted by:&nbsp;
                     <span className='text-blue'>
-                      {`${creator.firstname} ${creator.lastname}`}
+                      {`${creator.firstName} ${creator.lastName}`}
                     </span>
                   </p>
                 </div>
@@ -248,7 +255,7 @@ export default function OpportunitiesCard({type, opportunity}) {
               className='flex-horizontal flex-align-center'
               style={{padding: '1.5em'}}
             >
-              <Banner image={opportunity.eventbanner} />
+              <Banner image={opportunity.eventBanner} />
               <div className='flex-vertical'>
                 <div
                   className='flex-horizontal flex-flow-large flex-align-center'
@@ -256,11 +263,11 @@ export default function OpportunitiesCard({type, opportunity}) {
                 >
                   <EventNoteRoundedIcon sx={IconStyling} />
                   <p className='text-bold ellipsis'>
-                    {formatDate(opportunity.startdate)}
+                    {formatDate(opportunity.startTime)}
                   </p>
                   <ArrowForwardRoundedIcon sx={IconStyling} />
                   <p className='text-bold ellipsis'>
-                    {formatDate(opportunity.enddate)}
+                    {formatDate(opportunity.endTime)}
                   </p>
                 </div>
                 <div
@@ -271,7 +278,7 @@ export default function OpportunitiesCard({type, opportunity}) {
                   <p className='text-bold ellipsis'>
                     {
                       calculateDuration(
-                          opportunity.startdate, opportunity.enddate,
+                          opportunity.startTime, opportunity.endTime,
                       )
                     }
                   </p>
@@ -283,16 +290,16 @@ export default function OpportunitiesCard({type, opportunity}) {
                   <AccessibilityRoundedIcon sx={IconStyling} />
                   <p className='text-bold ellipsis'>
                     {
-                      opportunity.locationtype
+                      opportunity.locationType
                           .charAt(0).toUpperCase() +
-                          opportunity.locationtype.slice(1)
+                          opportunity.locationType.slice(1)
                     }
                   </p>
                 </div>
                 {
-                  opportunity.locationtype && (
-                    opportunity.locationtype === 'in-person' ||
-                    opportunity.locationtype === 'hybrid'
+                  opportunity.locationType && (
+                    opportunity.locationType === 'in-person' ||
+                    opportunity.locationType === 'hybrid'
                   ) &&
                   <div
                     className='
@@ -305,18 +312,18 @@ export default function OpportunitiesCard({type, opportunity}) {
                     <FmdGoodOutlinedIcon sx={IconStyling} />
                     <p className='text-bold'>
                       {`
-                        ${opportunity.eventlocation.address}
-                        ${opportunity.eventlocation.city},
-                        ${opportunity.eventlocation.state}
-                        ${opportunity.eventlocation.zip}
+                        ${opportunity.location.address}
+                        ${opportunity.location.city},
+                        ${opportunity.location.state}
+                        ${opportunity.location.zip}
                       `}
                     </p>
                   </div>
                 }
                 {
-                  opportunity.locationtype && (
-                    opportunity.locationtype === 'remote' ||
-                    opportunity.locationtype === 'hybrid'
+                  opportunity.locationType && (
+                    opportunity.locationType === 'remote' ||
+                    opportunity.locationType === 'hybrid'
                   ) &&
                   <div
                     className='
@@ -328,7 +335,7 @@ export default function OpportunitiesCard({type, opportunity}) {
                   >
                     <DevicesOutlinedIcon sx={IconStyling} />
                     <p className='text-bold'>
-                      {opportunity.eventzoomlink}
+                      {opportunity.zoomLink}
                     </p>
                   </div>
                 }

@@ -6,6 +6,8 @@ import CompressedTabBar from '../components/CompressedTabBar';
 import OpportunitiesList from '../components/OpportunitiesList';
 import PageHeader from '../components/PageHeader';
 import useAuth from '../util/AuthContext';
+import { DataStore } from '@aws-amplify/datastore';
+import { Opportunity } from './models';
 
 const Page = styled((props) => (
   <MuiBox {...props} />
@@ -74,7 +76,8 @@ export default function FetchWrapper() {
   const [pendingOpportunities, setPendingOpportunities] = useState([]);
   const [allOpportunities, setAllOpportunities] = useState([]);
 
-  const getJoinedOpportunities = () => {
+  const getJoinedOpportunities = async () => {
+    /*
     fetch(`/api/getJoinedOpportunities/${userProfile.profileid}`)
         .then((res) => {
           if (!res.ok) {
@@ -89,9 +92,13 @@ export default function FetchWrapper() {
           console.log(err);
           alert('Error retrieving joined opportunities');
         });
+      */
+      const usersJoined = await DataStore.query(Opportunity, (o) => o.profilesJoined.Profile.id.eq(userProfile.id));
+      console.log(usersJoined);
   };
-
-  const getCreatedOpportunities = () => {
+  //const usersJoined = await DataStore.query(Opportunity, (o) => o.profilesJoined.Profile.id.eq(userProfile.id));
+  const getCreatedOpportunities = async () => {
+    /*
     fetch(`/api/getCreatedOpportunities/${userProfile.profileid}`)
         .then((res) => {
           if (!res.ok) {
@@ -106,8 +113,11 @@ export default function FetchWrapper() {
           console.log(err);
           alert('Error retrieving created opportunities');
         });
+    */
+      const createdOpps = await DataStore.query(Opportunity, o => o.profileID.eq(userProfile.id));
+      console.log(createdOpps);
   };
-
+  //const createdOpps = await DataStore.query(Opportunity, o => o.profileID.eq(userProfile.id));
   const getPastOpportunities = () => {
     fetch(`/api/getPastOpportunities/${userProfile.profileid}`)
         .then((res) => {
@@ -123,9 +133,34 @@ export default function FetchWrapper() {
           console.log(err);
           alert('Error retrieving past opportunities');
         });
+    //const currTime = new Date().toISOString();
+    //const usersJoinedPast = await DataStore.query(Opportunity, (o) => o.and(o => [
+      //o.profilesJoined.Profile.id.eq(userProfile.id),
+      //o.endTime.lt(currTime);
+    //]));
+    //const createdOppsPast = await DataStore.query(Opportunity, (o) => o.and(o => [
+      //o.profileID.eq(userProfile.id),
+      //o.endTime.lt(currTime);
+    //]));
   };
-
+  //const past1 = await DataStore.query(Request, (r) => r.and(r => [
+    //r.profile.id.eq(userProfile.profileid),
+    //r.status.eq(RequestStatus.APPROVED)
+  //]));
+  //const past2 = await past1.past2.toArray();
+  //const currTime = new Date().toISOString();
+  //const past3 = await DataStore.query(Opportunity, (o) => o.endTime.lt(currTime));
+  //const usersJoined = await DataStore.query(Opportunity, (o) => o.and(o => [
+    //o.profilesJoined.Profile.id.eq(userProfile.id),
+    //o.endTime.lt(currTime);
+  //]));
+  //const createdOpps = await DataStore.query(Opportunity, (o) => o.and(o => [
+    //o.profileID.eq(userProfile.id),
+    //o.endTime.lt(currTime);
+  //]));
+  
   const getPendingOpportunities = () => {
+    /*
     fetch(`/api/getPendingOpportunities/${userProfile.profileid}`)
         .then((res) => {
           if (!res.ok) {
@@ -140,9 +175,24 @@ export default function FetchWrapper() {
           console.log(err);
           alert('Error retrieving past opportunities');
         });
-  };
+    */
+  
+    DataStore.query(Opportunity, (o) => o.and(o => [
+      o.Requests.profileID.eq(userProfile.id),
+      o.Requests.status.eq('PENDING')
+    ]))
+    .then((res) => {
+      // do some stuff
+      console.log(res);
+    })
+    .catch((err) => {
+      console.log(err);
+      alert('Error retrieving pending opportunities');
+    });
+};  
 
-  const getAllOpportunities = () => {
+  const getAllOpportunities = async () => {
+    /*
     fetch(`/api/getOpportunities`)
         .then((res) => {
           if (!res.ok) {
@@ -157,6 +207,9 @@ export default function FetchWrapper() {
           console.log(err);
           alert('Error retrieving all opportunities');
         });
+      */
+    const models = await DataStore.query(Opportunity);
+    console.log(models);
   };
 
   useEffect(() => {

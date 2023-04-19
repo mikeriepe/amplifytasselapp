@@ -11,7 +11,5 @@ export { default as MajorCreateForm } from "./MajorCreateForm";
 export { default as MajorUpdateForm } from "./MajorUpdateForm";
 export { default as ProfileCreateForm } from "./ProfileCreateForm";
 export { default as ProfileUpdateForm } from "./ProfileUpdateForm";
-export { default as OpportunityCreateForm } from "./OpportunityCreateForm";
-export { default as OpportunityUpdateForm } from "./OpportunityUpdateForm";
 export { default as NoteCreateForm } from "./NoteCreateForm";
 export { default as NoteUpdateForm } from "./NoteUpdateForm";

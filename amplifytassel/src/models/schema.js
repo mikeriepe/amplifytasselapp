@@ -595,11 +595,11 @@ export const schema = {
                         ]
                     }
                 },
-                "OpportunitiesOwned": {
-                    "name": "OpportunitiesOwned",
+                "OpportunitiesJoined": {
+                    "name": "OpportunitiesJoined",
                     "isArray": true,
                     "type": {
-                        "model": "ProfileOpportunity"
+                        "model": "OpportunityProfile"
                     },
                     "isRequired": false,
                     "attributes": [],
@@ -611,11 +611,11 @@ export const schema = {
                         ]
                     }
                 },
-                "Requests": {
-                    "name": "Requests",
+                "OpportunitiesOwned": {
+                    "name": "OpportunitiesOwned",
                     "isArray": true,
                     "type": {
-                        "model": "Request"
+                        "model": "Opportunity"
                     },
                     "isRequired": false,
                     "attributes": [],
@@ -657,6 +657,22 @@ export const schema = {
                     "type": "String",
                     "isRequired": false,
                     "attributes": []
+                },
+                "Requests": {
+                    "name": "Requests",
+                    "isArray": true,
+                    "type": {
+                        "model": "Request"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "profileID"
+                        ]
+                    }
                 },
                 "createdAt": {
                     "name": "createdAt",
@@ -958,22 +974,6 @@ export const schema = {
                         ]
                     }
                 },
-                "Owners": {
-                    "name": "Owners",
-                    "isArray": true,
-                    "type": {
-                        "model": "ProfileOpportunity"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true,
-                    "association": {
-                        "connectionType": "HAS_MANY",
-                        "associatedWith": [
-                            "opportunity"
-                        ]
-                    }
-                },
                 "Requests": {
                     "name": "Requests",
                     "isArray": true,
@@ -987,6 +987,29 @@ export const schema = {
                         "connectionType": "HAS_MANY",
                         "associatedWith": [
                             "opportunityID"
+                        ]
+                    }
+                },
+                "profileID": {
+                    "name": "profileID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "profilesJoined": {
+                    "name": "profilesJoined",
+                    "isArray": true,
+                    "type": {
+                        "model": "OpportunityProfile"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "opportunity"
                         ]
                     }
                 },
@@ -1013,6 +1036,15 @@ export const schema = {
                 {
                     "type": "model",
                     "properties": {}
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byProfile",
+                        "fields": [
+                            "profileID"
+                        ]
+                    }
                 },
                 {
                     "type": "auth",
@@ -1529,8 +1561,8 @@ export const schema = {
                 }
             ]
         },
-        "ProfileOpportunity": {
-            "name": "ProfileOpportunity",
+        "OpportunityProfile": {
+            "name": "OpportunityProfile",
             "fields": {
                 "id": {
                     "name": "id",
@@ -1601,7 +1633,7 @@ export const schema = {
                 }
             },
             "syncable": true,
-            "pluralName": "ProfileOpportunities",
+            "pluralName": "OpportunityProfiles",
             "attributes": [
                 {
                     "type": "model",
@@ -1847,6 +1879,6 @@ export const schema = {
             }
         }
     },
-    "codegenVersion": "3.4.0",
-    "version": "78349a74d38edd25533bc0db1900bbc1"
+    "codegenVersion": "3.3.5",
+    "version": "e7876932dc77a5f2762ba0df862010ab"
 };

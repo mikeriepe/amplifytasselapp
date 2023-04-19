@@ -64,21 +64,24 @@ export default function OpportunitiesList({
     const copyOpps = opportunities.filter((opp) => {
       const location = locationFilterLower.length == 0 ?
         true :
-        opp.locationtype ?
-        locationFilterLower.indexOf(opp.locationtype.toLowerCase()) > -1 :
+        opp.locationType ?
+        locationFilterLower.indexOf(opp.locationType.toLowerCase()) > -1 :
         false;
+      /*
       const oppType = oppTypeFilter.length == 0 ?
         true :
-        opp.opportunitytype ?
-        oppTypeFilterLower.indexOf(opp.opportunitytype.toLowerCase()) > -1 :
+        opp.opportunityType ?
+        oppTypeFilterLower.indexOf(opp.opportunityType.toLowerCase()) > -1 :
         false;
+      */
       const orgType = orgTypeFilter.length == 0 ?
         true :
-        opp.organizationtype ?
-        orgTypeFilterLower.indexOf(opp.organizationtype.toLowerCase()) > -1 :
+        opp.organizations ?
+        orgTypeFilterLower.indexOf(opp.organizations.toLowerCase()) > -1 :
         false;
 
-      return location && oppType && orgType;
+      //return location && oppType && orgType;
+      return location && orgType;
     });
 
     setDisplayOpps(copyOpps);

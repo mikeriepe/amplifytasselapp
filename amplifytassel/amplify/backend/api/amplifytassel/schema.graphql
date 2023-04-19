@@ -53,12 +53,13 @@ type Profile @model @auth(rules: [{allow: public}]) {
   Roles: [Role] @manyToMany(relationName: "ProfileRole")
   Posts: [Post] @hasMany(indexName: "byProfile", fields: ["id"])
   Comments: [Comment] @hasMany(indexName: "byProfile", fields: ["id"])
-  OpportunitiesOwned: [Opportunity] @manyToMany(relationName: "ProfileOpportunity")
-  Requests: [Request] @hasMany(indexName: "byProfile", fields: ["id"])
+  OpportunitiesJoined: [Opportunity] @manyToMany(relationName: "OpportunityProfile")
+  OpportunitiesOwned: [Opportunity] @hasMany(indexName: "byProfile", fields: ["id"])
   experience: [WorkHistory]
   schoolEmail: String
   infoRequest: String
   infoResponse: String
+  Requests: [Request] @hasMany(indexName: "byProfile", fields: ["id"])
 }
 
 type Request @model @auth(rules: [{allow: public}]) {
@@ -100,8 +101,9 @@ type Opportunity @model @auth(rules: [{allow: public}]) {
   preferences: [String]
   Roles: [Role] @hasMany(indexName: "byOpportunity", fields: ["id"])
   Posts: [Post] @hasMany(indexName: "byOpportunity", fields: ["id"])
-  Owners: [Profile] @manyToMany(relationName: "ProfileOpportunity")
   Requests: [Request] @hasMany(indexName: "byOpportunity", fields: ["id"])
+  profileID: ID! @index(name: "byProfile")
+  profilesJoined: [Profile] @manyToMany(relationName: "OpportunityProfile")
 }
 
 enum ProfileStatus {
