@@ -14,6 +14,12 @@
     "categories": {
       "auth": {
         "amplifytassel": {}
+      },
+      "api": {
+        "amplifytassel": {}
+      },
+      "storage": {
+        "s3Storage": {}
       }
     }
   }

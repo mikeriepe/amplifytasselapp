@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useEffect} from 'react';
 import {styled} from '@mui/material';
 import MuiPaper from '@mui/material/Paper';
 
@@ -22,6 +22,11 @@ const Work = styled((props) => (
  * @return {HTML} Profile component
  */
 export default function ProfileWork({data}) {
+  // useEffect(() => {
+  //   console.log('gothere2');
+  //   console.log(data);
+  // }, []);
+  
   return (
     <Work>
       <h4 className='text-dark'>Work Experience</h4>

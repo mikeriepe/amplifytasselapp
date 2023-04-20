@@ -190,7 +190,7 @@ export default function NavBarLoggedIn() {
               <ThemedButton
                 startIcon={
                   <Avatar
-                    src={userProfile.profilepicture}
+                    src={userProfile.picture}
                     alt='Remy Sharp'
                     onError={handleError}
                     style={{marginRight: 5}}

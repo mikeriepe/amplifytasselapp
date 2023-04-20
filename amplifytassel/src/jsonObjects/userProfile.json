@@ -1,26 +1,54 @@
 {
-    "id": "974dd175-ed38-401d-aa46-7f338002549c",
+    "id": "03bc5db5-46b3-4100-942b-e9ddb89ec1cc",
     "email": "2001cnote@gmail.com",
-    "about": null,
+    "about": "Hate natural light",
     "picture": null,
     "firstName": "Collin",
     "lastName": "McColl",
-    "status": "PENDING",
-    "graduationYear": "2023",
+    "status": "APPROVED",
+    "graduationYear": "2020",
     "active": true,
     "isAdmin": false,
     "isApproved": false,
     "schoolEmail": "ccmccoll@ucsc.edu",
     "infoRequest": null,
-    "infoResponse": null,
-    "createdAt": "2023-03-08T18:54:10.490Z",
-    "updatedAt": "2023-03-08T18:54:10.490Z",
-    "volunteerExperience": null,
+    "infoResponse": "idk bro",
+    "createdAt": "2023-04-13T04:03:41.258Z",
+    "updatedAt": "2023-04-20T19:05:25.729Z",
+    "volunteerExperience": [
+        {
+            "end": "10/24/2003",
+            "start": "10/24/2006",
+            "title": "Beach Cleaners",
+            "company": "Beach Cleaners Inc.",
+            "location": "Santa Cruz, CA",
+            "description": "Cleaned Beaches",
+            "currentPosition": false
+        }
+    ],
     "location": null,
     "availability": null,
-    "experience": null,
-    "_version": 1,
-    "_lastChangedAt": 1678301650521,
+    "experience": [
+        {
+            "end": "12/17/2022",
+            "start": "12/17/2021",
+            "title": "Dog Catcher",
+            "company": "Dog Catchers Inc.",
+            "location": "Santa Cruz, CA",
+            "description": "Caught Stray Dogs",
+            "currentPosition": false
+        },
+        {
+            "end": "12/17/2020",
+            "start": "12/17/2019",
+            "title": "Trampoline Park Instructor",
+            "company": "Sky High",
+            "location": "Santa Cruz, CA",
+            "description": "Did Flips",
+            "currentPosition": false
+        }
+    ],
+    "_version": 20,
+    "_lastChangedAt": 1682017525768,
     "_deleted": null
 }
-

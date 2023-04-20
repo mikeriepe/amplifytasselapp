@@ -7,6 +7,8 @@ import Landing from './pages/Landing';
 import NavBarLoggedOut from './components/NavBarLoggedOut';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import MyProfile from './pages/MyProfile';
+import UpdateProfile from './pages/UpdateProfile';
 import NavBarLoggedIn from './components/NavBarLoggedIn';
 import Settings from './pages/Settings';
 import './stylesheets/App.css';
@@ -31,6 +33,8 @@ const App = () => {
           <Route path='/login' element={<Login />} />
           <Route path='/signup' element={<Signup />} />
           <Route path='/settings' element={<Settings />}/>
+          <Route path='/myprofile' element={<MyProfile />} />
+          <Route path='/updateprofile' element={<UpdateProfile />} />
         </Routes>
       </Box>
     </Box>
