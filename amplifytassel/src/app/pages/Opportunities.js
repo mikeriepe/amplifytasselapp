@@ -14,6 +14,8 @@ import { DataStore } from '@aws-amplify/datastore';
 import { Opportunity } from '../../models';
 import { Role } from '../../models';
 import { Profile } from '../../models';
+import { OpportunityStatus } from '../../models';
+
 
 const Page = styled((props) => (
   <MuiBox {...props} />
@@ -375,7 +377,7 @@ function Opportunities({
   ];
 
   const formValues = {
-    eventName: '',
+    //eventName: '',
     locationType: 'in-person',
     location: {
       'address': '',
@@ -385,15 +387,15 @@ function Opportunities({
     },
     //sponsortype: 'user sponsor',
     zoomLink: '',
-    organizations: '',
+    organization: [],
     description: '',
     eventData: '',
-    //startDate: new Date(),
-    //enddate: new Date(),
+    startdate: new Date(),
+    enddate: new Date(),
     //organizationtype: '',
     //opportunitytype: '',
-    startTime: new Date(),
-    endTime: new Date(),
+    starttime: new Date(),
+    endtime: new Date(),
     subject: '',
   };
 
@@ -402,16 +404,19 @@ function Opportunities({
   };
 
   const onSubmit = async (data) => {
+    console.log("Starting process...");
     const newOpportunity = {
       Roles: {},
       eventBanner: 'https://www.sorenkaplan.com/wp-content/uploads/2017/07/Testing.jpg',
-      status: null,
+      status: OpportunityStatus.PENDING,
       profilesJoined: [],
       //preferences: {},
-      profileID: {'creator': userProfile.profileid},
+      profileID: userProfile.id,
       Requests: {},
       ...data,
     };
+    console.log("Object created...");
+    console.log(newOpportunity);
     /*
     fetch(`/api/postOpportunity`, {
       method: 'POST',
@@ -471,20 +476,20 @@ function Opportunities({
           console.log(error);
         });
       */
-        await DataStore.save(
+        const ampOpp = await DataStore.save(
           new Opportunity({
           "zoomLink": newOpportunity.zoomLink,
-          "organizations": newOpportunity.organizations,
+          "organizations": [newOpportunity.organization],
           "description": newOpportunity.description,
           "eventBanner":  newOpportunity.eventBanner,
-          "eventName": newOpportunity.eventName,
-          "startTime": newOpportunity.startTime,
-          "endTime": newOpportunity.endTime,
+          "eventName": newOpportunity.name,
+          "startTime": newOpportunity.startTime.toISOString(),
+          "endTime": newOpportunity.endTime.toISOString(),
           "locationType": newOpportunity.locationType,
           "location": newOpportunity.location,
-          "eventData": newOpportunity.eventData,
+          "eventData": newOpportunity.eventdata,
           "subject": newOpportunity.subject,
-          //"preferences": [],
+          "preferences": [],
           "Roles": newOpportunity.Roles,
           "Posts": newOpportunity.Posts,
           "Requests": newOpportunity.Requests,
@@ -494,6 +499,8 @@ function Opportunities({
           "status": newOpportunity.status
         })
       );
+      console.log(ampOpp);
+      console.log("Saved...");
         toast.success('Opportunity Created', {
           position: 'top-right',
           autoClose: 5000,
@@ -506,10 +513,10 @@ function Opportunities({
         handleModalClose();
         for (let i = 0; i < newOpportunity.Roles.length; i++) {
           const newRole = {
-            opportunityID: newOpportunity.opportunityID,
+            opportunityID: ampOpp.id,
             // keeping it null until it's fully implemented
             //tagid: 'c7e29de9-5b88-49fe-a3f5-750a3a62aee5',
-            //responsibility: '',
+            responsibility: '',
             description: '',
             isfilled: false,
             name: newOpportunity.Roles[i],

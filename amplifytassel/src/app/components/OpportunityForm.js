@@ -132,7 +132,7 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
     startdate: Yup
         .date()
         .required('Start date is required'),
-    endtime: Yup
+    enddate: Yup
         .date()
         .min(Yup.ref('startdate'), 'End date must be after start date')
         .required('End date is required'),
@@ -270,7 +270,7 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
     getValues,
     setValue,
   } = useForm({
-    resolver: yupResolver(validationSchema),
+    //resolver: yupResolver(validationSchema),
     defaultValues: defaultValues,
   });
 
@@ -347,7 +347,7 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
         {/* LEFT SECTION */}
         <Box>
           <TextInput
-            name='eventname'
+            name='name'
             control={control}
             label='Opportunity Title'
             register={register}

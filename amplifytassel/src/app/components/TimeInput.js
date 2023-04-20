@@ -4,6 +4,7 @@ import TextField from '@mui/material/TextField';
 import {TimePicker} from '@mui/x-date-pickers';
 import Box from '@mui/material/Box';
 import FormHelperText from '@mui/material/FormHelperText';
+import { parseISO } from 'date-fns'
 
 export const TimeInput = ({name, control, label, register}) => {
   return (
@@ -11,7 +12,7 @@ export const TimeInput = ({name, control, label, register}) => {
       name={name}
       control={control}
       render={({
-        field: {onChange, value},
+        field: {onChange, value=parseISO('2006-11-26-11.25.36')},
         fieldState: {error},
         formState,
       }) => (

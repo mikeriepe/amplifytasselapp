@@ -4,6 +4,7 @@ import TextField from '@mui/material/TextField';
 import {DesktopDatePicker} from '@mui/x-date-pickers/DesktopDatePicker';
 import FormHelperText from '@mui/material/FormHelperText';
 import Box from '@mui/material/Box';
+import { parseISO } from 'date-fns'
 
 export const DateInput = ({name, control, label, register, minDate}) => {
   return (
@@ -11,7 +12,7 @@ export const DateInput = ({name, control, label, register, minDate}) => {
       name={name}
       control={control}
       render={({
-        field: {onChange, value},
+        field: {onChange, value=parseISO('2006-11-26-11.25.36')},
         fieldState: {error},
         formState,
       }) => (
