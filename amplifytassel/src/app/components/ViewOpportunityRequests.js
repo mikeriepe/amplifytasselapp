@@ -229,7 +229,7 @@ export default function FetchWrapper() {
   const params = useParams();
   const {userProfile} = useAuth();
   const [requests, setRequests] = useState([]);
-
+  /*
   const getPendingRequestsReceived = () => {
     fetch(`/api/getPendingRequestsReceived/` +
     `${userProfile.profileid}/${params.opportunityid}`)
@@ -301,11 +301,11 @@ export default function FetchWrapper() {
           console.log(err);
         });
   };
-
+  */
   useEffect(() => {
-    getPendingRequestsReceived();
-    getApprovedRequests();
-    getRejectedRequests();
+    //getPendingRequestsReceived();
+    //getApprovedRequests();
+    //getRejectedRequests();
   }, []);
 
   return (

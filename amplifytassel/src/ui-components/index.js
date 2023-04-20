@@ -5,6 +5,8 @@
  **************************************************************************/
 
 export { default as studioTheme } from "./studioTheme";
+export { default as KeywordCreateForm } from "./KeywordCreateForm";
+export { default as KeywordUpdateForm } from "./KeywordUpdateForm";
 export { default as OrganizationCreateForm } from "./OrganizationCreateForm";
 export { default as OrganizationUpdateForm } from "./OrganizationUpdateForm";
 export { default as MajorCreateForm } from "./MajorCreateForm";

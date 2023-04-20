@@ -149,8 +149,8 @@ export default function OpportunityFilters({
   };
   */
   useEffect(() => {
-    getOpportunityTypes();
-    getOrganizationTypes();
+    //getOpportunityTypes();
+    //getOrganizationTypes();
   }, []);
 
   return (

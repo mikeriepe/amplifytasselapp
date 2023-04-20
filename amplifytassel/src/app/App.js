@@ -11,6 +11,10 @@ import NavBarLoggedIn from './components/NavBarLoggedIn';
 import Settings from './pages/Settings';
 import './stylesheets/App.css';
 import 'react-toastify/dist/ReactToastify.css';
+import Opportunities from './pages/Opportunities';
+import Approvals from './pages/Approvals';
+import ViewOpportunity from './pages/ViewOpportunity';
+import MyProfile from './pages/MyProfile';
 
 import useAuth from './util/AuthContext';
 import { Amplify} from 'aws-amplify'

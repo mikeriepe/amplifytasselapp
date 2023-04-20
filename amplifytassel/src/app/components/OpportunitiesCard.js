@@ -16,7 +16,7 @@ import EventNoteRoundedIcon from '@mui/icons-material/EventNoteRounded';
 import FmdGoodOutlinedIcon from '@mui/icons-material/FmdGoodOutlined';
 import TimerOutlinedIcon from '@mui/icons-material/TimerOutlined';
 import { DataStore } from 'aws-amplify';
-import { Profile } from './models';
+import { Profile } from '../../models';
 
 const IconStyling = {
   fontSize: '0.9rem',
