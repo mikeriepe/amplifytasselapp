@@ -44,7 +44,12 @@ const Avatar = ({image}, props) => (
  * Members section for view opportunity
  * @return {JSX}
  */
-export default function ViewOpportunityMembers({isCreator, owner, members}) {
+export default function ViewOpportunityMembers({
+  isCreator,
+  owner,
+  members,
+  roles,
+}) {
   const navigate = useNavigate();
   const [profiles, setProfiles] = useState([]);
 
@@ -52,32 +57,9 @@ export default function ViewOpportunityMembers({isCreator, owner, members}) {
     navigate(`/Profile/${profileid}`);
   };
 
-  const getProfile = (profileid, role) => {
-    fetch(`/api/getProfileByProfileId/${profileid}`)
-        .then((res) => {
-          if (!res.ok) {
-            throw res;
-          }
-          return res.json();
-        })
-        .then((json) => {
-          console.log(json);
-          json.role = role;
-          setProfiles((prevProfiles) => [...prevProfiles, json]);
-        })
-        .catch((err) => {
-          console.log(err);
-          alert('Error retrieving profile, please try again');
-        });
-  };
-
   useEffect(() => {
-    Object.keys(members).forEach(function(role) {
-      members[role].map((profileid) => {
-        getProfile(profileid, role);
-      });
-    });
-  }, []);
+    setProfiles([...members]);
+  }, [members]);
 
   return (
     <Paper>
@@ -88,7 +70,7 @@ export default function ViewOpportunityMembers({isCreator, owner, members}) {
         {isCreator ? 'Your Members' : 'Members'}
       </h4>
       <div style={{paddingBottom: 'calc(1.5em - 0.5em)'}}>
-        <Member handleClick={handleClick} profileid={owner.profileid}>
+        <Member handleClick={handleClick} profileid={owner.profileID}>
           <Avatar image={owner.avatar} />
           <div>
             <div className='flex-align-center'>
@@ -106,23 +88,37 @@ export default function ViewOpportunityMembers({isCreator, owner, members}) {
             <p>Owner</p>
           </div>
         </Member>
-        {profiles && profiles.map((profile, index) => (
-          <Member
-            key={`member-${index}`}
-            handleClick={handleClick}
-            profileid={profile.profileid}
-          >
-            <Avatar image={profile.profilepicture} />
-            <div>
-              <div className='flex-align-center'>
-                <p className='text-bold text-blue'>
-                  {`${profile.firstname} ${profile.lastname}`}
-                </p>
-              </div>
-              <p>{profile.role}</p>
-            </div>
-          </Member>
-        ))}
+        {profiles && profiles
+            .sort((a, b) => {
+              // a GP b NOT GP
+              if (a.role !== 'General Participant' &&
+                  b.role === 'General Participant') {
+                return -1;
+              } else if (b.role !== 'General Participant' &&
+                  a.role === 'General Participant') {
+                // b GP a NOT GP
+                return 1;
+              }
+              // both not GP or both GP
+              return a.firstName.localeCompare(b.firstName);
+            })
+            .map((profile, index) => (
+              <Member
+                key={`member-${index}`}
+                handleClick={handleClick}
+                profileid={profile.profileID}
+              >
+                <Avatar image={profile.picture} />
+                <div>
+                  <div className='flex-align-center'>
+                    <p className='text-bold text-blue'>
+                      {`${profile.firstName} ${profile.lastName}`}
+                    </p>
+                  </div>
+                  <p>{profile.role}</p>
+                </div>
+              </Member>
+            ))}
       </div>
     </Paper>
   );

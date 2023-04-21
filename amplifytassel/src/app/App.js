@@ -11,6 +11,7 @@ import NavBarLoggedIn from './components/NavBarLoggedIn';
 import Settings from './pages/Settings';
 import './stylesheets/App.css';
 import 'react-toastify/dist/ReactToastify.css';
+import ViewOpportunity from './pages/ViewOpportunity';
 
 import useAuth from './util/AuthContext';
 import { Amplify} from 'aws-amplify'
@@ -31,6 +32,10 @@ const App = () => {
           <Route path='/login' element={<Login />} />
           <Route path='/signup' element={<Signup />} />
           <Route path='/settings' element={<Settings />}/>
+          <Route
+            path='/opportunity/:opportunityid'
+            element={<ViewOpportunity />}
+          />
         </Routes>
       </Box>
     </Box>

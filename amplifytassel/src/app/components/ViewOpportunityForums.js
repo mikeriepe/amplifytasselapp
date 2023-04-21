@@ -10,6 +10,8 @@ import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import ForumsNewPost from './ForumsNewPost';
 import ForumsPost from './ForumsPost';
 import useAuth from '../util/AuthContext';
+import { DataStore } from '@aws-amplify/datastore';
+import { Post, Comment } from '../../models';
 
 const Paper = styled((props) => (
   <MuiPaper elevation={0} {...props} />
@@ -132,23 +134,12 @@ export default function ViewOpportunityForums({id}) {
     );
   };
 
-  const getPosts = () => {
+  const getPosts = async () => {
     setIsLoading(true);
-    fetch(`/api/getPosts/${id}`)
-        .then((res) => {
-          if (!res.ok) {
-            throw res;
-          }
-          return res.json();
-        })
-        .then((json) => {
-          setPosts(json);
-          setIsLoading(false);
-        })
-        .catch((err) => {
-          console.log(err);
-          alert('Error retrieving opportunity posts');
-        });
+    let tempPosts = await DataStore.query(Post, (p) => p.and(p => [p.opportunityID.eq(id)]));
+    setPosts([...tempPosts]);
+    console.log(tempPosts)
+    setIsLoading(false);
   };
 
   const getComments = (postid) => {
