@@ -4,6 +4,7 @@ import {styled} from '@mui/material/styles';
 import PageHeader from '../components/PageHeader';
 import CompressedTabBar from '../components/CompressedTabBar';
 import ApprovalAccounts from '../components/ApprovalAccounts';
+import ApprovalOpportunities from '../components/ApprovalOpportunities';
 
 const Page = styled((props) => (
   <MuiBox {...props} />
@@ -23,7 +24,7 @@ export default function Approvals() {
   const [tab, setTab] = React.useState(0);
   const tabs = [
     {name: 'Accounts', component: <ApprovalAccounts/>},
-    {name: 'Opportunities', component: <p>Hello World</p>},
+    {name: 'Opportunities', component: <ApprovalOpportunities/>},
   ];
   return (
     <Page>
