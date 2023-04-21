@@ -1120,13 +1120,6 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
-                "isApproved": {
-                    "name": "isApproved",
-                    "isArray": false,
-                    "type": "Boolean",
-                    "isRequired": false,
-                    "attributes": []
-                },
                 "eventBanner": {
                     "name": "eventBanner",
                     "isArray": false,
@@ -1279,6 +1272,15 @@ export const schema = {
                             "opportunity"
                         ]
                     }
+                },
+                "status": {
+                    "name": "status",
+                    "isArray": false,
+                    "type": {
+                        "enum": "OpportunityStatus"
+                    },
+                    "isRequired": false,
+                    "attributes": []
                 },
                 "createdAt": {
                     "name": "createdAt",
@@ -1987,6 +1989,16 @@ export const schema = {
         }
     },
     "enums": {
+        "OpportunityStatus": {
+            "name": "OpportunityStatus",
+            "values": [
+                "PENDING",
+                "UPDATED",
+                "APPROVED",
+                "DENIED",
+                "REQUESTED"
+            ]
+        },
         "ProfileStatus": {
             "name": "ProfileStatus",
             "values": [
@@ -2206,5 +2218,5 @@ export const schema = {
         }
     },
     "codegenVersion": "3.4.0",
-    "version": "824a3e86d61ee1cf8cb54cbf17575a89"
+    "version": "340cd07a78301bed2bb66088bde1c679"
 };

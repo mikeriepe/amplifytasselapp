@@ -2,6 +2,14 @@
 import { initSchema } from '@aws-amplify/datastore';
 import { schema } from './schema';
 
+const OpportunityStatus = {
+  "PENDING": "PENDING",
+  "UPDATED": "UPDATED",
+  "APPROVED": "APPROVED",
+  "DENIED": "DENIED",
+  "REQUESTED": "REQUESTED"
+};
+
 const ProfileStatus = {
   "PENDING": "PENDING",
   "REQUESTED": "REQUESTED",
@@ -37,6 +45,7 @@ export {
   ProfileRole,
   ProfileMajor,
   OpportunityProfile,
+  OpportunityStatus,
   ProfileStatus,
   RequestStatus,
   DaysOfWeek,

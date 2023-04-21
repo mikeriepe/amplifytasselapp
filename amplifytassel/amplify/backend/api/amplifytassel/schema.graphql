@@ -1,3 +1,11 @@
+enum OpportunityStatus {
+  PENDING
+  UPDATED
+  APPROVED
+  DENIED
+  REQUESTED
+}
+
 type Keyword @model @auth(rules: [{allow: public}]) {
   id: ID!
   name: String
@@ -98,7 +106,6 @@ type Opportunity @model @auth(rules: [{allow: public}]) {
   zoomLink: String
   organizations: [String]
   description: String
-  isApproved: Boolean
   eventBanner: AWSURL
   eventName: String
   startTime: AWSDateTime
@@ -114,6 +121,7 @@ type Opportunity @model @auth(rules: [{allow: public}]) {
   profileID: ID! @index(name: "byProfile")
   profilesJoined: [Profile] @manyToMany(relationName: "OpportunityProfile")
   keywords: [Keyword] @manyToMany(relationName: "KeywordOpportunity")
+  status: OpportunityStatus
 }
 
 enum ProfileStatus {

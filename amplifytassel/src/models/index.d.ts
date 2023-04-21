@@ -2,6 +2,14 @@ import { ModelInit, MutableModel, __modelMeta__, ManagedIdentifier } from "@aws-
 // @ts-ignore
 import { LazyLoading, LazyLoadingDisabled, AsyncCollection, AsyncItem } from "@aws-amplify/datastore";
 
+export enum OpportunityStatus {
+  PENDING = "PENDING",
+  UPDATED = "UPDATED",
+  APPROVED = "APPROVED",
+  DENIED = "DENIED",
+  REQUESTED = "REQUESTED"
+}
+
 export enum ProfileStatus {
   PENDING = "PENDING",
   REQUESTED = "REQUESTED",
@@ -455,7 +463,6 @@ type EagerOpportunity = {
   readonly zoomLink?: string | null;
   readonly organizations?: (string | null)[] | null;
   readonly description?: string | null;
-  readonly isApproved?: boolean | null;
   readonly eventBanner?: string | null;
   readonly eventName?: string | null;
   readonly startTime?: string | null;
@@ -471,6 +478,7 @@ type EagerOpportunity = {
   readonly profileID: string;
   readonly profilesJoined?: (OpportunityProfile | null)[] | null;
   readonly keywords?: (KeywordOpportunity | null)[] | null;
+  readonly status?: OpportunityStatus | keyof typeof OpportunityStatus | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -484,7 +492,6 @@ type LazyOpportunity = {
   readonly zoomLink?: string | null;
   readonly organizations?: (string | null)[] | null;
   readonly description?: string | null;
-  readonly isApproved?: boolean | null;
   readonly eventBanner?: string | null;
   readonly eventName?: string | null;
   readonly startTime?: string | null;
@@ -500,6 +507,7 @@ type LazyOpportunity = {
   readonly profileID: string;
   readonly profilesJoined: AsyncCollection<OpportunityProfile>;
   readonly keywords: AsyncCollection<KeywordOpportunity>;
+  readonly status?: OpportunityStatus | keyof typeof OpportunityStatus | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
