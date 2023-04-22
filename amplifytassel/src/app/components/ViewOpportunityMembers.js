@@ -5,6 +5,9 @@ import MuiBox from '@mui/material/Box';
 import MuiAvatar from '@mui/material/Avatar';
 import MuiPaper from '@mui/material/Paper';
 import StarRoundedIcon from '@mui/icons-material/StarRounded';
+import { Profile, ProfileRole } from '../../models';
+import { DataStore } from '@aws-amplify/datastore';
+
 
 const Paper = styled((props) => (
   <MuiPaper elevation={0} {...props} />
@@ -57,8 +60,19 @@ export default function ViewOpportunityMembers({
     navigate(`/Profile/${profileid}`);
   };
 
-  useEffect(() => {
-    setProfiles([...members]);
+  useEffect(() => async () => {
+    let profilesWithRoles = [];
+    // a for loop to get what profiles are in each role
+    for (let i = 0; i < roles.length; i++) {
+      // will return the profiles in roles[i]
+      const profilesInRole = await DataStore.query(Profile, (p) => p.Roles.roleId.eq(roles[i].id));
+      for (let j = 0; j < profilesInRole.length; j++) {
+        let temp = {...profilesInRole[j]};
+        temp.roleName = roles[i].name;
+        profilesWithRoles.push(temp);
+      }
+    }
+    setProfiles([...profilesWithRoles]);
   }, [members]);
 
   return (
@@ -91,11 +105,11 @@ export default function ViewOpportunityMembers({
         {profiles && profiles
             .sort((a, b) => {
               // a GP b NOT GP
-              if (a.role !== 'General Participant' &&
-                  b.role === 'General Participant') {
+              if (a.roleName !== 'General Participant' &&
+                  b.roleName === 'General Participant') {
                 return -1;
-              } else if (b.role !== 'General Participant' &&
-                  a.role === 'General Participant') {
+              } else if (b.roleName !== 'General Participant' &&
+                  a.roleName === 'General Participant') {
                 // b GP a NOT GP
                 return 1;
               }
@@ -115,7 +129,7 @@ export default function ViewOpportunityMembers({
                       {`${profile.firstName} ${profile.lastName}`}
                     </p>
                   </div>
-                  <p>{profile.role}</p>
+                  <p>{profile.roleName}</p>
                 </div>
               </Member>
             ))}

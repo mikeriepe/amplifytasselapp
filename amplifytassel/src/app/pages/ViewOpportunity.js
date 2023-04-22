@@ -51,67 +51,6 @@ export default function FetchWrapper() {
     setFetchedData(cpyOpp);
   };
 
-  /*
-  const getOpportunity = () => {
-    let temp = {};
-    DataStore.query(Opportunity, (o) => o.and(o => [
-      o.id.eq(params.opportunityid)
-    ]))
-    .then((res) => {
-      // do some stuff
-      temp = res[0];
-    }).then(() => {
-        DataStore.query(Profile, (p) => p.and(p => [
-          p.OpportunitiesJoined.opportunity.id.eq(params.opportunityid)
-        ]))
-        .then((res) => {
-          // do some stuff
-          temp = {...temp, profilesJoined: res};
-          setFetchedData(temp)
-          getOpportunityRoles();
-        })
-    })
-    .catch((err) => {
-      console.log(err);
-      alert('Error retrieving opportunity participants');
-    });
-  };
-
-  const getOpportunityRoles = () => {
-    DataStore.query(Role, (r) => r.and(r => [
-      r.opportunityID.eq(params.opportunityid)
-    ]))
-    .then((res) => {
-      // do some stuff
-      setFetchedData((prevData) => ({
-        ...prevData,
-        roles: res,
-      }));
-    }).then(() => {
-      getOpportunityKeywords();
-    })
-    .catch((err) => {
-      console.log(err);
-      alert('Error retrieving opportunity roles');
-    });
-  };
-
-  const getOpportunityKeywords = () => {
-    DataStore.query(Keyword, k => k.Opportunities.opportunityId.eq(params.opportunityid))
-    .then((res) => {
-      // do some stuff
-      setFetchedData((prevData) => ({
-        ...prevData,
-        keywords: res,
-      }));
-    })
-    .catch((err) => {
-      console.log(err);
-      alert('Error retrieving opportunity roles');
-    });
-  };
-  */
-
   useEffect(() => {
     if (params.opportunityid) {
       getOpportunity();
@@ -145,7 +84,6 @@ function ViewOpportunity({opportunity}) {
   const [requestedRole, setRequestedRole] = React.useState('');
   // REMOVE REQUESTED ROLE STATE
   // list of all the participants
-  const [participants, setParticipants] =
   useState(opportunity);
 
   // list of assigned roles in the opportunity
@@ -154,10 +92,6 @@ function ViewOpportunity({opportunity}) {
 
   const updateMembers = (newMembers) => {
     setMembers(newMembers);
-  };
-
-  const updateParticipants = (newParticipants) => {
-    setParticipants(newParticipants);
   };
 
   const handleModalClose = () => {

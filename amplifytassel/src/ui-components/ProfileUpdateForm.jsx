@@ -6,22 +6,15 @@
 
 /* eslint-disable */
 import * as React from "react";
-import {
-  Button,
-  Flex,
-  Grid,
-  SelectField,
-  SwitchField,
-  TextField,
-} from "@aws-amplify/ui-react";
+import { Button, Flex, Grid, TextField } from "@aws-amplify/ui-react";
 import { getOverrideProps } from "@aws-amplify/ui-react/internal";
-import { Profile } from "../models";
+import { KeywordProfile } from "../models";
 import { fetchByPath, validateField } from "./utils";
 import { DataStore } from "aws-amplify";
 export default function ProfileUpdateForm(props) {
   const {
     id: idProp,
-    profile: profileModelProp,
+    keywordProfile: keywordProfileModelProp,
     onSuccess,
     onError,
     onSubmit,
@@ -31,86 +24,46 @@ export default function ProfileUpdateForm(props) {
     ...rest
   } = props;
   const initialValues = {
-    email: "",
     about: "",
-    picture: "",
-    firstName: "",
-    lastName: "",
-    status: "",
+    Field0: "",
+    location: "",
     graduationYear: "",
-    active: false,
-    isAdmin: false,
-    isApproved: false,
-    schoolEmail: "",
-    infoRequest: "",
-    infoResponse: "",
   };
-  const [email, setEmail] = React.useState(initialValues.email);
   const [about, setAbout] = React.useState(initialValues.about);
-  const [picture, setPicture] = React.useState(initialValues.picture);
-  const [firstName, setFirstName] = React.useState(initialValues.firstName);
-  const [lastName, setLastName] = React.useState(initialValues.lastName);
-  const [status, setStatus] = React.useState(initialValues.status);
+  const [Field0, setField0] = React.useState(initialValues.Field0);
+  const [location, setLocation] = React.useState(initialValues.location);
   const [graduationYear, setGraduationYear] = React.useState(
     initialValues.graduationYear
   );
-  const [active, setActive] = React.useState(initialValues.active);
-  const [isAdmin, setIsAdmin] = React.useState(initialValues.isAdmin);
-  const [isApproved, setIsApproved] = React.useState(initialValues.isApproved);
-  const [schoolEmail, setSchoolEmail] = React.useState(
-    initialValues.schoolEmail
-  );
-  const [infoRequest, setInfoRequest] = React.useState(
-    initialValues.infoRequest
-  );
-  const [infoResponse, setInfoResponse] = React.useState(
-    initialValues.infoResponse
-  );
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
-    const cleanValues = profileRecord
-      ? { ...initialValues, ...profileRecord }
+    const cleanValues = keywordProfileRecord
+      ? { ...initialValues, ...keywordProfileRecord }
       : initialValues;
-    setEmail(cleanValues.email);
     setAbout(cleanValues.about);
-    setPicture(cleanValues.picture);
-    setFirstName(cleanValues.firstName);
-    setLastName(cleanValues.lastName);
-    setStatus(cleanValues.status);
+    setField0(cleanValues.Field0);
+    setLocation(cleanValues.location);
     setGraduationYear(cleanValues.graduationYear);
-    setActive(cleanValues.active);
-    setIsAdmin(cleanValues.isAdmin);
-    setIsApproved(cleanValues.isApproved);
-    setSchoolEmail(cleanValues.schoolEmail);
-    setInfoRequest(cleanValues.infoRequest);
-    setInfoResponse(cleanValues.infoResponse);
     setErrors({});
   };
-  const [profileRecord, setProfileRecord] = React.useState(profileModelProp);
+  const [keywordProfileRecord, setKeywordProfileRecord] = React.useState(
+    keywordProfileModelProp
+  );
   React.useEffect(() => {
     const queryData = async () => {
       const record = idProp
-        ? await DataStore.query(Profile, idProp)
-        : profileModelProp;
-      setProfileRecord(record);
+        ? await DataStore.query(KeywordProfile, idProp)
+        : keywordProfileModelProp;
+      setKeywordProfileRecord(record);
     };
     queryData();
-  }, [idProp, profileModelProp]);
-  React.useEffect(resetStateValues, [profileRecord]);
+  }, [idProp, keywordProfileModelProp]);
+  React.useEffect(resetStateValues, [keywordProfileRecord]);
   const validations = {
-    email: [{ type: "Required" }, { type: "Email" }],
     about: [],
-    picture: [{ type: "URL" }],
-    firstName: [],
-    lastName: [],
-    status: [],
+    Field0: [],
+    location: [],
     graduationYear: [],
-    active: [],
-    isAdmin: [],
-    isApproved: [],
-    schoolEmail: [],
-    infoRequest: [],
-    infoResponse: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -138,19 +91,10 @@ export default function ProfileUpdateForm(props) {
       onSubmit={async (event) => {
         event.preventDefault();
         let modelFields = {
-          email,
           about,
-          picture,
-          firstName,
-          lastName,
-          status,
+          Field0,
+          location,
           graduationYear,
-          active,
-          isAdmin,
-          isApproved,
-          schoolEmail,
-          infoRequest,
-          infoResponse,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -180,9 +124,10 @@ export default function ProfileUpdateForm(props) {
               modelFields[key] = undefined;
             }
           });
+          const modelFieldsToSave = {};
           await DataStore.save(
-            Profile.copyOf(profileRecord, (updated) => {
-              Object.assign(updated, modelFields);
+            KeywordProfile.copyOf(keywordProfileRecord, (updated) => {
+              Object.assign(updated, modelFieldsToSave);
             })
           );
           if (onSuccess) {
@@ -198,63 +143,16 @@ export default function ProfileUpdateForm(props) {
       {...rest}
     >
       <TextField
-        label="Email"
-        isRequired={true}
-        isReadOnly={false}
-        value={email}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              email: value,
-              about,
-              picture,
-              firstName,
-              lastName,
-              status,
-              graduationYear,
-              active,
-              isAdmin,
-              isApproved,
-              schoolEmail,
-              infoRequest,
-              infoResponse,
-            };
-            const result = onChange(modelFields);
-            value = result?.email ?? value;
-          }
-          if (errors.email?.hasError) {
-            runValidationTasks("email", value);
-          }
-          setEmail(value);
-        }}
-        onBlur={() => runValidationTasks("email", email)}
-        errorMessage={errors.email?.errorMessage}
-        hasError={errors.email?.hasError}
-        {...getOverrideProps(overrides, "email")}
-      ></TextField>
-      <TextField
-        label="About"
-        isRequired={false}
-        isReadOnly={false}
+        label="Label"
         value={about}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
-              email,
               about: value,
-              picture,
-              firstName,
-              lastName,
-              status,
+              Field0,
+              location,
               graduationYear,
-              active,
-              isAdmin,
-              isApproved,
-              schoolEmail,
-              infoRequest,
-              infoResponse,
             };
             const result = onChange(modelFields);
             value = result?.about ?? value;
@@ -270,202 +168,68 @@ export default function ProfileUpdateForm(props) {
         {...getOverrideProps(overrides, "about")}
       ></TextField>
       <TextField
-        label="Picture"
+        label="Major"
+        descriptiveText=""
         isRequired={false}
-        isReadOnly={false}
-        value={picture}
+        value={Field0}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
-              email,
               about,
-              picture: value,
-              firstName,
-              lastName,
-              status,
+              Field0: value,
+              location,
               graduationYear,
-              active,
-              isAdmin,
-              isApproved,
-              schoolEmail,
-              infoRequest,
-              infoResponse,
             };
             const result = onChange(modelFields);
-            value = result?.picture ?? value;
+            value = result?.Field0 ?? value;
           }
-          if (errors.picture?.hasError) {
-            runValidationTasks("picture", value);
+          if (errors.Field0?.hasError) {
+            runValidationTasks("Field0", value);
           }
-          setPicture(value);
+          setField0(value);
         }}
-        onBlur={() => runValidationTasks("picture", picture)}
-        errorMessage={errors.picture?.errorMessage}
-        hasError={errors.picture?.hasError}
-        {...getOverrideProps(overrides, "picture")}
+        onBlur={() => runValidationTasks("Field0", Field0)}
+        errorMessage={errors.Field0?.errorMessage}
+        hasError={errors.Field0?.hasError}
+        {...getOverrideProps(overrides, "Field0")}
       ></TextField>
       <TextField
-        label="First name"
-        isRequired={false}
-        isReadOnly={false}
-        value={firstName}
+        label="Label"
+        value={location}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
-              email,
               about,
-              picture,
-              firstName: value,
-              lastName,
-              status,
+              Field0,
+              location: value,
               graduationYear,
-              active,
-              isAdmin,
-              isApproved,
-              schoolEmail,
-              infoRequest,
-              infoResponse,
             };
             const result = onChange(modelFields);
-            value = result?.firstName ?? value;
+            value = result?.location ?? value;
           }
-          if (errors.firstName?.hasError) {
-            runValidationTasks("firstName", value);
+          if (errors.location?.hasError) {
+            runValidationTasks("location", value);
           }
-          setFirstName(value);
+          setLocation(value);
         }}
-        onBlur={() => runValidationTasks("firstName", firstName)}
-        errorMessage={errors.firstName?.errorMessage}
-        hasError={errors.firstName?.hasError}
-        {...getOverrideProps(overrides, "firstName")}
+        onBlur={() => runValidationTasks("location", location)}
+        errorMessage={errors.location?.errorMessage}
+        hasError={errors.location?.hasError}
+        {...getOverrideProps(overrides, "location")}
       ></TextField>
       <TextField
-        label="Last name"
-        isRequired={false}
-        isReadOnly={false}
-        value={lastName}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              email,
-              about,
-              picture,
-              firstName,
-              lastName: value,
-              status,
-              graduationYear,
-              active,
-              isAdmin,
-              isApproved,
-              schoolEmail,
-              infoRequest,
-              infoResponse,
-            };
-            const result = onChange(modelFields);
-            value = result?.lastName ?? value;
-          }
-          if (errors.lastName?.hasError) {
-            runValidationTasks("lastName", value);
-          }
-          setLastName(value);
-        }}
-        onBlur={() => runValidationTasks("lastName", lastName)}
-        errorMessage={errors.lastName?.errorMessage}
-        hasError={errors.lastName?.hasError}
-        {...getOverrideProps(overrides, "lastName")}
-      ></TextField>
-      <SelectField
-        label="Status"
-        placeholder="Please select an option"
-        isDisabled={false}
-        value={status}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              email,
-              about,
-              picture,
-              firstName,
-              lastName,
-              status: value,
-              graduationYear,
-              active,
-              isAdmin,
-              isApproved,
-              schoolEmail,
-              infoRequest,
-              infoResponse,
-            };
-            const result = onChange(modelFields);
-            value = result?.status ?? value;
-          }
-          if (errors.status?.hasError) {
-            runValidationTasks("status", value);
-          }
-          setStatus(value);
-        }}
-        onBlur={() => runValidationTasks("status", status)}
-        errorMessage={errors.status?.errorMessage}
-        hasError={errors.status?.hasError}
-        {...getOverrideProps(overrides, "status")}
-      >
-        <option
-          children="Pending"
-          value="PENDING"
-          {...getOverrideProps(overrides, "statusoption0")}
-        ></option>
-        <option
-          children="Requested"
-          value="REQUESTED"
-          {...getOverrideProps(overrides, "statusoption1")}
-        ></option>
-        <option
-          children="Updated"
-          value="UPDATED"
-          {...getOverrideProps(overrides, "statusoption2")}
-        ></option>
-        <option
-          children="Approved"
-          value="APPROVED"
-          {...getOverrideProps(overrides, "statusoption3")}
-        ></option>
-        <option
-          children="Denied"
-          value="DENIED"
-          {...getOverrideProps(overrides, "statusoption4")}
-        ></option>
-        <option
-          children="Admin"
-          value="ADMIN"
-          {...getOverrideProps(overrides, "statusoption5")}
-        ></option>
-      </SelectField>
-      <TextField
-        label="Graduation year"
-        isRequired={false}
-        isReadOnly={false}
+        label="Label"
         value={graduationYear}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
-              email,
               about,
-              picture,
-              firstName,
-              lastName,
-              status,
+              Field0,
+              location,
               graduationYear: value,
-              active,
-              isAdmin,
-              isApproved,
-              schoolEmail,
-              infoRequest,
-              infoResponse,
             };
             const result = onChange(modelFields);
             value = result?.graduationYear ?? value;
@@ -480,222 +244,6 @@ export default function ProfileUpdateForm(props) {
         hasError={errors.graduationYear?.hasError}
         {...getOverrideProps(overrides, "graduationYear")}
       ></TextField>
-      <SwitchField
-        label="Active"
-        defaultChecked={false}
-        isDisabled={false}
-        isChecked={active}
-        onChange={(e) => {
-          let value = e.target.checked;
-          if (onChange) {
-            const modelFields = {
-              email,
-              about,
-              picture,
-              firstName,
-              lastName,
-              status,
-              graduationYear,
-              active: value,
-              isAdmin,
-              isApproved,
-              schoolEmail,
-              infoRequest,
-              infoResponse,
-            };
-            const result = onChange(modelFields);
-            value = result?.active ?? value;
-          }
-          if (errors.active?.hasError) {
-            runValidationTasks("active", value);
-          }
-          setActive(value);
-        }}
-        onBlur={() => runValidationTasks("active", active)}
-        errorMessage={errors.active?.errorMessage}
-        hasError={errors.active?.hasError}
-        {...getOverrideProps(overrides, "active")}
-      ></SwitchField>
-      <SwitchField
-        label="Is admin"
-        defaultChecked={false}
-        isDisabled={false}
-        isChecked={isAdmin}
-        onChange={(e) => {
-          let value = e.target.checked;
-          if (onChange) {
-            const modelFields = {
-              email,
-              about,
-              picture,
-              firstName,
-              lastName,
-              status,
-              graduationYear,
-              active,
-              isAdmin: value,
-              isApproved,
-              schoolEmail,
-              infoRequest,
-              infoResponse,
-            };
-            const result = onChange(modelFields);
-            value = result?.isAdmin ?? value;
-          }
-          if (errors.isAdmin?.hasError) {
-            runValidationTasks("isAdmin", value);
-          }
-          setIsAdmin(value);
-        }}
-        onBlur={() => runValidationTasks("isAdmin", isAdmin)}
-        errorMessage={errors.isAdmin?.errorMessage}
-        hasError={errors.isAdmin?.hasError}
-        {...getOverrideProps(overrides, "isAdmin")}
-      ></SwitchField>
-      <SwitchField
-        label="Is approved"
-        defaultChecked={false}
-        isDisabled={false}
-        isChecked={isApproved}
-        onChange={(e) => {
-          let value = e.target.checked;
-          if (onChange) {
-            const modelFields = {
-              email,
-              about,
-              picture,
-              firstName,
-              lastName,
-              status,
-              graduationYear,
-              active,
-              isAdmin,
-              isApproved: value,
-              schoolEmail,
-              infoRequest,
-              infoResponse,
-            };
-            const result = onChange(modelFields);
-            value = result?.isApproved ?? value;
-          }
-          if (errors.isApproved?.hasError) {
-            runValidationTasks("isApproved", value);
-          }
-          setIsApproved(value);
-        }}
-        onBlur={() => runValidationTasks("isApproved", isApproved)}
-        errorMessage={errors.isApproved?.errorMessage}
-        hasError={errors.isApproved?.hasError}
-        {...getOverrideProps(overrides, "isApproved")}
-      ></SwitchField>
-      <TextField
-        label="School email"
-        isRequired={false}
-        isReadOnly={false}
-        value={schoolEmail}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              email,
-              about,
-              picture,
-              firstName,
-              lastName,
-              status,
-              graduationYear,
-              active,
-              isAdmin,
-              isApproved,
-              schoolEmail: value,
-              infoRequest,
-              infoResponse,
-            };
-            const result = onChange(modelFields);
-            value = result?.schoolEmail ?? value;
-          }
-          if (errors.schoolEmail?.hasError) {
-            runValidationTasks("schoolEmail", value);
-          }
-          setSchoolEmail(value);
-        }}
-        onBlur={() => runValidationTasks("schoolEmail", schoolEmail)}
-        errorMessage={errors.schoolEmail?.errorMessage}
-        hasError={errors.schoolEmail?.hasError}
-        {...getOverrideProps(overrides, "schoolEmail")}
-      ></TextField>
-      <TextField
-        label="Info request"
-        isRequired={false}
-        isReadOnly={false}
-        value={infoRequest}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              email,
-              about,
-              picture,
-              firstName,
-              lastName,
-              status,
-              graduationYear,
-              active,
-              isAdmin,
-              isApproved,
-              schoolEmail,
-              infoRequest: value,
-              infoResponse,
-            };
-            const result = onChange(modelFields);
-            value = result?.infoRequest ?? value;
-          }
-          if (errors.infoRequest?.hasError) {
-            runValidationTasks("infoRequest", value);
-          }
-          setInfoRequest(value);
-        }}
-        onBlur={() => runValidationTasks("infoRequest", infoRequest)}
-        errorMessage={errors.infoRequest?.errorMessage}
-        hasError={errors.infoRequest?.hasError}
-        {...getOverrideProps(overrides, "infoRequest")}
-      ></TextField>
-      <TextField
-        label="Info response"
-        isRequired={false}
-        isReadOnly={false}
-        value={infoResponse}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              email,
-              about,
-              picture,
-              firstName,
-              lastName,
-              status,
-              graduationYear,
-              active,
-              isAdmin,
-              isApproved,
-              schoolEmail,
-              infoRequest,
-              infoResponse: value,
-            };
-            const result = onChange(modelFields);
-            value = result?.infoResponse ?? value;
-          }
-          if (errors.infoResponse?.hasError) {
-            runValidationTasks("infoResponse", value);
-          }
-          setInfoResponse(value);
-        }}
-        onBlur={() => runValidationTasks("infoResponse", infoResponse)}
-        errorMessage={errors.infoResponse?.errorMessage}
-        hasError={errors.infoResponse?.hasError}
-        {...getOverrideProps(overrides, "infoResponse")}
-      ></TextField>
       <Flex
         justifyContent="space-between"
         {...getOverrideProps(overrides, "CTAFlex")}
@@ -707,7 +255,7 @@ export default function ProfileUpdateForm(props) {
             event.preventDefault();
             resetStateValues();
           }}
-          isDisabled={!(idProp || profileModelProp)}
+          isDisabled={!(idProp || keywordProfileModelProp)}
           {...getOverrideProps(overrides, "ResetButton")}
         ></Button>
         <Flex
@@ -719,7 +267,7 @@ export default function ProfileUpdateForm(props) {
             type="submit"
             variation="primary"
             isDisabled={
-              !(idProp || profileModelProp) ||
+              !(idProp || keywordProfileModelProp) ||
               Object.values(errors).some((e) => e?.hasError)
             }
             {...getOverrideProps(overrides, "SubmitButton")}

@@ -5,23 +5,42 @@
  **************************************************************************/
 
 import * as React from "react";
-import { GridProps } from "@aws-amplify/ui-react";
+import { GridProps, SelectFieldProps, TextFieldProps } from "@aws-amplify/ui-react";
 import { EscapeHatchProps } from "@aws-amplify/ui-react/internal";
+import { Profile } from "../models";
 export declare type ValidationResponse = {
     hasError: boolean;
     errorMessage?: string;
 };
 export declare type ValidationFunction<T> = (value: T, validationResponse: ValidationResponse) => ValidationResponse | Promise<ValidationResponse>;
-export declare type NewForm1InputValues = {};
-export declare type NewForm1ValidationValues = {};
+export declare type NewForm1InputValues = {
+    about?: string;
+    location?: string;
+    graduationYear?: string;
+    Field0?: string;
+};
+export declare type NewForm1ValidationValues = {
+    about?: ValidationFunction<string>;
+    location?: ValidationFunction<string>;
+    graduationYear?: ValidationFunction<string>;
+    Field0?: ValidationFunction<string>;
+};
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type NewForm1OverridesProps = {
     NewForm1Grid?: PrimitiveOverrideProps<GridProps>;
+    about?: PrimitiveOverrideProps<TextFieldProps>;
+    location?: PrimitiveOverrideProps<TextFieldProps>;
+    graduationYear?: PrimitiveOverrideProps<TextFieldProps>;
+    Field0?: PrimitiveOverrideProps<SelectFieldProps>;
 } & EscapeHatchProps;
 export declare type NewForm1Props = React.PropsWithChildren<{
     overrides?: NewForm1OverridesProps | undefined | null;
 } & {
-    onSubmit: (fields: NewForm1InputValues) => void;
+    id?: string;
+    profile?: Profile;
+    onSubmit?: (fields: NewForm1InputValues) => NewForm1InputValues;
+    onSuccess?: (fields: NewForm1InputValues) => void;
+    onError?: (fields: NewForm1InputValues, errorMessage: string) => void;
     onChange?: (fields: NewForm1InputValues) => NewForm1InputValues;
     onValidate?: NewForm1ValidationValues;
 } & React.CSSProperties>;

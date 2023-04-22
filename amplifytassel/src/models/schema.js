@@ -556,9 +556,7 @@ export const schema = {
                 "location": {
                     "name": "location",
                     "isArray": false,
-                    "type": {
-                        "nonModel": "Location"
-                    },
+                    "type": "String",
                     "isRequired": false,
                     "attributes": []
                 },
@@ -2218,5 +2216,5 @@ export const schema = {
         }
     },
     "codegenVersion": "3.4.0",
-    "version": "340cd07a78301bed2bb66088bde1c679"
+    "version": "3aa38aea5bb42c782b0af6472ed0ffd3"
 };
