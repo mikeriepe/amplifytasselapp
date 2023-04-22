@@ -206,41 +206,6 @@ export default function ViewOpportunityForums({id}) {
         });
       }
     });
-
-    /*
-    fetch(`/api/postComment`, {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-        .then((res) => {
-          if (!res.ok) {
-            throw res;
-          }
-          return res.json();
-        })
-        .then((json) => {
-          setComments((prevComments) => {
-            if (prevComments.hasOwnProperty(postid)) {
-              return ({
-                ...prevComments,
-                [postid]: [...prevComments[postid], json],
-              });
-            } else {
-              return ({
-                ...prevComments,
-                [postid]: [json],
-              });
-            }
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-          alert('Error posting opportunity comment');
-        });
-        */
   };
 
   useEffect(() => {

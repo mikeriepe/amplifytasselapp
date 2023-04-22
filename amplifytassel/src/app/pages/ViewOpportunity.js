@@ -13,7 +13,7 @@ import useAuth from '../util/AuthContext';
 import RequestModal from '../components/RequestOpportunityModal';
 import {toast} from 'react-toastify';
 import { DataStore } from '@aws-amplify/datastore';
-import { Opportunity, Role, Profile, Keyword } from '../../models';
+import { Opportunity, Role, Profile, Keyword, Request } from '../../models';
 
 const Page = styled((props) => (
   <MuiBox {...props} />
@@ -111,8 +111,7 @@ function ViewOpportunity({opportunity}) {
   const handleRequestClick = (e) => {
     // Send request here
     const requestData = {
-      requestee: creator.profileID,
-      requester: userProfile.profileID,
+      requester: userProfile.id,
       requestmessage: requestMessage,
       opportunityid: opportunity.id,
       role: requestedRole,
@@ -122,55 +121,55 @@ function ViewOpportunity({opportunity}) {
     setRequestMessage('');
   };
 
-  const postRequestToOpportunity = (requestData) => {
-    console.log('Join requested');
-    console.log(requestData);
-    /*
-    fetch(`/api/postRequest`, {
-      method: 'POST',
-      body: JSON.stringify(requestData),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-        .then((res) => {
-          if (res.status === 201) {
-            toast.success(`Applied to ${opportunity.eventname}`, {
-              position: 'top-right',
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-          } else if (res.status === 409) {
-            toast.warning(`You Already Applied to This Event`, {
-              position: 'top-right',
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-          } else {
-            toast.error(`Something Went Wrong. Please Try Again.`, {
-              position: 'top-right',
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-          }
+  const postRequestToOpportunity = async (requestData) => {
+    // Check if the profile already sent a request to this role
+    // extract the general participant role from the roles
+    let genParticipantRole = {}
+    for (let i = 0; i < opportunity?.roles.length; i++) {
+      if(opportunity?.roles[i].name === 'General Participant') {
+        genParticipantRole = {...opportunity?.roles[i]};
+        break;
+      }
+    }
+
+    const requests = await DataStore.query(Profile, (p) => p.and(p => [
+      p.Requests.roleID.eq(genParticipantRole.id),
+      p.id.eq(requestData.requester)
+    ]));
+
+    // if the profile applied return toast notification
+    if(requests.length > 0) {
+      toast.warning(`You Already Applied to This Event`, {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } else {
+      await DataStore.save(
+        new Request({
+          status: 'PENDING',
+          requestTime: new Date().toISOString(),
+          requestMessage: requestData.requestmessage,
+          opportunityID: requestData.opportunityid,
+          roleID: genParticipantRole.id,
+          profileID: requestData.requester,
         })
-        .catch((err) => {
-          console.log(err);
-          alert('Something Went Wrong. Please Try Again.');
-        });
-        */
+      );
+      // toast notification
+      toast.success(`Applied to ${opportunity.eventName}`, {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
   };
 
   const noncreatorTabs = [
@@ -255,22 +254,6 @@ function ViewOpportunity({opportunity}) {
     });
     // there will be only 1 match
     // Add error check here for the case where there are no matching opps
-    /*
-    fetch(`/api/getProfileName/${opportunity.usersponsors.creator}`)
-        .then((res) => {
-          if (!res.ok) {
-            throw res;
-          }
-          return res.json();
-        })
-        .then((json) => {
-          setCreator(json);
-        })
-        .catch((err) => {
-          console.log(err);
-          alert('Error retrieving opportunity creators profile');
-        });
-    */
   };
 
   useEffect(() => {
@@ -303,7 +286,7 @@ function ViewOpportunity({opportunity}) {
                   color='yellow'
                   size='small'
                   onClick={() => {
-                    handleModalOpen('');
+                    handleModalOpen('General Participant');
                   }}
                 >
                   Request to Join

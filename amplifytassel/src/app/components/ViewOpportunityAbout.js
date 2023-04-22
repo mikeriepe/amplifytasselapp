@@ -12,7 +12,7 @@ import useAuth from '../util/AuthContext';
 import {toast} from 'react-toastify';
 import Chip from '@mui/material/Chip';
 import { DataStore } from '@aws-amplify/datastore';
-import { Major } from '../../models';
+import { Major, Request, Profile } from '../../models';
 
 /**
  * About tab for view opportunity
@@ -186,7 +186,7 @@ function RolesCard({
   const {userProfile} = useAuth();
   const [showReqForm, setshowReqForm] = React.useState(false);
   const [requestMessage, setRequestMessage] = React.useState('');
-  const [requestedRole, setRequestedRole] = React.useState('');
+  const [requestedRole, setRequestedRole] = React.useState(null);
 
   const handleModalClose = () => {
     setRequestedRole('');
@@ -205,66 +205,55 @@ function RolesCard({
   const handleRequestClick = (e) => {
     // Send request here
     const requestData = {
-      requestee: creator.profileid,
-      requester: userProfile.profileid,
+      requester: userProfile.id,
       requestmessage: requestMessage,
       opportunityid: opportunityid,
       role: requestedRole,
-      toevent: true,
     };
     postRequestToOpportunity(requestData);
     setshowReqForm(false);
     setRequestMessage('');
   };
 
-  const postRequestToOpportunity = (requestData) => {
-    console.log('request clicked');
-    /*
-    fetch(`/api/postRequest`, {
-      method: 'POST',
-      body: JSON.stringify(requestData),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-        .then((res) => {
-          if (res.status === 201) {
-            toast.success(`Applied to ${opportunityName}`, {
-              position: 'top-right',
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-          } else if (res.status === 409) {
-            toast.warning(`You Already Applied to This Event`, {
-              position: 'top-right',
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-          } else {
-            toast.error(`Something Went Wrong. Please Try Again.`, {
-              position: 'top-right',
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-          }
+  const postRequestToOpportunity = async (requestData) => {
+    // Check if the profile already sent a request to this role
+    const requests = await DataStore.query(Profile, (p) => p.and(p => [
+      p.Requests.roleID.eq(requestData.role.id),
+      p.id.eq(requestData.requester)
+    ]));
+    // if the profile applied return toast notification
+    if(requests.length > 0) {
+      toast.warning(`You Already Applied to This Event`, {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } else {
+      await DataStore.save(
+        new Request({
+          status: 'PENDING',
+          requestTime: new Date().toISOString(),
+          requestMessage: requestData.requestmessage,
+          opportunityID: requestData.opportunityid,
+          roleID: requestData.role.id,
+          profileID: requestData.requester,
         })
-        .catch((err) => {
-          console.log(err);
-          alert('Something Went Wrong. Please Try Again.');
-        });
-        */
+      );
+      // toast notification
+      toast.success(`Applied to ${opportunityName}`, {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
   };
 
   const handleChange = (panel) => (event, newExpanded) => {
@@ -342,7 +331,7 @@ function RolesCard({
                     color='yellow'
                     size='small'
                     onClick={(e) => {
-                      handleModalOpen(role.name);
+                      handleModalOpen(role);
                       e.stopPropagation();
                       e.preventDefault();
                     }}
