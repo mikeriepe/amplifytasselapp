@@ -7,6 +7,8 @@ import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import OpportunitiesCard from './OpportunitiesCard';
 import OpportunitiesFilters from './OpportunitiesFilters';
 import ThemedDropdown from './ThemedDropdown';
+import Fuse from 'fuse.js';
+import useAuth from '../util/AuthContext';
 
 const Page = styled((props) => (
   <MuiBox {...props} />
@@ -33,18 +35,109 @@ export default function OpportunitiesList({
   setOppTypeFilter,
   orgTypeFilter,
   setOrgTypeFilter,
+  getPendingOpportunities,
+  getCreatedOpportunities,
+  getAllOpportunities,
 }) {
   const [displayOpps, setDisplayOpps] = useState([]);
+  const [search, setSearch] = useState('');
+  const [dropdownSelect, setDropdownSelect] = useState('Recommended');
+  const {userProfile} = useAuth();
 
   // Component first renders
   useEffect(() => {
     setDisplayOpps(opportunities);
+    applyFilters();
   }, [opportunities]);
 
   // Update displayed opportunities when filters are updated
   useEffect(() => {
     applyFilters();
-  }, [locationFilter, oppTypeFilter, orgTypeFilter]);
+  }, [locationFilter, oppTypeFilter, orgTypeFilter, search, dropdownSelect]);
+
+  const handleDropdown = ((dropdown) => {
+    setDropdownSelect(dropdown);
+  });
+
+  const profileKeywords = [];
+  let numProfileKeywords = 0;
+  if (userProfile.keywords !== null) {
+    numProfileKeywords = Object.keys(userProfile.keywords).length;
+  }
+  if (userProfile.keywords !== null && numProfileKeywords !== 0 ) {
+    const keys = Object.keys(userProfile.keywords);
+    keys.forEach(function(key) {
+      profileKeywords.push(userProfile.keywords[key]);
+    });
+  }
+
+  const calcNumMatchKeywords = ((opp) => {
+    const oppKeywords = [];
+    if (opp.keywords === null || userProfile.keywords === null ||
+      numProfileKeywords === 0) {
+      return 0;
+    } else {
+      const numOppKeywords = Object.keys(opp.keywords).length;
+      console.log(numOppKeywords);
+      if (numOppKeywords === 0) {
+        return 0;
+      }
+      const keys = Object.keys(opp.keywords);
+      keys.forEach(function(key) {
+        oppKeywords.push(userProfile.keywords[key]);
+      });
+    }
+    let count = 0;
+    for (let i = 0; i < profileKeywords.length; i++) {
+      for (let j = 0; j < oppKeywords.length; j++) {
+        if (oppKeywords[j] === profileKeywords[i]) {
+          count++;
+        }
+      }
+    }
+    return count;
+  });
+
+  const handleSort = ((opps) => {
+    if (dropdownSelect === 'Alphabet') {
+      opps.sort((a, b) => a.eventName.localeCompare(b.eventName));
+    } else if (dropdownSelect === 'Major') {
+      // 'zzz' puts the null values at the end
+      opps.sort((a, b) => (a.subject ? a.subject : 'zzz')
+          .localeCompare(b.subject ? b.subject : 'zzz'));
+    } else if (dropdownSelect === 'Recommended') {
+      opps.sort(function(a, b) {
+        return (calcNumMatchKeywords(a) < calcNumMatchKeywords(b)) ? 1 : -1;
+      });
+    }
+    return opps;
+  });
+
+  // Fuzzy search on given searchData
+  // If the search bar is empty, the searchData is all the opps
+  // Function is called at the end of applyFilters() with the
+  // filtered data set
+  const searchOpportunity = (query, searchData=opportunities) => {
+    if (!query) {
+      setDisplayOpps(searchData);
+      return;
+    }
+    const fuse = new Fuse(searchData, {
+      // more parameters can be added for search
+      keys: ['eventname', 'description'],
+      threshold: 0.3,
+    });
+    const result = fuse.search(query);
+    const finalResult = [];
+    if (result.length) {
+      result.forEach((item) => {
+        finalResult.push(item.item);
+      });
+      setDisplayOpps(finalResult);
+    } else {
+      setDisplayOpps([]);
+    }
+  };
 
   const applyFilters = () => {
     // Set all filters to lowercase for comparison
@@ -70,21 +163,22 @@ export default function OpportunitiesList({
       /*
       const oppType = oppTypeFilter.length == 0 ?
         true :
-        opp.opportunityType ?
-        oppTypeFilterLower.indexOf(opp.opportunityType.toLowerCase()) > -1 :
+        opp.opportunitytype ?
+        oppTypeFilterLower.indexOf(opp.opportunitytype.toLowerCase()) > -1 :
         false;
-      */
       const orgType = orgTypeFilter.length == 0 ?
         true :
-        opp.organizations ?
-        orgTypeFilterLower.indexOf(opp.organizations.toLowerCase()) > -1 :
+        opp.organizationtype ?
+        orgTypeFilterLower.indexOf(opp.organizationtype.toLowerCase()) > -1 :
         false;
-
-      //return location && oppType && orgType;
-      return location && orgType;
+      */
+      return location; //&& oppType && orgType;
     });
 
-    setDisplayOpps(copyOpps);
+    // setDisplayOpps(copyOpps);
+    handleSort(copyOpps);
+    // searches the filtered opp list
+    searchOpportunity(search, copyOpps);
   };
 
   return (
@@ -97,6 +191,7 @@ export default function OpportunitiesList({
           <TextField
             placeholder='Search'
             size='small'
+            onChange={(e) => setSearch(e.target.value)}
             InputProps={{
               style: {
                 fontSize: '0.9rem',
@@ -118,13 +213,19 @@ export default function OpportunitiesList({
               },
             }}
           />
-          <ThemedDropdown menuItems={['Recommended', 'Alphabet', 'Major']} />
+          <ThemedDropdown
+            menuItems={['Recommended', 'Alphabet', 'Major']}
+            sortSelection={handleDropdown}
+          />
         </div>
         {displayOpps.map((opportunity, index) => (
           <OpportunitiesCard
             key={`opportunity-${index}`}
             type={type}
             opportunity={opportunity}
+            getPendingOpportunities={getPendingOpportunities}
+            getCreatedOpportunities={getCreatedOpportunities}
+            getAllOpportunities={getAllOpportunities}
           />
         ))}
       </MuiBox>

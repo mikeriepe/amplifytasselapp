@@ -26,7 +26,7 @@ const RequestStatus = {
   "REJECTED": "REJECTED"
 };
 
-const { Keyword, Profile, Major, Role, Request, Post, Comment, Opportunity, Organization, Note, KeywordProfile, KeywordOpportunity, ProfileMajor, ProfileRole, OpportunityProfile, RoleMajor, WorkHistory, Location, Availability, DaysOfWeek, TimeSpan } = initSchema(schema);
+const { Keyword, Profile, Major, Role, Request, Post, Comment, Opportunity, Organization, Note, KeywordProfile, KeywordOpportunity, ProfileMajor, ProfileRole, OpportunityProfile, RoleMajor, WorkHistory, Availability, DaysOfWeek, TimeSpan, Location } = initSchema(schema);
 
 export {
   Keyword,
@@ -49,8 +49,8 @@ export {
   ProfileStatus,
   RequestStatus,
   WorkHistory,
-  Location,
   Availability,
   DaysOfWeek,
-  TimeSpan
+  TimeSpan,
+  Location
 };

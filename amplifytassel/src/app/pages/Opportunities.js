@@ -104,6 +104,10 @@ export default function FetchWrapper() {
       */
       const usersJoined = await DataStore.query(Opportunity, (o) => o.profilesJoined.profile.id.eq(userProfile.id));
       console.log(usersJoined);
+      const emptyTest = await DataStore.query(Opportunity, "1");
+      //console.log("Empty Test");
+      //console.log(emptyTest);
+      //console.log(emptyTest === undefined);
   };
   //const usersJoined = await DataStore.query(Opportunity, (o) => o.profilesJoined.Profile.id.eq(userProfile.id));
   const getCreatedOpportunities = async () => {
@@ -406,7 +410,7 @@ function Opportunities({
   const onSubmit = async (data) => {
     console.log("Starting process...");
     const newOpportunity = {
-      Roles: {},
+      assignedRoles: {},
       eventBanner: 'https://www.sorenkaplan.com/wp-content/uploads/2017/07/Testing.jpg',
       status: OpportunityStatus.PENDING,
       profilesJoined: [],
@@ -490,7 +494,7 @@ function Opportunities({
           "eventData": newOpportunity.eventdata,
           "subject": newOpportunity.subject,
           "preferences": [],
-          "Roles": newOpportunity.Roles,
+          "Roles": newOpportunity.roles,
           "Posts": newOpportunity.Posts,
           "Requests": newOpportunity.Requests,
           "profileID": newOpportunity.profileID,
@@ -511,7 +515,8 @@ function Opportunities({
           progress: undefined,
         });
         handleModalClose();
-        for (let i = 0; i < newOpportunity.Roles.length; i++) {
+        console.log("New roles: " + newOpportunity.roles.length);
+        for (let i = 0; i < newOpportunity.roles.length; i++) {
           const newRole = {
             opportunityID: ampOpp.id,
             // keeping it null until it's fully implemented
@@ -519,14 +524,14 @@ function Opportunities({
             responsibility: '',
             description: '',
             isfilled: false,
-            name: newOpportunity.Roles[i],
+            name: newOpportunity.roles[i],
             qualifications: [],
             capacity: 0,
             Majors: [],
             Profiles: [],
             Requests: []
           };
-          await DataStore.save(
+          const newRoleCreation = await DataStore.save(
             new Role({
             "name": newRole.name,
             "description": newRole.description,
@@ -538,7 +543,9 @@ function Opportunities({
             "Requests": newRole.Requests,
             "capacity": newRole.capacity
           })
-        );
+          );
+          console.log("Making new role...");
+          console.log(newRoleCreation);
         };
       console.log("Creating...");
   };

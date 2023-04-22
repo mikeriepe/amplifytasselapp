@@ -50,24 +50,6 @@ export declare type WorkHistory = LazyLoading extends LazyLoadingDisabled ? Eage
 
 export declare const WorkHistory: (new (init: ModelInit<WorkHistory>) => WorkHistory)
 
-type EagerLocation = {
-  readonly zip?: string | null;
-  readonly city?: string | null;
-  readonly state?: string | null;
-  readonly address?: string | null;
-}
-
-type LazyLocation = {
-  readonly zip?: string | null;
-  readonly city?: string | null;
-  readonly state?: string | null;
-  readonly address?: string | null;
-}
-
-export declare type Location = LazyLoading extends LazyLoadingDisabled ? EagerLocation : LazyLocation
-
-export declare const Location: (new (init: ModelInit<Location>) => Location)
-
 type EagerAvailability = {
   readonly times?: DaysOfWeek | null;
   readonly year?: number | null;
@@ -120,6 +102,24 @@ export declare type TimeSpan = LazyLoading extends LazyLoadingDisabled ? EagerTi
 
 export declare const TimeSpan: (new (init: ModelInit<TimeSpan>) => TimeSpan)
 
+type EagerLocation = {
+  readonly zip?: string | null;
+  readonly city?: string | null;
+  readonly state?: string | null;
+  readonly address?: string | null;
+}
+
+type LazyLocation = {
+  readonly zip?: string | null;
+  readonly city?: string | null;
+  readonly state?: string | null;
+  readonly address?: string | null;
+}
+
+export declare type Location = LazyLoading extends LazyLoadingDisabled ? EagerLocation : LazyLocation
+
+export declare const Location: (new (init: ModelInit<Location>) => Location)
+
 type EagerKeyword = {
   readonly [__modelMeta__]: {
     identifier: ManagedIdentifier<Keyword, 'id'>;
@@ -161,7 +161,7 @@ type EagerProfile = {
   readonly email: string;
   readonly volunteerExperience?: (WorkHistory | null)[] | null;
   readonly about?: string | null;
-  readonly location?: Location | null;
+  readonly location?: string | null;
   readonly availability?: Availability | null;
   readonly picture?: string | null;
   readonly firstName?: string | null;
@@ -196,7 +196,7 @@ type LazyProfile = {
   readonly email: string;
   readonly volunteerExperience?: (WorkHistory | null)[] | null;
   readonly about?: string | null;
-  readonly location?: Location | null;
+  readonly location?: string | null;
   readonly availability?: Availability | null;
   readonly picture?: string | null;
   readonly firstName?: string | null;

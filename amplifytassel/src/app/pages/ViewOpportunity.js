@@ -186,7 +186,7 @@ function ViewOpportunity({opportunity}) {
               title={opportunity?.eventname}
               subtitle='Hosted by:'
               host={`${creator?.firstname} ${creator?.lastname}`}
-              avatar={creator?.profilepicture}
+              avatar={creator?.picture}
               banner={opportunity?.eventbanner}
               backUrl={'/opportunities'}
               data={opportunity}
@@ -221,7 +221,7 @@ function ViewOpportunity({opportunity}) {
               isCreator={isCreator}
               owner={{
                 name: `${creator?.firstname} ${creator?.lastname}`,
-                avatar: creator?.profilepicture,
+                avatar: creator?.picture,
                 profileid: creator?.profileid,
               }}
               members={opportunity?.assignedroles}

@@ -128,9 +128,7 @@ export const schema = {
                 "location": {
                     "name": "location",
                     "isArray": false,
-                    "type": {
-                        "nonModel": "Location"
-                    },
+                    "type": "String",
                     "isRequired": false,
                     "attributes": []
                 },
@@ -2075,39 +2073,6 @@ export const schema = {
                 }
             }
         },
-        "Location": {
-            "name": "Location",
-            "fields": {
-                "zip": {
-                    "name": "zip",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "city": {
-                    "name": "city",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "state": {
-                    "name": "state",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "address": {
-                    "name": "address",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": []
-                }
-            }
-        },
         "Availability": {
             "name": "Availability",
             "fields": {
@@ -2215,8 +2180,41 @@ export const schema = {
                     "attributes": []
                 }
             }
+        },
+        "Location": {
+            "name": "Location",
+            "fields": {
+                "zip": {
+                    "name": "zip",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "city": {
+                    "name": "city",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "state": {
+                    "name": "state",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "address": {
+                    "name": "address",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                }
+            }
         }
     },
     "codegenVersion": "3.3.5",
-    "version": "340cd07a78301bed2bb66088bde1c679"
+    "version": "3aa38aea5bb42c782b0af6472ed0ffd3"
 };

@@ -44,21 +44,21 @@ export default function OpportunityFilters({
   // Get filter lists from the database
   const locations = ['In-Person', 'Remote', 'Hybrid'];
   const [oppTypes, setOppTypes] = useState([]);
-  const [orgTypes, setOrgTypes] = useState([]);
+  // const [orgTypes, setOrgTypes] = useState([]);
   const [collapseLocation, setCollapseLocation] = useState(true);
   const [collapseOppType, setCollapseOppType] = useState(true);
-  const [collapseOrgType, setCollapseOrgType] = useState(true);
+  // const [collapseOrgType, setCollapseOrgType] = useState(true);
 
   const handleCheckAll = () => {
     setLocationFilter(locations);
     setOppTypeFilter(oppTypes);
-    setOrgTypeFilter(orgTypes);
+    // setOrgTypeFilter(orgTypes);
   };
 
   const handleCheckNone = () => {
     setLocationFilter([]);
     setOppTypeFilter([]);
-    setOrgTypeFilter([]);
+    // setOrgTypeFilter([]);
   };
 
   // Handle checkboxes for location
@@ -88,6 +88,7 @@ export default function OpportunityFilters({
   };
 
   // Handle checkboxes for org types
+  /*
   const handleToggleOrgType = (value) => () => {
     const currentIndex = orgTypeFilter.indexOf(value);
     const newOrgTypeFilter = [...orgTypeFilter];
@@ -99,6 +100,7 @@ export default function OpportunityFilters({
     }
     setOrgTypeFilter(newOrgTypeFilter);
   };
+  */
 
   const handleCollapseLocation = () => {
     setCollapseLocation(!collapseLocation);
@@ -108,9 +110,11 @@ export default function OpportunityFilters({
     setCollapseOppType(!collapseOppType);
   };
 
+  /*
   const handleCollapseOrgType = () => {
     setCollapseOrgType(!collapseOrgType);
   };
+  */
   /*
   const getOpportunityTypes = () => {
     fetch(`/api/getOpportunityTypes`)
@@ -129,7 +133,8 @@ export default function OpportunityFilters({
           alert('Error retrieving opportunity types');
         });
   };
-
+  */
+  /*
   const getOrganizationTypes = () => {
     fetch(`/api/getOrganizationTypes`)
         .then((res) => {
@@ -148,9 +153,10 @@ export default function OpportunityFilters({
         });
   };
   */
+
   useEffect(() => {
     //getOpportunityTypes();
-    //getOrganizationTypes();
+    // getOrganizationTypes();
   }, []);
 
   return (
@@ -229,6 +235,7 @@ export default function OpportunityFilters({
             </Collapse>
           </div>
           {/* Opportunity Types Filters */}
+          {/*
           <div className='flex-vertical flow-tiny'>
             <MuiBox
               className='
@@ -276,7 +283,9 @@ export default function OpportunityFilters({
               </FormGroup>
             </Collapse>
           </div>
+          */}
           {/* Organization Types Filters */}
+          {/*
           <div className='flex-vertical flow-tiny'>
             <MuiBox
               className='
@@ -325,6 +334,7 @@ export default function OpportunityFilters({
               </FormGroup>
             </Collapse>
           </div>
+          */}
         </div>
       </Paper>
     </Box>
