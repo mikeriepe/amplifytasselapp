@@ -66,7 +66,7 @@ export default function ForumsPost({post, comments, getComments}) {
   return (
     <>
       <Headline>
-        <PosterAvatar image={post.profilepicture} />
+        <PosterAvatar image={post.picture} />
         <div>
           <div className='text-bold text-dark'>{post.title}</div>
           <p className='text-bold text-blue'>

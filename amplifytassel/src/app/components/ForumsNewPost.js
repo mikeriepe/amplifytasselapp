@@ -113,7 +113,7 @@ export default function ForumsNewPost({postNewPost}) {
         name='title'
         value={title}
         handleChange={(e) => handleChange(e)}
-        image={userProfile?.profilepicture}
+        image={userProfile?.picture}
         placeholder={'Title'}
       />
       <Input

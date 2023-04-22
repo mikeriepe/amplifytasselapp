@@ -84,7 +84,7 @@ export default function FetchWrapper() {
   const [pendingOpportunities, setPendingOpportunities] = useState([]);
   const [allOpportunities, setAllOpportunities] = useState([]);
 
-  const getJoinedOpportunities = async () => {
+  const getJoinedOpportunities = () => {
     console.log("Getting joined...");
     /*
     fetch(`/api/getJoinedOpportunities/${userProfile.profileid}`)
@@ -102,15 +102,23 @@ export default function FetchWrapper() {
           alert('Error retrieving joined opportunities');
         });
       */
-      const usersJoined = await DataStore.query(Opportunity, (o) => o.profilesJoined.profile.id.eq(userProfile.id));
-      console.log(usersJoined);
-      const emptyTest = await DataStore.query(Opportunity, "1");
+      //const usersJoined = await DataStore.query(Opportunity, (o) => o.profilesJoined.profile.id.eq(userProfile.id));
+      DataStore.query(Opportunity, (o) => o.profilesJoined.profile.id.eq(userProfile.id))
+      .then((res) => {
+        setJoinedOpportunities(res);
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+        alert('Error retrieving joined opportunities');
+      });
+      //const emptyTest = await DataStore.query(Opportunity, "1");
       //console.log("Empty Test");
       //console.log(emptyTest);
       //console.log(emptyTest === undefined);
   };
   //const usersJoined = await DataStore.query(Opportunity, (o) => o.profilesJoined.Profile.id.eq(userProfile.id));
-  const getCreatedOpportunities = async () => {
+  const getCreatedOpportunities = () => {
     console.log("Getting created...");
     /*
     fetch(`/api/getCreatedOpportunities/${userProfile.profileid}`)
@@ -128,11 +136,19 @@ export default function FetchWrapper() {
           alert('Error retrieving created opportunities');
         });
     */
-      const createdOpps = await DataStore.query(Opportunity, o => o.profileID.eq(userProfile.id));
-      console.log(createdOpps);
+      
+      DataStore.query(Opportunity, o => o.profileID.eq(userProfile.id))
+      .then((res) => {
+        setCreatedOpportunities(res);
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+        alert('Error retrieving created opportunities');
+      });
   };
   //const createdOpps = await DataStore.query(Opportunity, o => o.profileID.eq(userProfile.id));
-  const getPastOpportunities = async () => {
+  const getPastOpportunities = () => {
     console.log("Getting past...");
     /*
     fetch(`/api/getPastOpportunities/${userProfile.profileid}`)
@@ -151,16 +167,31 @@ export default function FetchWrapper() {
         });
     */
     const currTime = new Date().toISOString();
-    const usersJoinedPast = await DataStore.query(Opportunity, (o) => o.and(o => [
+    DataStore.query(Opportunity, (o) => o.and(o => [
       o.profilesJoined.profile.id.eq(userProfile.id),
       o.endTime.lt(currTime)
-    ]));
-    console.log(usersJoinedPast);
-    const createdOppsPast = await DataStore.query(Opportunity, (o) => o.and(o => [
+    ]))
+    .then((res) => {
+      setPastOpportunities(res);
+      console.log(res);
+    })
+    .catch((err) => {
+      console.log(err);
+      alert('Error retrieving past joined opportunities');
+    });
+    DataStore.query(Opportunity, (o) => o.and(o => [
       o.profileID.eq(userProfile.id),
       o.endTime.lt(currTime)
-    ]));
-    console.log(createdOppsPast);
+    ]))
+    .then((res) => {
+      setPastOpportunities(res);
+      console.log(res);
+    })
+    .catch((err) => {
+      console.log(err);
+      alert('Error retrievingpast created opportunities');
+    });
+    
   };
   //const past1 = await DataStore.query(Request, (r) => r.and(r => [
     //r.profile.id.eq(userProfile.profileid),
@@ -201,7 +232,7 @@ export default function FetchWrapper() {
       o.Requests.status.eq('PENDING')
     ]))
     .then((res) => {
-      // do some stuff
+      setPendingOpportunities(res);
       console.log(res);
     })
     .catch((err) => {
@@ -210,7 +241,7 @@ export default function FetchWrapper() {
     });
 };  
 
-  const getAllOpportunities = async () => {
+  const getAllOpportunities = () => {
     /*
     fetch(`/api/getOpportunities`)
         .then((res) => {
@@ -228,8 +259,15 @@ export default function FetchWrapper() {
         });
       */
     console.log("Getting all...");
-    const models = await DataStore.query(Opportunity);
-    console.log(models);
+    DataStore.query(Opportunity)
+    .then((res) => {
+      setAllOpportunities(res);
+      console.log(res);
+    })
+    .catch((err) => {
+      console.log(err);
+      alert('Error retrieving pending opportunities');
+    });
   };
 
   useEffect(() => {
@@ -516,7 +554,7 @@ function Opportunities({
         });
         handleModalClose();
         console.log("New roles: " + newOpportunity.roles.length);
-        for (let i = 0; i < newOpportunity.roles.length; i++) {
+        if(newOpportunity.roles.length == 0) {
           const newRole = {
             opportunityID: ampOpp.id,
             // keeping it null until it's fully implemented
@@ -524,7 +562,7 @@ function Opportunities({
             responsibility: '',
             description: '',
             isfilled: false,
-            name: newOpportunity.roles[i],
+            name: "General Participant",
             qualifications: [],
             capacity: 0,
             Majors: [],
@@ -546,15 +584,48 @@ function Opportunities({
           );
           console.log("Making new role...");
           console.log(newRoleCreation);
-        };
+        }
+        else {
+          for (let i = 0; i < newOpportunity.roles.length; i++) {
+            const newRole = {
+              opportunityID: ampOpp.id,
+              // keeping it null until it's fully implemented
+              //tagid: 'c7e29de9-5b88-49fe-a3f5-750a3a62aee5',
+              responsibility: '',
+              description: '',
+              isfilled: false,
+              name: newOpportunity.roles[i],
+              qualifications: [],
+              capacity: 0,
+              Majors: [],
+              Profiles: [],
+              Requests: []
+            };
+            const newRoleCreation = await DataStore.save(
+              new Role({
+              "name": newRole.name,
+              "description": newRole.description,
+              "isFilled": newRole.isfilled,
+              "qualifications": newRole.qualifications,
+              "Majors": newRole.Majors,
+              "Profiles": newRole.Profiles,
+              "opportunityID": newRole.opportunityID,
+              "Requests": newRole.Requests,
+              "capacity": newRole.capacity
+            })
+            );
+            console.log("Making new role...");
+            console.log(newRoleCreation);
+          };
+        }
       console.log("Creating...");
   };
 
   // Reset filters when switching tabs
   useEffect(() => {
     setLocationFilter([]);
-    setOppTypeFilter([]);
-    setOrgTypeFilter([]);
+    //setOppTypeFilter([]);
+    //setOrgTypeFilter([]);
   }, [tab]);
 
   return (

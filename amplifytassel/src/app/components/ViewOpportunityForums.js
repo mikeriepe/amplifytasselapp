@@ -248,7 +248,7 @@ export default function ViewOpportunityForums({id}) {
             <Input
               postNewComment={postNewComment}
               name='content'
-              image={userProfile?.profilepicture}
+              image={userProfile?.picture}
               postid={post.postid}
             />
           </Paper>

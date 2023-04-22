@@ -112,7 +112,7 @@ export default function ViewOpportunityMembers({isCreator, owner, members}) {
             handleClick={handleClick}
             profileid={profile.profileid}
           >
-            <Avatar image={profile.profilepicture} />
+            <Avatar image={profile.picture} />
             <div>
               <div className='flex-align-center'>
                 <p className='text-bold text-blue'>

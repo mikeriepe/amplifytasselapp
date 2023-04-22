@@ -32,7 +32,7 @@ export default function ForumsComment({comment, index}) {
   return (
     <Comment key={`comment-${index}`}>
       <CommenterAvatar
-        image={comment.profilepicture}
+        image={comment.picture}
       />
       <Bubble>
         <p className='text-bold text-dark'>
