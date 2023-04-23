@@ -32,6 +32,7 @@ export default function ProfileCreateForm(props) {
   const initialValues = {
     email: "",
     about: "",
+    location: "",
     picture: "",
     firstName: "",
     lastName: "",
@@ -46,6 +47,7 @@ export default function ProfileCreateForm(props) {
   };
   const [email, setEmail] = React.useState(initialValues.email);
   const [about, setAbout] = React.useState(initialValues.about);
+  const [location, setLocation] = React.useState(initialValues.location);
   const [picture, setPicture] = React.useState(initialValues.picture);
   const [firstName, setFirstName] = React.useState(initialValues.firstName);
   const [lastName, setLastName] = React.useState(initialValues.lastName);
@@ -69,6 +71,7 @@ export default function ProfileCreateForm(props) {
   const resetStateValues = () => {
     setEmail(initialValues.email);
     setAbout(initialValues.about);
+    setLocation(initialValues.location);
     setPicture(initialValues.picture);
     setFirstName(initialValues.firstName);
     setLastName(initialValues.lastName);
@@ -85,6 +88,7 @@ export default function ProfileCreateForm(props) {
   const validations = {
     email: [{ type: "Required" }, { type: "Email" }],
     about: [],
+    location: [],
     picture: [{ type: "URL" }],
     firstName: [],
     lastName: [],
@@ -125,6 +129,7 @@ export default function ProfileCreateForm(props) {
         let modelFields = {
           email,
           about,
+          location,
           picture,
           firstName,
           lastName,
@@ -192,6 +197,7 @@ export default function ProfileCreateForm(props) {
             const modelFields = {
               email: value,
               about,
+              location,
               picture,
               firstName,
               lastName,
@@ -228,6 +234,7 @@ export default function ProfileCreateForm(props) {
             const modelFields = {
               email,
               about: value,
+              location,
               picture,
               firstName,
               lastName,
@@ -254,6 +261,43 @@ export default function ProfileCreateForm(props) {
         {...getOverrideProps(overrides, "about")}
       ></TextField>
       <TextField
+        label="Location"
+        isRequired={false}
+        isReadOnly={false}
+        value={location}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              email,
+              about,
+              location: value,
+              picture,
+              firstName,
+              lastName,
+              status,
+              graduationYear,
+              active,
+              isAdmin,
+              isApproved,
+              schoolEmail,
+              infoRequest,
+              infoResponse,
+            };
+            const result = onChange(modelFields);
+            value = result?.location ?? value;
+          }
+          if (errors.location?.hasError) {
+            runValidationTasks("location", value);
+          }
+          setLocation(value);
+        }}
+        onBlur={() => runValidationTasks("location", location)}
+        errorMessage={errors.location?.errorMessage}
+        hasError={errors.location?.hasError}
+        {...getOverrideProps(overrides, "location")}
+      ></TextField>
+      <TextField
         label="Picture"
         isRequired={false}
         isReadOnly={false}
@@ -264,6 +308,7 @@ export default function ProfileCreateForm(props) {
             const modelFields = {
               email,
               about,
+              location,
               picture: value,
               firstName,
               lastName,
@@ -300,6 +345,7 @@ export default function ProfileCreateForm(props) {
             const modelFields = {
               email,
               about,
+              location,
               picture,
               firstName: value,
               lastName,
@@ -336,6 +382,7 @@ export default function ProfileCreateForm(props) {
             const modelFields = {
               email,
               about,
+              location,
               picture,
               firstName,
               lastName: value,
@@ -372,6 +419,7 @@ export default function ProfileCreateForm(props) {
             const modelFields = {
               email,
               about,
+              location,
               picture,
               firstName,
               lastName,
@@ -439,6 +487,7 @@ export default function ProfileCreateForm(props) {
             const modelFields = {
               email,
               about,
+              location,
               picture,
               firstName,
               lastName,
@@ -475,6 +524,7 @@ export default function ProfileCreateForm(props) {
             const modelFields = {
               email,
               about,
+              location,
               picture,
               firstName,
               lastName,
@@ -511,6 +561,7 @@ export default function ProfileCreateForm(props) {
             const modelFields = {
               email,
               about,
+              location,
               picture,
               firstName,
               lastName,
@@ -547,6 +598,7 @@ export default function ProfileCreateForm(props) {
             const modelFields = {
               email,
               about,
+              location,
               picture,
               firstName,
               lastName,
@@ -583,6 +635,7 @@ export default function ProfileCreateForm(props) {
             const modelFields = {
               email,
               about,
+              location,
               picture,
               firstName,
               lastName,
@@ -619,6 +672,7 @@ export default function ProfileCreateForm(props) {
             const modelFields = {
               email,
               about,
+              location,
               picture,
               firstName,
               lastName,
@@ -655,6 +709,7 @@ export default function ProfileCreateForm(props) {
             const modelFields = {
               email,
               about,
+              location,
               picture,
               firstName,
               lastName,

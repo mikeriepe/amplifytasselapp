@@ -307,7 +307,7 @@ type EagerProfile = {
   readonly email: string;
   readonly volunteerExperience?: (WorkHistory | null)[] | null;
   readonly about?: string | null;
-  readonly location?: Location | null;
+  readonly location?: string | null;
   readonly availability?: Availability | null;
   readonly picture?: string | null;
   readonly firstName?: string | null;
@@ -342,7 +342,7 @@ type LazyProfile = {
   readonly email: string;
   readonly volunteerExperience?: (WorkHistory | null)[] | null;
   readonly about?: string | null;
-  readonly location?: Location | null;
+  readonly location?: string | null;
   readonly availability?: Availability | null;
   readonly picture?: string | null;
   readonly firstName?: string | null;
