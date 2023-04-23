@@ -44,8 +44,8 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
     [],
   );
   const [allTags, setAllTags] = useState([]);
-
-  const getKeywords = async () => {
+  console.log(defaultValues.keywords);
+  const getKeywords = () => {
     /*
     fetch(`/api/getKeywords`)
         .then((res) => {
@@ -68,8 +68,27 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
           alert('Error retrieving keywords, please try again');
         });
     */
-   const qKeywords = await DataStore.query(Keyword);
-   console.log(qKeywords);
+   DataStore.query(Keyword)
+   .then((res) => {
+    //if (!res.ok) {
+      //throw res;
+    //}
+    //return res.json();
+   //})
+   //.then((json) => {
+    const tempKeywords = [];
+    for (let i = 0; i < res.length; i++) {
+      tempKeywords.push(res[i].value);
+    }
+    const filteredAllTags = tempKeywords.filter((x) => !selectedTags.includes(x));
+    setAllTags(filteredAllTags);
+    console.log(res);
+   })
+   .catch((err) => {
+    console.log(err);
+    alert('Error retrieving keywords, please try again');
+   });
+   //console.log(qKeywords);
   };
 
   const [currLocationType, setCurrLocationType] = useState(

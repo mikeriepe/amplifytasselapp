@@ -200,6 +200,13 @@ a, a:hover, a:focus, a:active {
   text-align: center;
 }
 
+.text-center-vert {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+}
+
 .text-tiny {
   font-size: 0.6rem;
 }
@@ -325,7 +332,32 @@ a, a:hover, a:focus, a:active {
 .padding-64 {
   padding: 4rem;
 }
+.label{
+  display: inline-block;
+  padding: 5px;
+  margin: 5px;
+  background-color: #bdbdbd;
+  border-radius: 20px;
+  font-size: 12px;
+  color: #3C4047;
+  cursor: pointer;
 
-.padding-64 {
-  padding: 4rem;
+}
+.label-box{
+display: inline-block;
+}
+.delete-icon {
+  
+  margin-left: 5px;
+  color: #fff;
+  cursor: pointer;
+}
+.border{
+  border-color: #8B95A5;
+  border-style: solid;
+  border-width: 0.75px;
+  padding: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border-radius: 20px;
 }

@@ -14,7 +14,7 @@ import { DataStore } from '@aws-amplify/datastore';
 import { Opportunity } from '../../models';
 import { Role } from '../../models';
 import { Profile } from '../../models';
-import { OpportunityStatus } from '../../models';
+import { OpportunityStatus, Keyword } from '../../models';
 
 
 const Page = styled((props) => (
@@ -83,6 +83,20 @@ export default function FetchWrapper() {
   const [pastOpportunities, setPastOpportunities] = useState([]);
   const [pendingOpportunities, setPendingOpportunities] = useState([]);
   const [allOpportunities, setAllOpportunities] = useState([]);
+  const [allKeywords, setAllKeywords] = useState([]);
+
+  const getAllKeywords = () => {
+    console.log("Getting keywords...");
+    DataStore.query(Keyword)
+    .then((res) => {
+      setAllKeywords(res);
+      console.log(res);
+    })
+    .catch((err) => {
+      console.log(err);
+      alert('Error retrieving keywords');
+    });
+  }
 
   const getJoinedOpportunities = () => {
     console.log("Getting joined...");
@@ -276,6 +290,7 @@ export default function FetchWrapper() {
     getPastOpportunities();
     getPendingOpportunities();
     getAllOpportunities();
+    getAllKeywords();
   }, []);
 
   return (
@@ -286,6 +301,7 @@ export default function FetchWrapper() {
         pastOpportunities &&
         pendingOpportunities &&
         allOpportunities &&
+        allKeywords &&
           <Opportunities
             getPendingOpportunities={getPendingOpportunities}
             joinedOpportunities={joinedOpportunities}
@@ -295,6 +311,8 @@ export default function FetchWrapper() {
             allOpportunities={allOpportunities}
             getAllOpportunities={getAllOpportunities}
             getCreatedOpportunities={getCreatedOpportunities}
+            allKeywords={allKeywords}
+            getAllKeywords={getAllKeywords}
           />
       }
     </>
@@ -311,13 +329,15 @@ function Opportunities({
   pastOpportunities,
   pendingOpportunities,
   allOpportunities,
+  allKeywords,
   getPendingOpportunities,
   getAllOpportunities,
   getCreatedOpportunities,
+  getAllKeywords,
 }, props) {
   const {userProfile} = useAuth();
   const location = useLocation();
-
+  //const keywords = await DataStore.query(Keyword);
   let defaultTab = null;
   if (location.state === null) {
     defaultTab = 0;
@@ -417,7 +437,15 @@ function Opportunities({
         />,
     },
   ];
-
+  const allKeywordsArr1 = [allKeywords];
+  console.log(allKeywordsArr1);
+  let allKeywordsArr2 = Array(allKeywordsArr1.length);
+  for(let i = 0; i < allKeywordsArr1.length; i++)
+  {
+    allKeywordsArr2[i] = allKeywordsArr1[i].name;
+  }
+  console.log(allKeywordsArr2);
+  //for(i = 0; )
   const formValues = {
     //eventName: '',
     locationType: 'in-person',
@@ -439,6 +467,7 @@ function Opportunities({
     starttime: new Date(),
     endtime: new Date(),
     subject: '',
+    //keywords: allKeywordsArr2,
   };
 
   const handleModalClose = () => {
@@ -554,8 +583,7 @@ function Opportunities({
         });
         handleModalClose();
         console.log("New roles: " + newOpportunity.roles.length);
-        if(newOpportunity.roles.length == 0) {
-          const newRole = {
+          const gp = {
             opportunityID: ampOpp.id,
             // keeping it null until it's fully implemented
             //tagid: 'c7e29de9-5b88-49fe-a3f5-750a3a62aee5',
@@ -569,23 +597,22 @@ function Opportunities({
             Profiles: [],
             Requests: []
           };
-          const newRoleCreation = await DataStore.save(
+          const gpCreation = await DataStore.save(
             new Role({
-            "name": newRole.name,
-            "description": newRole.description,
-            "isFilled": newRole.isfilled,
-            "qualifications": newRole.qualifications,
-            "Majors": newRole.Majors,
-            "Profiles": newRole.Profiles,
-            "opportunityID": newRole.opportunityID,
-            "Requests": newRole.Requests,
-            "capacity": newRole.capacity
+            "name": gp.name,
+            "description": gp.description,
+            "isFilled": gp.isfilled,
+            "qualifications": gp.qualifications,
+            "Majors": gp.Majors,
+            "Profiles": gp.Profiles,
+            "opportunityID": gp.opportunityID,
+            "Requests": gp.Requests,
+            "capacity": gp.capacity
           })
           );
           console.log("Making new role...");
-          console.log(newRoleCreation);
-        }
-        else {
+          console.log(gpCreation);
+        
           for (let i = 0; i < newOpportunity.roles.length; i++) {
             const newRole = {
               opportunityID: ampOpp.id,
@@ -616,7 +643,6 @@ function Opportunities({
             );
             console.log("Making new role...");
             console.log(newRoleCreation);
-          };
         }
       console.log("Creating...");
   };

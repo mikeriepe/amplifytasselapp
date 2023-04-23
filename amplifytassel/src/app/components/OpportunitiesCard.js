@@ -483,10 +483,37 @@ export default function OpportunitiesCard({
   };
 
   const getOpportunityCreator = async () => {
+    /*
+    fetch(`/api/getProfileName/${opportunity.usersponsors.creator}`)
+    .then((res) => {
+      if (!res.ok) {
+        throw res;
+      }
+      return res.json();
+    })
+    .then((json) => {
+      setCreator(json);
+    })
+    .catch((err) => {
+      console.log(err);
+      alert('Error retrieving opportunity creators profile');
+    });
+    */
+    /*
+    DataStore.query(Profile, opportunity.profileID)
+    .then((res) => {
+      setCreator(res);
+      console.log(res);
+    })
+    .catch((err) => {
+      console.log(err);
+      alert('Error retrieving opportunity creators profile');
+    });
+    */
     const creator = await DataStore.query(Profile, opportunity.profileID);
     console.log(creator);
   };
-
+  
   useEffect(() => {
     getOpportunityCreator(opportunity);
   }, [opportunity]);
@@ -690,9 +717,9 @@ export default function OpportunitiesCard({
                   <AccessibilityRoundedIcon sx={IconStyling} />
                   <p className='text-bold ellipsis'>
                     {
-                      opportunity.locationType
-                          .charAt(0).toUpperCase() +
-                          opportunity.locationType.slice(1)
+                      opportunity.locationType + opportunity.locationType.slice(1)
+                          //.charAt(0).toUpperCase() +
+                          //opportunity.locationType.slice(1)
                     }
                   </p>
                 </div>
