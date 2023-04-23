@@ -273,14 +273,14 @@ export default function FetchWrapper() {
         });
       */
     console.log("Getting all...");
-    DataStore.query(Opportunity)
+    DataStore.query(Opportunity, (o) => o.status.eq('APPROVED')) 
     .then((res) => {
       setAllOpportunities(res);
       console.log(res);
     })
     .catch((err) => {
       console.log(err);
-      alert('Error retrieving pending opportunities');
+      alert('Error retrieving opportunities');
     });
   };
 
@@ -432,19 +432,30 @@ function Opportunities({
           setOppTypeFilter={setOppTypeFilter}
           orgTypeFilter={orgTypeFilter}
           setOrgTypeFilter={setOrgTypeFilter}
-          getPendingOpportunities={getPendingOpportunities}
+          //getPendingOpportunities={getPendingOpportunities}
           getAllOpportunities={getAllOpportunities}
         />,
     },
   ];
+  //console.log(allKeywords[0]); // this is a promise array
+
+  //const p = Promise.resolve(allKeywords.values);
+
+  //p.then(value => {
+    //console.log(value); 
+  //})
+
+  //console.log(p);
+  /*
   const allKeywordsArr1 = [allKeywords];
-  console.log(allKeywordsArr1);
+  console.log(allKeywords[2]);
   let allKeywordsArr2 = Array(allKeywordsArr1.length);
-  for(let i = 0; i < allKeywordsArr1.length; i++)
-  {
-    allKeywordsArr2[i] = allKeywordsArr1[i].name;
-  }
-  console.log(allKeywordsArr2);
+  //for(let i = 0; i < allKeywordsArr1.length; i++)
+  //{
+    //allKeywordsArr2[i] = allKeywordsArr1[i].name;
+  //}
+  console.log(allKeywordsArr2.length);
+  */
   //for(i = 0; )
   const formValues = {
     //eventName: '',
@@ -467,7 +478,7 @@ function Opportunities({
     starttime: new Date(),
     endtime: new Date(),
     subject: '',
-    //keywords: allKeywordsArr2,
+    //keywords: [allKeywords],
   };
 
   const handleModalClose = () => {

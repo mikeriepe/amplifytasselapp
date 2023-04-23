@@ -438,6 +438,9 @@ export default function OpportunitiesCard({
         getPendingOpportunities();
         getAllOpportunities();
       }
+      else {
+        console.log("You have already applied to this opportunity.");
+      }
   };
 
   const formatDate = (date, time) => {
@@ -499,7 +502,7 @@ export default function OpportunitiesCard({
       alert('Error retrieving opportunity creators profile');
     });
     */
-    /*
+    
     DataStore.query(Profile, opportunity.profileID)
     .then((res) => {
       setCreator(res);
@@ -509,9 +512,9 @@ export default function OpportunitiesCard({
       console.log(err);
       alert('Error retrieving opportunity creators profile');
     });
-    */
-    const creator = await DataStore.query(Profile, opportunity.profileID);
-    console.log(creator);
+    
+    //const creatorCall = await DataStore.query(Profile, opportunity.profileID);
+    //console.log(creatorCall);
   };
   
   useEffect(() => {
@@ -520,7 +523,7 @@ export default function OpportunitiesCard({
 
   return (
     <>
-      {opportunity && creator && (
+      {opportunity &&(
         <Card className='clickable'>
           <div
             className='flex-space-between flex-align-center'
@@ -717,7 +720,7 @@ export default function OpportunitiesCard({
                   <AccessibilityRoundedIcon sx={IconStyling} />
                   <p className='text-bold ellipsis'>
                     {
-                      opportunity.locationType + opportunity.locationType.slice(1)
+                      opportunity.locationType// + opportunity.locationType.slice(1)
                           //.charAt(0).toUpperCase() +
                           //opportunity.locationType.slice(1)
                     }
