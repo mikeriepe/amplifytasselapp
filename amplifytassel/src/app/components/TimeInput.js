@@ -1,7 +1,7 @@
 import React from 'react';
 import {Controller} from 'react-hook-form';
 import TextField from '@mui/material/TextField';
-import {TimePicker} from '@mui/x-date-pickers';
+import { MobileTimePicker } from '@mui/x-date-pickers';
 import Box from '@mui/material/Box';
 import FormHelperText from '@mui/material/FormHelperText';
 import { parseISO } from 'date-fns'
@@ -17,7 +17,7 @@ export const TimeInput = ({name, control, label, register}) => {
         formState,
       }) => (
         <Box>
-          <TimePicker
+          <MobileTimePicker
             onChange={(e) => {
               const time = new Date(e);
               onChange(time);

@@ -75,7 +75,7 @@ const Banner = ({image}, props) => {
   );
 };
 
-const OutlinedIconButton = async ({
+const OutlinedIconButton = ({
   children,
   type,
   onClick,
@@ -516,6 +516,7 @@ export default function OpportunitiesCard({
     //const creatorCall = await DataStore.query(Profile, opportunity.profileID);
     //console.log(creatorCall);
   };
+
   
   useEffect(() => {
     getOpportunityCreator(opportunity);

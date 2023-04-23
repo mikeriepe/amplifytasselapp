@@ -175,7 +175,7 @@ export default function OpportunitiesList({
       return location; //&& oppType && orgType;
     });
 
-    setDisplayOpps(copyOpps);
+    // setDisplayOpps(copyOpps);
     handleSort(copyOpps);
     // searches the filtered opp list
     searchOpportunity(search, copyOpps);

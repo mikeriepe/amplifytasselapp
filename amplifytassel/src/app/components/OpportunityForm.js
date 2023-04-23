@@ -78,11 +78,10 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
    //.then((json) => {
     const tempKeywords = [];
     for (let i = 0; i < res.length; i++) {
-      tempKeywords.push(res[i].value);
+      tempKeywords.push(res[i].name);
     }
     const filteredAllTags = tempKeywords.filter((x) => !selectedTags.includes(x));
     setAllTags(filteredAllTags);
-    console.log(res);
    })
    .catch((err) => {
     console.log(err);
