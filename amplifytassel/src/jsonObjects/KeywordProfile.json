@@ -1,0 +1,32 @@
+[
+    {
+        "id": "5e1d3afd-6258-4720-9c37-e469b10f93ff",
+        "keywordId": "790f490c-b9bf-4526-9aec-97dcd7d3b24c",
+        "profileId": "03bc5db5-46b3-4100-942b-e9ddb89ec1cc",
+        "createdAt": "2023-04-20T18:00:50.799Z",
+        "updatedAt": "2023-04-20T18:00:50.799Z",
+        "_version": 1,
+        "_lastChangedAt": 1682013650823,
+        "_deleted": null
+    },
+    {
+        "id": "55f5bedd-c9af-41ff-89cf-a68763bd2148",
+        "keywordId": "9c476ed9-7dae-4ea6-ae30-8ffe6b31e719",
+        "profileId": "03bc5db5-46b3-4100-942b-e9ddb89ec1cc",
+        "createdAt": "2023-04-20T18:00:51.252Z",
+        "updatedAt": "2023-04-20T18:00:51.252Z",
+        "_version": 1,
+        "_lastChangedAt": 1682013651281,
+        "_deleted": null
+    },
+    {
+        "id": "698c42a3-7bbd-49ce-bacb-8b1715f7f9a7",
+        "keywordId": "b1e532e3-96a5-4522-8049-864db81fca23",
+        "profileId": "03bc5db5-46b3-4100-942b-e9ddb89ec1cc",
+        "createdAt": "2023-04-20T18:00:51.608Z",
+        "updatedAt": "2023-04-20T18:00:51.608Z",
+        "_version": 1,
+        "_lastChangedAt": 1682013651636,
+        "_deleted": null
+    }
+]

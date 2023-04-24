@@ -1,5 +1,5 @@
-import * as React from 'react';
-import {styled} from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { styled } from '@mui/material';
 import MuiAvatar from '@mui/material/Avatar';
 import MuiBox from '@mui/material/Box';
 import MuiPaper from '@mui/material/Paper';
@@ -9,7 +9,12 @@ import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
+
+import { DataStore } from '@aws-amplify/datastore';
+import { Profile, Major } from '../../models';
+
+
 
 const Header = styled((props) => (
   <MuiPaper elevation={0} {...props} />
@@ -22,7 +27,7 @@ const Header = styled((props) => (
   borderRadius: '10px',
 }));
 
-const Banner = ({image}, props) => (
+const Banner = ({ image }, props) => (
   <MuiBox
     sx={{
       height: '65%',
@@ -46,13 +51,13 @@ const Banner = ({image}, props) => (
   </MuiBox>
 );
 
-const Content = ({children}, props) => (
-  <MuiBox sx={{height: '35%'}} {...props}>
+const Content = ({ children }, props) => (
+  <MuiBox sx={{ height: '35%' }} {...props}>
     {children}
   </MuiBox>
 );
 
-const Avatar = ({image, handleError}, props) => (
+const Avatar = ({ image, handleError }, props) => (
   <MuiBox
     sx={{
       height: '220px',
@@ -76,7 +81,7 @@ const Avatar = ({image, handleError}, props) => (
   </MuiBox>
 );
 
-const Text = ({children}, props) => (
+const Text = ({ children }, props) => (
   <MuiBox
     sx={{
       display: 'flex',
@@ -96,7 +101,7 @@ const Text = ({children}, props) => (
 
 const ITEM_HEIGHT = 48;
 
-const MoreIcon = ({anchorEl, open, handleClick, handleClose}) => (
+const MoreIcon = ({ anchorEl, open, handleClick, handleClose }) => (
   <MuiBox
     sx={{
       marginRight: '3em',
@@ -115,7 +120,7 @@ const MoreIcon = ({anchorEl, open, handleClick, handleClose}) => (
       aria-haspopup='true'
       onClick={handleClick}
     >
-      <MoreHorizIcon fontSize='large'/>
+      <MoreHorizIcon fontSize='large' />
     </IconButton >
     <Menu
       id='long-menu'
@@ -143,7 +148,22 @@ const MoreIcon = ({anchorEl, open, handleClick, handleClose}) => (
  * creates Profile header
  * @return {HTML} Profile header component
  */
-export default function ProfileHeader({data}) {
+export default function ProfileHeader({ data }) {
+  const [majors, setMajors] = useState(null);
+
+  useEffect(() => {
+    console.log('gothere');
+    console.log('data.id', data.id);
+    DataStore.query(Major, (m) => m.profiles.profile.id.eq(data.id))
+      .then((majors) => {
+        console.log('majors', majors);
+        setMajors(majors);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
   const handleError = (e) => {
     e.target.src = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png';
   };
@@ -161,19 +181,21 @@ export default function ProfileHeader({data}) {
     <Header>
       <Banner image={ExampleCover} />
       <Content>
-        <Avatar image={data.profilepicture} handleError={handleError} />
+        <Avatar image={data.picture} handleError={handleError} />
         <Box
-          sx={{display: 'flex', height: '100%'}}
+          sx={{ display: 'flex', height: '100%' }}
         >
           <Text>
             <h2 className='text-dark ellipsis'>
-              {data.firstname + ' ' + data.lastname}
+              {data.firstName + ' ' + data.lastName}
             </h2>
             <h5 className='text-bold text-blue ellipsis'>
-              Bachelors in {data.major}
+              {majors && majors.map((major) => (
+                <p key={major.id}>{major.name}</p>
+              ))}
             </h5>
-            <p className='ellipsis'>Class of {data.graduationyear}</p>
-            <p className='ellipsis'>{data.userlocation}</p>
+            <p className='ellipsis'>Class of {data.graduationYear}</p>
+            <p className='ellipsis'>{data.location}</p>
           </Text>
           <MoreIcon anchorEl={anchorEl} open={open}
             handleClick={handleClick} handleClose={handleClose} />

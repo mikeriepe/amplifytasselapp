@@ -1,3 +1,18 @@
+enum OpportunityStatus {
+  PENDING
+  UPDATED
+  APPROVED
+  DENIED
+  REQUESTED
+}
+
+type Keyword @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String
+  Profiles: [Profile] @manyToMany(relationName: "KeywordProfile")
+  Opportunities: [Opportunity] @manyToMany(relationName: "KeywordOpportunity")
+}
+
 type Organization @model @auth(rules: [{allow: public}]) {
   id: ID!
   name: String
@@ -25,6 +40,7 @@ type Role @model @auth(rules: [{allow: public}]) {
   Profiles: [Profile] @manyToMany(relationName: "ProfileRole")
   opportunityID: ID! @index(name: "byOpportunity")
   Requests: [Request] @hasMany(indexName: "byRole", fields: ["id"])
+  capacity: Int
 }
 
 type Major @model @auth(rules: [{allow: public}]) {
@@ -39,7 +55,7 @@ type Profile @model @auth(rules: [{allow: public}]) {
   email: AWSEmail!
   volunteerExperience: [WorkHistory]
   about: String
-  location: Location
+  location: String
   availability: Availability
   picture: AWSURL
   firstName: String
@@ -53,12 +69,14 @@ type Profile @model @auth(rules: [{allow: public}]) {
   Roles: [Role] @manyToMany(relationName: "ProfileRole")
   Posts: [Post] @hasMany(indexName: "byProfile", fields: ["id"])
   Comments: [Comment] @hasMany(indexName: "byProfile", fields: ["id"])
-  OpportunitiesOwned: [Opportunity] @manyToMany(relationName: "ProfileOpportunity")
-  Requests: [Request] @hasMany(indexName: "byProfile", fields: ["id"])
+  OpportunitiesJoined: [Opportunity] @manyToMany(relationName: "OpportunityProfile")
+  OpportunitiesOwned: [Opportunity] @hasMany(indexName: "byProfile", fields: ["id"])
   experience: [WorkHistory]
   schoolEmail: String
   infoRequest: String
   infoResponse: String
+  Requests: [Request] @hasMany(indexName: "byProfile", fields: ["id"])
+  keywords: [Keyword] @manyToMany(relationName: "KeywordProfile")
 }
 
 type Request @model @auth(rules: [{allow: public}]) {
@@ -88,7 +106,6 @@ type Opportunity @model @auth(rules: [{allow: public}]) {
   zoomLink: String
   organizations: [String]
   description: String
-  isApproved: Boolean
   eventBanner: AWSURL
   eventName: String
   startTime: AWSDateTime
@@ -100,8 +117,11 @@ type Opportunity @model @auth(rules: [{allow: public}]) {
   preferences: [String]
   Roles: [Role] @hasMany(indexName: "byOpportunity", fields: ["id"])
   Posts: [Post] @hasMany(indexName: "byOpportunity", fields: ["id"])
-  Owners: [Profile] @manyToMany(relationName: "ProfileOpportunity")
   Requests: [Request] @hasMany(indexName: "byOpportunity", fields: ["id"])
+  profileID: ID! @index(name: "byProfile")
+  profilesJoined: [Profile] @manyToMany(relationName: "OpportunityProfile")
+  keywords: [Keyword] @manyToMany(relationName: "KeywordOpportunity")
+  status: OpportunityStatus
 }
 
 enum ProfileStatus {

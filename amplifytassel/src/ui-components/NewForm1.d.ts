@@ -5,43 +5,43 @@
  **************************************************************************/
 
 import * as React from "react";
-import { GridProps, TextFieldProps } from "@aws-amplify/ui-react";
+import { GridProps, SelectFieldProps, TextFieldProps } from "@aws-amplify/ui-react";
 import { EscapeHatchProps } from "@aws-amplify/ui-react/internal";
-import { KeywordProfile } from "../models";
+import { Profile } from "../models";
 export declare type ValidationResponse = {
     hasError: boolean;
     errorMessage?: string;
 };
 export declare type ValidationFunction<T> = (value: T, validationResponse: ValidationResponse) => ValidationResponse | Promise<ValidationResponse>;
-export declare type ProfileUpdateFormInputValues = {
+export declare type NewForm1InputValues = {
     about?: string;
-    Field0?: string;
     location?: string;
     graduationYear?: string;
+    Field0?: string;
 };
-export declare type ProfileUpdateFormValidationValues = {
+export declare type NewForm1ValidationValues = {
     about?: ValidationFunction<string>;
-    Field0?: ValidationFunction<string>;
     location?: ValidationFunction<string>;
     graduationYear?: ValidationFunction<string>;
+    Field0?: ValidationFunction<string>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
-export declare type ProfileUpdateFormOverridesProps = {
-    ProfileUpdateFormGrid?: PrimitiveOverrideProps<GridProps>;
+export declare type NewForm1OverridesProps = {
+    NewForm1Grid?: PrimitiveOverrideProps<GridProps>;
     about?: PrimitiveOverrideProps<TextFieldProps>;
-    Field0?: PrimitiveOverrideProps<TextFieldProps>;
     location?: PrimitiveOverrideProps<TextFieldProps>;
     graduationYear?: PrimitiveOverrideProps<TextFieldProps>;
+    Field0?: PrimitiveOverrideProps<SelectFieldProps>;
 } & EscapeHatchProps;
-export declare type ProfileUpdateFormProps = React.PropsWithChildren<{
-    overrides?: ProfileUpdateFormOverridesProps | undefined | null;
+export declare type NewForm1Props = React.PropsWithChildren<{
+    overrides?: NewForm1OverridesProps | undefined | null;
 } & {
     id?: string;
-    keywordProfile?: KeywordProfile;
-    onSubmit?: (fields: ProfileUpdateFormInputValues) => ProfileUpdateFormInputValues;
-    onSuccess?: (fields: ProfileUpdateFormInputValues) => void;
-    onError?: (fields: ProfileUpdateFormInputValues, errorMessage: string) => void;
-    onChange?: (fields: ProfileUpdateFormInputValues) => ProfileUpdateFormInputValues;
-    onValidate?: ProfileUpdateFormValidationValues;
+    profile?: Profile;
+    onSubmit?: (fields: NewForm1InputValues) => NewForm1InputValues;
+    onSuccess?: (fields: NewForm1InputValues) => void;
+    onError?: (fields: NewForm1InputValues, errorMessage: string) => void;
+    onChange?: (fields: NewForm1InputValues) => NewForm1InputValues;
+    onValidate?: NewForm1ValidationValues;
 } & React.CSSProperties>;
-export default function ProfileUpdateForm(props: ProfileUpdateFormProps): React.ReactElement;
+export default function NewForm1(props: NewForm1Props): React.ReactElement;

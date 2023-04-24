@@ -15,6 +15,7 @@ export declare type ValidationFunction<T> = (value: T, validationResponse: Valid
 export declare type ProfileCreateFormInputValues = {
     email?: string;
     about?: string;
+    location?: string;
     picture?: string;
     firstName?: string;
     lastName?: string;
@@ -30,6 +31,7 @@ export declare type ProfileCreateFormInputValues = {
 export declare type ProfileCreateFormValidationValues = {
     email?: ValidationFunction<string>;
     about?: ValidationFunction<string>;
+    location?: ValidationFunction<string>;
     picture?: ValidationFunction<string>;
     firstName?: ValidationFunction<string>;
     lastName?: ValidationFunction<string>;
@@ -47,6 +49,7 @@ export declare type ProfileCreateFormOverridesProps = {
     ProfileCreateFormGrid?: PrimitiveOverrideProps<GridProps>;
     email?: PrimitiveOverrideProps<TextFieldProps>;
     about?: PrimitiveOverrideProps<TextFieldProps>;
+    location?: PrimitiveOverrideProps<TextFieldProps>;
     picture?: PrimitiveOverrideProps<TextFieldProps>;
     firstName?: PrimitiveOverrideProps<TextFieldProps>;
     lastName?: PrimitiveOverrideProps<TextFieldProps>;
