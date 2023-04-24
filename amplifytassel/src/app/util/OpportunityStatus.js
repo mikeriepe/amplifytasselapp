@@ -1,13 +1,13 @@
 const opportunityStatus = {
-  null: 'Pending', // pending admin response
-  true: 'Approved', // opp is approved
-  false: 'Denied', // opp is denied
+  'PENDING': 'Pending', // pending admin response
+  'APPROVED': 'Approved', // opp is approved
+  'DENIED': 'Denied', // opp is denied
 };
 
 const opportunityStatusColor = {
-  null: 'var(--text-gray)', // pending admin response - gray
-  true: 'var(--toastify-color-success)', // user is approved - green
-  false: 'var(--error-red-main)', // user is denied - red
+  'PENDING': 'var(--text-gray)', // pending admin response - gray
+  'APPROVED': 'var(--toastify-color-success)', // user is approved - green
+  'DENIED': 'var(--error-red-main)', // user is denied - red
 };
 
 /**

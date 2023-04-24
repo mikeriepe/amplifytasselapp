@@ -118,12 +118,12 @@ function Row(props) {
         <TableCell className='data-cell'>
           <div style={{display: 'flex',
             flexDirection: 'row',
-            color: opportunityStatusToColor(row.isApproved)}}>
+            color: opportunityStatusToColor(row.status)}}>
             <FiberManualRecordIcon sx={{
               fontSize: '1em',
               paddingTop: '.21rem',
               paddingRight: '.21rem'}}/>
-            <div>{opportunityStatusToText(row.isApproved)}</div>
+            <div>{opportunityStatusToText(row.status)}</div>
           </div>
         </TableCell>
       </TableRow>
@@ -180,7 +180,7 @@ export default function ApprovalOpportunities() {
     if (reset === true) {
       setOpps(json.sort(function(a, b) {
         /* eslint-disable-next-line max-len */
-        return opportunityStatusToText(a.isApproved) > opportunityStatusToText(b.isApproved) ? -1 : 1;
+        return opportunityStatusToText(a.status) > opportunityStatusToText(b.status) ? -1 : 1;
       }));
       setSortStatusOrder('asc');
       return;
@@ -189,19 +189,19 @@ export default function ApprovalOpportunities() {
       if (sortStatusOrder === '') {
         setOpps(json.sort(function(a, b) {
           /* eslint-disable-next-line max-len */
-          return opportunityStatusToText(a.isApproved) > opportunityStatusToText(b.isApproved) ? -1 : 1;
+          return opportunityStatusToText(a.status) > opportunityStatusToText(b.status) ? -1 : 1;
         }));
         setSortStatusOrder('asc');
       } else if (sortStatusOrder === 'asc') {
         setOpps(json.sort(function(a, b) {
           /* eslint-disable-next-line max-len */
-          return opportunityStatusToText(a.isApproved) > opportunityStatusToText(b.isApproved) ? 1 : -1;
+          return opportunityStatusToText(a.status) > opportunityStatusToText(b.status) ? 1 : -1;
         }));
         setSortStatusOrder('desc');
       } else if (sortStatusOrder === 'desc') {
         setOpps(json.sort(function(a, b) {
           /* eslint-disable-next-line max-len */
-          return opportunityStatusToText(a.isApproved) > opportunityStatusToText(b.isApproved) ? -1 : 1;
+          return opportunityStatusToText(a.status) > opportunityStatusToText(b.status) ? -1 : 1;
         }));
         setSortStatusOrder('asc');
       }
@@ -278,6 +278,7 @@ export default function ApprovalOpportunities() {
     DataStore.query(Opportunity)
     .then((res) => {
       sortOpps(res, sortBy, reset);
+      console.log(res);
       setLoading(false);
     })
     .catch((err) => {
@@ -314,13 +315,13 @@ export default function ApprovalOpportunities() {
     let status = 1;
     switch (event.target.textContent) {
       case 'Approve':
-        status = true;
+        status = 'APPROVED';
         break;
       case 'Request More Info':
         status = 'REQUESTED';
         break;
       case 'Deny':
-        status = false;
+        status = 'DENIED';
         break;
       default:
         status = 'PENDING'
@@ -336,7 +337,7 @@ export default function ApprovalOpportunities() {
       const opp = opportunities[index];
       DataStore.save(
         Opportunity.copyOf(opp, updated => {
-          updated.isApproved = status
+          updated.status = status
         }))
         .then((res) => {
           getOpps('status', true);
