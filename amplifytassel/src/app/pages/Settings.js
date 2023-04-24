@@ -1,6 +1,5 @@
 import * as React from 'react';
 import useAuth from '../util/AuthContext';
-import ThemedDropdown2 from '../components/ThemedDropdown2';
 
 import { DataStore } from '@aws-amplify/datastore';
 import { Keyword, KeywordProfile, Profile } from '../../models';
@@ -24,10 +23,6 @@ export default function Settings() {
 
   return (
     <div className='Settings'>
-      <ThemedDropdown2
-        menuItems={['One', 'Two', 'Three']}
-        initName={'hi'}
-      />
       <h1>Settings</h1>
       <button onClick={testQuery}>test</button>
     </div>
