@@ -68,7 +68,7 @@ const ListTextStyling = {
  * @return {JSX} NavBar Component
  */
 export default function NavBarLoggedIn() {
-  const {userProfile, user, setUser, setLoggedIn, setUserProfile} = useAuth();
+  const {userProfile, setUser, setLoggedIn, setUserProfile} = useAuth();
   const theme = useTheme();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -82,7 +82,7 @@ export default function NavBarLoggedIn() {
     ['Settings', '/settings', <SettingsIcon key='Settings' />],
   ];
   // add approvals page if user is admin
-  if (user && user.isadmin) {
+  if (userProfile && userProfile.isAdmin) {
     pages.splice(1, 0, [
       'Approvals',
       '/approvals',
@@ -147,7 +147,7 @@ export default function NavBarLoggedIn() {
 
   useEffect(() => {
     setTabIndex(window.location.pathname);
-  }, [window.location.pathname]);
+  }, []);
 
   return (
     <>

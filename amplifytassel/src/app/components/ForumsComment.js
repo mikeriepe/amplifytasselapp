@@ -36,7 +36,7 @@ export default function ForumsComment({comment, index}) {
       />
       <Bubble>
         <p className='text-bold text-dark'>
-          {`${comment.firstname} ${comment.lastname}`}
+          {`${comment.firstName} ${comment.lastName}`}
         </p>
         <p>{comment.content}</p>
       </Bubble>

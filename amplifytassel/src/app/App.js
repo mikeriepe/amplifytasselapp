@@ -7,10 +7,13 @@ import Landing from './pages/Landing';
 import NavBarLoggedOut from './components/NavBarLoggedOut';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import Dashboard from './pages/Dashboard';
+import Approvals from './pages/Approvals';
 import NavBarLoggedIn from './components/NavBarLoggedIn';
 import Settings from './pages/Settings';
 import './stylesheets/App.css';
 import 'react-toastify/dist/ReactToastify.css';
+import ViewOpportunity from './pages/ViewOpportunity';
 import Opportunities from './pages/Opportunities';
 import Approvals from './pages/Approvals';
 import ViewOpportunity from './pages/ViewOpportunity';
@@ -35,9 +38,13 @@ const App = () => {
           <Route path='/login' element={<Login />} />
           <Route path='/signup' element={<Signup />} />
           <Route path='/settings' element={<Settings />}/>
+          <Route
+            path='/opportunity/:opportunityid'
+            element={<ViewOpportunity />}
+          />
+          <Route path='/dashboard' element={<Dashboard />}/>
+          <Route path='/approvals' element={<Approvals/>}/>
           <Route path='/opportunities' element={<Opportunities />}/>
-          <Route path='/approvals' element={<Approvals />}/>
-          <Route path='/viewopprotunity' element={<ViewOpportunity />}/>
           <Route path='/myprofile' element={<MyProfile />}/>
           <Route path='/landing' element={<Landing />}/>
         </Routes>
