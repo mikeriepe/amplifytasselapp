@@ -271,14 +271,14 @@ export default function PageHeader({
             <AccessibilityRoundedIcon sx={IconStyling} />
             <p className='text-bold ellipsis'>
               {
-                data.locationtype.charAt(0).toUpperCase() +
-                  data.locationtype.slice(1)
+                data.locationType.charAt(0).toUpperCase() +
+                  data.locationType.slice(1)
               }
             </p>
           </div>
-          {data.locationtype && (
-            data.locationtype === 'in-person' ||
-            data.locationtype === 'hybrid'
+          {data.locationType && (
+            data.locationType === 'in-person' ||
+            data.locationType === 'hybrid'
           ) &&
             <div
               className='flex-horizontal flex-flow-large flex-align-center'
@@ -286,14 +286,14 @@ export default function PageHeader({
             >
               <FmdGoodOutlinedIcon sx={IconStyling} />
               <p className='text-bold'>
-                {`${data.eventlocation.address} ${data.eventlocation.city}, `}
-                {`${data.eventlocation.state} ${data.eventlocation.zip}`}
+                {`${data.location.address} ${data.location.city}, `}
+                {`${data.location.state} ${data.location.zip}`}
               </p>
             </div>
           }
-          {data.locationtype && (
-            data.locationtype === 'remote' ||
-            data.locationtype === 'hybrid'
+          {data.locationType && (
+            data.locationType === 'remote' ||
+            data.locationType === 'hybrid'
           ) &&
             <div
               className='flex-horizontal flex-flow-large flex-align-center'
@@ -301,7 +301,7 @@ export default function PageHeader({
             >
               <DevicesOutlinedIcon sx={IconStyling} />
               <p className='text-bold'>
-                {data.eventzoomlink}
+                {data.zoomLink}
               </p>
             </div>
           }

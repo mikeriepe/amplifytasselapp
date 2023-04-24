@@ -1,12 +1,12 @@
 import React from 'react';
 import {Controller} from 'react-hook-form';
 import TextField from '@mui/material/TextField';
-import {DesktopDatePicker} from '@mui/x-date-pickers/DesktopDatePicker';
-import FormHelperText from '@mui/material/FormHelperText';
+import { MobileTimePicker } from '@mui/x-date-pickers';
 import Box from '@mui/material/Box';
+import FormHelperText from '@mui/material/FormHelperText';
 import { parseISO } from 'date-fns'
 
-export const DateInput = ({name, control, label, register, minDate}) => {
+export const TimeInput = ({name, control, label, register}) => {
   return (
     <Controller
       name={name}
@@ -17,21 +17,22 @@ export const DateInput = ({name, control, label, register, minDate}) => {
         formState,
       }) => (
         <Box>
-          <DesktopDatePicker
-            minDate={minDate ? minDate : new Date()}
-            label={label}
-            inputFormat="MM/dd/yyyy"
-            name={name}
+          <MobileTimePicker
+            onChange={(e) => {
+              const time = new Date(e);
+              onChange(time);
+            }}
             value={value}
-            {...register(name)}
-            onChange={onChange}
+            label={label}
+            timeFormat="HH:mm"
+            name={name}
             renderInput={(params) => <TextField {...params}
-              name={name}
               sx={{
                 input: {color: '#00C2FF'},
                 backgroundColor: 'rgb(255, 255, 255)',
-                marginBottom: '5px',
-              }}/>}
+                marginBottom: '10px',
+              }}
+            />}
           />
           <FormHelperText error={!!error}>
             {error ? error.message : ''}
