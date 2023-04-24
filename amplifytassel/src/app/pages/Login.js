@@ -13,7 +13,7 @@ import useAuth from '../util/AuthContext';
 import '../stylesheets/LoginSignup.css';
 import { Auth } from 'aws-amplify';
 import { DataStore } from '@aws-amplify/datastore';
-import { Profile, WorkHistory } from '../../models';
+import { Profile } from '../../models';
 import { ProfileStatus } from '../../models';
 
 const PaperStyling = {
@@ -114,7 +114,7 @@ export default function Login() {
             progress: undefined,
           });
           setLoggedIn(true);
-          console.log(`user.attributes: ${JSON.stringify(user.attributes)}`);
+          console.log(`user.attributes: ${user.attributes}`);
           setUser(user.attributes);
         }
       })
@@ -140,7 +140,6 @@ export default function Login() {
     console.log(values['login'].useremail);
     const profile = await DataStore.query(Profile, c => c.email.eq(values['login'].useremail));
     console.log(JSON.stringify(profile));
-    console.log('profile:', JSON.stringify(profile));
     setUserProfile(profile[0]);
     navigate('/settings');
   };

@@ -1,96 +1,5 @@
 export const schema = {
     "models": {
-        "Keyword": {
-            "name": "Keyword",
-            "fields": {
-                "id": {
-                    "name": "id",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "name": {
-                    "name": "name",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "Profiles": {
-                    "name": "Profiles",
-                    "isArray": true,
-                    "type": {
-                        "model": "KeywordProfile"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true,
-                    "association": {
-                        "connectionType": "HAS_MANY",
-                        "associatedWith": [
-                            "keyword"
-                        ]
-                    }
-                },
-                "Opportunities": {
-                    "name": "Opportunities",
-                    "isArray": true,
-                    "type": {
-                        "model": "KeywordOpportunity"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true,
-                    "association": {
-                        "connectionType": "HAS_MANY",
-                        "associatedWith": [
-                            "keyword"
-                        ]
-                    }
-                },
-                "createdAt": {
-                    "name": "createdAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                },
-                "updatedAt": {
-                    "name": "updatedAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                }
-            },
-            "syncable": true,
-            "pluralName": "Keywords",
-            "attributes": [
-                {
-                    "type": "model",
-                    "properties": {}
-                },
-                {
-                    "type": "auth",
-                    "properties": {
-                        "rules": [
-                            {
-                                "allow": "public",
-                                "operations": [
-                                    "create",
-                                    "update",
-                                    "delete",
-                                    "read"
-                                ]
-                            }
-                        ]
-                    }
-                }
-            ]
-        },
         "Organization": {
             "name": "Organization",
             "fields": {
@@ -370,13 +279,6 @@ export const schema = {
                         ]
                     }
                 },
-                "capacity": {
-                    "name": "capacity",
-                    "isArray": false,
-                    "type": "Int",
-                    "isRequired": false,
-                    "attributes": []
-                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -556,7 +458,9 @@ export const schema = {
                 "location": {
                     "name": "location",
                     "isArray": false,
-                    "type": "String",
+                    "type": {
+                        "nonModel": "Location"
+                    },
                     "isRequired": false,
                     "attributes": []
                 },
@@ -691,11 +595,11 @@ export const schema = {
                         ]
                     }
                 },
-                "OpportunitiesJoined": {
-                    "name": "OpportunitiesJoined",
+                "OpportunitiesOwned": {
+                    "name": "OpportunitiesOwned",
                     "isArray": true,
                     "type": {
-                        "model": "OpportunityProfile"
+                        "model": "ProfileOpportunity"
                     },
                     "isRequired": false,
                     "attributes": [],
@@ -707,11 +611,11 @@ export const schema = {
                         ]
                     }
                 },
-                "OpportunitiesOwned": {
-                    "name": "OpportunitiesOwned",
+                "Requests": {
+                    "name": "Requests",
                     "isArray": true,
                     "type": {
-                        "model": "Opportunity"
+                        "model": "Request"
                     },
                     "isRequired": false,
                     "attributes": [],
@@ -753,38 +657,6 @@ export const schema = {
                     "type": "String",
                     "isRequired": false,
                     "attributes": []
-                },
-                "Requests": {
-                    "name": "Requests",
-                    "isArray": true,
-                    "type": {
-                        "model": "Request"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true,
-                    "association": {
-                        "connectionType": "HAS_MANY",
-                        "associatedWith": [
-                            "profileID"
-                        ]
-                    }
-                },
-                "keywords": {
-                    "name": "keywords",
-                    "isArray": true,
-                    "type": {
-                        "model": "KeywordProfile"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true,
-                    "association": {
-                        "connectionType": "HAS_MANY",
-                        "associatedWith": [
-                            "profile"
-                        ]
-                    }
                 },
                 "createdAt": {
                     "name": "createdAt",
@@ -1118,6 +990,13 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
+                "isApproved": {
+                    "name": "isApproved",
+                    "isArray": false,
+                    "type": "Boolean",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "eventBanner": {
                     "name": "eventBanner",
                     "isArray": false,
@@ -1216,6 +1095,22 @@ export const schema = {
                         ]
                     }
                 },
+                "Owners": {
+                    "name": "Owners",
+                    "isArray": true,
+                    "type": {
+                        "model": "ProfileOpportunity"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "opportunity"
+                        ]
+                    }
+                },
                 "Requests": {
                     "name": "Requests",
                     "isArray": true,
@@ -1231,54 +1126,6 @@ export const schema = {
                             "opportunityID"
                         ]
                     }
-                },
-                "profileID": {
-                    "name": "profileID",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "profilesJoined": {
-                    "name": "profilesJoined",
-                    "isArray": true,
-                    "type": {
-                        "model": "OpportunityProfile"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true,
-                    "association": {
-                        "connectionType": "HAS_MANY",
-                        "associatedWith": [
-                            "opportunity"
-                        ]
-                    }
-                },
-                "keywords": {
-                    "name": "keywords",
-                    "isArray": true,
-                    "type": {
-                        "model": "KeywordOpportunity"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true,
-                    "association": {
-                        "connectionType": "HAS_MANY",
-                        "associatedWith": [
-                            "opportunity"
-                        ]
-                    }
-                },
-                "status": {
-                    "name": "status",
-                    "isArray": false,
-                    "type": {
-                        "enum": "OpportunityStatus"
-                    },
-                    "isRequired": false,
-                    "attributes": []
                 },
                 "createdAt": {
                     "name": "createdAt",
@@ -1303,15 +1150,6 @@ export const schema = {
                 {
                     "type": "model",
                     "properties": {}
-                },
-                {
-                    "type": "key",
-                    "properties": {
-                        "name": "byProfile",
-                        "fields": [
-                            "profileID"
-                        ]
-                    }
                 },
                 {
                     "type": "auth",
@@ -1392,202 +1230,6 @@ export const schema = {
                                     "read"
                                 ]
                             }
-                        ]
-                    }
-                }
-            ]
-        },
-        "KeywordProfile": {
-            "name": "KeywordProfile",
-            "fields": {
-                "id": {
-                    "name": "id",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "keywordId": {
-                    "name": "keywordId",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "profileId": {
-                    "name": "profileId",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "keyword": {
-                    "name": "keyword",
-                    "isArray": false,
-                    "type": {
-                        "model": "Keyword"
-                    },
-                    "isRequired": true,
-                    "attributes": [],
-                    "association": {
-                        "connectionType": "BELONGS_TO",
-                        "targetNames": [
-                            "keywordId"
-                        ]
-                    }
-                },
-                "profile": {
-                    "name": "profile",
-                    "isArray": false,
-                    "type": {
-                        "model": "Profile"
-                    },
-                    "isRequired": true,
-                    "attributes": [],
-                    "association": {
-                        "connectionType": "BELONGS_TO",
-                        "targetNames": [
-                            "profileId"
-                        ]
-                    }
-                },
-                "createdAt": {
-                    "name": "createdAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                },
-                "updatedAt": {
-                    "name": "updatedAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                }
-            },
-            "syncable": true,
-            "pluralName": "KeywordProfiles",
-            "attributes": [
-                {
-                    "type": "model",
-                    "properties": {}
-                },
-                {
-                    "type": "key",
-                    "properties": {
-                        "name": "byKeyword",
-                        "fields": [
-                            "keywordId"
-                        ]
-                    }
-                },
-                {
-                    "type": "key",
-                    "properties": {
-                        "name": "byProfile",
-                        "fields": [
-                            "profileId"
-                        ]
-                    }
-                }
-            ]
-        },
-        "KeywordOpportunity": {
-            "name": "KeywordOpportunity",
-            "fields": {
-                "id": {
-                    "name": "id",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "keywordId": {
-                    "name": "keywordId",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "opportunityId": {
-                    "name": "opportunityId",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "keyword": {
-                    "name": "keyword",
-                    "isArray": false,
-                    "type": {
-                        "model": "Keyword"
-                    },
-                    "isRequired": true,
-                    "attributes": [],
-                    "association": {
-                        "connectionType": "BELONGS_TO",
-                        "targetNames": [
-                            "keywordId"
-                        ]
-                    }
-                },
-                "opportunity": {
-                    "name": "opportunity",
-                    "isArray": false,
-                    "type": {
-                        "model": "Opportunity"
-                    },
-                    "isRequired": true,
-                    "attributes": [],
-                    "association": {
-                        "connectionType": "BELONGS_TO",
-                        "targetNames": [
-                            "opportunityId"
-                        ]
-                    }
-                },
-                "createdAt": {
-                    "name": "createdAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                },
-                "updatedAt": {
-                    "name": "updatedAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                }
-            },
-            "syncable": true,
-            "pluralName": "KeywordOpportunities",
-            "attributes": [
-                {
-                    "type": "model",
-                    "properties": {}
-                },
-                {
-                    "type": "key",
-                    "properties": {
-                        "name": "byKeyword",
-                        "fields": [
-                            "keywordId"
-                        ]
-                    }
-                },
-                {
-                    "type": "key",
-                    "properties": {
-                        "name": "byOpportunity",
-                        "fields": [
-                            "opportunityId"
                         ]
                     }
                 }
@@ -1887,8 +1529,8 @@ export const schema = {
                 }
             ]
         },
-        "OpportunityProfile": {
-            "name": "OpportunityProfile",
+        "ProfileOpportunity": {
+            "name": "ProfileOpportunity",
             "fields": {
                 "id": {
                     "name": "id",
@@ -1959,7 +1601,7 @@ export const schema = {
                 }
             },
             "syncable": true,
-            "pluralName": "OpportunityProfiles",
+            "pluralName": "ProfileOpportunities",
             "attributes": [
                 {
                     "type": "model",
@@ -1987,16 +1629,6 @@ export const schema = {
         }
     },
     "enums": {
-        "OpportunityStatus": {
-            "name": "OpportunityStatus",
-            "values": [
-                "PENDING",
-                "UPDATED",
-                "APPROVED",
-                "DENIED",
-                "REQUESTED"
-            ]
-        },
         "ProfileStatus": {
             "name": "ProfileStatus",
             "values": [
@@ -2216,5 +1848,5 @@ export const schema = {
         }
     },
     "codegenVersion": "3.4.0",
-    "version": "3aa38aea5bb42c782b0af6472ed0ffd3"
+    "version": "78349a74d38edd25533bc0db1900bbc1"
 };

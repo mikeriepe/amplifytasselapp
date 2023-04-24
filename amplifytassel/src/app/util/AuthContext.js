@@ -41,8 +41,8 @@ export function AuthProvider(props) {
     setLoading(true);
     Auth.currentAuthenticatedUser()
       .then((user) => {
-        // console.log(JSON.stringify(user));
-        console.log('got user');
+        console.log(JSON.stringify(user));
+        console.log('here');
         setUser(user.attributes);
         DataStore.query(Profile, c => c.email.eq(user.attributes.email))
           .then((profile) => {
