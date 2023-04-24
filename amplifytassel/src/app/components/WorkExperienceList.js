@@ -26,7 +26,7 @@ export default function WorkExperienceList() {
     <Page>
       <MuiBox className='flow-small' sx={{flexGrow: 1}}>
         {userProfile.experience ?
-          Object.keys(userProfile.experience).map((job, index) => (
+          userProfile.experience.map((job, index) => (
             <div
               className='flex-space-between flex-align-center'
               style={{
@@ -34,8 +34,8 @@ export default function WorkExperienceList() {
               key={`work-experience-${index}`}
             >
               <WorkExperienceCard
-                jobExperience={userProfile.experience[job]}
-                jobIndex={job}/>
+                jobExperience={job}
+                jobIndex={index}/>
             </div>
           )) : (
           <p>None</p>

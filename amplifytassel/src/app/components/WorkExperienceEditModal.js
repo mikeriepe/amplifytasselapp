@@ -12,6 +12,8 @@ import {DateInput} from './DateInput';
 import {CheckboxInput} from './CheckboxInput';
 import ThemedButton from './ThemedButton';
 import useAuth from '../util/AuthContext';
+import { DataStore } from 'aws-amplify';
+import { Profile } from '../../models';
 
 
 /**
@@ -22,7 +24,7 @@ import useAuth from '../util/AuthContext';
  * @return {HTML} WorkExperienceEditModal component
  */
 export default function WorkExperienceEditModal({onClose, index}) {
-  const {userProfile} = useAuth();
+  const {userProfile, setUserProfile} = useAuth();
 
   const existingLocation = userProfile.experience[index].location.split(', ');
 
@@ -35,13 +37,76 @@ export default function WorkExperienceEditModal({onClose, index}) {
     startdate: (new Date(userProfile.experience[index].start)),
     enddate: userProfile.experience[index].end === '' ? '' :
     (new Date(userProfile.experience[index].end)),
-    currentposition: userProfile.experience[index].currentposition,
+    currentPosition: userProfile.experience[index].currentPosition,
   };
 
   const methods = useForm({defaultValues: formValues});
   const {handleSubmit, control, register} = methods;
 
-  const updateWorkExperience = (data) => {
+  // const updateWorkExperience = (data) => {
+  //   let startDate = '';
+  //   if (data.startdate !== '') {
+  //     startDate = data.startdate.toISOString().split('T')[0];
+  //     const startDateValues = startDate.split('-').reverse('');
+  //     startDate = startDateValues[1] + '/' +
+  //     startDateValues[0] + '/' + startDateValues[2];
+  //   }
+
+  //   let endDate = '';
+  //   if (data.enddate !== '' && data.enddate !== null) {
+  //     endDate = data.enddate.toISOString().split('T')[0];
+  //     const endDateValues = endDate.split('-').reverse('');
+  //     endDate = endDateValues[1] + '/' +
+  //     endDateValues[0] + '/' + endDateValues[2];
+  //   }
+
+  //   let newLocation = '';
+  //   if (data.jobcity !== '' && data.jobstate !== '') {
+  //     newLocation = data.jobcity + ', ' + data.jobstate;
+  //   } else if (data.jobstate === '') {
+  //     newLocation = data.jobcity;
+  //   } else {
+  //     newLocation = data.jobstate;
+  //   }
+  //   const newWorkExperience = {
+  //     title: data.jobtitle,
+  //     company: data.company,
+  //     location: newLocation,
+  //     description: data.description,
+  //     start: startDate,
+  //     end: data.enddate !== null ? endDate : '',
+  //     currentPosition: data.currentPosition,
+  //   };
+  //   console.log('userProfile.experience[index]:', userProfile.experience[index]);
+  //   let tempExperience = {...userProfile.experience[index]};
+  //   tempExperience = newWorkExperience;
+  //   console.log('tempExperience', tempExperience);
+  // };
+
+  const updateProfile = (data) => {
+    // fetch(`/api/updateProfile`, {
+    //   method: 'POST',
+    //   body: JSON.stringify({userid: userProfile.userid, ...userProfile}),
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    // })
+    //     .then((res) => {
+    //       if (!res.ok) {
+    //         throw res;
+    //       }
+    //       return res.json();
+    //     }); toast.success('Account updated', {
+    //   position: 'top-right',
+    //   autoClose: 5000,
+    //   hideProgressBar: false,
+    //   closeOnClick: true,
+    //   pauseOnHover: true,
+    //   draggable: true,
+    //   progress: undefined,
+    // });
+    // return;
+    
     let startDate = '';
     if (data.startdate !== '') {
       startDate = data.startdate.toISOString().split('T')[0];
@@ -73,39 +138,46 @@ export default function WorkExperienceEditModal({onClose, index}) {
       description: data.description,
       start: startDate,
       end: data.enddate !== null ? endDate : '',
-      currentposition: data.currentposition,
+      currentPosition: data.currentPosition,
     };
-    userProfile.experience[index] = newWorkExperience;
-  };
 
-  const updateProfile = () => {
-    fetch(`/api/updateProfile`, {
-      method: 'POST',
-      body: JSON.stringify({userid: userProfile.userid, ...userProfile}),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-        .then((res) => {
-          if (!res.ok) {
-            throw res;
-          }
-          return res.json();
-        }); toast.success('Account updated', {
-      position: 'top-right',
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
-    return;
+    console.log('gothere44');
+    DataStore.query(Profile, userProfile.id)
+      .then((profile) => {
+        // console.log(JSON.stringify(profile.experience));
+        DataStore.save(Profile.copyOf(profile, updated => {
+          updated.experience[index].title = newWorkExperience.title;
+          updated.experience[index].company = newWorkExperience.company;
+          updated.experience[index].location = newWorkExperience.location;
+          updated.experience[index].description = newWorkExperience.description;
+          updated.experience[index].start = newWorkExperience.start;
+          updated.experience[index].end = newWorkExperience.end;
+          updated.experience[index].currentPosition = newWorkExperience.currentPosition;
+        }))
+          .then(() => {
+            DataStore.query(Profile, userProfile.id)
+              .then((profile) => {
+                setUserProfile(profile);
+                toast.success('Account updated', {
+                  position: 'top-right',
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                })
+              })
+          })
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const onSubmit = (data) => {
-    updateWorkExperience(data);
-    updateProfile();
+    // updateWorkExperience(data);
+    updateProfile(data);
     onClose();
   };
 
@@ -216,7 +288,7 @@ export default function WorkExperienceEditModal({onClose, index}) {
           />
 
           <CheckboxInput
-            name='currentposition'
+            name='currentPosition'
             control={control}
             label='Current Position'
           />

@@ -55,7 +55,7 @@ type Profile @model @auth(rules: [{allow: public}]) {
   email: AWSEmail!
   volunteerExperience: [WorkHistory]
   about: String
-  location: Location
+  location: String
   availability: Availability
   picture: AWSURL
   firstName: String

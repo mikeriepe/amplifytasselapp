@@ -110,7 +110,7 @@ export default function WorkExperienceCard({jobIndex}) {
           setShowEditModal(!showEditModal)}
         index={jobIndex}/>
       </Modal>
-      <Modal
+      {/* <Modal
         open={showDeleteModal}
         onBackdropClick={() => setShowDeleteModal(false)}
         onClose={() => setShowDeleteModal(false)}
@@ -118,7 +118,7 @@ export default function WorkExperienceCard({jobIndex}) {
         <WorkExperienceDeleteModal onClose={() =>
           setShowDeleteModal(!showDeleteModal)}
         index={index}/>
-      </Modal>
+      </Modal> */}
     </>
   );
 }

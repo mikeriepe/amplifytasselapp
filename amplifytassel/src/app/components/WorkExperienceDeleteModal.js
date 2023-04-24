@@ -59,7 +59,7 @@ const OutlinedIconButton = ({children}, props) => (
  * @return {HTML} WorkExperienceDeleteModal component
  */
 export default function WorkExperienceDeleteModal({onClose}) {
-  const {userProfile} = useAuth();
+  const {userProfile, setUserProfile} = useAuth();
 
   const updateProfile = () => {
     fetch(`/api/updateProfile`, {

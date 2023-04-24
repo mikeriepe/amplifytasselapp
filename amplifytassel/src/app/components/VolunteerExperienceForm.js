@@ -9,9 +9,14 @@ import {toast} from 'react-toastify';
 
 import {TextInput} from './TextInput';
 import {DateInput} from './DateInput';
+import {CheckboxInput} from './CheckboxInput';
 import ThemedButton from '../components/ThemedButton';
 import useAuth from '../util/AuthContext';
 import {sortWorkExperience} from './WorkExperienceForm';
+
+import { DataStore } from '@aws-amplify/datastore';
+import { Profile } from '../../models';
+
 
 
 /**
@@ -22,7 +27,7 @@ import {sortWorkExperience} from './WorkExperienceForm';
  * @return {HTML} VolunteerExperienceForm component
  */
 export default function VolunteerExperienceForm({onClose}) {
-  const {userProfile} = useAuth();
+  const {userProfile, setUserProfile} = useAuth();
 
   const formValues = {
     jobtitle: '',
@@ -32,6 +37,7 @@ export default function VolunteerExperienceForm({onClose}) {
     description: '',
     startdate: (new Date()),
     enddate: null,
+    currentposition: false,
   };
 
   const methods = useForm({defaultValues: formValues});
@@ -63,49 +69,47 @@ export default function VolunteerExperienceForm({onClose}) {
       newLocation = data.jobstate;
     }
     const newVolunteerExperience = {
+      end: data.enddate !== null ? endDate : '',
+      start: startDate,
       title: data.jobtitle,
       company: data.company,
       location: newLocation,
       description: data.description,
-      start: startDate,
-      end: data.enddate !== null ? endDate : '',
+      currentPosition: data.currentposition
     };
-    const newJobIndex =
-      (Object.keys(userProfile.volunteeringexperience).length+1).toString();
-    const newJobParam = 'job' + newJobIndex;
-    userProfile.volunteeringexperience[newJobParam] = newVolunteerExperience;
+    userProfile.volunteerExperience.push(newVolunteerExperience);
   };
 
-  const updateProfile = () => {
-    fetch(`/api/updateProfile`, {
-      method: 'POST',
-      body: JSON.stringify({userid: userProfile.userid, ...userProfile}),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-        .then((res) => {
-          if (!res.ok) {
-            throw res;
-          }
-          return res.json();
-        }); toast.success('Account updated', {
-      position: 'top-right',
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
-    return;
+  const updateProfile = (sortedExperience) => {
+    DataStore.query(Profile, p => p.id.eq(userProfile.id))
+      .then((res) => {
+        DataStore.save(Profile.copyOf(res[0], updated => {
+          updated.volunteerExperience = sortedExperience;
+        }))
+      })
+      .then(() => {
+        console.log('v experience updated');
+        userProfile.volunteerExperience = sortedExperience;
+        setUserProfile(userProfile);
+        toast.success('Account updated', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const onSubmit = (data) => {
     addVolunteerExperienceToProfile(data);
-    const sortedExp = sortWorkExperience(userProfile.volunteeringexperience);
-    userProfile.volunteeringexperience = sortedExp;
-    updateProfile();
+    const sortedExperience = sortWorkExperience(userProfile.volunteerExperience);
+    updateProfile(sortedExperience);
     onClose();
   };
 
@@ -215,6 +219,11 @@ export default function VolunteerExperienceForm({onClose}) {
             register={register}
           />
 
+          <CheckboxInput
+            name='currentposition'
+            control={control}
+            label='Current Position'
+          />
         </Box>
       </Box>
 

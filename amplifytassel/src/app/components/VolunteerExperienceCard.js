@@ -102,7 +102,7 @@ export default function VolunteerExperienceCard({jobIndex}) {
         </div>
         <Divider sx={{borderBottom: '0.5px solid rgba(0, 0, 0, 0.15)'}} />
       </Card>
-      <Modal
+      {/* <Modal
         open={showEditModal}
         onBackdropClick={() => setShowEditModal(false)}
         onClose={() => setShowEditModal(false)}
@@ -119,7 +119,7 @@ export default function VolunteerExperienceCard({jobIndex}) {
         <VolunteerExperienceDeleteModal onClose={() =>
           setShowDeleteModal(!showDeleteModal)}
         index={index}/>
-      </Modal>
+      </Modal> */}
     </>
   );
 }

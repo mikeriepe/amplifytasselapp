@@ -59,64 +59,51 @@ const OutlinedIconButton = ({children}, props) => (
  * @return {HTML} VolunteerExperienceDeleteModal component
  */
 export default function VolunteerExperienceDeleteModal({onClose}) {
-  const {userProfile} = useAuth();
+  const {userProfile, setUserProfile} = useAuth();
 
   const updateProfile = () => {
-    fetch(`/api/updateProfile`, {
-      method: 'POST',
-      body: JSON.stringify({userid: userProfile.userid, ...userProfile}),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-        .then((res) => {
-          if (!res.ok) {
-            throw res;
-          }
-          return res.json();
-        }); toast.success('Account updated', {
-      position: 'top-right',
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
-    return;
+    // fetch(`/api/updateProfile`, {
+    //   method: 'POST',
+    //   body: JSON.stringify({userid: userProfile.userid, ...userProfile}),
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    // })
+    //     .then((res) => {
+    //       if (!res.ok) {
+    //         throw res;
+    //       }
+    //       return res.json();
+    //     }); toast.success('Account updated', {
+    //   position: 'top-right',
+    //   autoClose: 5000,
+    //   hideProgressBar: false,
+    //   closeOnClick: true,
+    //   pauseOnHover: true,
+    //   draggable: true,
+    //   progress: undefined,
+    // });
+    // return;
+    console.log('updateProfile called');
   };
 
   const deleteVolunteerExperience = (index) => {
-    const indexPosition = index + 1;
-    const totalNumJobs = Object.keys(userProfile.volunteeringexperience).length;
-    if (indexPosition === totalNumJobs) {
-      const jobToDelete = 'job' + indexPosition;
-      delete userProfile.volunteeringexperience[jobToDelete];
-    } else {
-      for (let i = indexPosition; i < totalNumJobs; i++) {
-        const jobReplaced = 'job' + i;
-        const jobReplacing = 'job' + (i+1);
-        userProfile.volunteeringexperience[jobReplaced] =
-        userProfile.volunteeringexperience[jobReplacing];
-      }
-      const duplicateLastJob = 'job' + totalNumJobs;
-      delete userProfile.volunteeringexperience[duplicateLastJob];
-    }
+    console.log(`deleteing ${index}`);
     updateProfile();
   };
 
   const jobTitleList =
-  Object.keys(userProfile.volunteeringexperience).map((job, index)=>{
-    return <Card className='clickable' key = {job}>
+  userProfile.volunteerExperience.map((job, index)=>{
+    return <Card className='clickable' key = {index}>
       <div
         className='flex-space-between flex-align-center'
         style={{padding: '5px', background: 'var(--background-primary)'}}
       >
         <MuiBox>
           <div>
-            <h5>{userProfile.volunteeringexperience[job].title}</h5>
+            <h5>{job.title}</h5>
             <p className='text-bold text-blue'>
-              {userProfile.volunteeringexperience[job].company}</p>
+              {job.company}</p>
           </div>
         </MuiBox>
         <div className='flex-flow-large' style={{marginLeft: '50px'}}>

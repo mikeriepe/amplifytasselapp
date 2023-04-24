@@ -6,15 +6,21 @@
 
 /* eslint-disable */
 import * as React from "react";
-import { Button, Flex, Grid, TextField } from "@aws-amplify/ui-react";
+import {
+  Button,
+  Flex,
+  Grid,
+  SelectField,
+  TextField,
+} from "@aws-amplify/ui-react";
 import { getOverrideProps } from "@aws-amplify/ui-react/internal";
-import { KeywordProfile } from "../models";
+import { Profile } from "../models";
 import { fetchByPath, validateField } from "./utils";
 import { DataStore } from "aws-amplify";
-export default function ProfileUpdateForm(props) {
+export default function NewForm1(props) {
   const {
     id: idProp,
-    keywordProfile: keywordProfileModelProp,
+    profile: profileModelProp,
     onSuccess,
     onError,
     onSubmit,
@@ -25,45 +31,43 @@ export default function ProfileUpdateForm(props) {
   } = props;
   const initialValues = {
     about: "",
-    Field0: "",
     location: "",
     graduationYear: "",
+    Field0: "",
   };
   const [about, setAbout] = React.useState(initialValues.about);
-  const [Field0, setField0] = React.useState(initialValues.Field0);
   const [location, setLocation] = React.useState(initialValues.location);
   const [graduationYear, setGraduationYear] = React.useState(
     initialValues.graduationYear
   );
+  const [Field0, setField0] = React.useState(initialValues.Field0);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
-    const cleanValues = keywordProfileRecord
-      ? { ...initialValues, ...keywordProfileRecord }
+    const cleanValues = profileRecord
+      ? { ...initialValues, ...profileRecord }
       : initialValues;
     setAbout(cleanValues.about);
-    setField0(cleanValues.Field0);
     setLocation(cleanValues.location);
     setGraduationYear(cleanValues.graduationYear);
+    setField0(cleanValues.Field0);
     setErrors({});
   };
-  const [keywordProfileRecord, setKeywordProfileRecord] = React.useState(
-    keywordProfileModelProp
-  );
+  const [profileRecord, setProfileRecord] = React.useState(profileModelProp);
   React.useEffect(() => {
     const queryData = async () => {
       const record = idProp
-        ? await DataStore.query(KeywordProfile, idProp)
-        : keywordProfileModelProp;
-      setKeywordProfileRecord(record);
+        ? await DataStore.query(Profile, idProp)
+        : profileModelProp;
+      setProfileRecord(record);
     };
     queryData();
-  }, [idProp, keywordProfileModelProp]);
-  React.useEffect(resetStateValues, [keywordProfileRecord]);
+  }, [idProp, profileModelProp]);
+  React.useEffect(resetStateValues, [profileRecord]);
   const validations = {
     about: [],
-    Field0: [],
     location: [],
     graduationYear: [],
+    Field0: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -92,9 +96,9 @@ export default function ProfileUpdateForm(props) {
         event.preventDefault();
         let modelFields = {
           about,
-          Field0,
           location,
           graduationYear,
+          Field0,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -124,9 +128,13 @@ export default function ProfileUpdateForm(props) {
               modelFields[key] = undefined;
             }
           });
-          const modelFieldsToSave = {};
+          const modelFieldsToSave = {
+            about: modelFields.about,
+            location: modelFields.location,
+            graduationYear: modelFields.graduationYear,
+          };
           await DataStore.save(
-            KeywordProfile.copyOf(keywordProfileRecord, (updated) => {
+            Profile.copyOf(profileRecord, (updated) => {
               Object.assign(updated, modelFieldsToSave);
             })
           );
@@ -139,20 +147,22 @@ export default function ProfileUpdateForm(props) {
           }
         }
       }}
-      {...getOverrideProps(overrides, "ProfileUpdateForm")}
+      {...getOverrideProps(overrides, "NewForm1")}
       {...rest}
     >
       <TextField
-        label="Label"
+        label="About"
+        isRequired={false}
+        isReadOnly={false}
         value={about}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
               about: value,
-              Field0,
               location,
               graduationYear,
+              Field0,
             };
             const result = onChange(modelFields);
             value = result?.about ?? value;
@@ -168,43 +178,18 @@ export default function ProfileUpdateForm(props) {
         {...getOverrideProps(overrides, "about")}
       ></TextField>
       <TextField
-        label="Major"
-        descriptiveText=""
+        label="Location"
         isRequired={false}
-        value={Field0}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              about,
-              Field0: value,
-              location,
-              graduationYear,
-            };
-            const result = onChange(modelFields);
-            value = result?.Field0 ?? value;
-          }
-          if (errors.Field0?.hasError) {
-            runValidationTasks("Field0", value);
-          }
-          setField0(value);
-        }}
-        onBlur={() => runValidationTasks("Field0", Field0)}
-        errorMessage={errors.Field0?.errorMessage}
-        hasError={errors.Field0?.hasError}
-        {...getOverrideProps(overrides, "Field0")}
-      ></TextField>
-      <TextField
-        label="Label"
+        isReadOnly={false}
         value={location}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
               about,
-              Field0,
               location: value,
               graduationYear,
+              Field0,
             };
             const result = onChange(modelFields);
             value = result?.location ?? value;
@@ -220,16 +205,18 @@ export default function ProfileUpdateForm(props) {
         {...getOverrideProps(overrides, "location")}
       ></TextField>
       <TextField
-        label="Label"
+        label="Graduation year"
+        isRequired={false}
+        isReadOnly={false}
         value={graduationYear}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
               about,
-              Field0,
               location,
               graduationYear: value,
+              Field0,
             };
             const result = onChange(modelFields);
             value = result?.graduationYear ?? value;
@@ -244,6 +231,48 @@ export default function ProfileUpdateForm(props) {
         hasError={errors.graduationYear?.hasError}
         {...getOverrideProps(overrides, "graduationYear")}
       ></TextField>
+      <SelectField
+        label="Major"
+        placeholder="Please select an option"
+        value={Field0}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              about,
+              location,
+              graduationYear,
+              Field0: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.Field0 ?? value;
+          }
+          if (errors.Field0?.hasError) {
+            runValidationTasks("Field0", value);
+          }
+          setField0(value);
+        }}
+        onBlur={() => runValidationTasks("Field0", Field0)}
+        errorMessage={errors.Field0?.errorMessage}
+        hasError={errors.Field0?.hasError}
+        {...getOverrideProps(overrides, "Field0")}
+      >
+        <option
+          children="Computer Science, B.S."
+          value="Computer Science, B.S."
+          {...getOverrideProps(overrides, "Field0option0")}
+        ></option>
+        <option
+          children="Basket Weaving, B.A."
+          value="Basket Weaving, B.A."
+          {...getOverrideProps(overrides, "Field0option1")}
+        ></option>
+        <option
+          children="Writing, B.A."
+          value="Writing, B.A."
+          {...getOverrideProps(overrides, "Field0option2")}
+        ></option>
+      </SelectField>
       <Flex
         justifyContent="space-between"
         {...getOverrideProps(overrides, "CTAFlex")}
@@ -255,7 +284,7 @@ export default function ProfileUpdateForm(props) {
             event.preventDefault();
             resetStateValues();
           }}
-          isDisabled={!(idProp || keywordProfileModelProp)}
+          isDisabled={!(idProp || profileModelProp)}
           {...getOverrideProps(overrides, "ResetButton")}
         ></Button>
         <Flex
@@ -267,7 +296,7 @@ export default function ProfileUpdateForm(props) {
             type="submit"
             variation="primary"
             isDisabled={
-              !(idProp || keywordProfileModelProp) ||
+              !(idProp || profileModelProp) ||
               Object.values(errors).some((e) => e?.hasError)
             }
             {...getOverrideProps(overrides, "SubmitButton")}

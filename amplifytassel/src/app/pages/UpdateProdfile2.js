@@ -81,19 +81,9 @@ export default function UpdateProfile() {
   // const [selectedMajors, setSelectedMajors] = useState([]);
   // const [allMajors, setAllMajors] = useState([]);
 
-  // const [profileKeywords, setProfileKeywords] = useState([]);
+  const [profileKeywords, setProfileKeywords] = useState([]);
   const [selectedKeywords, setSelectedKeywords] = useState([]);
   const [allKeywords, setAllKeywords] = useState([]);
-
-  const [values, setValues] = useState({
-    1: {
-      graduationYear: userProfile.graduationYear,
-      majors: null, //FIXME
-      location: userProfile.location,
-      about: userProfile.about,
-      keywords: null,
-    },
-  });
 
   // // Fuzzy search on given searchData
   // // If the search bar is empty, the searchData is all the opps
@@ -119,26 +109,26 @@ export default function UpdateProfile() {
   //   }
   // };
 
-  const handleDeleteTag = (tagIndex) => () => {
+  const handleDeleteTag = (tagIndexToDelete) => () => {
     const tempSelectedTags = [...selectedKeywords];
     // add the to be deleted tag back to all tags
     const tempAllTags = [...allKeywords];
-    tempAllTags.push(tempSelectedTags[tagIndex]);
+    tempAllTags.push(tempSelectedTags[tagIndexToDelete]);
     // delete the tag from the selected tags array
-    tempSelectedTags.splice(tagIndex, 1);
+    tempSelectedTags.splice(tagIndexToDelete, 1);
     // update the arrays
     setSelectedKeywords(tempSelectedTags);
     setAllKeywords(tempAllTags);
   };
 
-  const handleAddTag = (tagIndex) => () => {
+  const handleAddTag = (tagIndexToAdd) => () => {
     const tempAllTags = [...allKeywords];
     // add the tag to the selected tags array
     const tempSelectedTags = [...selectedKeywords];
-    tempSelectedTags.push(tempAllTags[tagIndex]);
+    tempSelectedTags.push(tempAllTags[tagIndexToAdd]);
 
     // delete the to be added tag from all tags array
-    tempAllTags.splice(tagIndex, 1);
+    tempAllTags.splice(tagIndexToAdd, 1);
     // update the arrays
     setSelectedKeywords(tempSelectedTags);
     setAllKeywords(tempAllTags);
@@ -170,29 +160,27 @@ export default function UpdateProfile() {
     // get selectedKeywords, keywords, allKeywords
     DataStore.query(Keyword, (k) => k.Profiles.profile.id.eq(userProfile.id))
       .then((keywords) => {
-        // setProfileKeywords(keywords);
+        setProfileKeywords(keywords);
         setSelectedKeywords(keywords);
-        setValues({
-          1: {
-            graduationYear: userProfile.graduationYear,
-            majors: null, //FIXME
-            location: userProfile.location,
-            about: userProfile.about,
-            keywords: keywords,
-          },
-        });
         DataStore.query(Keyword)
           .then((keywordsAll) => {
-            // console.log('keywords', keywords);
-            // console.log('keywordsAll', keywordsAll);
-            let keywordsIdArray = keywords.map((obj) => (obj.id));
-            setAllKeywords(keywordsAll.filter(k => !keywordsIdArray.includes(k.id)));
-          })
+            setAllKeywords(keywordsAll);
+          });
       })
       .catch((err) => {
         console.log(err);
       });
   }, []);
+  
+  const [values, setValues] = useState({
+    1: {
+      graduationYear: userProfile.graduationYear,
+      majors: null, //FIXME
+      location: userProfile.location,
+      about: userProfile.about,
+      keywords: selectedKeywords,
+    },
+  });
   
   // const updateLocalUserProfileData = () => {
   //   userProfile.graduationYear = values[1].graduationYear;
@@ -295,7 +283,7 @@ export default function UpdateProfile() {
                     Location
                   </p>
                   <ThemedInput
-                    placeholder={'Santa Cruz, CA'}
+                    placeholder={'Let people know where you are'}
                     type={'text'}
                     index={'location'}
                     step={1}
@@ -418,12 +406,12 @@ export default function UpdateProfile() {
                       </p>
                     </div>
                     <div>
-                      {selectedKeywords &&
+                      {profileKeywords &&
                         <div className='border'>
                           {selectedKeywords.map((label, index) => (
                             <div key={index} className="label-box">
                               <Chip
-                                label={label.name}
+                                label={label}
                                 key={`role${index}`}
                                 id={index.toString()}
                                 sx={{
@@ -443,11 +431,11 @@ export default function UpdateProfile() {
                       text-bold '>Categories</p>
 
                       <div>
-                        {allKeywords &&
+                        {profileKeywords &&
                           <div className='border'>
                             {allKeywords.map((label, index) => (
                               <Chip
-                                label={label.name}
+                                label={label}
                                 key={`role${index}`}
                                 id={index.toString()}
                                 sx={{
@@ -493,7 +481,7 @@ export default function UpdateProfile() {
           </Box>
         </Box>
       </InputContext.Provider>
-      {/* <Modal
+      <Modal
         open={showWorkForm}
         onBackdropClick={() => setShowWorkForm(false)}
         onClose={() => setShowWorkForm(false)}
@@ -524,7 +512,7 @@ export default function UpdateProfile() {
       >
         <VolunteerExperienceDeleteModal onClose={() =>
           setShowDeleteVolunteerModal(!showDeleteVolunteerModal)} />
-      </Modal> */}
+      </Modal>
 
     </Page>
   );

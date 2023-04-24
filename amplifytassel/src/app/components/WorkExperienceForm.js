@@ -13,25 +13,17 @@ import {CheckboxInput} from './CheckboxInput';
 import ThemedButton from '../components/ThemedButton';
 import useAuth from '../util/AuthContext';
 
+import { DataStore } from '@aws-amplify/datastore';
+import { Profile } from '../../models';
+
+
+
 export const sortWorkExperience = (experience) => {
-  const totalNumJobs = Object.keys(experience).length;
-  const tempSortArray = [];
-  for (let i = 0; i < totalNumJobs; i++) {
-    const job = 'job' + (i+1);
-    const startDate = new Date(experience[job].start).getTime();
-    tempSortArray.push([job, startDate]);
-  }
-  const sortedArray = tempSortArray.sort((a, b) => (a[1] > b[1] ? -1 : 1));
-
-  const newExperience = {};
-
-  for (let i = 0; i < totalNumJobs; i++) {
-    const jobIndex = 'job' + (i+1);
-    const sortedJob = sortedArray[i][0];
-    newExperience[jobIndex] = experience[sortedJob];
-  }
-
-  return newExperience;
+  const experienceSorted = [...experience].sort((a, b) => (
+    new Date(a.start).getTime() < new Date(b.start).getTime() ? -1 : 1
+  ));
+  console.log('experienceSorted', experienceSorted);
+  return experienceSorted;
 };
 
 /**
@@ -42,7 +34,7 @@ export const sortWorkExperience = (experience) => {
  * @return {HTML} WorkExperienceForm component
  */
 export default function WorkExperienceForm({onClose}) {
-  const {userProfile} = useAuth();
+  const {userProfile, setUserProfile} = useAuth();
 
   const formValues = {
     jobtitle: '',
@@ -84,50 +76,47 @@ export default function WorkExperienceForm({onClose}) {
       newLocation = data.jobstate;
     }
     const newWorkExperience = {
+      end: data.enddate !== null ? endDate : '',
+      start: startDate,
       title: data.jobtitle,
       company: data.company,
       location: newLocation,
       description: data.description,
-      start: startDate,
-      end: data.enddate !== null ? endDate : '',
-      currentposition: data.currentposition,
+      currentPosition: data.currentposition,
     };
-    const newJobIndex =
-      (Object.keys(userProfile.experience).length+1).toString();
-    const newJobParam = 'job' + newJobIndex;
-    userProfile.experience[newJobParam] = newWorkExperience;
+    userProfile.experience.push(newWorkExperience);
   };
 
-  const updateProfile = () => {
-    fetch(`/api/updateProfile`, {
-      method: 'POST',
-      body: JSON.stringify({userid: userProfile.userid, ...userProfile}),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-        .then((res) => {
-          if (!res.ok) {
-            throw res;
-          }
-          return res.json();
-        }); toast.success('Account updated', {
-      position: 'top-right',
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
-    return;
+  const updateProfile = (sortedExperience) => {
+    DataStore.query(Profile, p => p.id.eq(userProfile.id))
+      .then((res) => {
+        DataStore.save(Profile.copyOf(res[0], updated => {
+          updated.experience = sortedExperience;
+        }))
+      })
+      .then(() => {
+        console.log('experience updated');
+        userProfile.experience = sortedExperience;
+        setUserProfile(userProfile);
+        toast.success('Account updated', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const onSubmit = (data) => {
     addWorkExperienceToProfile(data);
     const sortedExperience = sortWorkExperience(userProfile.experience);
-    userProfile.experience = sortedExperience;
-    updateProfile();
+    updateProfile(sortedExperience);
     onClose();
   };
 
