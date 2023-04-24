@@ -161,7 +161,7 @@ export default function ProfileHeader({data}) {
     <Header>
       <Banner image={ExampleCover} />
       <Content>
-        <Avatar image={data.profilepicture} handleError={handleError} />
+        <Avatar image={data.picture} handleError={handleError} />
         <Box
           sx={{display: 'flex', height: '100%'}}
         >

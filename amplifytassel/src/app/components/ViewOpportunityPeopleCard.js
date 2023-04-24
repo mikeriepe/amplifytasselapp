@@ -84,7 +84,7 @@ export default function ViewOpportunityFindPeople({
     <Item handleCardClick={handleCardClick} profileid={profile.profileid}>
       {/* There is no profile banner implemented yet */}
       <Banner image={/* profileInfo.profilebanner */ExampleCover} />
-      <Avatar image={profile.profilepicture} />
+      <Avatar image={profile.picture} />
       <div style={{padding: '3.75em 1em 1em 1em'}}>
         <div style={{marginBottom: '1em'}}>
           <h4 className='text-bold text-dark'>

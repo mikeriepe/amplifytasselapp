@@ -301,7 +301,7 @@ export default function PageHeader({
             >
               <DevicesOutlinedIcon sx={IconStyling} />
               <p className='text-bold'>
-                {data.eventzoomlink}
+                {data.zoomLink}
               </p>
             </div>
           }

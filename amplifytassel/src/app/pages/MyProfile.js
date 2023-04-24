@@ -10,9 +10,9 @@ import ProfileHeader from '../components/ProfileHeader';
 import ProfileAbout from '../components/ProfileAbout';
 import ProfileWork from '../components/ProfileWork';
 import ProfileVolunteer from '../components/ProfileVolunteer';
-
+import { Auth } from 'aws-amplify';
 import { DataStore } from '@aws-amplify/datastore';
-import { Profile } from './models';
+import { Profile } from '../../models';
 
 const Page = styled((props) => (
   <MuiBox {...props} />
@@ -28,8 +28,8 @@ const Page = styled((props) => (
  * creates Proflie Page
  * @return {HTML} Profile component
  */
-export default function Profile() {
-  const {user, userProfile, setUserProfile} = useAuth();
+export default function MyProfile() {
+  const {user, userProfile, setUserProfile, setLoggedIn, setUser} = useAuth();
   const navigate = useNavigate();
 
   const handleDeactivateAccount = () => {
