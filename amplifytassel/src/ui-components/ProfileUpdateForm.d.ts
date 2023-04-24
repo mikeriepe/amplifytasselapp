@@ -5,39 +5,66 @@
  **************************************************************************/
 
 import * as React from "react";
-import { GridProps, TextFieldProps } from "@aws-amplify/ui-react";
+import { GridProps, SelectFieldProps, SwitchFieldProps, TextFieldProps } from "@aws-amplify/ui-react";
 import { EscapeHatchProps } from "@aws-amplify/ui-react/internal";
-import { KeywordProfile } from "../models";
+import { Profile } from "../models";
 export declare type ValidationResponse = {
     hasError: boolean;
     errorMessage?: string;
 };
 export declare type ValidationFunction<T> = (value: T, validationResponse: ValidationResponse) => ValidationResponse | Promise<ValidationResponse>;
 export declare type ProfileUpdateFormInputValues = {
+    email?: string;
     about?: string;
-    Field0?: string;
-    location?: string;
+    picture?: string;
+    firstName?: string;
+    lastName?: string;
+    status?: string;
     graduationYear?: string;
+    active?: boolean;
+    isAdmin?: boolean;
+    isApproved?: boolean;
+    schoolEmail?: string;
+    infoRequest?: string;
+    infoResponse?: string;
 };
 export declare type ProfileUpdateFormValidationValues = {
+    email?: ValidationFunction<string>;
     about?: ValidationFunction<string>;
-    Field0?: ValidationFunction<string>;
-    location?: ValidationFunction<string>;
+    picture?: ValidationFunction<string>;
+    firstName?: ValidationFunction<string>;
+    lastName?: ValidationFunction<string>;
+    status?: ValidationFunction<string>;
     graduationYear?: ValidationFunction<string>;
+    active?: ValidationFunction<boolean>;
+    isAdmin?: ValidationFunction<boolean>;
+    isApproved?: ValidationFunction<boolean>;
+    schoolEmail?: ValidationFunction<string>;
+    infoRequest?: ValidationFunction<string>;
+    infoResponse?: ValidationFunction<string>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type ProfileUpdateFormOverridesProps = {
     ProfileUpdateFormGrid?: PrimitiveOverrideProps<GridProps>;
+    email?: PrimitiveOverrideProps<TextFieldProps>;
     about?: PrimitiveOverrideProps<TextFieldProps>;
-    Field0?: PrimitiveOverrideProps<TextFieldProps>;
-    location?: PrimitiveOverrideProps<TextFieldProps>;
+    picture?: PrimitiveOverrideProps<TextFieldProps>;
+    firstName?: PrimitiveOverrideProps<TextFieldProps>;
+    lastName?: PrimitiveOverrideProps<TextFieldProps>;
+    status?: PrimitiveOverrideProps<SelectFieldProps>;
     graduationYear?: PrimitiveOverrideProps<TextFieldProps>;
+    active?: PrimitiveOverrideProps<SwitchFieldProps>;
+    isAdmin?: PrimitiveOverrideProps<SwitchFieldProps>;
+    isApproved?: PrimitiveOverrideProps<SwitchFieldProps>;
+    schoolEmail?: PrimitiveOverrideProps<TextFieldProps>;
+    infoRequest?: PrimitiveOverrideProps<TextFieldProps>;
+    infoResponse?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type ProfileUpdateFormProps = React.PropsWithChildren<{
     overrides?: ProfileUpdateFormOverridesProps | undefined | null;
 } & {
     id?: string;
-    keywordProfile?: KeywordProfile;
+    profile?: Profile;
     onSubmit?: (fields: ProfileUpdateFormInputValues) => ProfileUpdateFormInputValues;
     onSuccess?: (fields: ProfileUpdateFormInputValues) => void;
     onError?: (fields: ProfileUpdateFormInputValues, errorMessage: string) => void;

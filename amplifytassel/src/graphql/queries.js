@@ -1,6 +1,35 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const getTodo = /* GraphQL */ `
+  query GetTodo($id: ID!) {
+    getTodo(id: $id) {
+      id
+      name
+      description
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listTodos = /* GraphQL */ `
+  query ListTodos(
+    $filter: ModelTodoFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listTodos(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        name
+        description
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
 export const getOrganization = /* GraphQL */ `
   query GetOrganization($id: ID!) {
     getOrganization(id: $id) {
@@ -12,9 +41,6 @@ export const getOrganization = /* GraphQL */ `
       instagram
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;
@@ -34,43 +60,8 @@ export const listOrganizations = /* GraphQL */ `
         instagram
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       nextToken
-      startedAt
-    }
-  }
-`;
-export const syncOrganizations = /* GraphQL */ `
-  query SyncOrganizations(
-    $filter: ModelOrganizationFilterInput
-    $limit: Int
-    $nextToken: String
-    $lastSync: AWSTimestamp
-  ) {
-    syncOrganizations(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
-      items {
-        id
-        name
-        email
-        website
-        description
-        instagram
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-      startedAt
     }
   }
 `;
@@ -84,9 +75,6 @@ export const getComment = /* GraphQL */ `
       profileID
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;
@@ -105,106 +93,8 @@ export const listComments = /* GraphQL */ `
         profileID
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       nextToken
-      startedAt
-    }
-  }
-`;
-export const syncComments = /* GraphQL */ `
-  query SyncComments(
-    $filter: ModelCommentFilterInput
-    $limit: Int
-    $nextToken: String
-    $lastSync: AWSTimestamp
-  ) {
-    syncComments(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
-      items {
-        id
-        content
-        createdTimestamp
-        postID
-        profileID
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-      startedAt
-    }
-  }
-`;
-export const commentsByPostID = /* GraphQL */ `
-  query CommentsByPostID(
-    $postID: ID!
-    $sortDirection: ModelSortDirection
-    $filter: ModelCommentFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    commentsByPostID(
-      postID: $postID
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        content
-        createdTimestamp
-        postID
-        profileID
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-      startedAt
-    }
-  }
-`;
-export const commentsByProfileID = /* GraphQL */ `
-  query CommentsByProfileID(
-    $profileID: ID!
-    $sortDirection: ModelSortDirection
-    $filter: ModelCommentFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    commentsByProfileID(
-      profileID: $profileID
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        content
-        createdTimestamp
-        postID
-        profileID
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-      startedAt
     }
   }
 `;
@@ -223,12 +113,8 @@ export const getRole = /* GraphQL */ `
           majorId
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
         }
         nextToken
-        startedAt
       }
       Profiles {
         items {
@@ -237,12 +123,8 @@ export const getRole = /* GraphQL */ `
           profileId
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
         }
         nextToken
-        startedAt
       }
       opportunityID
       Requests {
@@ -258,18 +140,11 @@ export const getRole = /* GraphQL */ `
           profileID
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
         }
         nextToken
-        startedAt
       }
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;
@@ -288,113 +163,18 @@ export const listRoles = /* GraphQL */ `
         qualifications
         Majors {
           nextToken
-          startedAt
         }
         Profiles {
           nextToken
-          startedAt
         }
         opportunityID
         Requests {
           nextToken
-          startedAt
         }
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       nextToken
-      startedAt
-    }
-  }
-`;
-export const syncRoles = /* GraphQL */ `
-  query SyncRoles(
-    $filter: ModelRoleFilterInput
-    $limit: Int
-    $nextToken: String
-    $lastSync: AWSTimestamp
-  ) {
-    syncRoles(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
-      items {
-        id
-        name
-        description
-        isFilled
-        qualifications
-        Majors {
-          nextToken
-          startedAt
-        }
-        Profiles {
-          nextToken
-          startedAt
-        }
-        opportunityID
-        Requests {
-          nextToken
-          startedAt
-        }
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-      startedAt
-    }
-  }
-`;
-export const rolesByOpportunityID = /* GraphQL */ `
-  query RolesByOpportunityID(
-    $opportunityID: ID!
-    $sortDirection: ModelSortDirection
-    $filter: ModelRoleFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    rolesByOpportunityID(
-      opportunityID: $opportunityID
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        name
-        description
-        isFilled
-        qualifications
-        Majors {
-          nextToken
-          startedAt
-        }
-        Profiles {
-          nextToken
-          startedAt
-        }
-        opportunityID
-        Requests {
-          nextToken
-          startedAt
-        }
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-      startedAt
     }
   }
 `;
@@ -410,12 +190,8 @@ export const getMajor = /* GraphQL */ `
           profileId
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
         }
         nextToken
-        startedAt
       }
       Roles {
         items {
@@ -424,18 +200,11 @@ export const getMajor = /* GraphQL */ `
           majorId
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
         }
         nextToken
-        startedAt
       }
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;
@@ -451,55 +220,14 @@ export const listMajors = /* GraphQL */ `
         name
         profiles {
           nextToken
-          startedAt
         }
         Roles {
           nextToken
-          startedAt
         }
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       nextToken
-      startedAt
-    }
-  }
-`;
-export const syncMajors = /* GraphQL */ `
-  query SyncMajors(
-    $filter: ModelMajorFilterInput
-    $limit: Int
-    $nextToken: String
-    $lastSync: AWSTimestamp
-  ) {
-    syncMajors(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
-      items {
-        id
-        name
-        profiles {
-          nextToken
-          startedAt
-        }
-        Roles {
-          nextToken
-          startedAt
-        }
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-      startedAt
     }
   }
 `;
@@ -542,12 +270,8 @@ export const getProfile = /* GraphQL */ `
           profileId
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
         }
         nextToken
-        startedAt
       }
       Roles {
         items {
@@ -556,12 +280,8 @@ export const getProfile = /* GraphQL */ `
           profileId
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
         }
         nextToken
-        startedAt
       }
       Posts {
         items {
@@ -573,12 +293,8 @@ export const getProfile = /* GraphQL */ `
           opportunityID
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
         }
         nextToken
-        startedAt
       }
       Comments {
         items {
@@ -589,64 +305,19 @@ export const getProfile = /* GraphQL */ `
           profileID
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
         }
         nextToken
-        startedAt
       }
-      OpportunitiesJoined {
+      OpportunitiesOwned {
         items {
           id
           profileId
           opportunityId
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
         }
         nextToken
-        startedAt
       }
-      OpportunitiesOwned {
-        items {
-          id
-          zoomLink
-          organizations
-          description
-          isApproved
-          eventBanner
-          eventName
-          startTime
-          endTime
-          locationType
-          eventData
-          subject
-          preferences
-          profileID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        nextToken
-        startedAt
-      }
-      experience {
-        end
-        start
-        title
-        company
-        location
-        description
-        currentPosition
-      }
-      schoolEmail
-      infoRequest
-      infoResponse
       Requests {
         items {
           id
@@ -660,18 +331,23 @@ export const getProfile = /* GraphQL */ `
           profileID
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
         }
         nextToken
-        startedAt
       }
+      experience {
+        end
+        start
+        title
+        company
+        location
+        description
+        currentPosition
+      }
+      schoolEmail
+      infoRequest
+      infoResponse
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;
@@ -714,27 +390,21 @@ export const listProfiles = /* GraphQL */ `
         isApproved
         Majors {
           nextToken
-          startedAt
         }
         Roles {
           nextToken
-          startedAt
         }
         Posts {
           nextToken
-          startedAt
         }
         Comments {
           nextToken
-          startedAt
-        }
-        OpportunitiesJoined {
-          nextToken
-          startedAt
         }
         OpportunitiesOwned {
           nextToken
-          startedAt
+        }
+        Requests {
+          nextToken
         }
         experience {
           end
@@ -748,112 +418,10 @@ export const listProfiles = /* GraphQL */ `
         schoolEmail
         infoRequest
         infoResponse
-        Requests {
-          nextToken
-          startedAt
-        }
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       nextToken
-      startedAt
-    }
-  }
-`;
-export const syncProfiles = /* GraphQL */ `
-  query SyncProfiles(
-    $filter: ModelProfileFilterInput
-    $limit: Int
-    $nextToken: String
-    $lastSync: AWSTimestamp
-  ) {
-    syncProfiles(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
-      items {
-        id
-        email
-        volunteerExperience {
-          end
-          start
-          title
-          company
-          location
-          description
-          currentPosition
-        }
-        about
-        location {
-          zip
-          city
-          state
-          address
-        }
-        availability {
-          year
-        }
-        picture
-        firstName
-        lastName
-        status
-        graduationYear
-        active
-        isAdmin
-        isApproved
-        Majors {
-          nextToken
-          startedAt
-        }
-        Roles {
-          nextToken
-          startedAt
-        }
-        Posts {
-          nextToken
-          startedAt
-        }
-        Comments {
-          nextToken
-          startedAt
-        }
-        OpportunitiesJoined {
-          nextToken
-          startedAt
-        }
-        OpportunitiesOwned {
-          nextToken
-          startedAt
-        }
-        experience {
-          end
-          start
-          title
-          company
-          location
-          description
-          currentPosition
-        }
-        schoolEmail
-        infoRequest
-        infoResponse
-        Requests {
-          nextToken
-          startedAt
-        }
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-      startedAt
     }
   }
 `;
@@ -871,9 +439,6 @@ export const getRequest = /* GraphQL */ `
       profileID
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;
@@ -896,154 +461,8 @@ export const listRequests = /* GraphQL */ `
         profileID
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       nextToken
-      startedAt
-    }
-  }
-`;
-export const syncRequests = /* GraphQL */ `
-  query SyncRequests(
-    $filter: ModelRequestFilterInput
-    $limit: Int
-    $nextToken: String
-    $lastSync: AWSTimestamp
-  ) {
-    syncRequests(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
-      items {
-        id
-        status
-        responseMessage
-        requestTime
-        responseTime
-        requestMessage
-        opportunityID
-        roleID
-        profileID
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-      startedAt
-    }
-  }
-`;
-export const requestsByOpportunityID = /* GraphQL */ `
-  query RequestsByOpportunityID(
-    $opportunityID: ID!
-    $sortDirection: ModelSortDirection
-    $filter: ModelRequestFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    requestsByOpportunityID(
-      opportunityID: $opportunityID
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        status
-        responseMessage
-        requestTime
-        responseTime
-        requestMessage
-        opportunityID
-        roleID
-        profileID
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-      startedAt
-    }
-  }
-`;
-export const requestsByRoleID = /* GraphQL */ `
-  query RequestsByRoleID(
-    $roleID: ID!
-    $sortDirection: ModelSortDirection
-    $filter: ModelRequestFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    requestsByRoleID(
-      roleID: $roleID
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        status
-        responseMessage
-        requestTime
-        responseTime
-        requestMessage
-        opportunityID
-        roleID
-        profileID
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-      startedAt
-    }
-  }
-`;
-export const requestsByProfileID = /* GraphQL */ `
-  query RequestsByProfileID(
-    $profileID: ID!
-    $sortDirection: ModelSortDirection
-    $filter: ModelRequestFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    requestsByProfileID(
-      profileID: $profileID
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        status
-        responseMessage
-        requestTime
-        responseTime
-        requestMessage
-        opportunityID
-        roleID
-        profileID
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-      startedAt
     }
   }
 `;
@@ -1064,19 +483,12 @@ export const getPost = /* GraphQL */ `
           profileID
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
         }
         nextToken
-        startedAt
       }
       opportunityID
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;
@@ -1095,126 +507,12 @@ export const listPosts = /* GraphQL */ `
         profileID
         Comments {
           nextToken
-          startedAt
         }
         opportunityID
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       nextToken
-      startedAt
-    }
-  }
-`;
-export const syncPosts = /* GraphQL */ `
-  query SyncPosts(
-    $filter: ModelPostFilterInput
-    $limit: Int
-    $nextToken: String
-    $lastSync: AWSTimestamp
-  ) {
-    syncPosts(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
-      items {
-        id
-        title
-        content
-        createdTimestamp
-        profileID
-        Comments {
-          nextToken
-          startedAt
-        }
-        opportunityID
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-      startedAt
-    }
-  }
-`;
-export const postsByProfileID = /* GraphQL */ `
-  query PostsByProfileID(
-    $profileID: ID!
-    $sortDirection: ModelSortDirection
-    $filter: ModelPostFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    postsByProfileID(
-      profileID: $profileID
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        title
-        content
-        createdTimestamp
-        profileID
-        Comments {
-          nextToken
-          startedAt
-        }
-        opportunityID
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-      startedAt
-    }
-  }
-`;
-export const postsByOpportunityID = /* GraphQL */ `
-  query PostsByOpportunityID(
-    $opportunityID: ID!
-    $sortDirection: ModelSortDirection
-    $filter: ModelPostFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    postsByOpportunityID(
-      opportunityID: $opportunityID
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        title
-        content
-        createdTimestamp
-        profileID
-        Comments {
-          nextToken
-          startedAt
-        }
-        opportunityID
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-      startedAt
     }
   }
 `;
@@ -1250,12 +548,8 @@ export const getOpportunity = /* GraphQL */ `
           opportunityID
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
         }
         nextToken
-        startedAt
       }
       Posts {
         items {
@@ -1267,12 +561,18 @@ export const getOpportunity = /* GraphQL */ `
           opportunityID
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
         }
         nextToken
-        startedAt
+      }
+      Owners {
+        items {
+          id
+          profileId
+          opportunityId
+          createdAt
+          updatedAt
+        }
+        nextToken
       }
       Requests {
         items {
@@ -1287,33 +587,11 @@ export const getOpportunity = /* GraphQL */ `
           profileID
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
         }
         nextToken
-        startedAt
-      }
-      profileID
-      profilesJoined {
-        items {
-          id
-          profileId
-          opportunityId
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        nextToken
-        startedAt
       }
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;
@@ -1346,153 +624,20 @@ export const listOpportunities = /* GraphQL */ `
         preferences
         Roles {
           nextToken
-          startedAt
         }
         Posts {
           nextToken
-          startedAt
+        }
+        Owners {
+          nextToken
         }
         Requests {
           nextToken
-          startedAt
-        }
-        profileID
-        profilesJoined {
-          nextToken
-          startedAt
         }
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       nextToken
-      startedAt
-    }
-  }
-`;
-export const syncOpportunities = /* GraphQL */ `
-  query SyncOpportunities(
-    $filter: ModelOpportunityFilterInput
-    $limit: Int
-    $nextToken: String
-    $lastSync: AWSTimestamp
-  ) {
-    syncOpportunities(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
-      items {
-        id
-        zoomLink
-        organizations
-        description
-        isApproved
-        eventBanner
-        eventName
-        startTime
-        endTime
-        locationType
-        location {
-          zip
-          city
-          state
-          address
-        }
-        eventData
-        subject
-        preferences
-        Roles {
-          nextToken
-          startedAt
-        }
-        Posts {
-          nextToken
-          startedAt
-        }
-        Requests {
-          nextToken
-          startedAt
-        }
-        profileID
-        profilesJoined {
-          nextToken
-          startedAt
-        }
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-      startedAt
-    }
-  }
-`;
-export const opportunitiesByProfileID = /* GraphQL */ `
-  query OpportunitiesByProfileID(
-    $profileID: ID!
-    $sortDirection: ModelSortDirection
-    $filter: ModelOpportunityFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    opportunitiesByProfileID(
-      profileID: $profileID
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        zoomLink
-        organizations
-        description
-        isApproved
-        eventBanner
-        eventName
-        startTime
-        endTime
-        locationType
-        location {
-          zip
-          city
-          state
-          address
-        }
-        eventData
-        subject
-        preferences
-        Roles {
-          nextToken
-          startedAt
-        }
-        Posts {
-          nextToken
-          startedAt
-        }
-        Requests {
-          nextToken
-          startedAt
-        }
-        profileID
-        profilesJoined {
-          nextToken
-          startedAt
-        }
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-      startedAt
     }
   }
 `;
@@ -1504,9 +649,6 @@ export const getNote = /* GraphQL */ `
       description
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;
@@ -1523,40 +665,8 @@ export const listNotes = /* GraphQL */ `
         description
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       nextToken
-      startedAt
-    }
-  }
-`;
-export const syncNotes = /* GraphQL */ `
-  query SyncNotes(
-    $filter: ModelNoteFilterInput
-    $limit: Int
-    $nextToken: String
-    $lastSync: AWSTimestamp
-  ) {
-    syncNotes(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
-      items {
-        id
-        name
-        description
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-      startedAt
     }
   }
 `;
@@ -1574,45 +684,31 @@ export const getRoleMajor = /* GraphQL */ `
         qualifications
         Majors {
           nextToken
-          startedAt
         }
         Profiles {
           nextToken
-          startedAt
         }
         opportunityID
         Requests {
           nextToken
-          startedAt
         }
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       major {
         id
         name
         profiles {
           nextToken
-          startedAt
         }
         Roles {
           nextToken
-          startedAt
         }
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;
@@ -1636,181 +732,17 @@ export const listRoleMajors = /* GraphQL */ `
           opportunityID
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
         }
         major {
           id
           name
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
         }
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       nextToken
-      startedAt
-    }
-  }
-`;
-export const syncRoleMajors = /* GraphQL */ `
-  query SyncRoleMajors(
-    $filter: ModelRoleMajorFilterInput
-    $limit: Int
-    $nextToken: String
-    $lastSync: AWSTimestamp
-  ) {
-    syncRoleMajors(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
-      items {
-        id
-        roleId
-        majorId
-        role {
-          id
-          name
-          description
-          isFilled
-          qualifications
-          opportunityID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        major {
-          id
-          name
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-      startedAt
-    }
-  }
-`;
-export const roleMajorsByRoleId = /* GraphQL */ `
-  query RoleMajorsByRoleId(
-    $roleId: ID!
-    $sortDirection: ModelSortDirection
-    $filter: ModelRoleMajorFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    roleMajorsByRoleId(
-      roleId: $roleId
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        roleId
-        majorId
-        role {
-          id
-          name
-          description
-          isFilled
-          qualifications
-          opportunityID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        major {
-          id
-          name
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-      startedAt
-    }
-  }
-`;
-export const roleMajorsByMajorId = /* GraphQL */ `
-  query RoleMajorsByMajorId(
-    $majorId: ID!
-    $sortDirection: ModelSortDirection
-    $filter: ModelRoleMajorFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    roleMajorsByMajorId(
-      majorId: $majorId
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        roleId
-        majorId
-        role {
-          id
-          name
-          description
-          isFilled
-          qualifications
-          opportunityID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        major {
-          id
-          name
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-      startedAt
     }
   }
 `;
@@ -1828,22 +760,16 @@ export const getProfileRole = /* GraphQL */ `
         qualifications
         Majors {
           nextToken
-          startedAt
         }
         Profiles {
           nextToken
-          startedAt
         }
         opportunityID
         Requests {
           nextToken
-          startedAt
         }
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       profile {
         id
@@ -1877,27 +803,21 @@ export const getProfileRole = /* GraphQL */ `
         isApproved
         Majors {
           nextToken
-          startedAt
         }
         Roles {
           nextToken
-          startedAt
         }
         Posts {
           nextToken
-          startedAt
         }
         Comments {
           nextToken
-          startedAt
-        }
-        OpportunitiesJoined {
-          nextToken
-          startedAt
         }
         OpportunitiesOwned {
           nextToken
-          startedAt
+        }
+        Requests {
+          nextToken
         }
         experience {
           end
@@ -1911,21 +831,11 @@ export const getProfileRole = /* GraphQL */ `
         schoolEmail
         infoRequest
         infoResponse
-        Requests {
-          nextToken
-          startedAt
-        }
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;
@@ -1949,9 +859,6 @@ export const listProfileRoles = /* GraphQL */ `
           opportunityID
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
         }
         profile {
           id
@@ -1970,208 +877,11 @@ export const listProfileRoles = /* GraphQL */ `
           infoResponse
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
         }
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       nextToken
-      startedAt
-    }
-  }
-`;
-export const syncProfileRoles = /* GraphQL */ `
-  query SyncProfileRoles(
-    $filter: ModelProfileRoleFilterInput
-    $limit: Int
-    $nextToken: String
-    $lastSync: AWSTimestamp
-  ) {
-    syncProfileRoles(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
-      items {
-        id
-        roleId
-        profileId
-        role {
-          id
-          name
-          description
-          isFilled
-          qualifications
-          opportunityID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        profile {
-          id
-          email
-          about
-          picture
-          firstName
-          lastName
-          status
-          graduationYear
-          active
-          isAdmin
-          isApproved
-          schoolEmail
-          infoRequest
-          infoResponse
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-      startedAt
-    }
-  }
-`;
-export const profileRolesByRoleId = /* GraphQL */ `
-  query ProfileRolesByRoleId(
-    $roleId: ID!
-    $sortDirection: ModelSortDirection
-    $filter: ModelProfileRoleFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    profileRolesByRoleId(
-      roleId: $roleId
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        roleId
-        profileId
-        role {
-          id
-          name
-          description
-          isFilled
-          qualifications
-          opportunityID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        profile {
-          id
-          email
-          about
-          picture
-          firstName
-          lastName
-          status
-          graduationYear
-          active
-          isAdmin
-          isApproved
-          schoolEmail
-          infoRequest
-          infoResponse
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-      startedAt
-    }
-  }
-`;
-export const profileRolesByProfileId = /* GraphQL */ `
-  query ProfileRolesByProfileId(
-    $profileId: ID!
-    $sortDirection: ModelSortDirection
-    $filter: ModelProfileRoleFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    profileRolesByProfileId(
-      profileId: $profileId
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        roleId
-        profileId
-        role {
-          id
-          name
-          description
-          isFilled
-          qualifications
-          opportunityID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        profile {
-          id
-          email
-          about
-          picture
-          firstName
-          lastName
-          status
-          graduationYear
-          active
-          isAdmin
-          isApproved
-          schoolEmail
-          infoRequest
-          infoResponse
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-      startedAt
     }
   }
 `;
@@ -2186,17 +896,12 @@ export const getProfileMajor = /* GraphQL */ `
         name
         profiles {
           nextToken
-          startedAt
         }
         Roles {
           nextToken
-          startedAt
         }
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       profile {
         id
@@ -2230,27 +935,21 @@ export const getProfileMajor = /* GraphQL */ `
         isApproved
         Majors {
           nextToken
-          startedAt
         }
         Roles {
           nextToken
-          startedAt
         }
         Posts {
           nextToken
-          startedAt
         }
         Comments {
           nextToken
-          startedAt
-        }
-        OpportunitiesJoined {
-          nextToken
-          startedAt
         }
         OpportunitiesOwned {
           nextToken
-          startedAt
+        }
+        Requests {
+          nextToken
         }
         experience {
           end
@@ -2264,21 +963,11 @@ export const getProfileMajor = /* GraphQL */ `
         schoolEmail
         infoRequest
         infoResponse
-        Requests {
-          nextToken
-          startedAt
-        }
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;
@@ -2298,9 +987,6 @@ export const listProfileMajors = /* GraphQL */ `
           name
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
         }
         profile {
           id
@@ -2319,202 +1005,17 @@ export const listProfileMajors = /* GraphQL */ `
           infoResponse
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
         }
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       nextToken
-      startedAt
     }
   }
 `;
-export const syncProfileMajors = /* GraphQL */ `
-  query SyncProfileMajors(
-    $filter: ModelProfileMajorFilterInput
-    $limit: Int
-    $nextToken: String
-    $lastSync: AWSTimestamp
-  ) {
-    syncProfileMajors(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
-      items {
-        id
-        majorId
-        profileId
-        major {
-          id
-          name
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        profile {
-          id
-          email
-          about
-          picture
-          firstName
-          lastName
-          status
-          graduationYear
-          active
-          isAdmin
-          isApproved
-          schoolEmail
-          infoRequest
-          infoResponse
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-      startedAt
-    }
-  }
-`;
-export const profileMajorsByMajorId = /* GraphQL */ `
-  query ProfileMajorsByMajorId(
-    $majorId: ID!
-    $sortDirection: ModelSortDirection
-    $filter: ModelProfileMajorFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    profileMajorsByMajorId(
-      majorId: $majorId
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        majorId
-        profileId
-        major {
-          id
-          name
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        profile {
-          id
-          email
-          about
-          picture
-          firstName
-          lastName
-          status
-          graduationYear
-          active
-          isAdmin
-          isApproved
-          schoolEmail
-          infoRequest
-          infoResponse
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-      startedAt
-    }
-  }
-`;
-export const profileMajorsByProfileId = /* GraphQL */ `
-  query ProfileMajorsByProfileId(
-    $profileId: ID!
-    $sortDirection: ModelSortDirection
-    $filter: ModelProfileMajorFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    profileMajorsByProfileId(
-      profileId: $profileId
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        majorId
-        profileId
-        major {
-          id
-          name
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        profile {
-          id
-          email
-          about
-          picture
-          firstName
-          lastName
-          status
-          graduationYear
-          active
-          isAdmin
-          isApproved
-          schoolEmail
-          infoRequest
-          infoResponse
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-      startedAt
-    }
-  }
-`;
-export const getOpportunityProfile = /* GraphQL */ `
-  query GetOpportunityProfile($id: ID!) {
-    getOpportunityProfile(id: $id) {
+export const getProfileOpportunity = /* GraphQL */ `
+  query GetProfileOpportunity($id: ID!) {
+    getProfileOpportunity(id: $id) {
       id
       profileId
       opportunityId
@@ -2550,27 +1051,21 @@ export const getOpportunityProfile = /* GraphQL */ `
         isApproved
         Majors {
           nextToken
-          startedAt
         }
         Roles {
           nextToken
-          startedAt
         }
         Posts {
           nextToken
-          startedAt
         }
         Comments {
           nextToken
-          startedAt
-        }
-        OpportunitiesJoined {
-          nextToken
-          startedAt
         }
         OpportunitiesOwned {
           nextToken
-          startedAt
+        }
+        Requests {
+          nextToken
         }
         experience {
           end
@@ -2584,15 +1079,8 @@ export const getOpportunityProfile = /* GraphQL */ `
         schoolEmail
         infoRequest
         infoResponse
-        Requests {
-          nextToken
-          startedAt
-        }
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       opportunity {
         id
@@ -2616,42 +1104,31 @@ export const getOpportunityProfile = /* GraphQL */ `
         preferences
         Roles {
           nextToken
-          startedAt
         }
         Posts {
           nextToken
-          startedAt
+        }
+        Owners {
+          nextToken
         }
         Requests {
           nextToken
-          startedAt
-        }
-        profileID
-        profilesJoined {
-          nextToken
-          startedAt
         }
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       createdAt
       updatedAt
-      _version
-      _deleted
-      _lastChangedAt
     }
   }
 `;
-export const listOpportunityProfiles = /* GraphQL */ `
-  query ListOpportunityProfiles(
-    $filter: ModelOpportunityProfileFilterInput
+export const listProfileOpportunities = /* GraphQL */ `
+  query ListProfileOpportunities(
+    $filter: ModelProfileOpportunityFilterInput
     $limit: Int
     $nextToken: String
   ) {
-    listOpportunityProfiles(
+    listProfileOpportunities(
       filter: $filter
       limit: $limit
       nextToken: $nextToken
@@ -2677,9 +1154,6 @@ export const listOpportunityProfiles = /* GraphQL */ `
           infoResponse
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
         }
         opportunity {
           id
@@ -2695,41 +1169,383 @@ export const listOpportunityProfiles = /* GraphQL */ `
           eventData
           subject
           preferences
-          profileID
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
         }
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       nextToken
-      startedAt
     }
   }
 `;
-export const syncOpportunityProfiles = /* GraphQL */ `
-  query SyncOpportunityProfiles(
-    $filter: ModelOpportunityProfileFilterInput
+export const commentsByPostID = /* GraphQL */ `
+  query CommentsByPostID(
+    $postID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelCommentFilterInput
     $limit: Int
     $nextToken: String
-    $lastSync: AWSTimestamp
   ) {
-    syncOpportunityProfiles(
+    commentsByPostID(
+      postID: $postID
+      sortDirection: $sortDirection
       filter: $filter
       limit: $limit
       nextToken: $nextToken
-      lastSync: $lastSync
     ) {
       items {
         id
+        content
+        createdTimestamp
+        postID
+        profileID
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const commentsByProfileID = /* GraphQL */ `
+  query CommentsByProfileID(
+    $profileID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelCommentFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    commentsByProfileID(
+      profileID: $profileID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        content
+        createdTimestamp
+        postID
+        profileID
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const rolesByOpportunityID = /* GraphQL */ `
+  query RolesByOpportunityID(
+    $opportunityID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelRoleFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    rolesByOpportunityID(
+      opportunityID: $opportunityID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        name
+        description
+        isFilled
+        qualifications
+        Majors {
+          nextToken
+        }
+        Profiles {
+          nextToken
+        }
+        opportunityID
+        Requests {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const requestsByOpportunityID = /* GraphQL */ `
+  query RequestsByOpportunityID(
+    $opportunityID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelRequestFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    requestsByOpportunityID(
+      opportunityID: $opportunityID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        status
+        responseMessage
+        requestTime
+        responseTime
+        requestMessage
+        opportunityID
+        roleID
+        profileID
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const requestsByRoleID = /* GraphQL */ `
+  query RequestsByRoleID(
+    $roleID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelRequestFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    requestsByRoleID(
+      roleID: $roleID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        status
+        responseMessage
+        requestTime
+        responseTime
+        requestMessage
+        opportunityID
+        roleID
+        profileID
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const requestsByProfileID = /* GraphQL */ `
+  query RequestsByProfileID(
+    $profileID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelRequestFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    requestsByProfileID(
+      profileID: $profileID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        status
+        responseMessage
+        requestTime
+        responseTime
+        requestMessage
+        opportunityID
+        roleID
+        profileID
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const postsByProfileID = /* GraphQL */ `
+  query PostsByProfileID(
+    $profileID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelPostFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    postsByProfileID(
+      profileID: $profileID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        title
+        content
+        createdTimestamp
+        profileID
+        Comments {
+          nextToken
+        }
+        opportunityID
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const postsByOpportunityID = /* GraphQL */ `
+  query PostsByOpportunityID(
+    $opportunityID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelPostFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    postsByOpportunityID(
+      opportunityID: $opportunityID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        title
+        content
+        createdTimestamp
+        profileID
+        Comments {
+          nextToken
+        }
+        opportunityID
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const roleMajorsByRoleId = /* GraphQL */ `
+  query RoleMajorsByRoleId(
+    $roleId: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelRoleMajorFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    roleMajorsByRoleId(
+      roleId: $roleId
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        roleId
+        majorId
+        role {
+          id
+          name
+          description
+          isFilled
+          qualifications
+          opportunityID
+          createdAt
+          updatedAt
+        }
+        major {
+          id
+          name
+          createdAt
+          updatedAt
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const roleMajorsByMajorId = /* GraphQL */ `
+  query RoleMajorsByMajorId(
+    $majorId: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelRoleMajorFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    roleMajorsByMajorId(
+      majorId: $majorId
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        roleId
+        majorId
+        role {
+          id
+          name
+          description
+          isFilled
+          qualifications
+          opportunityID
+          createdAt
+          updatedAt
+        }
+        major {
+          id
+          name
+          createdAt
+          updatedAt
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const profileRolesByRoleId = /* GraphQL */ `
+  query ProfileRolesByRoleId(
+    $roleId: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelProfileRoleFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    profileRolesByRoleId(
+      roleId: $roleId
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        roleId
         profileId
-        opportunityId
+        role {
+          id
+          name
+          description
+          isFilled
+          qualifications
+          opportunityID
+          createdAt
+          updatedAt
+        }
         profile {
           id
           email
@@ -2747,51 +1563,177 @@ export const syncOpportunityProfiles = /* GraphQL */ `
           infoResponse
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        opportunity {
-          id
-          zoomLink
-          organizations
-          description
-          isApproved
-          eventBanner
-          eventName
-          startTime
-          endTime
-          locationType
-          eventData
-          subject
-          preferences
-          profileID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
         }
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       nextToken
-      startedAt
     }
   }
 `;
-export const opportunityProfilesByProfileId = /* GraphQL */ `
-  query OpportunityProfilesByProfileId(
+export const profileRolesByProfileId = /* GraphQL */ `
+  query ProfileRolesByProfileId(
     $profileId: ID!
     $sortDirection: ModelSortDirection
-    $filter: ModelOpportunityProfileFilterInput
+    $filter: ModelProfileRoleFilterInput
     $limit: Int
     $nextToken: String
   ) {
-    opportunityProfilesByProfileId(
+    profileRolesByProfileId(
+      profileId: $profileId
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        roleId
+        profileId
+        role {
+          id
+          name
+          description
+          isFilled
+          qualifications
+          opportunityID
+          createdAt
+          updatedAt
+        }
+        profile {
+          id
+          email
+          about
+          picture
+          firstName
+          lastName
+          status
+          graduationYear
+          active
+          isAdmin
+          isApproved
+          schoolEmail
+          infoRequest
+          infoResponse
+          createdAt
+          updatedAt
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const profileMajorsByMajorId = /* GraphQL */ `
+  query ProfileMajorsByMajorId(
+    $majorId: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelProfileMajorFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    profileMajorsByMajorId(
+      majorId: $majorId
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        majorId
+        profileId
+        major {
+          id
+          name
+          createdAt
+          updatedAt
+        }
+        profile {
+          id
+          email
+          about
+          picture
+          firstName
+          lastName
+          status
+          graduationYear
+          active
+          isAdmin
+          isApproved
+          schoolEmail
+          infoRequest
+          infoResponse
+          createdAt
+          updatedAt
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const profileMajorsByProfileId = /* GraphQL */ `
+  query ProfileMajorsByProfileId(
+    $profileId: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelProfileMajorFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    profileMajorsByProfileId(
+      profileId: $profileId
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        majorId
+        profileId
+        major {
+          id
+          name
+          createdAt
+          updatedAt
+        }
+        profile {
+          id
+          email
+          about
+          picture
+          firstName
+          lastName
+          status
+          graduationYear
+          active
+          isAdmin
+          isApproved
+          schoolEmail
+          infoRequest
+          infoResponse
+          createdAt
+          updatedAt
+        }
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const profileOpportunitiesByProfileId = /* GraphQL */ `
+  query ProfileOpportunitiesByProfileId(
+    $profileId: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelProfileOpportunityFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    profileOpportunitiesByProfileId(
       profileId: $profileId
       sortDirection: $sortDirection
       filter: $filter
@@ -2819,9 +1761,6 @@ export const opportunityProfilesByProfileId = /* GraphQL */ `
           infoResponse
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
         }
         opportunity {
           id
@@ -2837,33 +1776,25 @@ export const opportunityProfilesByProfileId = /* GraphQL */ `
           eventData
           subject
           preferences
-          profileID
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
         }
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       nextToken
-      startedAt
     }
   }
 `;
-export const opportunityProfilesByOpportunityId = /* GraphQL */ `
-  query OpportunityProfilesByOpportunityId(
+export const profileOpportunitiesByOpportunityId = /* GraphQL */ `
+  query ProfileOpportunitiesByOpportunityId(
     $opportunityId: ID!
     $sortDirection: ModelSortDirection
-    $filter: ModelOpportunityProfileFilterInput
+    $filter: ModelProfileOpportunityFilterInput
     $limit: Int
     $nextToken: String
   ) {
-    opportunityProfilesByOpportunityId(
+    profileOpportunitiesByOpportunityId(
       opportunityId: $opportunityId
       sortDirection: $sortDirection
       filter: $filter
@@ -2891,9 +1822,6 @@ export const opportunityProfilesByOpportunityId = /* GraphQL */ `
           infoResponse
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
         }
         opportunity {
           id
@@ -2909,21 +1837,13 @@ export const opportunityProfilesByOpportunityId = /* GraphQL */ `
           eventData
           subject
           preferences
-          profileID
           createdAt
           updatedAt
-          _version
-          _deleted
-          _lastChangedAt
         }
         createdAt
         updatedAt
-        _version
-        _deleted
-        _lastChangedAt
       }
       nextToken
-      startedAt
     }
   }
 `;
