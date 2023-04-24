@@ -108,11 +108,234 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
+                "email": {
+                    "name": "email",
+                    "isArray": false,
+                    "type": "AWSEmail",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "website": {
+                    "name": "website",
+                    "isArray": false,
+                    "type": "AWSURL",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "description": {
+                    "name": "description",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "instagram": {
+                    "name": "instagram",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                }
+            },
+            "syncable": true,
+            "pluralName": "Organizations",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "allow": "public",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "Comment": {
+            "name": "Comment",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "content": {
+                    "name": "content",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "createdTimestamp": {
+                    "name": "createdTimestamp",
+                    "isArray": false,
+                    "type": "AWSTimestamp",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "postID": {
+                    "name": "postID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "profileID": {
+                    "name": "profileID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                }
+            },
+            "syncable": true,
+            "pluralName": "Comments",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byPost",
+                        "fields": [
+                            "postID"
+                        ]
+                    }
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byProfile",
+                        "fields": [
+                            "profileID"
+                        ]
+                    }
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "allow": "public",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "Role": {
+            "name": "Role",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "name": {
+                    "name": "name",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "description": {
+                    "name": "description",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "isFilled": {
+                    "name": "isFilled",
+                    "isArray": false,
+                    "type": "Boolean",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "qualifications": {
+                    "name": "qualifications",
+                    "isArray": true,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true
+                },
+                "Majors": {
+                    "name": "Majors",
+                    "isArray": true,
+                    "type": {
+                        "model": "RoleMajor"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "role"
+                        ]
+                    }
+                },
                 "Profiles": {
                     "name": "Profiles",
                     "isArray": true,
                     "type": {
-                        "model": "KeywordProfile"
+                        "model": "ProfileRole"
                     },
                     "isRequired": false,
                     "attributes": [],
@@ -120,15 +343,22 @@ export const schema = {
                     "association": {
                         "connectionType": "HAS_MANY",
                         "associatedWith": [
-                            "keyword"
+                            "role"
                         ]
                     }
                 },
-                "Opportunities": {
-                    "name": "Opportunities",
+                "opportunityID": {
+                    "name": "opportunityID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "Requests": {
+                    "name": "Requests",
                     "isArray": true,
                     "type": {
-                        "model": "KeywordOpportunity"
+                        "model": "Request"
                     },
                     "isRequired": false,
                     "attributes": [],
@@ -136,7 +366,114 @@ export const schema = {
                     "association": {
                         "connectionType": "HAS_MANY",
                         "associatedWith": [
-                            "keyword"
+                            "roleID"
+                        ]
+                    }
+                },
+                "capacity": {
+                    "name": "capacity",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                }
+            },
+            "syncable": true,
+            "pluralName": "Roles",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byOpportunity",
+                        "fields": [
+                            "opportunityID"
+                        ]
+                    }
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "allow": "public",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "Major": {
+            "name": "Major",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "name": {
+                    "name": "name",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "profiles": {
+                    "name": "profiles",
+                    "isArray": true,
+                    "type": {
+                        "model": "ProfileMajor"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "major"
+                        ]
+                    }
+                },
+                "Roles": {
+                    "name": "Roles",
+                    "isArray": true,
+                    "type": {
+                        "model": "RoleMajor"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "major"
                         ]
                     }
                 },
@@ -158,7 +495,7 @@ export const schema = {
                 }
             },
             "syncable": true,
-            "pluralName": "Keywords",
+            "pluralName": "Majors",
             "attributes": [
                 {
                     "type": "model",
@@ -429,384 +766,6 @@ export const schema = {
                     "association": {
                         "connectionType": "HAS_MANY",
                         "associatedWith": [
-                            "roleID"
-                        ]
-                    }
-                },
-                "capacity": {
-                    "name": "capacity",
-                    "isArray": false,
-                    "type": "Int",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "createdAt": {
-                    "name": "createdAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                },
-                "updatedAt": {
-                    "name": "updatedAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                }
-            },
-            "syncable": true,
-            "pluralName": "Profiles",
-            "attributes": [
-                {
-                    "type": "model",
-                    "properties": {}
-                },
-                {
-                    "type": "auth",
-                    "properties": {
-                        "rules": [
-                            {
-                                "allow": "public",
-                                "operations": [
-                                    "create",
-                                    "update",
-                                    "delete",
-                                    "read"
-                                ]
-                            }
-                        ]
-                    }
-                }
-            ]
-        },
-        "Major": {
-            "name": "Major",
-            "fields": {
-                "id": {
-                    "name": "id",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "name": {
-                    "name": "name",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "profiles": {
-                    "name": "profiles",
-                    "isArray": true,
-                    "type": {
-                        "model": "ProfileMajor"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true,
-                    "association": {
-                        "connectionType": "HAS_MANY",
-                        "associatedWith": [
-                            "major"
-                        ]
-                    }
-                },
-                "Roles": {
-                    "name": "Roles",
-                    "isArray": true,
-                    "type": {
-                        "model": "RoleMajor"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true,
-                    "association": {
-                        "connectionType": "HAS_MANY",
-                        "associatedWith": [
-                            "major"
-                        ]
-                    }
-                },
-                "createdAt": {
-                    "name": "createdAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                },
-                "updatedAt": {
-                    "name": "updatedAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                }
-            },
-            "syncable": true,
-            "pluralName": "Majors",
-            "attributes": [
-                {
-                    "type": "model",
-                    "properties": {}
-                },
-                {
-                    "type": "auth",
-                    "properties": {
-                        "rules": [
-                            {
-                                "allow": "public",
-                                "operations": [
-                                    "create",
-                                    "update",
-                                    "delete",
-                                    "read"
-                                ]
-                            }
-                        ]
-                    }
-                }
-            ]
-        },
-        "Role": {
-            "name": "Role",
-            "fields": {
-                "id": {
-                    "name": "id",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "name": {
-                    "name": "name",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "description": {
-                    "name": "description",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "availability": {
-                    "name": "availability",
-                    "isArray": false,
-                    "type": {
-                        "nonModel": "Availability"
-                    },
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "picture": {
-                    "name": "picture",
-                    "isArray": false,
-                    "type": "AWSURL",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "firstName": {
-                    "name": "firstName",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "isFilled": {
-                    "name": "isFilled",
-                    "isArray": false,
-                    "type": "Boolean",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "qualifications": {
-                    "name": "qualifications",
-                    "isArray": true,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true
-                },
-                "Majors": {
-                    "name": "Majors",
-                    "isArray": true,
-                    "type": {
-                        "model": "RoleMajor"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true,
-                    "association": {
-                        "connectionType": "HAS_MANY",
-                        "associatedWith": [
-                            "role"
-                        ]
-                    }
-                },
-                "Profiles": {
-                    "name": "Profiles",
-                    "isArray": true,
-                    "type": {
-                        "model": "ProfileRole"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true,
-                    "association": {
-                        "connectionType": "HAS_MANY",
-                        "associatedWith": [
-                            "role"
-                        ]
-                    }
-                },
-                "opportunityID": {
-                    "name": "opportunityID",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "Requests": {
-                    "name": "Requests",
-                    "isArray": true,
-                    "type": {
-                        "model": "Request"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true,
-                    "association": {
-                        "connectionType": "HAS_MANY",
-                        "associatedWith": [
-                            "roleID"
-                        ]
-                    }
-                },
-                "capacity": {
-                    "name": "capacity",
-                    "isArray": false,
-                    "type": "Int",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "createdAt": {
-                    "name": "createdAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                },
-                "OpportunitiesJoined": {
-                    "name": "OpportunitiesJoined",
-                    "isArray": true,
-                    "type": {
-                        "model": "OpportunityProfile"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true,
-                    "association": {
-                        "connectionType": "HAS_MANY",
-                        "associatedWith": [
-                            "profile"
-                        ]
-                    }
-                },
-                "OpportunitiesOwned": {
-                    "name": "OpportunitiesOwned",
-                    "isArray": true,
-                    "type": {
-                        "model": "Opportunity"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true,
-                    "association": {
-                        "connectionType": "HAS_MANY",
-                        "associatedWith": [
-                            "profileID"
-                        ]
-                    }
-                },
-                {
-                    "type": "auth",
-                    "properties": {
-                        "rules": [
-                            {
-                                "allow": "public",
-                                "operations": [
-                                    "create",
-                                    "update",
-                                    "delete",
-                                    "read"
-                                ]
-                            }
-                        ]
-                    }
-                }
-            ]
-        },
-        "Request": {
-            "name": "Request",
-            "fields": {
-                "id": {
-                    "name": "id",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "status": {
-                    "name": "status",
-                    "isArray": false,
-                    "type": {
-                        "enum": "RequestStatus"
-                    },
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "responseMessage": {
-                    "name": "responseMessage",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "infoRequest": {
-                    "name": "infoRequest",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "infoResponse": {
-                    "name": "infoResponse",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "Requests": {
-                    "name": "Requests",
-                    "isArray": true,
-                    "type": {
-                        "model": "Request"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true,
-                    "association": {
-                        "connectionType": "HAS_MANY",
-                        "associatedWith": [
                             "profileID"
                         ]
                     }
@@ -845,38 +804,11 @@ export const schema = {
                 }
             },
             "syncable": true,
-            "pluralName": "Requests",
+            "pluralName": "Profiles",
             "attributes": [
                 {
                     "type": "model",
                     "properties": {}
-                },
-                {
-                    "type": "key",
-                    "properties": {
-                        "name": "byOpportunity",
-                        "fields": [
-                            "opportunityID"
-                        ]
-                    }
-                },
-                {
-                    "type": "key",
-                    "properties": {
-                        "name": "byRole",
-                        "fields": [
-                            "roleID"
-                        ]
-                    }
-                },
-                {
-                    "type": "key",
-                    "properties": {
-                        "name": "byProfile",
-                        "fields": [
-                            "profileID"
-                        ]
-                    }
                 },
                 {
                     "type": "auth",
@@ -1133,104 +1065,6 @@ export const schema = {
                         "name": "byOpportunity",
                         "fields": [
                             "opportunityID"
-                        ]
-                    }
-                },
-                {
-                    "type": "auth",
-                    "properties": {
-                        "rules": [
-                            {
-                                "allow": "public",
-                                "operations": [
-                                    "create",
-                                    "update",
-                                    "delete",
-                                    "read"
-                                ]
-                            }
-                        ]
-                    }
-                }
-            ]
-        },
-        "Comment": {
-            "name": "Comment",
-            "fields": {
-                "id": {
-                    "name": "id",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "content": {
-                    "name": "content",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "createdTimestamp": {
-                    "name": "createdTimestamp",
-                    "isArray": false,
-                    "type": "AWSTimestamp",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "postID": {
-                    "name": "postID",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "profileID": {
-                    "name": "profileID",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "createdAt": {
-                    "name": "createdAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                },
-                "updatedAt": {
-                    "name": "updatedAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                }
-            },
-            "syncable": true,
-            "pluralName": "Comments",
-            "attributes": [
-                {
-                    "type": "model",
-                    "properties": {}
-                },
-                {
-                    "type": "key",
-                    "properties": {
-                        "name": "byPost",
-                        "fields": [
-                            "postID"
-                        ]
-                    }
-                },
-                {
-                    "type": "key",
-                    "properties": {
-                        "name": "byProfile",
-                        "fields": [
-                            "profileID"
                         ]
                     }
                 },
@@ -1517,14 +1351,14 @@ export const schema = {
                 "description": {
                     "name": "description",
                     "isArray": false,
-                    "type": "AWSEmail",
+                    "type": "String",
                     "isRequired": false,
                     "attributes": []
                 },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
-                    "type": "AWSURL",
+                    "type": "AWSDateTime",
                     "isRequired": false,
                     "attributes": [],
                     "isReadOnly": true
@@ -1532,7 +1366,7 @@ export const schema = {
                 "updatedAt": {
                     "name": "updatedAt",
                     "isArray": false,
-                    "type": "String",
+                    "type": "AWSDateTime",
                     "isRequired": false,
                     "attributes": [],
                     "isReadOnly": true
@@ -1759,8 +1593,8 @@ export const schema = {
                 }
             ]
         },
-        "KeywordProfile": {
-            "name": "KeywordProfile",
+        "RoleMajor": {
+            "name": "RoleMajor",
             "fields": {
                 "id": {
                     "name": "id",
@@ -1769,204 +1603,8 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "keywordId": {
-                    "name": "keywordId",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "profileId": {
-                    "name": "profileId",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "keyword": {
-                    "name": "keyword",
-                    "isArray": false,
-                    "type": {
-                        "model": "Keyword"
-                    },
-                    "isRequired": true,
-                    "attributes": [],
-                    "association": {
-                        "connectionType": "BELONGS_TO",
-                        "targetNames": [
-                            "keywordId"
-                        ]
-                    }
-                },
-                "profile": {
-                    "name": "profile",
-                    "isArray": false,
-                    "type": {
-                        "model": "Profile"
-                    },
-                    "isRequired": true,
-                    "attributes": [],
-                    "association": {
-                        "connectionType": "BELONGS_TO",
-                        "targetNames": [
-                            "profileId"
-                        ]
-                    }
-                },
-                "createdAt": {
-                    "name": "createdAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                },
-                "updatedAt": {
-                    "name": "updatedAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                }
-            },
-            "syncable": true,
-            "pluralName": "KeywordProfiles",
-            "attributes": [
-                {
-                    "type": "model",
-                    "properties": {}
-                },
-                {
-                    "type": "key",
-                    "properties": {
-                        "name": "byKeyword",
-                        "fields": [
-                            "keywordId"
-                        ]
-                    }
-                },
-                {
-                    "type": "key",
-                    "properties": {
-                        "name": "byProfile",
-                        "fields": [
-                            "profileId"
-                        ]
-                    }
-                }
-            ]
-        },
-        "KeywordOpportunity": {
-            "name": "KeywordOpportunity",
-            "fields": {
-                "id": {
-                    "name": "id",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "keywordId": {
-                    "name": "keywordId",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "opportunityId": {
-                    "name": "opportunityId",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "keyword": {
-                    "name": "keyword",
-                    "isArray": false,
-                    "type": {
-                        "model": "Keyword"
-                    },
-                    "isRequired": true,
-                    "attributes": [],
-                    "association": {
-                        "connectionType": "BELONGS_TO",
-                        "targetNames": [
-                            "keywordId"
-                        ]
-                    }
-                },
-                "opportunity": {
-                    "name": "opportunity",
-                    "isArray": false,
-                    "type": {
-                        "model": "Opportunity"
-                    },
-                    "isRequired": true,
-                    "attributes": [],
-                    "association": {
-                        "connectionType": "BELONGS_TO",
-                        "targetNames": [
-                            "opportunityId"
-                        ]
-                    }
-                },
-                "createdAt": {
-                    "name": "createdAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                },
-                "updatedAt": {
-                    "name": "updatedAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                }
-            },
-            "syncable": true,
-            "pluralName": "KeywordOpportunities",
-            "attributes": [
-                {
-                    "type": "model",
-                    "properties": {}
-                },
-                {
-                    "type": "key",
-                    "properties": {
-                        "name": "byKeyword",
-                        "fields": [
-                            "keywordId"
-                        ]
-                    }
-                },
-                {
-                    "type": "key",
-                    "properties": {
-                        "name": "byOpportunity",
-                        "fields": [
-                            "opportunityId"
-                        ]
-                    }
-                }
-            ]
-        },
-        "ProfileMajor": {
-            "name": "ProfileMajor",
-            "fields": {
-                "id": {
-                    "name": "id",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "profileId": {
-                    "name": "profileId",
+                "roleId": {
+                    "name": "roleId",
                     "isArray": false,
                     "type": "ID",
                     "isRequired": false,
@@ -1979,18 +1617,18 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
-                "profile": {
-                    "name": "profile",
+                "role": {
+                    "name": "role",
                     "isArray": false,
                     "type": {
-                        "model": "Profile"
+                        "model": "Role"
                     },
                     "isRequired": true,
                     "attributes": [],
                     "association": {
                         "connectionType": "BELONGS_TO",
                         "targetNames": [
-                            "profileId"
+                            "roleId"
                         ]
                     }
                 },
@@ -2027,7 +1665,7 @@ export const schema = {
                 }
             },
             "syncable": true,
-            "pluralName": "ProfileMajors",
+            "pluralName": "RoleMajors",
             "attributes": [
                 {
                     "type": "model",
@@ -2036,9 +1674,9 @@ export const schema = {
                 {
                     "type": "key",
                     "properties": {
-                        "name": "byProfile",
+                        "name": "byRole",
                         "fields": [
-                            "profileId"
+                            "roleId"
                         ]
                     }
                 },
@@ -2063,13 +1701,6 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "profileId": {
-                    "name": "profileId",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": false,
-                    "attributes": []
-                },
                 "roleId": {
                     "name": "roleId",
                     "isArray": false,
@@ -2077,20 +1708,12 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
-                "profile": {
-                    "name": "profile",
+                "profileId": {
+                    "name": "profileId",
                     "isArray": false,
-                    "type": {
-                        "model": "Profile"
-                    },
-                    "isRequired": true,
-                    "attributes": [],
-                    "association": {
-                        "connectionType": "BELONGS_TO",
-                        "targetNames": [
-                            "profileId"
-                        ]
-                    }
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
                 },
                 "role": {
                     "name": "role",
@@ -2104,6 +1727,21 @@ export const schema = {
                         "connectionType": "BELONGS_TO",
                         "targetNames": [
                             "roleId"
+                        ]
+                    }
+                },
+                "profile": {
+                    "name": "profile",
+                    "isArray": false,
+                    "type": {
+                        "model": "Profile"
+                    },
+                    "isRequired": true,
+                    "attributes": [],
+                    "association": {
+                        "connectionType": "BELONGS_TO",
+                        "targetNames": [
+                            "profileId"
                         ]
                     }
                 },
@@ -2134,18 +1772,116 @@ export const schema = {
                 {
                     "type": "key",
                     "properties": {
-                        "name": "byProfile",
+                        "name": "byRole",
                         "fields": [
-                            "profileId"
+                            "roleId"
                         ]
                     }
                 },
                 {
                     "type": "key",
                     "properties": {
-                        "name": "byRole",
+                        "name": "byProfile",
                         "fields": [
-                            "roleId"
+                            "profileId"
+                        ]
+                    }
+                }
+            ]
+        },
+        "ProfileMajor": {
+            "name": "ProfileMajor",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "majorId": {
+                    "name": "majorId",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "profileId": {
+                    "name": "profileId",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "major": {
+                    "name": "major",
+                    "isArray": false,
+                    "type": {
+                        "model": "Major"
+                    },
+                    "isRequired": true,
+                    "attributes": [],
+                    "association": {
+                        "connectionType": "BELONGS_TO",
+                        "targetNames": [
+                            "majorId"
+                        ]
+                    }
+                },
+                "profile": {
+                    "name": "profile",
+                    "isArray": false,
+                    "type": {
+                        "model": "Profile"
+                    },
+                    "isRequired": true,
+                    "attributes": [],
+                    "association": {
+                        "connectionType": "BELONGS_TO",
+                        "targetNames": [
+                            "profileId"
+                        ]
+                    }
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                }
+            },
+            "syncable": true,
+            "pluralName": "ProfileMajors",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byMajor",
+                        "fields": [
+                            "majorId"
+                        ]
+                    }
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byProfile",
+                        "fields": [
+                            "profileId"
                         ]
                     }
                 }
@@ -2244,104 +1980,6 @@ export const schema = {
                         "name": "byOpportunity",
                         "fields": [
                             "opportunityId"
-                        ]
-                    }
-                }
-            ]
-        },
-        "RoleMajor": {
-            "name": "RoleMajor",
-            "fields": {
-                "id": {
-                    "name": "id",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "majorId": {
-                    "name": "majorId",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "roleId": {
-                    "name": "roleId",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "major": {
-                    "name": "major",
-                    "isArray": false,
-                    "type": {
-                        "model": "Major"
-                    },
-                    "isRequired": true,
-                    "attributes": [],
-                    "association": {
-                        "connectionType": "BELONGS_TO",
-                        "targetNames": [
-                            "majorId"
-                        ]
-                    }
-                },
-                "role": {
-                    "name": "role",
-                    "isArray": false,
-                    "type": {
-                        "model": "Role"
-                    },
-                    "isRequired": true,
-                    "attributes": [],
-                    "association": {
-                        "connectionType": "BELONGS_TO",
-                        "targetNames": [
-                            "roleId"
-                        ]
-                    }
-                },
-                "createdAt": {
-                    "name": "createdAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                },
-                "updatedAt": {
-                    "name": "updatedAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                }
-            },
-            "syncable": true,
-            "pluralName": "RoleMajors",
-            "attributes": [
-                {
-                    "type": "model",
-                    "properties": {}
-                },
-                {
-                    "type": "key",
-                    "properties": {
-                        "name": "byMajor",
-                        "fields": [
-                            "majorId"
-                        ]
-                    }
-                },
-                {
-                    "type": "key",
-                    "properties": {
-                        "name": "byRole",
-                        "fields": [
-                            "roleId"
                         ]
                     }
                 }

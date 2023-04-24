@@ -605,7 +605,7 @@ export default function FetchWrapper({
   const updateRequests = (updatedRequests) => {
     setRequests(updatedRequests);
   };
-  */
+
   useEffect(() => {
     getRequests();
   }, []);

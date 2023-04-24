@@ -37,7 +37,6 @@ export {
   Profile,
   Request,
   Post,
-  Comment,
   Opportunity,
   Note,
   KeywordProfile,
