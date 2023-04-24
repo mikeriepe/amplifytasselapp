@@ -26,14 +26,14 @@ import ThemedButton from './ThemedButton';
 import IconButton from '@mui/material/IconButton';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import {profileStatusToColor} from '../util/ProfileStatus';
+import {opportunityStatusToText, opportunityStatusToColor} from '../util/OpportunityStatus';
 import CircularProgress from '@mui/material/CircularProgress';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import {styled} from '@mui/material/styles';
-import {toast} from 'react-toastify';
 import '../stylesheets/ApprovalTable.css';
 
 import { DataStore } from '@aws-amplify/datastore';
+import { Opportunity } from './../../models';
 import { Profile } from './../../models';
 
 const Page = styled((props) => (
@@ -81,14 +81,14 @@ const Avatar = ({image}, props) => (
  * @return {*} row object
  */
 function Row(props) {
-  const {row, handleSelect} = props;
+  const {row, handleSelect, profile} = props;
   const [open, setOpen] = useState(false);
 
   return (
     <React.Fragment>
       <TableRow>
         <TableCell className='data-cell' padding='checkbox'>
-          <Checkbox value={row.email} onChange={handleSelect}/>
+          <Checkbox value={row.id} onChange={handleSelect}/>
         </TableCell>
         <TableCell className='data-cell' padding='checkbox'>
           <IconButton
@@ -103,21 +103,27 @@ function Row(props) {
         <TableCell className='data-cell' component='th' scope='row'
           sx={{display: 'flex',
             flexDirection: 'row'}}>
-          <Avatar image={row.profilePicture} />
+          <Avatar image={row.eventBanner} />
           {/* eslint-disable-next-line max-len */}
-          <div className='text-center-vert'>{`${row.firstName} ${row.lastName}`}</div>
+          <div className='text-center-vert'>{`${row.eventName}`}</div>
         </TableCell>
-        <TableCell className='data-cell'>{row.email}</TableCell>
-        <TableCell className='data-cell'>{row.graduationYear}</TableCell>
+        <TableCell className='data-cell'>{row.description}</TableCell>
+        <TableCell className='data-cell' component='th' scope='row'
+          sx={{display: 'flex',
+            flexDirection: 'row'}}>
+          <Avatar image={profile.profilePicture} />
+          {/* eslint-disable-next-line max-len */}
+          <div className='text-center-vert'>{`${profile.firstName} ${profile.lastName}`}</div>
+        </TableCell>
         <TableCell className='data-cell'>
           <div style={{display: 'flex',
             flexDirection: 'row',
-            color: profileStatusToColor(row.status)}}>
+            color: opportunityStatusToColor(row.status)}}>
             <FiberManualRecordIcon sx={{
               fontSize: '1em',
               paddingTop: '.21rem',
               paddingRight: '.21rem'}}/>
-            <div>{row.status}</div>
+            <div>{opportunityStatusToText(row.status)}</div>
           </div>
         </TableCell>
       </TableRow>
@@ -137,18 +143,19 @@ function Row(props) {
 }
 
 /**
- * creates account approval content
- * @return {HTML} account approval content
+ * creates opportunity approval content
+ * @return {HTML} opportunity approval content
  */
-export default function ApprovalAccounts() {
-  const [accounts, setAccounts] = useState([]);
+export default function ApprovalOpportunities() {
+  const [opps, setOpps] = useState([]);
+  const [profiles, setProfiles] = useState([]);
   const [selected, setSelected] = useState([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [requestInfo, setRequestInfo] = useState('');
-  const [sortNameOrder, setSortNameOrder] = useState('');
-  const [sortEmailOrder, setSortEmailOrder] = useState('');
-  const [sortYearOrder, setSortYearOrder] = useState('');
+  const [sortTitleOrder, setSortTitleOrder] = useState('');
+  const [sortDescriptionOrder, setSortDescriptionOrder] = useState('');
+  const [sortCreatorOrder, setSortCreatorOrder] = useState('');
   const [sortStatusOrder, setSortStatusOrder] = useState('');
 
   const handleDialogOpen = () => {
@@ -164,107 +171,140 @@ export default function ApprovalAccounts() {
     console.log(e.target.value);
   };
 
-  const sortAccounts = (json, sortBy, reset) => {
+  const handleDialogSubmit = () => {
+    console.log(requestInfo);
+    setDialogOpen(false);
+  };
+
+  const sortOpps = (json, sortBy, reset) => {
     if (reset === true) {
-      setAccounts(json.sort(function(a, b) {
-        return (a.status > b.status) ? 1 : -1;
+      setOpps(json.sort(function(a, b) {
+        /* eslint-disable-next-line max-len */
+        return opportunityStatusToText(a.status) > opportunityStatusToText(b.status) ? -1 : 1;
       }));
       setSortStatusOrder('asc');
       return;
     }
     if (sortBy === 'status') {
       if (sortStatusOrder === '') {
-        setAccounts(json.sort(function(a, b) {
-          return (a.status > b.status) ? 1 : -1;
+        setOpps(json.sort(function(a, b) {
+          /* eslint-disable-next-line max-len */
+          return opportunityStatusToText(a.status) > opportunityStatusToText(b.status) ? -1 : 1;
         }));
         setSortStatusOrder('asc');
       } else if (sortStatusOrder === 'asc') {
-        setAccounts(json.sort(function(a, b) {
-          return (a.status > b.status) ? -1 : 1;
+        setOpps(json.sort(function(a, b) {
+          /* eslint-disable-next-line max-len */
+          return opportunityStatusToText(a.status) > opportunityStatusToText(b.status) ? 1 : -1;
         }));
         setSortStatusOrder('desc');
       } else if (sortStatusOrder === 'desc') {
-        setAccounts(json.sort(function(a, b) {
-          return (a.status > b.status) ? 1 : -1;
+        setOpps(json.sort(function(a, b) {
+          /* eslint-disable-next-line max-len */
+          return opportunityStatusToText(a.status) > opportunityStatusToText(b.status) ? -1 : 1;
         }));
         setSortStatusOrder('asc');
       }
     }
-    if (sortBy === 'name') {
-      if (sortNameOrder === '') {
-        setAccounts(json.sort(function(a, b) {
-          return (a.firstName > b.firstName) ? 1 : -1;
+    if (sortBy === 'title') {
+      if (sortTitleOrder === '') {
+        setOpps(json.sort(function(a, b) {
+          return (a.eventName > b.eventName) ? 1 : -1;
         }));
-        setSortNameOrder('asc');
-      } else if (sortNameOrder === 'asc') {
-        setAccounts(json.sort(function(a, b) {
-          return (a.firstName > b.firstName) ? -1 : 1;
+        setSortTitleOrder('asc');
+      } else if (sortTitleOrder === 'asc') {
+        setOpps(json.sort(function(a, b) {
+          return (a.eventName > b.eventName) ? -1 : 1;
         }));
-        setSortNameOrder('desc');
-      } else if (sortNameOrder === 'desc') {
-        setAccounts(json.sort(function(a, b) {
-          return (a.firstName > b.firstName) ? 1 : -1;
+        setSortTitleOrder('desc');
+      } else if (sortTitleOrder === 'desc') {
+        setOpps(json.sort(function(a, b) {
+          return (a.eventName > b.eventName) ? 1 : -1;
         }));
-        setSortNameOrder('asc');
+        setSortTitleOrder('asc');
       }
     }
-    if (sortBy === 'email') {
-      if (sortEmailOrder === '') {
-        setAccounts(json.sort(function(a, b) {
-          return (a.email > b.email) ? 1 : -1;
+    if (sortBy === 'description') {
+      if (sortDescriptionOrder === '') {
+        setOpps(json.sort(function(a, b) {
+          return (a.description > b.description) ? 1 : -1;
         }));
-        setSortEmailOrder('asc');
-      } else if (sortEmailOrder === 'asc') {
-        setAccounts(json.sort(function(a, b) {
-          return (a.email > b.email) ? -1 : 1;
+        setSortDescriptionOrder('asc');
+      } else if (sortDescriptionOrder === 'asc') {
+        setOpps(json.sort(function(a, b) {
+          return (a.description > b.description) ? -1 : 1;
         }));
-        setSortEmailOrder('desc');
-      } else if (sortEmailOrder === 'desc') {
-        setAccounts(json.sort(function(a, b) {
-          return (a.email > b.email) ? 1 : -1;
+        setSortDescriptionOrder('desc');
+      } else if (sortDescriptionOrder === 'desc') {
+        setOpps(json.sort(function(a, b) {
+          return (a.description > b.description) ? 1 : -1;
         }));
-        setSortEmailOrder('asc');
+        setSortDescriptionOrder('asc');
       }
     }
-    if (sortBy === 'year') {
-      if (sortYearOrder === '') {
-        setAccounts(json.sort(function(a, b) {
-          return a.graduationYear - b.graduationYear;
+    if (sortBy === 'creator') {
+      if (sortCreatorOrder === '') {
+        setOpps(json.sort(function(a, b) {
+          const first = profiles.find((profile) =>
+            profile.id === a.profileID);
+          const second = profiles.find((profile) =>
+            profile.id === b.profileID);
+          return (first.firstName > second.firstName) ? 1 : -1;
         }));
-        setSortYearOrder('asc');
-      } else if (sortYearOrder === 'asc') {
-        setAccounts(json.sort(function(a, b) {
-          return b.graduationYear - a.graduationYear;
+        setSortCreatorOrder('asc');
+      } else if (sortCreatorOrder === 'asc') {
+        setOpps(json.sort(function(a, b) {
+          const first = profiles.find((profile) =>
+            profile.id === a.profileID);
+          const second = profiles.find((profile) =>
+            profile.id === b.profileID);
+          return (first.firstName > second.firstName) ? -1 : 1;
         }));
-        setSortYearOrder('desc');
-      } else if (sortYearOrder === 'desc') {
-        setAccounts(json.sort(function(a, b) {
-          return a.graduationYear - b.graduationyYear;
+        setSortCreatorOrder('desc');
+      } else if (sortCreatorOrder === 'desc') {
+        setOpps(json.sort(function(a, b) {
+          const first = profiles.find((profile) =>
+            profile.id === a.profileID);
+          const second = profiles.find((profile) =>
+            profile.id === b.profileID);
+          return (first.firstName > second.firstName) ? 1 : -1;
         }));
-        setSortYearOrder('asc');
+        setSortCreatorOrder('asc');
       }
     }
   };
 
-  const getAccounts = (sortBy, reset) => {
-    DataStore.query(Profile)
+  const getOpps = (sortBy, reset) => {
+    DataStore.query(Opportunity)
     .then((res) => {
-      sortAccounts(res, sortBy, reset);
+      sortOpps(res, sortBy, reset);
+      console.log(res);
       setLoading(false);
     })
     .catch((err) => {
-      alert('Error retrieving profiles, please try again');
       console.log(err);
+      alert('Error retrieving opportunities, please try again');
+    });
+  };
+
+  const getProfiles = () => {
+    DataStore.query(Profile)
+    .then((res) => {
+      setProfiles(res);
+    })
+    .catch((err) => {
+      console.log(err);
+      alert('Error retrieving profile, please try again');
     });
   };
 
   const handleSelect = (event) => {
-    const email = event.target.value;
-    const currentIndex = selected.indexOf(email);
+    const eventname = event.target.value;
+    const currentIndex = selected.indexOf(eventname);
     const newSelected = [...selected];
 
     if (currentIndex === -1) {
-      newSelected.push(email);
+      newSelected.push(eventname);
     } else {
       newSelected.splice(currentIndex, 1);
     }
@@ -287,120 +327,61 @@ export default function ApprovalAccounts() {
         status = 'PENDING'
         break;
     }
-    const profiles = selected.map((profile) => {
-      const info = accounts.find((account) => account.email === profile);
+    const opportunities = selected.map((opportunity) => {
+      const info = opps.find((opp) => opp.id === opportunity);
       return info;
     });
     setLoading(true);
     // eslint-disable-next-line guard-for-in
-    for (let index = 0; index < profiles.length; index++) {
-      const profile = profiles[index];
+    for (let index = 0; index < opportunities.length; index++) {
+      const opp = opportunities[index];
       DataStore.save(
-        Profile.copyOf(profile, updated => {
+        Opportunity.copyOf(opp, updated => {
           updated.status = status
         }))
         .then((res) => {
-        console.log(res);
-        getAccounts('status', true);
-        setSelected([]);
-        console.log(selected);
+          getOpps('status', true);
+          getProfiles();
+          setSelected([]);
       })
       .catch((err) => {
         console.log(err);
-        alert('Error approving profiles, please try again');
+        alert('Error approving opportunity, please try again');
       });
     }
   };
 
-  const handleAdminPromotion = (event) => {
-    const profiles = selected.map((profile) => {
-      const info = accounts.find((account) => account.email === profile);
-      return info;
-    });
-    setLoading(true);
-    // eslint-disable-next-line guard-for-in
-    for (let index = 0; index < profiles.length; index++) {
-      const profile = profiles[index];
-      DataStore.save(
-        Profile.copyOf(profile, updated => {
-          updated.status = 'ADMIN'
-        }))
-        .then((res) => {
-        getAccounts('status', true);
-        setSelected([]);
-      })
-      .catch((err) => {
-        console.log(err);
-        alert('Error creating admin, please try again');
-      }); toast.success('Admin promoted successfully!', {
-        position: 'top-right',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    }
-  };
-
-  const handleDialogSubmit = () => {
-    const status = 'REQUESTED';
-    const profiles = selected.map((profile) => {
-      const info = accounts.find((account) => account.email === profile);
-      return info;
-    });
-    setLoading(true);
-    // eslint-disable-next-line guard-for-in
-    for (let index = 0; index < profiles.length; index++) {
-      const profile = profiles[index];
-      DataStore.save(
-        Profile.copyOf(profile, updated => {
-          updated.status = status
-          updated.infoRequest = requestInfo;
-        }))
-        .then((res) => {
-        console.log(res);
-        setDialogOpen(false);
-        setRequestInfo('');
-        getAccounts('status', true);
-      })
-      .catch((err) => {
-        console.log(err);
-        alert('Error requesting info, please try again');
-      });
-    }
-  };
+  
+  useEffect(() => {
+    getProfiles();
+    getOpps('status', true);
+    // eslint-disable-next-line
+  }, []);
 
   const handleSort = (rowId) => {
     setLoading(true);
-    if (rowId === 'name') {
-      getAccounts(rowId, false);
+    if (rowId === 'title') {
+      getOpps(rowId, false);
     }
-    if (rowId === 'email') {
-      getAccounts(rowId, false);
+    if (rowId === 'description') {
+      getOpps(rowId, false);
     }
-    if (rowId === 'year') {
-      getAccounts(rowId, false);
+    if (rowId === 'creator') {
+      getOpps(rowId, false);
     }
     if (rowId === 'status') {
-      getAccounts(rowId, false);
+      getOpps(rowId, false);
     }
     setLoading(false);
   };
 
-  useEffect(() => {
-    getAccounts('status', true);
-    // eslint-disable-next-line
-  }, []);
-
   const getArrowDirection = (row) => {
-    if (row === 'name') {
-      return sortNameOrder;
-    } else if (row === 'email') {
-      return sortEmailOrder;
-    } else if (row === 'year') {
-      return sortYearOrder;
+    if (row === 'title') {
+      return sortTitleOrder;
+    } else if (row === 'description') {
+      return sortDescriptionOrder;
+    } else if (row === 'creator') {
+      return sortCreatorOrder;
     } else if (row === 'status') {
       return sortStatusOrder;
     }
@@ -410,19 +391,19 @@ export default function ApprovalAccounts() {
   // https://mui.com/material-ui/react-table/#sorting-amp-selecting
   const headCells = [
     {
-      id: 'name',
+      id: 'title',
       disablePadding: false,
-      label: 'Name',
+      label: 'Opportunity',
     },
     {
-      id: 'email',
+      id: 'description',
       disablePadding: false,
-      label: 'Email',
+      label: 'Description',
     },
     {
-      id: 'year',
+      id: 'creator',
       disablePadding: false,
-      label: 'Grad Yr',
+      label: 'Creator',
     },
     {
       id: 'status',
@@ -485,6 +466,7 @@ export default function ApprovalAccounts() {
               <DialogActions>
                 <Button onClick={handleDialogClose}>Cancel</Button>
                 <Button onClick={handleDialogSubmit}>Send Requests</Button>
+
               </DialogActions>
             </Dialog>
             <ThemedButton
@@ -498,18 +480,6 @@ export default function ApprovalAccounts() {
               onClick={handleStatusAction}
             >
             Deny
-            </ThemedButton>
-            <ThemedButton
-              color={'yellow'}
-              variant={'gradient'}
-              type={'submit'}
-              style={{
-                fontSize: '0.875rem',
-                marginRight: '.5rem',
-              }}
-              onClick={handleAdminPromotion}
-            >
-                Promote Admin
             </ThemedButton>
           </Box>
           {/* <Typography variant='h4'>Search Bar</Typography> */}
@@ -550,7 +520,8 @@ export default function ApprovalAccounts() {
                   >
                     <TableSortLabel
                     // active={orderBy === headCell.id}
-                    // onClick={handleSort(headCell.id)}
+                    // direction={orderBy === headCell.id ? order : 'asc'}
+                    // onClick={createSortHandler(headCell.id)}
                       /* eslint-disable-next-line max-len */
                       direction={getArrowDirection(headCell.id) !== '' ? getArrowDirection(headCell.id) : 'desc'}
                     >
@@ -568,11 +539,13 @@ export default function ApprovalAccounts() {
             </TableHead>
             <TableBody>
               {
-                accounts.map((account) => {
+                opps.map((opp) => {
                   return (
                     <Row
-                      key={account.id}
-                      row={account}
+                      key={opp.id}
+                      row={opp}
+                      profile={profiles.find((profile) =>
+                        profile.id === opp.profileID)}
                       handleSelect={handleSelect}
                     />
                   );
