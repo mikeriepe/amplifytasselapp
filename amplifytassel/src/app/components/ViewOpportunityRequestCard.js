@@ -11,6 +11,8 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
+import { DataStore } from '@aws-amplify/datastore';
+import { Profile, Role } from '../../models';
 
 
 const Avatar = ({image}, props) => (
@@ -28,30 +30,29 @@ export default function ViewOpportunityRequestCard({
 }) {
   const [open, setOpen] = useState(false);
   const [requester, setRequester] = useState(null);
+  const [role, setRole] = useState('');
   const navigate = useNavigate();
   const navigateToProfile = (profileid) => {
     navigate(`/Profile/${profileid}`);
   };
 
-  const getRequester = (requester) => {
-    fetch(`/api/getProfileByProfileId/${requester}`)
-        .then((res) => {
-          if (!res.ok) {
-            throw res;
-          }
-          return res.json();
-        })
-        .then((json) => {
-          setRequester(json);
-        })
-        .catch((err) => {
-          console.log(err);
-          alert('Error retrieving requester profile, please try again');
-        });
+  const getRequester = async (request) => {
+    let requesterProfile = await DataStore.query(Profile, (p) => p.and(p => [
+      p.id.eq(request.profileID)
+    ]));
+    setRequester({...requesterProfile[0]});
+  };
+
+  const getRole = async (request) => {
+    let requestRole = await DataStore.query(Role, (r) => r.and(r => [
+      r.id.eq(request.roleID)
+    ]));
+    setRole(requestRole[0].name);
   };
 
   useEffect(() => {
-    getRequester(request.requester);
+    getRequester(request);
+    getRole(request);
   }, [request]);
 
   const formatDate = (date) => {
@@ -77,13 +78,12 @@ export default function ViewOpportunityRequestCard({
       <TableRow
         hover
         onClick={(event) => {
-          // only handle click if the request is pending
           if (!isItemSelected) {
             setOpen(true);
           } else {
             setOpen(false);
           }
-          handleClick(event, request.requester);
+          handleClick(event, request.profileID);
         }}
         role='checkbox'
         aria-checked={isItemSelected}
@@ -109,30 +109,30 @@ export default function ViewOpportunityRequestCard({
             className='flex-horizontal flex-align-center flex-flow-large'
           >
             <div
-              onClick={() => navigateToProfile(request.requester)}
+              onClick={() => navigateToProfile(request.profileID)}
               style={{
                 cursor: 'pointer',
               }}
             >
-              <Avatar image={requester?.profilepicture}/>
+              <Avatar image={requester?.picture}/>
             </div>
-            <p>{`${requester?.firstname} ${requester?.lastname}`}</p>
+            <p>{`${requester?.firstName} ${requester?.lastName}`}</p>
           </div>
         </TableCell>
         <TableCell align='left'>
-          <p>{request.role === '' ? 'None' : request.role}</p>
+          <p>{role === '' ? 'None' : role}</p>
         </TableCell>
         <TableCell align='left'>
-          <p>{formatDate(request.requestdatetime)}</p>
+          <p>{formatDate(request.requestTime)}</p>
         </TableCell>
         <TableCell align='left'>
           <Chip
             label={request.status}
             variant='outlined'
             color={
-              request.status === 'Approved' ? 'success' :
-              request.status === 'Denied' ? 'error' :
-              request.status === 'Pending' ? 'secondary' :
+              request.status === 'APPROVED' ? 'success' :
+              request.status === 'REJECTED' ? 'error' :
+              request.status === 'PENDING' ? 'secondary' :
               'primary'
             }
             size='small'
@@ -143,9 +143,9 @@ export default function ViewOpportunityRequestCard({
                   height: '6px',
                   width: '6px',
                   background:
-                  request.status === 'Approved' ? 'var(--success-green-main)' :
-                  request.status === 'Denied' ? 'var(--error-red-main)' :
-                  request.status === 'Pending' ?
+                  request.status === 'APPROVED' ? 'var(--success-green-main)' :
+                  request.status === 'REJECTED' ? 'var(--error-red-main)' :
+                  request.status === 'PENDING' ?
                   'var(--secondary-yellow-main)' : 'var(--primary-blue-main)',
                   borderRadius: '50%',
                 }}
@@ -171,9 +171,9 @@ export default function ViewOpportunityRequestCard({
                 Request Message:
               </Typography>
               <p>
-                {request.requestmessage === '' ?
+                {request.requestMessage === '' ?
                 '(This user did not leave a message)' :
-                request.requestmessage}
+                request.requestMessage}
               </p>
             </Box>
           </Collapse>

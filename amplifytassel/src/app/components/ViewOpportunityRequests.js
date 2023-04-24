@@ -20,7 +20,6 @@ import Tooltip from '@mui/material/Tooltip';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import ThemedButton from './ThemedButton';
 import ViewOpportunityRequestCard from './ViewOpportunityRequestCard';
-import useAuth from '../util/AuthContext';
 import {toast} from 'react-toastify';
 import Collapse from '@mui/material/Collapse';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -28,6 +27,8 @@ import FormGroup from '@mui/material/FormGroup';
 import MuiBox from '@mui/material/Box';
 import MuiPaper from '@mui/material/Paper';
 import {styled} from '@mui/material/styles';
+import { DataStore } from '@aws-amplify/datastore';
+import { Request, ProfileRole, OpportunityProfile, Profile, Role } from '../../models';
 
 
 /**
@@ -86,19 +87,19 @@ function getComparator(order, orderBy) {
 
 const headCells = [
   {
-    id: 'firstname',
+    id: 'firstName',
     numeric: false,
     disablePadding: true,
     label: 'Name',
   },
   {
-    id: 'role',
+    id: 'roleName',
     numeric: false,
     disablePadding: false,
     label: 'Requested Role',
   },
   {
-    id: 'requestdatetime',
+    id: 'requestTime',
     numeric: false,
     disablePadding: false,
     label: 'Date of Request',
@@ -203,8 +204,6 @@ function EnhancedTableToolbar({
   requests,
   updateRequests,
   resetSelected,
-  participants,
-  updateParticipants,
   updateDisplayReqs,
   members,
   updateMembers,
@@ -222,7 +221,7 @@ function EnhancedTableToolbar({
 
   const applyFilters = () => {
     const copyReqs = requests.filter((req) => {
-      const reqFilter = filterValues.length == 0 ?
+      const reqFilter = filterValues.length === 0 ?
         true :
         req.status ?
         filterValues.indexOf(req.status) > -1 :
@@ -264,280 +263,145 @@ function EnhancedTableToolbar({
     const selectedRequests = [];
     for (let i = 0; i < selected.length; i++) {
       for (let j = 0; j < requests.length; j++) {
-        if (selected[i] === requests[j].requester) {
+        if (selected[i] === requests[j].profileID) {
           // push the request and its index
           selectedRequests.push([requests[j], j]);
         }
       }
     }
 
-    for (let i = 0; i < selectedRequests.length; i++) {
-      if (selectedRequests[i][0].requeststatus !== 'approved') {
-        const toBeApproved = {
-          requestId: selectedRequests[i][0].requestid,
-          opportunityid: selectedRequests[i][0].opportunityid,
-          requester: selectedRequests[i][0].requester,
-          role: selectedRequests[i][0].role,
-        };
-        await fetch(`/api/approveRequest`, {
-          method: 'POST',
-          body: JSON.stringify(toBeApproved),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-            .then((res) => {
-              if (!res.ok) {
-                throw res;
-              }
-              return res;
-            })
-            .then((json) => {
-            })
-            .catch((err) => {
-              console.log(err);
-              toast.error(
-                  `Something Went Wrong. Please Try Again.`,
-                  {
-                    position: 'top-right',
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                  });
-              return;
-            });
-      }
-    }
     const updatedRequests = [...requests];
-    const updatedParticipants = [...participants];
-    const updatedMembers = {...members};
+    const updatedMembers = [...members];
+
     for (let i = 0; i < selectedRequests.length; i++) {
-      updatedRequests[selectedRequests[i][1]].requeststatus = 'approved';
-      updatedRequests[selectedRequests[i][1]].status = 'Approved';
-      // add the requester to the opp
-      // if he already isn't in the opp
-      // to prevent double rendering of approving users twice
-      const index = updatedParticipants
-          .indexOf(selectedRequests[i][0].requester);
-      if (index === -1) {
-        updatedParticipants.
-            push(updatedRequests[selectedRequests[i][1]].requester);
-      }
-      // add the approved requesters that request roles
-      const reqRole = updatedRequests[selectedRequests[i][1]].role;
-      // a role is requested
-      if (reqRole) {
-        // if there are already people in that role push the requester
-        // into the existing list
-        if (members[reqRole]) {
-          const temp = [...members[reqRole]];
-          // check if the person already exists
-          const index = temp
-              .indexOf(selectedRequests[i][0].requester);
-          if (index === -1) {
-            temp.
-                push(updatedRequests[selectedRequests[i][1]].requester);
-          }
-          // set the state to new list
-          updatedMembers[reqRole] = temp;
-        } else {
-          // if nobody exists in that role create a list and push it
-          const temp = [updatedRequests[selectedRequests[i][1]].requester];
-          updatedMembers[reqRole] = temp;
-        }
+      if (selectedRequests[i][0].status !== 'APPROVED') {
+        // Approve the request on the db
+        // fetch the request then update
+        let updatedReq = await DataStore.query(Request, (r) => r.and(r => [
+          r.id.eq(selectedRequests[i][0].id)
+        ]));
+
+        updatedReq = await DataStore.save(
+          Request.copyOf(updatedReq[0], updated => {
+            updated.status = 'APPROVED'
+          })
+        );
+
+        // add the profile to role
+        await DataStore.save(
+          new ProfileRole({
+            roleId: selectedRequests[i][0].roleID,
+            profileId: selectedRequests[i][0].profileID,
+          })
+        );
+        // add the profile to opportunity
+        await DataStore.save(
+          new OpportunityProfile({
+            opportunityId: selectedRequests[i][0].opportunityID,
+            profileId: selectedRequests[i][0].profileID,
+          })
+        );
+        // update the states
+        // fetch the member and push it to the member list
+        let requesterProfile = await DataStore.query(Profile, (p) => p.and(p => [
+          p.id.eq(selectedRequests[i][0].profileID)
+        ]));
+        updatedMembers.push(requesterProfile[0]);
+        // update the request
+        updatedRequests[selectedRequests[i][1]] = {
+          ...updatedReq,
+          firstName: updatedRequests[selectedRequests[i][1]].firstName,
+          roleName: updatedRequests[selectedRequests[i][1]].roleName,
+        };
       }
     }
     updateMembers(updatedMembers);
-    updateParticipants(updatedParticipants);
     updateRequests(updatedRequests);
     resetSelected();
+    // toast notification
     const reqStr = selectedRequests.length > 1 ? 'requests' : 'request';
     toast.success(
-        `Successfully approved ${selectedRequests.length} ${reqStr}`,
-        {
-          position: 'top-right',
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+      `Successfully approved ${selectedRequests.length} ${reqStr}`,
+      {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
   };
 
   const denyRequests = async () => {
     const selectedRequests = [];
     for (let i = 0; i < selected.length; i++) {
       for (let j = 0; j < requests.length; j++) {
-        if (selected[i] === requests[j].requester) {
+        if (selected[i] === requests[j].profileID) {
           // push the request and its index
           selectedRequests.push([requests[j], j]);
         }
       }
     }
-    for (let i = 0; i < selectedRequests.length; i++) {
-      // if it's already rejected don't send a request to the db
-      if (selectedRequests[i][0].requeststatus !== 'rejected') {
-        const toBeRejected = {
-          requestId: selectedRequests[i][0].requestid,
-          // opportunityid: request.opportunityid,
-        };
-        await fetch(`/api/rejectRequest`, {
-          method: 'POST',
-          body: JSON.stringify(toBeRejected),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-            .then((res) => {
-              if (!res.ok) {
-                throw res;
-              }
-              return res.json();
-            })
-            .then((json) => {
-            })
-            .catch((err) => {
-              console.log(err);
-              toast.error(
-                  `Something Went Wrong. Please Try Again.`,
-                  {
-                    position: 'top-right',
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                  });
-              return;
-            });
-        // if it was previously approved
-        // delete the userparticipant from the opportunity
-        // delete the assignedrole as well
-        // and set the members
-        if (selectedRequests[i][0].requeststatus === 'approved') {
-          // first get the opportunity to update
-          let updatedOpp;
-          await fetch(`/api/getOpportunity/${
-            selectedRequests[i][0].opportunityid}`)
-              .then((res) => {
-                if (!res.ok) {
-                  throw res;
-                }
-                return res.json();
-              })
-              .then((json) => {
-                updatedOpp = json;
-              })
-              .catch((err) => {
-                console.log(err);
-                alert('Error retrieving selected opportunity');
-              });
-          // delete the requester from the opp
-          const index = updatedOpp.userparticipants
-              .indexOf(selectedRequests[i][0].requester);
-          if (index !== -1) {
-            updatedOpp.userparticipants.splice(index, 1);
-          }
-          // delete the assigned role
-          const reqRole = selectedRequests[i][0].role;
-          // a role was requested
-          if (reqRole) {
-            const assignedRoles = updatedOpp.assignedroles;
-            const temp = assignedRoles[reqRole];
-            const index = temp
-                .indexOf(selectedRequests[i][0].requester);
-            if (index !== -1) {
-              temp.splice(index, 1);
-            }
-          }
-          // send the updated opportunity to the db
-          await fetch(`/api/updateOpportunity`, {
-            method: 'POST',
-            body: JSON.stringify(updatedOpp),
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          })
-              .then((res) => {
-                if (!res.ok) {
-                  throw res;
-                }
-                return res.json();
-              })
-              .then((json) => {
-              })
-              .catch((err) => {
-                console.log(err);
-                toast.error(
-                    `Something Went Wrong. Please Try Again.`,
-                    {
-                      position: 'top-right',
-                      autoClose: 5000,
-                      hideProgressBar: false,
-                      closeOnClick: true,
-                      pauseOnHover: true,
-                      draggable: true,
-                      progress: undefined,
-                    });
-                return;
-              });
-        }
-      }
-    }
-    const updatedRequests = [...requests];
-    const updatedParticipants = [...participants];
-    const updatedMembers = {...members};
-    for (let i = 0; i < selectedRequests.length; i++) {
-      updatedRequests[selectedRequests[i][1]].requeststatus = 'rejected';
-      updatedRequests[selectedRequests[i][1]].status = 'Denied';
-      // delete the requester from the members
-      const index = updatedParticipants
-          .indexOf(selectedRequests[i][0].requester);
-      if (index !== -1) {
-        updatedParticipants.splice(index, 1);
-      }
 
-      // delete the rejected requesters that request roles
-      const reqRole = updatedRequests[selectedRequests[i][1]].role;
-      // a role is requested
-      if (reqRole) {
-        // if there are already people in that role pop the requester
-        // from the existing list
-        if (members[reqRole]) {
-          const temp = [...members[reqRole]];
-          // check if the person already exists
-          // remove if exists else do nothing
-          const index = temp
-              .indexOf(selectedRequests[i][0].requester);
-          if (index !== -1) {
-            temp.splice(index, 1);
-          }
-          // set the state to new list
-          updatedMembers[reqRole] = temp;
-        }
+    const updatedRequests = [...requests];
+    const updatedMembers = [...members];
+
+    for (let i = 0; i < selectedRequests.length; i++) {
+      if (selectedRequests[i][0].status !== 'REJECTED') {
+        // Deny the request on the db
+        let updatedReq = await DataStore.query(Request, (r) => r.and(r => [
+          r.id.eq(selectedRequests[i][0].id)
+        ]));
+
+        updatedReq = await DataStore.save(
+          Request.copyOf(updatedReq[0], updated => {
+            updated.status = 'REJECTED'
+          })
+        );
+
+        // fetch and delete the profile from the role
+        const profRole = await DataStore.query(ProfileRole, (p) => p.and(p => [
+          p.roleId.eq(selectedRequests[i][0].roleID),
+          p.profileId.eq(selectedRequests[i][0].profileID)
+        ]));
+        await DataStore.delete(profRole[0]);
+
+        // delete the profile from the opportunity
+        const oppProf = await DataStore.query(OpportunityProfile, (o) => o.and(o => [
+          o.opportunityId.eq(selectedRequests[i][0].opportunityID),
+          o.profileId.eq(selectedRequests[i][0].profileID)
+        ]));
+        await DataStore.delete(oppProf[0]);
+
+        // update the states
+        // remove the member from the member list
+        var memberIndex = updatedMembers.findIndex(member => member.id === selectedRequests[i][0].profileID);
+        updatedMembers.slice(memberIndex, 1);
+        // update the request
+        updatedRequests[selectedRequests[i][1]] = {
+          ...updatedReq,
+          firstName: updatedRequests[selectedRequests[i][1]].firstName,
+          roleName: updatedRequests[selectedRequests[i][1]].roleName,
+        };
       }
     }
     updateMembers(updatedMembers);
-    updateParticipants(updatedParticipants);
     updateRequests(updatedRequests);
     resetSelected();
+    // toast notification
     const reqStr = selectedRequests.length > 1 ? 'requests' : 'request';
     toast.success(
-        `Successfully rejected ${selectedRequests.length} ${reqStr}`,
-        {
-          position: 'top-right',
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+      `Successfully denied ${selectedRequests.length} ${reqStr}`,
+      {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
   };
 
   return (
@@ -616,9 +480,9 @@ function EnhancedTableToolbar({
                           color='secondary'
                           size='small'
                           onChange={() => {
-                            handleToggleFilter('Approved');
+                            handleToggleFilter('APPROVED');
                           }}
-                          checked={filterValues.indexOf('Approved') !== -1}
+                          checked={filterValues.indexOf('APPROVED') !== -1}
                           tabIndex={-1}
                           disableRipple
                           sx={{paddingBlock: '1px'}}
@@ -641,15 +505,15 @@ function EnhancedTableToolbar({
                           color='secondary'
                           size='small'
                           onChange={() => {
-                            handleToggleFilter('Denied');
+                            handleToggleFilter('REJECTED');
                           }}
-                          checked={filterValues.indexOf('Denied') !== -1}
+                          checked={filterValues.indexOf('REJECTED') !== -1}
                           tabIndex={-1}
                           disableRipple
                           sx={{paddingBlock: '1px'}}
                         />
                       }
-                      label={'Denied'}
+                      label={'Rejected'}
                       componentsProps={{
                         typography: {
                           fontSize: '0.8rem',
@@ -665,9 +529,9 @@ function EnhancedTableToolbar({
                           color='secondary'
                           size='small'
                           onChange={() => {
-                            handleToggleFilter('Pending');
+                            handleToggleFilter('PENDING');
                           }}
-                          checked={filterValues.indexOf('Pending') !== -1}
+                          checked={filterValues.indexOf('PENDING') !== -1}
                           tabIndex={-1}
                           disableRipple
                           sx={{paddingBlock: '1px'}}
@@ -708,82 +572,34 @@ EnhancedTableToolbar.propTypes = {
  * @return {JSX}
  */
 export default function FetchWrapper({
-  updateParticipants,
-  participants,
   updateMembers,
   members,
 }) {
   const params = useParams();
-  const {userProfile} = useAuth();
   const [requests, setRequests] = useState([]);
 
-  const getPendingRequestsReceived = () => {
-    fetch(`/api/getPendingRequestsReceived/` +
-    `${userProfile.profileid}/${params.opportunityid}`)
-        .then((res) => {
-          if (!res.ok) {
-            throw res;
-          }
-          return res.json();
-        })
-        .then((json) => {
-          if (json.length > 0) {
-            json.map((request) => request.status = 'Pending');
-            setRequests((prevRequests) => ([
-              ...prevRequests,
-              ...json,
-            ]));
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-  };
-
-  const getApprovedRequests = () => {
-    fetch(`/api/getApprovedRequests/` +
-    `${userProfile.profileid}/${params.opportunityid}`)
-        .then((res) => {
-          if (!res.ok) {
-            throw res;
-          }
-          return res.json();
-        })
-        .then((json) => {
-          if (json.length > 0) {
-            json.map((request) => request.status = 'Approved');
-            setRequests((prevRequests) => ([
-              ...prevRequests,
-              ...json,
-            ]));
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-  };
-
-  const getRejectedRequests = () => {
-    fetch(`/api/getRejectedRequests/` +
-    `${userProfile.profileid}/${params.opportunityid}`)
-        .then((res) => {
-          if (!res.ok) {
-            throw res;
-          }
-          return res.json();
-        })
-        .then((json) => {
-          if (json.length > 0) {
-            json.map((request) => request.status = 'Denied');
-            setRequests((prevRequests) => ([
-              ...prevRequests,
-              ...json,
-            ]));
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+  const getRequests = async () => {
+    // get all requests to this opportunity
+    let reqs = await DataStore.query(Request, (r) => r.and(r => [
+      r.opportunityID.eq(params.opportunityid),
+    ]));
+    // attach the firstName and requested role name for sorting purposes
+    for (let i = 0; i < reqs.length; i++) {
+      // get the profile
+      const reqProf = await DataStore.query(Profile, (p) => p.and(p => [
+        p.id.eq(reqs[i].profileID),
+      ]));
+      // get the role
+      const reqRole = await DataStore.query(Role, (r) => r.and(r => [
+        r.id.eq(reqs[i].roleID),
+      ]));
+      reqs[i] = {
+        ...reqs[i],
+        firstName: reqProf[0].firstName,
+        roleName: reqRole[0].name,
+      };
+    }
+    setRequests([...reqs]);
   };
 
   const updateRequests = (updatedRequests) => {
@@ -791,9 +607,7 @@ export default function FetchWrapper({
   };
 
   useEffect(() => {
-    getPendingRequestsReceived();
-    getApprovedRequests();
-    getRejectedRequests();
+    getRequests();
   }, []);
 
   return (
@@ -801,8 +615,6 @@ export default function FetchWrapper({
       {requests && <ViewOpportunityRequests
         requests={requests}
         updateRequests={updateRequests}
-        updateParticipants={updateParticipants}
-        participants={participants}
         updateMembers={updateMembers}
         members={members}
       />}
@@ -817,8 +629,6 @@ export default function FetchWrapper({
 function ViewOpportunityRequests({
   requests,
   updateRequests,
-  updateParticipants,
-  participants,
   updateMembers,
   members,
 }) {
@@ -838,38 +648,17 @@ function ViewOpportunityRequests({
   const updateDisplayReqs = (newRequests) => {
     setDisplayReqs(newRequests);
   };
-  const getRequesterNames = async () => {
-    for (let i = 0; i < requests.length; i++) {
-      await fetch(`/api/getProfileByProfileId/${requests[i].requester}`)
-          .then((res) => {
-            if (!res.ok) {
-              throw res;
-            }
-            return res.json();
-          })
-          .then((json) => {
-            requests[i].firstname = json.firstname;
-          })
-          .catch((err) => {
-            console.log(err);
-            alert('Error retrieving requester profile, please try again');
-          });
-    }
-  };
-
-  useEffect(() => {
-    getRequesterNames();
-  }, [requests]);
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
       // const newSelecteds = rows.map((n) => n.name);
       const newSelecteds = [];
+      console.log(displayReqs);
       const temp = displayReqs.sort(getComparator(order, orderBy));
       for (let i = page * rowsPerPage;
         i < temp.length && i < (page * rowsPerPage + rowsPerPage);
         i++) {
-        newSelecteds.push(temp[i].requester);
+        newSelecteds.push(temp[i].profileID);
       }
       setSelected(newSelecteds);
       return;
@@ -934,8 +723,6 @@ function ViewOpportunityRequests({
           requests={requests}
           updateRequests={updateRequests}
           resetSelected={resetSelected}
-          updateParticipants={updateParticipants}
-          participants={participants}
           updateDisplayReqs={updateDisplayReqs}
           members={members}
           updateMembers={updateMembers}
@@ -959,7 +746,7 @@ function ViewOpportunityRequests({
                   .sort(getComparator(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((request, index) => {
-                    const isItemSelected = isSelected(request.requester);
+                    const isItemSelected = isSelected(request.profileID);
                     const labelId = `enhanced-table-checkbox-${index}`;
                     return (
                       <ViewOpportunityRequestCard

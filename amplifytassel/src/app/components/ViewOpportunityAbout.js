@@ -268,7 +268,6 @@ function RolesCard({
 
   const getMajors = async () => {
     let temp = await DataStore.query(Major);
-    console.log(temp);
     setMajors([...temp]);
     /*
     fetch(`/api/getMajors`)

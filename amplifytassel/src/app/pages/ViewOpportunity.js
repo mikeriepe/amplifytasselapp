@@ -213,17 +213,13 @@ function ViewOpportunity({opportunity}) {
           id={params.opportunityid}
         />,
     },
-    /*
     {
       name: 'Requests',
       component: <ViewOpportunityRequests
-        updateParticipants={updateParticipants}
-        participants={participants}
         updateMembers={updateMembers}
         members={members}
       />,
     },
-    */
     // Find people tab will be implemented in Spring 2023
     // For now it will stay hidden
     /*
@@ -235,8 +231,7 @@ function ViewOpportunity({opportunity}) {
   ];
 
   const handleIsCreator = () => {
-    console.log(userProfile);
-    const check = userProfile.profileid === opportunity.profileID;
+    const check = userProfile.id === opportunity.profileID;
     setIsCreator(check);
   };
 
@@ -257,7 +252,6 @@ function ViewOpportunity({opportunity}) {
   };
 
   useEffect(() => {
-    console.log(opportunity);
     if (opportunity) {
       getOpportunityCreator();
       handleIsCreator();
