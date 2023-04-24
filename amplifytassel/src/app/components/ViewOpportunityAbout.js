@@ -216,11 +216,12 @@ function RolesCard({
   };
 
   const postRequestToOpportunity = async (requestData) => {
-    // Check if the profile already sent a request to this role
-    const requests = await DataStore.query(Profile, (p) => p.and(p => [
-      p.Requests.roleID.eq(requestData.role.id),
-      p.id.eq(requestData.requester)
+    // Check if the profile already sent a request to this opportunity
+    const requests = await DataStore.query(Request, (r) => r.and(r => [
+      r.profileID.eq(requestData.requester),
+      r.opportunityID.eq(requestData.opportunityid)
     ]));
+
     // if the profile applied return toast notification
     if(requests.length > 0) {
       toast.warning(`You Already Applied to This Event`, {

@@ -122,7 +122,7 @@ function ViewOpportunity({opportunity}) {
   };
 
   const postRequestToOpportunity = async (requestData) => {
-    // Check if the profile already sent a request to this role
+    // Check if the profile already sent a request to this opportunity
     // extract the general participant role from the roles
     let genParticipantRole = {}
     for (let i = 0; i < opportunity?.roles.length; i++) {
@@ -132,9 +132,9 @@ function ViewOpportunity({opportunity}) {
       }
     }
 
-    const requests = await DataStore.query(Profile, (p) => p.and(p => [
-      p.Requests.roleID.eq(genParticipantRole.id),
-      p.id.eq(requestData.requester)
+    const requests = await DataStore.query(Request, (r) => r.and(r => [
+      r.profileID.eq(requestData.requester),
+      r.opportunityID.eq(opportunity?.id)
     ]));
 
     // if the profile applied return toast notification

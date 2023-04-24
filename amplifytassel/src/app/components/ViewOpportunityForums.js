@@ -179,9 +179,6 @@ export default function ViewOpportunityForums({id}) {
   };
 
   const postNewComment = async (data, postid) => {
-    console.log(data);
-    console.log(postid);
-
     let comment = await DataStore.save(
       new Comment({
         content: data.content,
