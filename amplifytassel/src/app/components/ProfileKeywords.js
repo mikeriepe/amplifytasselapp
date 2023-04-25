@@ -23,22 +23,23 @@ const Keywords = styled((props) => (
  * @return {HTML} Profile component
  */
 export default function ProfileKeywords({ data }) {
-  const [userKeywords, setUserKeywords] = useState([]);
+  const [userKeywords, setUserKeywords] = useState([null]);
 
 
-  const extractKeywords = () => {
-    const p = Promise.resolve(data[0].keywords.values);
-    const keywordNames = [];
-    p.then(value => {
+  const extractKeywords = async () => {
+    try {
+      const value = await Promise.resolve(data[0].keywords.values);
+      const keywordNames = [];
       for (let i = 0; i < value.length; i++) {
-        const k =  Promise.resolve(value[i].keyword);
-        k.then(value => {
-          keywordNames.push(value.name);
-        });
+        const k = await Promise.resolve(value[i].keyword);
+        keywordNames.push(k.name);
       }
-    });
-    setUserKeywords(keywordNames);
+      setUserKeywords(keywordNames);
+    } catch (error) {
+      console.error(error);
+    }
   };
+  
   useEffect(() => {
     extractKeywords();
   }, []);
@@ -47,7 +48,7 @@ export default function ProfileKeywords({ data }) {
     <Keywords>
       <h4 className='text-dark'>Interests</h4>
       <div>
-        {userKeywords &&userKeywords?.length>0 ? userKeywords.map((word, index) => (
+        {userKeywords?.length>0 ? userKeywords.map((word, index) => (
           <Chip
             label={userKeywords[index]}
             key={`role${index}`}

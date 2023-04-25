@@ -151,20 +151,20 @@ const MoreIcon = ({ anchorEl, open, handleClick, handleClose }) => (
 export default function ProfileHeader({ data }) {
   const [majors, setMajors] = useState(null);
 
-  const extractMajors = () => {
-    const p = Promise.resolve(data[0].Majors.values);
-    const majorNames = [];
-    p.then(value => {
+  const extractMajors = async () => {
+    try {
+      const value = await Promise.resolve(data[0].Majors.values);
+      const majorNames = [];
       for (let i = 0; i < value.length; i++) {
-        const k =  Promise.resolve(value[i].major);
-        k.then(value => {
-          majorNames.push(value.name);
-        });
+        const k = await Promise.resolve(value[i].major);
+        majorNames.push(k.name);
       }
-    });
-    setMajors(majorNames);
-    console.log(majors);
+      setMajors(majorNames);
+    } catch (error) {
+      console.error(error);
+    }
   };
+  
   useEffect(() => {
     extractMajors();
   }, []);
@@ -186,7 +186,7 @@ export default function ProfileHeader({ data }) {
     <Header>
       <Banner image={ExampleCover} />
       <Content>
-        <Avatar image={data[0].picture} handleError={handleError} />
+        <Avatar image={data[0]?.picture} handleError={handleError} />
         <Box
           sx={{ display: 'flex', height: '100%' }}
         >
@@ -195,7 +195,7 @@ export default function ProfileHeader({ data }) {
               {data[0].firstName + ' ' + data[0].lastName}
             </h2>
             <h5 className='text-bold text-blue ellipsis'>
-              {majors && majors.map((major,index) => (
+              {majors?.length >0 && majors.map((major,index) => (
                 <p key={index}>{majors[index]}</p>
               ))}
             </h5>
