@@ -212,7 +212,7 @@ export default function PageHeader({
             {
               flexGrow: 1,
               display: 'flex',
-              justifyContent: 'center',
+              justifyContent: 'right',
             } : {}
           }
         >
