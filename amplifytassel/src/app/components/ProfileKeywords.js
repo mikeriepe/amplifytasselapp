@@ -47,7 +47,7 @@ export default function ProfileKeywords({ data }) {
     <Keywords>
       <h4 className='text-dark'>Interests</h4>
       <div>
-        {userKeywords &&userKeywords.length>0 ? userKeywords.map((word, index) => (
+        {userKeywords &&userKeywords?.length>0 ? userKeywords.map((word, index) => (
           <Chip
             label={userKeywords[index]}
             key={`role${index}`}
