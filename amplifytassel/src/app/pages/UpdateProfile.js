@@ -493,7 +493,7 @@ export default function UpdateProfile() {
           </Box>
         </Box>
       </InputContext.Provider>
-      {/* <Modal
+      <Modal
         open={showWorkForm}
         onBackdropClick={() => setShowWorkForm(false)}
         onClose={() => setShowWorkForm(false)}
@@ -501,7 +501,7 @@ export default function UpdateProfile() {
         <WorkExperienceForm onClose={() =>
           setShowWorkForm(!showWorkForm)} />
       </Modal>
-      <Modal
+      {/* <Modal
         open={showDeleteModal}
         onBackdropClick={() => setShowDeleteModal(false)}
         onClose={() => setShowDeleteModal(false)}

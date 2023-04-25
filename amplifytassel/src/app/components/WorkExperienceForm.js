@@ -20,9 +20,8 @@ import { Profile } from '../../models';
 
 export const sortWorkExperience = (experience) => {
   const experienceSorted = [...experience].sort((a, b) => (
-    new Date(a.start).getTime() < new Date(b.start).getTime() ? -1 : 1
+    new Date(a.start).getTime() < new Date(b.start).getTime() ? 1 : -1
   ));
-  console.log('experienceSorted', experienceSorted);
   return experienceSorted;
 };
 
@@ -44,13 +43,13 @@ export default function WorkExperienceForm({onClose}) {
     description: '',
     startdate: (new Date()),
     enddate: null,
-    currentposition: false,
+    currentPosition: false,
   };
 
   const methods = useForm({defaultValues: formValues});
   const {handleSubmit, control, register} = methods;
 
-  const addWorkExperienceToProfile = (data) => {
+  const updateProfile = (data) => {
     let startDate = '';
     if (data.startdate !== '') {
       startDate = data.startdate.toISOString().split('T')[0];
@@ -82,22 +81,28 @@ export default function WorkExperienceForm({onClose}) {
       company: data.company,
       location: newLocation,
       description: data.description,
-      currentPosition: data.currentposition,
+      currentPosition: data.currentPosition,
     };
-    userProfile.experience.push(newWorkExperience);
-  };
 
-  const updateProfile = (sortedExperience) => {
-    DataStore.query(Profile, p => p.id.eq(userProfile.id))
+    const experienceObj = [...(userProfile.experience)];
+    console.log('experienceObj', experienceObj);
+    experienceObj.push(newWorkExperience);
+
+    const sortedExperience = sortWorkExperience(experienceObj);
+    
+    console.log('sortedExperience', sortedExperience);
+
+    DataStore.query(Profile, userProfile.id)
       .then((res) => {
-        DataStore.save(Profile.copyOf(res[0], updated => {
+        DataStore.save(Profile.copyOf(res, updated => {
           updated.experience = sortedExperience;
         }))
       })
       .then(() => {
         console.log('experience updated');
-        userProfile.experience = sortedExperience;
-        setUserProfile(userProfile);
+        const userProfileCpy = {...userProfile};
+        userProfileCpy.experience = sortedExperience;
+        setUserProfile(userProfileCpy);
         toast.success('Account updated', {
           position: 'top-right',
           autoClose: 5000,
@@ -114,9 +119,7 @@ export default function WorkExperienceForm({onClose}) {
   };
 
   const onSubmit = (data) => {
-    addWorkExperienceToProfile(data);
-    const sortedExperience = sortWorkExperience(userProfile.experience);
-    updateProfile(sortedExperience);
+    updateProfile(data);
     onClose();
   };
 
@@ -227,7 +230,7 @@ export default function WorkExperienceForm({onClose}) {
           />
 
           <CheckboxInput
-            name='currentposition'
+            name='currentPosition'
             control={control}
             label='Current Position'
           />

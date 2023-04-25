@@ -43,69 +43,7 @@ export default function WorkExperienceEditModal({onClose, index}) {
   const methods = useForm({defaultValues: formValues});
   const {handleSubmit, control, register} = methods;
 
-  // const updateWorkExperience = (data) => {
-  //   let startDate = '';
-  //   if (data.startdate !== '') {
-  //     startDate = data.startdate.toISOString().split('T')[0];
-  //     const startDateValues = startDate.split('-').reverse('');
-  //     startDate = startDateValues[1] + '/' +
-  //     startDateValues[0] + '/' + startDateValues[2];
-  //   }
-
-  //   let endDate = '';
-  //   if (data.enddate !== '' && data.enddate !== null) {
-  //     endDate = data.enddate.toISOString().split('T')[0];
-  //     const endDateValues = endDate.split('-').reverse('');
-  //     endDate = endDateValues[1] + '/' +
-  //     endDateValues[0] + '/' + endDateValues[2];
-  //   }
-
-  //   let newLocation = '';
-  //   if (data.jobcity !== '' && data.jobstate !== '') {
-  //     newLocation = data.jobcity + ', ' + data.jobstate;
-  //   } else if (data.jobstate === '') {
-  //     newLocation = data.jobcity;
-  //   } else {
-  //     newLocation = data.jobstate;
-  //   }
-  //   const newWorkExperience = {
-  //     title: data.jobtitle,
-  //     company: data.company,
-  //     location: newLocation,
-  //     description: data.description,
-  //     start: startDate,
-  //     end: data.enddate !== null ? endDate : '',
-  //     currentPosition: data.currentPosition,
-  //   };
-  //   console.log('userProfile.experience[index]:', userProfile.experience[index]);
-  //   let tempExperience = {...userProfile.experience[index]};
-  //   tempExperience = newWorkExperience;
-  //   console.log('tempExperience', tempExperience);
-  // };
-
   const updateProfile = (data) => {
-    // fetch(`/api/updateProfile`, {
-    //   method: 'POST',
-    //   body: JSON.stringify({userid: userProfile.userid, ...userProfile}),
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    // })
-    //     .then((res) => {
-    //       if (!res.ok) {
-    //         throw res;
-    //       }
-    //       return res.json();
-    //     }); toast.success('Account updated', {
-    //   position: 'top-right',
-    //   autoClose: 5000,
-    //   hideProgressBar: false,
-    //   closeOnClick: true,
-    //   pauseOnHover: true,
-    //   draggable: true,
-    //   progress: undefined,
-    // });
-    // return;
     
     let startDate = '';
     if (data.startdate !== '') {
@@ -176,7 +114,6 @@ export default function WorkExperienceEditModal({onClose, index}) {
   };
 
   const onSubmit = (data) => {
-    // updateWorkExperience(data);
     updateProfile(data);
     onClose();
   };
