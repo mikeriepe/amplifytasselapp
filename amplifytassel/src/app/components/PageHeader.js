@@ -179,7 +179,7 @@ export default function PageHeader({
     if (days) return `${compareInDays} Days`;
     return 'Error calculating dates';
   };
-
+  console.log(data);
   return (
     <Header type={type}>
       {banner && <Banner image={banner} backUrl={backUrl} type={type} />}
@@ -235,22 +235,22 @@ export default function PageHeader({
             <p className='text-bold'>
               {
                 `
-                  ${formatDate(data?.startdate).date}
-                  ${formatDate(data?.starttime).time}
+                  ${formatDate(data?.startTime).date}
+                  ${formatDate(data?.startTime).time}
                 `
               }
             </p>
             <ArrowForwardRoundedIcon sx={IconStyling} />
             <p className='text-bold'>
               {
-                data.enddate ?
+                data.endTime ?
                 `
-                  ${formatDate(data?.enddate).date}
-                  ${formatDate(data?.endtime).time}
+                  ${formatDate(data?.endTime).date}
+                  ${formatDate(data?.endTime).time}
                 ` :
                 `
-                  ${formatDate(data?.startdate).date}
-                  ${formatDate(data?.starttime).time}
+                  ${formatDate(data?.startTime).date}
+                  ${formatDate(data?.startTime).time}
                 `
               }
             </p>
@@ -261,7 +261,7 @@ export default function PageHeader({
           >
             <TimerOutlinedIcon sx={IconStyling} />
             <p className='text-bold'>
-              {calculateDuration(data?.startdate, data?.enddate)}
+              {calculateDuration(data?.startTime, data?.endTime)}
             </p>
           </div>
           <div
