@@ -83,7 +83,7 @@ export default function NavBarLoggedIn() {
     ['Settings', '/settings', <SettingsIcon key='Settings' />],
   ];
   // add approvals page if user is admin
-  if (userProfile && userProfile.status === 'ADMIN') {
+  if (userProfile && userProfile?.status === 'ADMIN') {
     pages.splice(1, 0, [
       'Approvals',
       '/approvals',
@@ -191,7 +191,7 @@ export default function NavBarLoggedIn() {
               <ThemedButton
                 startIcon={
                   <Avatar
-                    src={userProfile.picture}
+                    src={userProfile?.picture}
                     alt='Remy Sharp'
                     onError={handleError}
                     style={{marginRight: 5}}
@@ -216,7 +216,7 @@ export default function NavBarLoggedIn() {
       </Nav.AppBarLoggedIn>
       <Nav.Drawer variant='permanent' open={open}>
         <Nav.DrawerHeader>
-        <Link to= {userProfile.status === 'PENDING' || userProfile.status === 'REQUESTED' ||  userProfile.status === 'UPDATED' || userProfile.status === 'DENIED' ? '/myprofile' : '/dashboard' }>
+        <Link to= {userProfile?.status === 'PENDING' || userProfile?.status === 'REQUESTED' ||  userProfile?.status === 'UPDATED' || userProfile?.status === 'DENIED' ? '/myprofile' : '/dashboard' }>
             <Box onClick={() => handleTabClick(0)} sx={BrandStyling}>
               <StarRoundedIcon
                 className='icon-yellow'
@@ -237,7 +237,7 @@ export default function NavBarLoggedIn() {
             }
           </IconButton>
         </Nav.DrawerHeader>
-        {userProfile.status === 'PENDING' || userProfile.status === 'REQUESTED' ||  userProfile.status === 'UPDATED' || userProfile.status === 'DENIED' ? <></> :
+        {userProfile?.status === 'PENDING' || userProfile?.status === 'REQUESTED' ||  userProfile?.status === 'UPDATED' || userProfile?.status === 'DENIED' ? <></> :
         <List>
           {pages.map((arr) => {
             const [label, route, icon] = arr;
