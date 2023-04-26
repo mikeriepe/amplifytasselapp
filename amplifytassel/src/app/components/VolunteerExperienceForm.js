@@ -37,13 +37,50 @@ export default function VolunteerExperienceForm({onClose}) {
     description: '',
     startdate: (new Date()),
     enddate: null,
-    currentposition: false,
+    currentPosition: false,
   };
 
   const methods = useForm({defaultValues: formValues});
   const {handleSubmit, control, register} = methods;
 
-  const addVolunteerExperienceToProfile = (data) => {
+  // const addVolunteerExperienceToProfile = (data) => {
+  //   let startDate = '';
+  //   if (data.startdate !== '') {
+  //     startDate = data.startdate.toISOString().split('T')[0];
+  //     const startDateValues = startDate.split('-').reverse('');
+  //     startDate = startDateValues[1] + '/' +
+  //     startDateValues[0] + '/' + startDateValues[2];
+  //   }
+
+  //   let endDate = '';
+  //   if (data.enddate !== '' && data.enddate !== null) {
+  //     endDate = data.enddate.toISOString().split('T')[0];
+  //     const endDateValues = endDate.split('-').reverse('');
+  //     endDate = endDateValues[1] + '/' +
+  //     endDateValues[0] + '/' + endDateValues[2];
+  //   }
+
+  //   let newLocation = '';
+  //   if (data.jobcity !== '' && data.jobstate !== '') {
+  //     newLocation = data.jobcity + ', ' + data.jobstate;
+  //   } else if (data.jobstate === '') {
+  //     newLocation = data.jobcity;
+  //   } else {
+  //     newLocation = data.jobstate;
+  //   }
+  //   const newVolunteerExperience = {
+  //     end: data.enddate !== null ? endDate : '',
+  //     start: startDate,
+  //     title: data.jobtitle,
+  //     company: data.company,
+  //     location: newLocation,
+  //     description: data.description,
+  //     currentPosition: data.currentPosition
+  //   };
+  //   userProfile.volunteerExperience.push(newVolunteerExperience);
+  // };
+
+  const updateProfile = (data) => {
     let startDate = '';
     if (data.startdate !== '') {
       startDate = data.startdate.toISOString().split('T')[0];
@@ -75,22 +112,25 @@ export default function VolunteerExperienceForm({onClose}) {
       company: data.company,
       location: newLocation,
       description: data.description,
-      currentPosition: data.currentposition
+      currentPosition: data.currentPosition
     };
-    userProfile.volunteerExperience.push(newVolunteerExperience);
-  };
+    
+    const volunteerExperienceCpy = [...(userProfile.volunteerExperience)];
+    volunteerExperienceCpy.push(newVolunteerExperience);
 
-  const updateProfile = (sortedExperience) => {
-    DataStore.query(Profile, p => p.id.eq(userProfile.id))
+    const sortedVolunteerExperience = sortWorkExperience(volunteerExperienceCpy);
+
+    DataStore.query(Profile, userProfile.id)
       .then((res) => {
-        DataStore.save(Profile.copyOf(res[0], updated => {
-          updated.volunteerExperience = sortedExperience;
+        DataStore.save(Profile.copyOf(res, updated => {
+          updated.volunteerExperience = sortedVolunteerExperience;
         }))
       })
       .then(() => {
-        console.log('v experience updated');
-        userProfile.volunteerExperience = sortedExperience;
-        setUserProfile(userProfile);
+        console.log('volunteer experience updated');
+        const userProfileCpy = {...userProfile};
+        userProfileCpy.volunteerExperience = sortedVolunteerExperience;
+        setUserProfile(userProfileCpy);
         toast.success('Account updated', {
           position: 'top-right',
           autoClose: 5000,
@@ -107,9 +147,7 @@ export default function VolunteerExperienceForm({onClose}) {
   };
 
   const onSubmit = (data) => {
-    addVolunteerExperienceToProfile(data);
-    const sortedExperience = sortWorkExperience(userProfile.volunteerExperience);
-    updateProfile(sortedExperience);
+    updateProfile(data);
     onClose();
   };
 
@@ -218,9 +256,8 @@ export default function VolunteerExperienceForm({onClose}) {
             multi={true}
             register={register}
           />
-
           <CheckboxInput
-            name='currentposition'
+            name='currentPosition'
             control={control}
             label='Current Position'
           />

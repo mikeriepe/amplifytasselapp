@@ -10,6 +10,8 @@ import useAuth from '../util/AuthContext';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import ButtonBase from '@mui/material/ButtonBase';
 import MuiCard from '@mui/material/Card';
+import { DataStore } from 'aws-amplify';
+import { Profile } from '../../models';
 
 const Card = styled((props) => (
   <MuiCard elevation={0} {...props} />
@@ -61,84 +63,75 @@ const OutlinedIconButton = ({children}, props) => (
 export default function WorkExperienceDeleteModal({onClose}) {
   const {userProfile, setUserProfile} = useAuth();
 
-  const updateProfile = () => {
-    fetch(`/api/updateProfile`, {
-      method: 'POST',
-      body: JSON.stringify({userid: userProfile.userid, ...userProfile}),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-        .then((res) => {
-          if (!res.ok) {
-            throw res;
-          }
-          return res.json();
-        }); toast.success('Account updated', {
-      position: 'top-right',
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
+  const updateProfile = (index) => {
+    console.log('updateProfile');
+    const experienceObj = [...(userProfile.experience)];
+    experienceObj.splice(index, 1);
+
+    DataStore.query(Profile, userProfile.id)
+      .then((profile) => {
+        console.log(JSON.stringify(profile.experience[index]));
+        DataStore.save(Profile.copyOf(profile, updated => {
+          updated.experience = experienceObj;
+        }))
+          .then(() => {
+            console.log('experience updated');
+            const userProfileCpy = {...userProfile};
+            userProfileCpy.experience = experienceObj;
+            setUserProfile(userProfileCpy);
+            toast.success('Account updated', {
+              position: 'top-right',
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            });
+          })
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     return;
   };
 
-  const deleteWorkExperience = (index) => {
-    const indexPosition = index + 1;
-    const totalNumJobs = Object.keys(userProfile.experience).length;
-    if (indexPosition === totalNumJobs) {
-      const jobToDelete = 'job' + indexPosition;
-      delete userProfile.experience[jobToDelete];
-    } else {
-      for (let i = indexPosition; i < totalNumJobs; i++) {
-        const jobReplaced = 'job' + i;
-        const jobReplacing = 'job' + (i+1);
-        userProfile.experience[jobReplaced] =
-        userProfile.experience[jobReplacing];
-      }
-      const duplicateLastJob = 'job' + totalNumJobs;
-      delete userProfile.experience[duplicateLastJob];
-    }
-    updateProfile();
-  };
-
-  const jobTitleList = Object.keys(userProfile.experience).map((job, index)=>{
-    return <Card className='clickable' key = {job}>
-      <div
-        className='flex-space-between flex-align-center'
-        style={{padding: '5px', background: 'var(--background-primary)'}}
-      >
-        <MuiBox>
-          <div>
-            <h5>{userProfile.experience[job].title}</h5>
-            <p className='text-bold text-blue'>
-              {userProfile.experience[job].company}</p>
+  const jobTitleList = userProfile.experience.map((job, index) => {
+    return (
+      <Card className='clickable' key={index}>
+        <div
+          className='flex-space-between flex-align-center'
+          style={{ padding: '5px', background: 'var(--background-primary)' }}
+        >
+          <MuiBox>
+            <div>
+              <h5>{job.title}</h5>
+              <p className='text-bold text-blue'>
+                {job.company}</p>
+            </div>
+          </MuiBox>
+          <div className='flex-flow-large' style={{ marginLeft: '50px' }}>
+            {(
+              <OutlinedIconButton>
+                <CloseRoundedIcon
+                  sx={{
+                    height: '20px',
+                    width: '20px',
+                    color: 'var(--error-red-main)',
+                    stroke: 'var(--error-red-main)',
+                    strokeWidth: '2px',
+                  }}
+                  onClick={() => {
+                    updateProfile(index);
+                    onClose();
+                  }}
+                />
+              </OutlinedIconButton>
+            )}
           </div>
-        </MuiBox>
-        <div className='flex-flow-large' style={{marginLeft: '50px'}}>
-          {(
-            <OutlinedIconButton>
-              <CloseRoundedIcon
-                sx={{
-                  height: '20px',
-                  width: '20px',
-                  color: 'var(--error-red-main)',
-                  stroke: 'var(--error-red-main)',
-                  strokeWidth: '2px',
-                }}
-                onClick={() => {
-                  deleteWorkExperience(index);
-                  onClose();
-                }}
-              />
-            </OutlinedIconButton>
-          )}
         </div>
-      </div>
-    </Card>;
+      </Card>
+    )
   });
 
   return (

@@ -10,6 +10,8 @@ import useAuth from '../util/AuthContext';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import ButtonBase from '@mui/material/ButtonBase';
 import MuiCard from '@mui/material/Card';
+import { Profile } from '../../models';
+import { DataStore } from 'aws-amplify';
 
 const Card = styled((props) => (
   <MuiCard elevation={0} {...props} />
@@ -61,39 +63,40 @@ const OutlinedIconButton = ({children}, props) => (
 export default function VolunteerExperienceDeleteModal({onClose}) {
   const {userProfile, setUserProfile} = useAuth();
 
-  const updateProfile = () => {
-    // fetch(`/api/updateProfile`, {
-    //   method: 'POST',
-    //   body: JSON.stringify({userid: userProfile.userid, ...userProfile}),
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    // })
-    //     .then((res) => {
-    //       if (!res.ok) {
-    //         throw res;
-    //       }
-    //       return res.json();
-    //     }); toast.success('Account updated', {
-    //   position: 'top-right',
-    //   autoClose: 5000,
-    //   hideProgressBar: false,
-    //   closeOnClick: true,
-    //   pauseOnHover: true,
-    //   draggable: true,
-    //   progress: undefined,
-    // });
-    // return;
+  const updateProfile = (index) => {
+    console.log('updateProfile');
+    const volunteerExperienceObj = [...(userProfile.volunteerExperience)];
+    volunteerExperienceObj.splice(index, 1);
+
+    DataStore.query(Profile, userProfile.id)
+      .then((profile) => {
+        console.log(JSON.stringify(profile.volunteerExperience[index]));
+        DataStore.save(Profile.copyOf(profile, updated => {
+          updated.volunteerExperience = volunteerExperienceObj;
+        }))
+          .then(() => {
+            console.log('experience updated');
+            const userProfileCpy = {...userProfile};
+            userProfileCpy.volunteerExperience = volunteerExperienceObj;
+            setUserProfile(userProfileCpy);
+            toast.success('Account updated', {
+              position: 'top-right',
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            });
+          })
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     console.log('updateProfile called');
   };
 
-  const deleteVolunteerExperience = (index) => {
-    console.log(`deleteing ${index}`);
-    updateProfile();
-  };
-
-  const jobTitleList =
-  userProfile.volunteerExperience.map((job, index)=>{
+  const jobTitleList = userProfile.volunteerExperience.map((job, index)=>{
     return <Card className='clickable' key = {index}>
       <div
         className='flex-space-between flex-align-center'
@@ -118,7 +121,8 @@ export default function VolunteerExperienceDeleteModal({onClose}) {
                   strokeWidth: '2px',
                 }}
                 onClick={() => {
-                  deleteVolunteerExperience(index);
+                  // deleteVolunteerExperience(index);
+                  updateProfile(index);
                   onClose();
                 }}
               />

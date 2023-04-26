@@ -74,50 +74,21 @@ export default function UpdateProfile() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showVolunteerForm, setShowVolunteerForm] = useState(false);
   const [showDeleteVolunteerModal, setShowDeleteVolunteerModal] = useState(false);
-  
-  // const [displayOpps, setDisplayOpps] = useState([]);
-  // const [search, setSearch] = useState('');
-  // const [majors, setMajors] = useState([]);
+
+  // TODO: use this state to implement select and update profile majors
   // const [selectedMajors, setSelectedMajors] = useState([]);
   // const [allMajors, setAllMajors] = useState([]);
 
-  // const [profileKeywords, setProfileKeywords] = useState([]);
   const [selectedKeywords, setSelectedKeywords] = useState([]);
   const [allKeywords, setAllKeywords] = useState([]);
 
   const [values, setValues] = useState({
     1: {
       graduationYear: userProfile.graduationYear,
-      majors: null, //FIXME
       location: userProfile.location,
       about: userProfile.about,
-      keywords: null,
     },
   });
-
-  // // Fuzzy search on given searchData
-  // // If the search bar is empty, the searchData is all the opps
-  // const searchMajors = (query, searchData=allMajors) => {
-  //   if (!query) {
-  //     setDisplayOpps(searchData);
-  //     return;
-  //   }
-  //   const fuse = new Fuse(searchData, {
-  //     // more parameters can be added for search
-  //     keys: ['eventname', 'description'],
-  //     threshold: 0.3,
-  //   });
-  //   const result = fuse.search(query);
-  //   const finalResult = [];
-  //   if (result.length) {
-  //     result.forEach((item) => {
-  //       finalResult.push(item.item);
-  //     });
-  //     setDisplayOpps(finalResult);
-  //   } else {
-  //     setDisplayOpps([]);
-  //   }
-  // };
 
   const handleDeleteTag = (tagIndex) => () => {
     const tempSelectedTags = [...selectedKeywords];
@@ -153,18 +124,49 @@ export default function UpdateProfile() {
 
   // selectedTags, keywords, selectedMajors, majors
   const updateProfile = () => {
-    // Update Keywords Relationship
-    // Update Majors Relationship
-    // Update Profile Fields
+    // TODO: Update Keywords Relationship to selectedKeywords
+    // const selectedKeywordIDs = selectedKeywords.map((keyword) => keyword.id);
+    // DataStore.query(KeywordProfile, kp => kp.profileId.eq(userProfile.id))
+    //   .then((keywordProfiles) => {
+    //     console.log(keywordProfiles);
+    //     // delete keyword relationships not in selectedKeywords
+    //     for (let i = 0; i < keywordProfiles.length; i++) {
+    //       if (!selectedKeywordIDs.includes(keywordProfiles[i].keywordId)) {
+    //         await DataStore.delete(KeywordProfile, kp => kp.)
+    //       }
+    //     }
+    //   });
+    // TODO: Update Majors Relationship
+    // Update Profile Fields: graduationYear, location, about
+    DataStore.query(Profile, userProfile.id)
+      .then((res) => {
+        DataStore.save(Profile.copyOf(res, updated => {
+          updated.graduationYear = values[1].graduationYear;
+          updated.location = values[1].location;
+          updated.about = values[1].about;
+        }))
+      })
+      .then(() => {
+        console.log('volunteer experience updated');
+        const userProfileCpy = {...userProfile};
+        userProfileCpy.graduationYear = values[1].graduationYear;
+        userProfileCpy.location = values[1].location;
+        userProfileCpy.about = values[1].about;
+        setUserProfile(userProfileCpy);
+        toast.success('Account updated', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
-
-  // const convertTagsToObject = (tags) => {
-  //   const tagsObject = {};
-  //   for (let i = 0; i < tags.length; i++) {
-  //     tagsObject[`keyword${i}`] = tags[i];
-  //   }
-  //   return tagsObject;
-  // };
   
   useEffect(() => {
     // get selectedKeywords, keywords, allKeywords
@@ -193,18 +195,8 @@ export default function UpdateProfile() {
         console.log(err);
       });
   }, []);
-  
-  // const updateLocalUserProfileData = () => {
-  //   userProfile.graduationYear = values[1].graduationYear;
-  //   // userProfile.majors = values[1].majors;
-  //   userProfile.location = values[1].location;
-  //   userProfile.about = values[1].about;
-  // };
 
   const handleSubmit = (e) => {
-    // const tagsToSubmit = convertTagsToObject(selectedKeywords);
-    // userProfile.keywords = tagsToSubmit;
-    // updateLocalUserProfileData();
     updateProfile();
   };
 
@@ -242,6 +234,7 @@ export default function UpdateProfile() {
                   <p className='text-bold'>
                     Major <span className='text-bold text-warning'>*</span>
                   </p>
+                  {/* TODO: implement search and select majors */}
                   {/* SEARCH MAJORS(UNFINISHED) */}
                   {/* <MuiBox className='flow-small' sx={{ flexGrow: 1 }}>
                     <div
@@ -501,7 +494,7 @@ export default function UpdateProfile() {
         <WorkExperienceForm onClose={() =>
           setShowWorkForm(!showWorkForm)} />
       </Modal>
-      {/* <Modal
+      <Modal
         open={showDeleteModal}
         onBackdropClick={() => setShowDeleteModal(false)}
         onClose={() => setShowDeleteModal(false)}
@@ -524,7 +517,7 @@ export default function UpdateProfile() {
       >
         <VolunteerExperienceDeleteModal onClose={() =>
           setShowDeleteVolunteerModal(!showDeleteVolunteerModal)} />
-      </Modal> */}
+      </Modal>
 
     </Page>
   );
