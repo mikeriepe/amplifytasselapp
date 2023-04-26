@@ -13,7 +13,6 @@ import {useLocation} from 'react-router-dom';
 import { DataStore } from '@aws-amplify/datastore';
 import { Opportunity } from '../../models';
 import { Role } from '../../models';
-import { Profile } from '../../models';
 import { OpportunityStatus, Keyword } from '../../models';
 
 
@@ -100,86 +99,34 @@ export default function FetchWrapper() {
 
   const getJoinedOpportunities = () => {
     console.log("Getting joined...");
-    /*
-    fetch(`/api/getJoinedOpportunities/${userProfile.profileid}`)
-        .then((res) => {
-          if (!res.ok) {
-            throw res;
-          }
-          return res.json();
-        })
-        .then((json) => {
-          setJoinedOpportunities(json);
-        })
-        .catch((err) => {
-          console.log(err);
-          alert('Error retrieving joined opportunities');
-        });
-      */
-      //const usersJoined = await DataStore.query(Opportunity, (o) => o.profilesJoined.profile.id.eq(userProfile.id));
-      DataStore.query(Opportunity, (o) => o.profilesJoined.profile.id.eq(userProfile.id))
-      .then((res) => {
-        setJoinedOpportunities(res);
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-        alert('Error retrieving joined opportunities');
-      });
-      //const emptyTest = await DataStore.query(Opportunity, "1");
-      //console.log("Empty Test");
-      //console.log(emptyTest);
-      //console.log(emptyTest === undefined);
+    const currTime = new Date().toISOString();
+    DataStore.query(Opportunity, (o) => o.and(o => [
+      o.profilesJoined.profile.id.eq(userProfile.id),
+      o.endTime.gt(currTime)
+    ]))
+    .then((res) => {
+      setJoinedOpportunities(res);
+    })
+    .catch((err) => {
+      console.log(err);
+      alert('Error retrieving joined opportunities');
+    });
   };
-  //const usersJoined = await DataStore.query(Opportunity, (o) => o.profilesJoined.Profile.id.eq(userProfile.id));
+
   const getCreatedOpportunities = () => {
     console.log("Getting created...");
-    /*
-    fetch(`/api/getCreatedOpportunities/${userProfile.profileid}`)
-        .then((res) => {
-          if (!res.ok) {
-            throw res;
-          }
-          return res.json();
-        })
-        .then((json) => {
-          setCreatedOpportunities(json);
-        })
-        .catch((err) => {
-          console.log(err);
-          alert('Error retrieving created opportunities');
-        });
-    */
-      
       DataStore.query(Opportunity, o => o.profileID.eq(userProfile.id))
       .then((res) => {
         setCreatedOpportunities(res);
-        console.log(res);
       })
       .catch((err) => {
         console.log(err);
         alert('Error retrieving created opportunities');
       });
   };
-  //const createdOpps = await DataStore.query(Opportunity, o => o.profileID.eq(userProfile.id));
+
   const getPastOpportunities = () => {
     console.log("Getting past...");
-    /*
-    fetch(`/api/getPastOpportunities/${userProfile.profileid}`)
-        .then((res) => {
-          if (!res.ok) {
-            throw res;
-          }
-          return res.json();
-        })
-        .then((json) => {
-          setPastOpportunities(json);
-        })
-        .catch((err) => {
-          console.log(err);
-          alert('Error retrieving past opportunities');
-        });
-    */
     const currTime = new Date().toISOString();
     DataStore.query(Opportunity, (o) => o.and(o => [
       o.profilesJoined.profile.id.eq(userProfile.id),
@@ -187,59 +134,14 @@ export default function FetchWrapper() {
     ]))
     .then((res) => {
       setPastOpportunities(res);
-      console.log(res);
     })
     .catch((err) => {
       console.log(err);
       alert('Error retrieving past joined opportunities');
     });
-    DataStore.query(Opportunity, (o) => o.and(o => [
-      o.profileID.eq(userProfile.id),
-      o.endTime.lt(currTime)
-    ]))
-    .then((res) => {
-      setPastOpportunities(res);
-      console.log(res);
-    })
-    .catch((err) => {
-      console.log(err);
-      alert('Error retrievingpast created opportunities');
-    });
-    
   };
-  //const past1 = await DataStore.query(Request, (r) => r.and(r => [
-    //r.profile.id.eq(userProfile.profileid),
-    //r.status.eq(RequestStatus.APPROVED)
-  //]));
-  //const past2 = await past1.past2.toArray();
-  //const currTime = new Date().toISOString();
-  //const past3 = await DataStore.query(Opportunity, (o) => o.endTime.lt(currTime));
-  //const usersJoined = await DataStore.query(Opportunity, (o) => o.and(o => [
-    //o.profilesJoined.Profile.id.eq(userProfile.id),
-    //o.endTime.lt(currTime);
-  //]));
-  //const createdOpps = await DataStore.query(Opportunity, (o) => o.and(o => [
-    //o.profileID.eq(userProfile.id),
-    //o.endTime.lt(currTime);
-  //]));
   
   const getPendingOpportunities = () => {
-    /*
-    fetch(`/api/getPendingOpportunities/${userProfile.profileid}`)
-        .then((res) => {
-          if (!res.ok) {
-            throw res;
-          }
-          return res.json();
-        })
-        .then((json) => {
-          setPendingOpportunities(json);
-        })
-        .catch((err) => {
-          console.log(err);
-          alert('Error retrieving past opportunities');
-        });
-    */
     console.log("Getting pending...");
     DataStore.query(Opportunity, (o) => o.and(o => [
       o.Requests.profileID.eq(userProfile.id),
@@ -247,42 +149,49 @@ export default function FetchWrapper() {
     ]))
     .then((res) => {
       setPendingOpportunities(res);
-      console.log(res);
     })
     .catch((err) => {
       console.log(err);
       alert('Error retrieving pending opportunities');
     });
-};  
+};
 
-  const getAllOpportunities = () => {
-    /*
-    fetch(`/api/getOpportunities`)
-        .then((res) => {
-          if (!res.ok) {
-            throw res;
-          }
-          return res.json();
-        })
-        .then((json) => {
-          setAllOpportunities(json);
-        })
-        .catch((err) => {
-          console.log(err);
-          alert('Error retrieving all opportunities');
-        });
-      */
-    console.log("Getting all...");
-    DataStore.query(Opportunity, (o) => o.status.eq('APPROVED')) 
+const getAllOpportunities = () => {
+  console.log("Getting all...");
+  //DataStore.query(Opportunity, (o) => o.status.eq('APPROVED'))
+  DataStore.query(Opportunity, (o) => o.and(o => [
+    o.status.eq('APPROVED'),
+    o.profileID.ne(userProfile.id),
+  ]))
+  .then((res) => {
+    const firstList = res;
+    DataStore.query(Opportunity, (o) => o.and(o => [
+      o.Requests.profileID.eq(userProfile.id)
+    ]))
     .then((res) => {
-      setAllOpportunities(res);
+      console.log(firstList);
       console.log(res);
+      for (let i = 0; i < res.length; i++) {
+        for (let j = 0; j < firstList.length; j++) {
+          if (res[i].id === firstList[j].id) {
+            firstList.splice(j, 1);
+          }
+        }
+      }
+      const timeBoxedList = [];
+      for (let i = 0; i < firstList.length; i++) {
+        if (new Date(firstList[i].startTime) > Date.now()) {
+          timeBoxedList.push(firstList[i]);
+        }
+      }
+      setAllOpportunities(timeBoxedList);
     })
-    .catch((err) => {
-      console.log(err);
-      alert('Error retrieving opportunities');
-    });
-  };
+  })
+  .catch((err) => {
+    console.log(err);
+    alert('Error retrieving opportunities');
+  });
+};
 
   useEffect(() => {
     getJoinedOpportunities();
@@ -311,6 +220,7 @@ export default function FetchWrapper() {
             allOpportunities={allOpportunities}
             getAllOpportunities={getAllOpportunities}
             getCreatedOpportunities={getCreatedOpportunities}
+            getJoinedOpportunities={getJoinedOpportunities}
             allKeywords={allKeywords}
             getAllKeywords={getAllKeywords}
           />
@@ -334,6 +244,7 @@ function Opportunities({
   getAllOpportunities,
   getCreatedOpportunities,
   getAllKeywords,
+  getJoinedOpportunities,
 }, props) {
   const {userProfile} = useAuth();
   const location = useLocation();
@@ -354,7 +265,7 @@ function Opportunities({
   const [oppTypeFilter, setOppTypeFilter] = useState([]);
   const [orgTypeFilter, setOrgTypeFilter] = useState([]);
   const [showOppForm, setShowOppForm] = useState(false);
-
+  
   const tabs = [
     {
       name: 'Upcoming',
@@ -369,6 +280,8 @@ function Opportunities({
           setOppTypeFilter={setOppTypeFilter}
           orgTypeFilter={orgTypeFilter}
           setOrgTypeFilter={setOrgTypeFilter}
+          getJoinedOpportunities={getJoinedOpportunities}
+          getAllOpportunities={getAllOpportunities}
         />,
     },
     {
@@ -432,31 +345,12 @@ function Opportunities({
           setOppTypeFilter={setOppTypeFilter}
           orgTypeFilter={orgTypeFilter}
           setOrgTypeFilter={setOrgTypeFilter}
-          //getPendingOpportunities={getPendingOpportunities}
+          getPendingOpportunities={getPendingOpportunities}
           getAllOpportunities={getAllOpportunities}
         />,
     },
   ];
-  //console.log(allKeywords[0]); // this is a promise array
 
-  //const p = Promise.resolve(allKeywords.values);
-
-  //p.then(value => {
-    //console.log(value); 
-  //})
-
-  //console.log(p);
-  /*
-  const allKeywordsArr1 = [allKeywords];
-  console.log(allKeywords[2]);
-  let allKeywordsArr2 = Array(allKeywordsArr1.length);
-  //for(let i = 0; i < allKeywordsArr1.length; i++)
-  //{
-    //allKeywordsArr2[i] = allKeywordsArr1[i].name;
-  //}
-  console.log(allKeywordsArr2.length);
-  */
-  //for(i = 0; )
   const formValues = {
     //eventName: '',
     locationType: 'in-person',
