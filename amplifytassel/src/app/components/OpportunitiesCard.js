@@ -197,6 +197,7 @@ export default function OpportunitiesCard({
   const [showOppForm, setShowOppForm] = useState(false);
   const [showDeleteForm, setShowDeleteForm] = useState(false);
   const [requestMessage, setRequestMessage] = React.useState('');
+  const [oppRoles, setOppRoles] = useState(false);
   const {userProfile} = useAuth();
 
   const handleReqModalClose = () => {
@@ -227,21 +228,38 @@ export default function OpportunitiesCard({
     setRequestMessage(e.target.value);
   };
 
+  const extractRoles = () => {
+    const p = Promise.resolve(opportunity.Roles.values);
+    const roleNames = [];
+    p.then(value => {
+      for (let i = 0; i < value.length; i++) {
+        const k =  Promise.resolve(value[i]);
+        k.then(value => {
+          roleNames.push(value);
+        });
+      }
+    });
+    console.log(roleNames);
+    setOppRoles(roleNames);
+  };
+
   const handleRequestClick = (e) => {
     // Send request here
     // For consistency in the db, instead of null
     // role will be empty string
     const requestData = {
-      requestee: creator.profileid,
-      requester: userProfile.profileid,
+      requestee: creator.id,
+      requester: userProfile.id,
       requestmessage: requestMessage,
-      opportunityid: opportunity.eventid,
+      opportunityid: opportunity.id,
       role: '',
       toevent: true,
     };
+    console.log(requestData);
     postRequestToOpportunity(requestData);
     setshowReqForm(false);
     setRequestMessage('');
+    extractRoles();
   };
 
   const handleEditOpp = async (data) => {
@@ -363,85 +381,54 @@ export default function OpportunitiesCard({
         }
   };
 
-  const postRequestToOpportunity = async (requestData) => {
-    /*
-    fetch(`/api/postRequest`, {
-      method: 'POST',
-      body: JSON.stringify(requestData),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-        .then((res) => {
-          if (res.status === 201) {
-            toast.success(`Applied to ${opportunity.eventname}`, {
-              position: 'top-right',
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-            getPendingOpportunities();
-            getAllOpportunities();
-          } else if (res.status === 409) {
-            toast.warning(`You Already Applied to This Event`, {
-              position: 'top-right',
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-          } else {
-            toast.error(`Something Went Wrong. Please Try Again.`, {
-              position: 'top-right',
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          alert('Something Went Wrong. Please Try Again.');
-        });
-      */
-      const requestedRole = await DataStore.query(Role, (r) => r.and(r => [
-        r.name.eq(requestData.role),
-        r.opportunityID.eq(requestData.opportunityid)
-       ]))
-      const req = await DataStore.query(Request, (r) => r.and(r => [
-        r.roleID.eq(requestedRole.id),
+  const postRequestToOpportunity = (requestData) => {
+    //console.log(oppRoles[0].name);
+    //console.log(requestData);
+    DataStore.query(Role, (r) => r.and(r => [
+      r.name.eq(requestData.role),
+      r.opportunityID.eq(requestData.opportunityid)
+    ]))
+    .then((res) => {
+      DataStore.query(Request, (r) => r.and(r => [
+        r.roleID.eq(res.id),
         r.opportunityID.eq(requestData.opportunityid),
         r.profileID.eq(requestData.requester)
        ]))
-      if (req === undefined) {
-        const newRequest = await DataStore.save(
-            new Request({
-            "status": RequestStatus.PENDING,
-            "responseMessage": " ",
-            "requestTime": new Date().toISOString(),
-            "responseTime": new Date().toISOString(),
-            "requestMessage": requestData.requestmessage,
-            "opportunityID": requestData.opportunityid,
-            "roleID": requestedRole.id,
-            "profileID": requestData.requester
+       .then((json) => {
+        if (json.length == 0) {
+          let rid;
+          for (let i = 0; i < oppRoles.length; i++)
+          {
+            if(oppRoles[i].name == 'General Participant')
+            {
+              rid = oppRoles[i].id;
+              break;
+            }
+          }
+          DataStore.save(
+              new Request({
+              "status": RequestStatus.PENDING,
+              "responseMessage": " ",
+              "requestTime": new Date().toISOString(),
+              "responseTime": new Date().toISOString(),
+              "requestMessage": requestData.requestmessage,
+              "roleID": rid,
+              "opportunityID": requestData.opportunityid,
+              "profileID": requestData.requester
+            })
+          )
+          .then((third) => {
+            console.log(third);
+            getPendingOpportunities();
+            getAllOpportunities();
           })
-        );
-        console.log(newRequest);
-        getPendingOpportunities();
-        getAllOpportunities();
-      }
-      else {
-        console.log("You have already applied to this opportunity.");
-      }
-  };
+        }
+        else {
+          console.log("You have already applied to this opportunity.");
+        }
+       })
+    })
+};
 
   const formatDate = (date, time) => {
     const dateOptions = {
@@ -506,7 +493,6 @@ export default function OpportunitiesCard({
     DataStore.query(Profile, opportunity.profileID)
     .then((res) => {
       setCreator(res);
-      console.log(res);
     })
     .catch((err) => {
       console.log(err);
@@ -520,6 +506,7 @@ export default function OpportunitiesCard({
   
   useEffect(() => {
     getOpportunityCreator(opportunity);
+    extractRoles(opportunity);
   }, [opportunity]);
 
   return (

@@ -34,7 +34,11 @@ export default function DashboardHeader({data}) {
   const [joinedOpportunities, setJoinedOpportunities] = useState([]);
 
   const getJoinedOpportunities = () => {
-    DataStore.query(Opportunity, (c) => c.profilesJoined.profileId.contains(userProfile.id))
+    const currTime = new Date().toISOString();
+    DataStore.query(Opportunity, (o) => o.and(o => [
+      o.profilesJoined.profile.id.eq(userProfile.id),
+      o.endTime.gt(currTime)
+    ]))
     .then((res) => {
       setJoinedOpportunities(res);
     })

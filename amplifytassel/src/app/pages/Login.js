@@ -142,7 +142,7 @@ export default function Login() {
     console.log(JSON.stringify(profile));
     console.log('profile:', JSON.stringify(profile));
     setUserProfile(profile[0]);
-    navigate('/settings');
+    profile[0].status === 'APPROVED' || profile[0].status === 'ADMIN' ? navigate(`/dashboard`) : navigate(`/myprofile`);
   };
 
   const handleNextPage = (step) => {
