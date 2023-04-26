@@ -179,7 +179,6 @@ export default function PageHeader({
     if (days) return `${compareInDays} Days`;
     return 'Error calculating dates';
   };
-
   return (
     <Header type={type}>
       {banner && <Banner image={banner} backUrl={backUrl} type={type} />}
@@ -212,7 +211,7 @@ export default function PageHeader({
             {
               flexGrow: 1,
               display: 'flex',
-              justifyContent: 'center',
+              justifyContent: 'right',
             } : {}
           }
         >
@@ -235,22 +234,22 @@ export default function PageHeader({
             <p className='text-bold'>
               {
                 `
-                  ${formatDate(data?.startdate).date}
-                  ${formatDate(data?.starttime).time}
+                  ${formatDate(data?.startTime).date}
+                  ${formatDate(data?.startTime).time}
                 `
               }
             </p>
             <ArrowForwardRoundedIcon sx={IconStyling} />
             <p className='text-bold'>
               {
-                data.enddate ?
+                data.endTime ?
                 `
-                  ${formatDate(data?.enddate).date}
-                  ${formatDate(data?.endtime).time}
+                  ${formatDate(data?.endTime).date}
+                  ${formatDate(data?.endTime).time}
                 ` :
                 `
-                  ${formatDate(data?.startdate).date}
-                  ${formatDate(data?.starttime).time}
+                  ${formatDate(data?.startTime).date}
+                  ${formatDate(data?.startTime).time}
                 `
               }
             </p>
@@ -261,7 +260,7 @@ export default function PageHeader({
           >
             <TimerOutlinedIcon sx={IconStyling} />
             <p className='text-bold'>
-              {calculateDuration(data?.startdate, data?.enddate)}
+              {calculateDuration(data?.startTime, data?.endTime)}
             </p>
           </div>
           <div
@@ -271,14 +270,14 @@ export default function PageHeader({
             <AccessibilityRoundedIcon sx={IconStyling} />
             <p className='text-bold ellipsis'>
               {
-                data.locationtype.charAt(0).toUpperCase() +
-                  data.locationtype.slice(1)
+                data.locationType.charAt(0).toUpperCase() +
+                  data.locationType.slice(1)
               }
             </p>
           </div>
-          {data.locationtype && (
-            data.locationtype === 'in-person' ||
-            data.locationtype === 'hybrid'
+          {data.locationType && (
+            data.locationType === 'in-person' ||
+            data.locationType === 'hybrid'
           ) &&
             <div
               className='flex-horizontal flex-flow-large flex-align-center'
@@ -286,14 +285,14 @@ export default function PageHeader({
             >
               <FmdGoodOutlinedIcon sx={IconStyling} />
               <p className='text-bold'>
-                {`${data.eventlocation.address} ${data.eventlocation.city}, `}
-                {`${data.eventlocation.state} ${data.eventlocation.zip}`}
+                {`${data.location.address} ${data.location.city}, `}
+                {`${data.location.state} ${data.location.zip}`}
               </p>
             </div>
           }
-          {data.locationtype && (
-            data.locationtype === 'remote' ||
-            data.locationtype === 'hybrid'
+          {data.locationType && (
+            data.locationType === 'remote' ||
+            data.locationType === 'hybrid'
           ) &&
             <div
               className='flex-horizontal flex-flow-large flex-align-center'
@@ -301,7 +300,7 @@ export default function PageHeader({
             >
               <DevicesOutlinedIcon sx={IconStyling} />
               <p className='text-bold'>
-                {data.eventzoomlink}
+                {data.zoomLink}
               </p>
             </div>
           }

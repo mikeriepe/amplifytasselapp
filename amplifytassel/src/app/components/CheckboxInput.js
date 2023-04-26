@@ -33,7 +33,7 @@ export const CheckboxInput = ({
           }) => (
             <Checkbox
               value={value}
-              defaultChecked={
+              checked={
                 defaultChecked ? defaultChecked : false
               }
               onChange={(e) => {

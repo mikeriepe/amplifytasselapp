@@ -7,12 +7,16 @@ import Landing from './pages/Landing';
 import NavBarLoggedOut from './components/NavBarLoggedOut';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
-import MyProfile from './pages/MyProfile';
+import Dashboard from './pages/Dashboard';
+import Approvals from './pages/Approvals';
 import UpdateProfile from './pages/UpdateProfile';
 import NavBarLoggedIn from './components/NavBarLoggedIn';
 import Settings from './pages/Settings';
 import './stylesheets/App.css';
 import 'react-toastify/dist/ReactToastify.css';
+import ViewOpportunity from './pages/ViewOpportunity';
+import Opportunities from './pages/Opportunities';
+import MyProfile from './pages/MyProfile';
 
 import useAuth from './util/AuthContext';
 import { Amplify} from 'aws-amplify'
@@ -33,7 +37,15 @@ const App = () => {
           <Route path='/login' element={<Login />} />
           <Route path='/signup' element={<Signup />} />
           <Route path='/settings' element={<Settings />}/>
-          <Route path='/myprofile' element={<MyProfile />} />
+          <Route
+            path='/opportunity/:opportunityid'
+            element={<ViewOpportunity />}
+          />
+          <Route path='/dashboard' element={<Dashboard />}/>
+          <Route path='/approvals' element={<Approvals/>}/>
+          <Route path='/opportunities' element={<Opportunities />}/>
+          <Route path='/myprofile' element={<MyProfile />}/>
+          <Route path='/landing' element={<Landing />}/>
           <Route path='/updateprofile' element={<UpdateProfile />} />
         </Routes>
       </Box>

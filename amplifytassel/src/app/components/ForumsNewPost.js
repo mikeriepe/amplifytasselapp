@@ -88,10 +88,10 @@ export default function ForumsNewPost({postNewPost}) {
 
     const data = {
       'opportunityid': params.opportunityid,
-      'userid': userProfile.userid,
+      'userid': userProfile.id,
       'content': content,
       'title': title,
-      'createddate': new Date().toISOString(),
+      'createddate': new Date().getTime(),
     };
 
     postNewPost(data);
@@ -113,7 +113,7 @@ export default function ForumsNewPost({postNewPost}) {
         name='title'
         value={title}
         handleChange={(e) => handleChange(e)}
-        image={userProfile?.profilepicture}
+        image={userProfile?.picture}
         placeholder={'Title'}
       />
       <Input

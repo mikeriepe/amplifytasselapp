@@ -10,7 +10,7 @@ export const TextInput = ({name, control, label, register}) => {
       name={name}
       control={control}
       render={({
-        field: {onChange, value},
+        field: {onChange, value='Opportunity'},
         fieldState: {error},
         formState,
       }) => (

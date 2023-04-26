@@ -68,11 +68,12 @@ const ListTextStyling = {
  * @return {JSX} NavBar Component
  */
 export default function NavBarLoggedIn() {
-  const {userProfile, user, setUser, setLoggedIn, setUserProfile} = useAuth();
+  const {userProfile, setUser, setLoggedIn, setUserProfile} = useAuth();
   const theme = useTheme();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [tabIndex, setTabIndex] = useState(window.location.pathname);
+  console.log(userProfile);
 
   // Pages ---------------------------------------------------------------------
 
@@ -82,7 +83,7 @@ export default function NavBarLoggedIn() {
     ['Settings', '/settings', <SettingsIcon key='Settings' />],
   ];
   // add approvals page if user is admin
-  if (user && user.isadmin) {
+  if (userProfile && userProfile?.status === 'ADMIN') {
     pages.splice(1, 0, [
       'Approvals',
       '/approvals',
@@ -147,7 +148,7 @@ export default function NavBarLoggedIn() {
 
   useEffect(() => {
     setTabIndex(window.location.pathname);
-  }, [window.location.pathname]);
+  }, []);
 
   return (
     <>
@@ -215,7 +216,7 @@ export default function NavBarLoggedIn() {
       </Nav.AppBarLoggedIn>
       <Nav.Drawer variant='permanent' open={open}>
         <Nav.DrawerHeader>
-          <Link to='/dashboard'>
+        <Link to= {userProfile?.status === 'PENDING' || userProfile?.status === 'REQUESTED' ||  userProfile?.status === 'UPDATED' || userProfile?.status === 'DENIED' ? '/myprofile' : '/dashboard' }>
             <Box onClick={() => handleTabClick(0)} sx={BrandStyling}>
               <StarRoundedIcon
                 className='icon-yellow'
@@ -236,6 +237,7 @@ export default function NavBarLoggedIn() {
             }
           </IconButton>
         </Nav.DrawerHeader>
+        {userProfile?.status === 'PENDING' || userProfile?.status === 'REQUESTED' ||  userProfile?.status === 'UPDATED' || userProfile?.status === 'DENIED' ? <></> :
         <List>
           {pages.map((arr) => {
             const [label, route, icon] = arr;
@@ -277,6 +279,7 @@ export default function NavBarLoggedIn() {
             );
           })}
         </List>
+        }
         <Box sx={LogoutStyling}>
           <List>
             <Tooltip title='Logout' placement='right'>

@@ -1,10 +1,19 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
 import Chip from '@mui/material/Chip';
 import MuiAvatar from '@mui/material/Avatar';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
+import {useNavigate} from 'react-router-dom';
+import Collapse from '@mui/material/Collapse';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import { DataStore } from '@aws-amplify/datastore';
+import { Profile, Role } from '../../models';
+
 
 const Avatar = ({image}, props) => (
   <MuiAvatar sx={{height: '30px', width: '30px'}} src={image} {...props} />
@@ -15,15 +24,36 @@ const Avatar = ({image}, props) => (
  */
 export default function ViewOpportunityRequestCard({
   request,
-  requester,
-  getRequester,
   isItemSelected,
   labelId,
   handleClick,
 }) {
+  const [open, setOpen] = useState(false);
+  const [requester, setRequester] = useState(null);
+  const [role, setRole] = useState('');
+  const navigate = useNavigate();
+  const navigateToProfile = (profileid) => {
+    navigate(`/Profile/${profileid}`);
+  };
+
+  const getRequester = async (request) => {
+    let requesterProfile = await DataStore.query(Profile, (p) => p.and(p => [
+      p.id.eq(request.profileID)
+    ]));
+    setRequester({...requesterProfile[0]});
+  };
+
+  const getRole = async (request) => {
+    let requestRole = await DataStore.query(Role, (r) => r.and(r => [
+      r.id.eq(request.roleID)
+    ]));
+    setRole(requestRole[0].name);
+  };
+
   useEffect(() => {
-    getRequester(request.requester);
-  }, []);
+    getRequester(request);
+    getRole(request);
+  }, [request]);
 
   const formatDate = (date) => {
     const dateOptions = {
@@ -44,68 +74,111 @@ export default function ViewOpportunityRequestCard({
   };
 
   return (
-    <TableRow
-      hover
-      onClick={(event) => handleClick(event, request.requester)}
-      role='checkbox'
-      aria-checked={isItemSelected}
-      tabIndex={-1}
-      selected={isItemSelected}
-    >
-      <TableCell padding='checkbox'>
-        <Checkbox
-          color='primary'
-          checked={isItemSelected}
-          inputProps={{
-            'aria-labelledby': labelId,
-          }}
-        />
-      </TableCell>
-      <TableCell
-        component='th'
-        id={labelId}
-        scope='row'
-        padding='none'
+    <>
+      <TableRow
+        hover
+        onClick={(event) => {
+          if (!isItemSelected) {
+            setOpen(true);
+          } else {
+            setOpen(false);
+          }
+          handleClick(event, request.profileID);
+        }}
+        role='checkbox'
+        aria-checked={isItemSelected}
+        tabIndex={-1}
+        selected={isItemSelected}
       >
-        <div className='flex-horizontal flex-align-center flex-flow-large'>
-          <Avatar />
-          <p>{`${requester?.firstname} ${requester?.lastname}`}</p>
-        </div>
-      </TableCell>
-      <TableCell align='left'>
-        <p>{/* request.role not implemented yet */}None</p>
-      </TableCell>
-      <TableCell align='left'>
-        <p>{formatDate(request.requestdatetime)}</p>
-      </TableCell>
-      <TableCell align='left'>
-        <Chip
-          label={request.status}
-          variant='outlined'
-          color={
-            request.status === 'Approved' ? 'success' :
-            request.status === 'Denied' ? 'error' :
-            request.status === 'Pending' ? 'secondary' :
-            'primary'
-          }
-          size='small'
-          icon={
-            <Box
+        <TableCell padding='checkbox'>
+          <Checkbox
+            color='primary'
+            checked={isItemSelected}
+            inputProps={{
+              'aria-labelledby': labelId,
+            }}
+          />
+        </TableCell>
+        <TableCell
+          component='th'
+          id={labelId}
+          scope='row'
+          padding='none'
+        >
+          <div
+            className='flex-horizontal flex-align-center flex-flow-large'
+          >
+            <div
+              onClick={() => navigateToProfile(request.profileID)}
               style={{
-                marginLeft: '10px',
-                height: '6px',
-                width: '6px',
-                background:
-                request.status === 'Approved' ? 'var(--success-green-main)' :
-                request.status === 'Denied' ? 'var(--error-red-main)' :
-                request.status === 'Pending' ? 'var(--secondary-yellow-main)' :
-                'var(--primary-blue-main)',
-                borderRadius: '50%',
+                cursor: 'pointer',
               }}
-            />
-          }
-        />
-      </TableCell>
-    </TableRow>
+            >
+              <Avatar image={requester?.picture}/>
+            </div>
+            <p>{`${requester?.firstName} ${requester?.lastName}`}</p>
+          </div>
+        </TableCell>
+        <TableCell align='left'>
+          <p>{role === '' ? 'None' : role}</p>
+        </TableCell>
+        <TableCell align='left'>
+          <p>{formatDate(request.requestTime)}</p>
+        </TableCell>
+        <TableCell align='left'>
+          <Chip
+            label={request.status}
+            variant='outlined'
+            color={
+              request.status === 'APPROVED' ? 'success' :
+              request.status === 'REJECTED' ? 'error' :
+              request.status === 'PENDING' ? 'secondary' :
+              'primary'
+            }
+            size='small'
+            icon={
+              <Box
+                style={{
+                  marginLeft: '10px',
+                  height: '6px',
+                  width: '6px',
+                  background:
+                  request.status === 'APPROVED' ? 'var(--success-green-main)' :
+                  request.status === 'REJECTED' ? 'var(--error-red-main)' :
+                  request.status === 'PENDING' ?
+                  'var(--secondary-yellow-main)' : 'var(--primary-blue-main)',
+                  borderRadius: '50%',
+                }}
+              />
+            }
+          />
+        </TableCell>
+        <TableCell>
+          <IconButton
+            aria-label="expand row"
+            size="small"
+            onClick={() => setOpen(!open)}
+          >
+            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          </IconButton>
+        </TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell style={{paddingBottom: 0, paddingTop: 0}} colSpan={6}>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <Box sx={{margin: 1}}>
+              <Typography gutterBottom component="div">
+                Request Message:
+              </Typography>
+              <p>
+                {request.requestMessage === '' ?
+                '(This user did not leave a message)' :
+                request.requestMessage}
+              </p>
+            </Box>
+          </Collapse>
+        </TableCell>
+      </TableRow>
+    </>
   );
 }

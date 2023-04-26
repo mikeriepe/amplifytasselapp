@@ -10,6 +10,8 @@ import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import ForumsNewPost from './ForumsNewPost';
 import ForumsPost from './ForumsPost';
 import useAuth from '../util/AuthContext';
+import { DataStore } from '@aws-amplify/datastore';
+import { Post, Comment, Profile } from '../../models';
 
 const Paper = styled((props) => (
   <MuiPaper elevation={0} {...props} />
@@ -60,7 +62,7 @@ const Input = ({
 
     const data = {
       'postid': postid,
-      'userid': userProfile?.userid,
+      'userid': userProfile?.id,
       'content': content,
     };
 
@@ -132,101 +134,75 @@ export default function ViewOpportunityForums({id}) {
     );
   };
 
-  const getPosts = () => {
+  const getPosts = async () => {
     setIsLoading(true);
-    fetch(`/api/getPosts/${id}`)
-        .then((res) => {
-          if (!res.ok) {
-            throw res;
-          }
-          return res.json();
-        })
-        .then((json) => {
-          setPosts(json);
-          setIsLoading(false);
-        })
-        .catch((err) => {
-          console.log(err);
-          alert('Error retrieving opportunity posts');
-        });
+    let tempPosts = await DataStore.query(Post, (p) => p.and(p => [p.opportunityID.eq(id)]));
+    // need to join posts with their creators
+    const postsWithProfiles = [];
+    for (let i = 0; i < tempPosts.length; i++){
+      const profile = await DataStore.query(Profile, (p) => p.id.eq(tempPosts[i].profileID));
+      postsWithProfiles.push({...profile[0], ...tempPosts[i]});
+    }
+    setPosts([...postsWithProfiles]);
+    // console.log(tempPosts)
+    setIsLoading(false);
   };
 
-  const getComments = (postid) => {
-    fetch(`/api/getComments/${postid}`)
-        .then((res) => {
-          if (!res.ok) {
-            throw res;
-          }
-          return res.json();
-        })
-        .then((json) => {
-          setComments((prevComments) => ({
-            ...prevComments,
-            [postid]: json,
-          }));
-        })
-        .catch((err) => {
-          console.log(err);
-          alert('Error retrieving opportunity comments');
-        });
+  const getComments = async (postid) => {
+    let tempComments = await DataStore.query(Comment, (p) => p.and(p => [p.postID.eq(postid)]));
+    console.log(tempComments);
+    // need to join comments with their creators
+    const commentsWithProfiles = [];
+    for (let i = 0; i < tempComments.length; i++){
+      const profile = await DataStore.query(Profile, (p) => p.id.eq(tempComments[i].profileID));
+      commentsWithProfiles.push({...profile[0], ...tempComments[i]});
+    }
+    setComments((prevComments) => ({
+      ...prevComments,
+      [postid]: commentsWithProfiles,
+    }));
   };
 
-  const postNewPost = (data) => {
-    fetch(`/api/postPost`, {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-        .then((res) => {
-          if (!res.ok) {
-            throw res;
-          }
-          return res.json();
-        })
-        .then((json) => {
-          setPosts((prevPosts) => [...prevPosts, json]);
-        })
-        .catch((err) => {
-          console.log(err);
-          alert('Error posting opportunity post');
-        });
+  const postNewPost = async (data) => {
+    // post the post here
+    const post = await DataStore.save(
+      new Post({
+        title: data.title,
+        content: data.content,
+        createdTimestamp: data.createddate,
+        profileID: data.userid,
+        opportunityID: data.opportunityid,
+      })
+    );
+    // join the profile with the post
+    setPosts((prevPosts) => [...prevPosts, {...userProfile, ...post}]);
   };
 
-  const postNewComment = (data, postid) => {
-    fetch(`/api/postComment`, {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-        .then((res) => {
-          if (!res.ok) {
-            throw res;
-          }
-          return res.json();
-        })
-        .then((json) => {
-          setComments((prevComments) => {
-            if (prevComments.hasOwnProperty(postid)) {
-              return ({
-                ...prevComments,
-                [postid]: [...prevComments[postid], json],
-              });
-            } else {
-              return ({
-                ...prevComments,
-                [postid]: [json],
-              });
-            }
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-          alert('Error posting opportunity comment');
+  const postNewComment = async (data, postid) => {
+    let comment = await DataStore.save(
+      new Comment({
+        content: data.content,
+        createdTimestamp: new Date().getTime(),
+        profileID: data.userid,
+        postID: data.postid,
+      })
+    );
+
+    // join the profile with the comment
+    comment = {...userProfile, ...comment}
+    setComments((prevComments) => {
+      if (prevComments.hasOwnProperty(postid)) {
+        return ({
+          ...prevComments,
+          [postid]: [...prevComments[postid], comment],
         });
+      } else {
+        return ({
+          ...prevComments,
+          [postid]: [comment],
+        });
+      }
+    });
   };
 
   useEffect(() => {
@@ -248,8 +224,8 @@ export default function ViewOpportunityForums({id}) {
             <Input
               postNewComment={postNewComment}
               name='content'
-              image={userProfile?.profilepicture}
-              postid={post.postid}
+              image={userProfile?.picture}
+              postid={post.id}
             />
           </Paper>
         ))

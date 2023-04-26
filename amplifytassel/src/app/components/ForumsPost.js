@@ -36,6 +36,8 @@ const PosterAvatar = ({image}, props) => (
  */
 export default function ForumsPost({post, comments, getComments}) {
   const [expanded, setExpanded] = useState(false);
+  console.log(comments);
+  console.log(post);
 
   const handleClick = () => {
     setExpanded(!expanded);
@@ -60,26 +62,26 @@ export default function ForumsPost({post, comments, getComments}) {
   };
 
   useEffect(() => {
-    getComments(post.postid);
+    getComments(post.id);
   }, []);
 
   return (
     <>
       <Headline>
-        <PosterAvatar image={post.profilepicture} />
+        <PosterAvatar image={post.picture} />
         <div>
           <div className='text-bold text-dark'>{post.title}</div>
           <p className='text-bold text-blue'>
-            {`${post.firstname} ${post.lastname}`}
+            {`${post.firstName} ${post.lastName}`}
             <span className='text-normal text-gray'>
-              {` · ${formatDate(post.createddate)}`}
+              {` · ${formatDate(post.createdTimestamp)}`}
             </span>
           </p>
         </div>
       </Headline>
       <p>{post.content}</p>
-      {comments.hasOwnProperty(post.postid) &&
-        comments[post.postid].length > 0 && (
+      {comments.hasOwnProperty(post.id) &&
+        comments[post.id].length > 0 && (
         <div className='flex-end flex-align-center'>
           <p
             className='hover-underline'
@@ -96,14 +98,14 @@ export default function ForumsPost({post, comments, getComments}) {
           />
         </div>
       )}
-      {expanded && comments.hasOwnProperty(post.postid) && (
+      {expanded && comments.hasOwnProperty(post.id) && (
         <>
-          {comments[post.postid].length > 0 && (
+          {comments[post.id].length > 0 && (
             <Divider
               sx={{borderBottom: '0.5px solid rgba(0, 0, 0, 0.15)'}}
             />
           )}
-          {comments[post.postid].map((comment, index) =>
+          {comments[post.id].map((comment, index) =>
             (comment.content && (
               <ForumsComment
                 key={`comment-${index}`}

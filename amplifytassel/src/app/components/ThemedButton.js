@@ -77,6 +77,7 @@ export default function ThemedButton({
   const blue = theme.palette.primary;
   const yellow = theme.palette.secondary;
   const gray = theme.palette.tertiary;
+  const green = theme.palette.success;
   const white = 'white';
 
   const themedStyling = {
@@ -89,6 +90,7 @@ export default function ThemedButton({
       color === 'yellow' ? yellow.main :
       color === 'gray' ? gray.main :
       color === 'blue' ? blue.main :
+      color === 'green' ? green.main :
       white,
     'color':
       color === 'white' ? gray.dark :
@@ -98,6 +100,7 @@ export default function ThemedButton({
         color === 'yellow' ? yellow.dark :
         color === 'gray' ? gray.dark :
         color === 'blue' ? blue.dark :
+        color === 'green' ? green.dark :
         gray.bright,
     },
     '&:disabled': {
@@ -138,6 +141,8 @@ export default function ThemedButton({
     'background':
       color === 'yellow' ?
         `linear-gradient(to right, ${yellow.light}, ${yellow.dark})` :
+      color === 'green' ?
+        `linear-gradient(to right, ${green.light}, ${green.dark})` :
       color === 'gray' ?
         `linear-gradient(to right, ${gray.light}, ${gray.dark})` :
         `linear-gradient(to right, ${blue.light}, ${blue.dark})`,
@@ -145,6 +150,8 @@ export default function ThemedButton({
       background:
         color === 'yellow' ?
           `linear-gradient(to right, ${yellow.dark}, ${yellow.dark})` :
+        color === 'green' ?
+          `linear-gradient(to right, ${green.dark}, ${green.dark})` :
         color === 'gray' ? gray.dark :
         blue.dark,
     },
@@ -161,6 +168,7 @@ export default function ThemedButton({
       color === 'yellow' ? yellow.main :
       color === 'gray' ? gray.main :
       color === 'blue' ? blue.main :
+      color === 'green' ? green.main :
       white,
     'color':
       color === 'white' ? gray.dark :
@@ -170,6 +178,7 @@ export default function ThemedButton({
         color === 'yellow' ? yellow.dark :
         color === 'gray' ? gray.dark :
         color === 'blue' ? blue.dark :
+        color === 'green' ? green.dark :
         gray.bright,
     },
     '&:disabled': {
