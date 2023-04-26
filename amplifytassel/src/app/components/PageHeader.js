@@ -179,7 +179,6 @@ export default function PageHeader({
     if (days) return `${compareInDays} Days`;
     return 'Error calculating dates';
   };
-  console.log(data);
   return (
     <Header type={type}>
       {banner && <Banner image={banner} backUrl={backUrl} type={type} />}

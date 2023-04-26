@@ -92,45 +92,25 @@ const OutlinedIconButton = ({
       e.stopPropagation();
       e.preventDefault();
       if (type === 'pending') {
-        /*
-        // fetch the request
-        fetch(`/api/getPendingRequestsSent/${profileid}/${opportunityid}`)
-            .then((res) => {
-              if (!res.ok) {
-                throw res;
-              }
-              return res.json();
-            })
-            .then((json) => {
-              fetch(`/api/deleteRequest/`, {
-                method: 'DELETE',
-                body: JSON.stringify({requestId: json[0].requestid}),
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-              })
-                  .then(() => {
-                    getPendingOpportunities();
-                    getAllOpportunities();
-                  });
-            })
-            .catch((err) => {
-              console.log(err);
-              alert('Error deleting request');
-            });
-        */
-       const opp = await DataStore.query(Opportunity, opportunityid);
-       const prof = await DataStore.query(Profile, profileid);
-       const req = await DataStore.query(Request, (r) => r.and(r => [
-        r.status.eq('PENDING'),
-        r.opportunityID.eq(opp.id),
-        r.profileID.eq(prof.id)
-       ]))
-       if(req !== undefined) {
-        DataStore.delete(req);
-        getPendingOpportunities();
-        getAllOpportunities();
-       }
+        // A user can only have 1 request to an opportunity at a time
+        // So we can assume the fetched request will be the pending one
+        DataStore.query(Request, (r) => r.and(r => [
+          r.status.eq('PENDING'),
+          r.profileID.eq(profileid),
+          r.opportunityID.eq(opportunityid),
+        ]))
+        .then((res) => {
+          // delete the request
+          DataStore.delete(res[0]);
+        })
+        .then(() => {
+          getPendingOpportunities();
+          getAllOpportunities();
+        })
+        .catch((err) => {
+          console.log(err);
+          alert('Error deleting the pending request');
+        });
       }
     }}
     sx={{
