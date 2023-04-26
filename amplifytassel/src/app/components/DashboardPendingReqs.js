@@ -181,7 +181,7 @@ export default function DashboardPendingReqs({
               )}
               {selectedReq === 'Outgoing Requests' && pendingOpps
                   .slice()
-                  .sort((a, b) => a.eventname.localeCompare(b.eventname))
+                  .sort((a, b) => a.eventName.localeCompare(b.eventName))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((opp, index) => {
                     return (

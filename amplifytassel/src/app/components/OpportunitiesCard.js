@@ -26,7 +26,7 @@ import OpportunityForm from './OpportunityForm';
 import ThemedButton from './ThemedButton';
 
 import { DataStore } from '@aws-amplify/datastore';
-import { Opportunity, Profile, Request, Role, RequestStatus } from '../../models';
+import { Opportunity, Profile, Request, Role, RequestStatus, ProfileRole, OpportunityProfile } from '../../models';
 
 
 const IconStyling = {
@@ -82,7 +82,8 @@ const OutlinedIconButton = ({
   opportunityid,
   profileid,
   getPendingOpportunities,
-  getAllOpportunities}, props) => (
+  getAllOpportunities,
+  getJoinedOpportunities}, props) => (
   <ButtonBase
     component='div'
     onMouseDown={(e) => {
@@ -92,45 +93,60 @@ const OutlinedIconButton = ({
       e.stopPropagation();
       e.preventDefault();
       if (type === 'pending') {
-        /*
-        // fetch the request
-        fetch(`/api/getPendingRequestsSent/${profileid}/${opportunityid}`)
-            .then((res) => {
-              if (!res.ok) {
-                throw res;
-              }
-              return res.json();
-            })
-            .then((json) => {
-              fetch(`/api/deleteRequest/`, {
-                method: 'DELETE',
-                body: JSON.stringify({requestId: json[0].requestid}),
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-              })
-                  .then(() => {
-                    getPendingOpportunities();
-                    getAllOpportunities();
-                  });
-            })
-            .catch((err) => {
-              console.log(err);
-              alert('Error deleting request');
-            });
-        */
-       const opp = await DataStore.query(Opportunity, opportunityid);
-       const prof = await DataStore.query(Profile, profileid);
-       const req = await DataStore.query(Request, (r) => r.and(r => [
-        r.status.eq('PENDING'),
-        r.opportunityID.eq(opp.id),
-        r.profileID.eq(prof.id)
-       ]))
-       if(req !== undefined) {
-        DataStore.delete(req);
-        getPendingOpportunities();
-        getAllOpportunities();
-       }
+        // A user can only have 1 request to an opportunity at a time
+        // So we can assume the fetched request will be the pending one
+        DataStore.query(Request, (r) => r.and(r => [
+          r.status.eq('PENDING'),
+          r.profileID.eq(profileid),
+          r.opportunityID.eq(opportunityid),
+        ]))
+        .then((res) => {
+          // delete the request
+          DataStore.delete(res[0]);
+        })
+        .then(() => {
+          getPendingOpportunities();
+          getAllOpportunities();
+        })
+        .catch((err) => {
+          console.log(err);
+          alert('Error deleting the pending request');
+        });
+      } else if (type === 'upcoming') {
+        console.log("upcoming delete button is clicked");
+        // A user can only have 1 request to an opportunity at a time
+        // So we can assume the fetched request will be the pending one
+        const req = await DataStore.query(Request, (r) => r.and(r => [
+          r.status.eq('APPROVED'),
+          r.profileID.eq(profileid),
+          r.opportunityID.eq(opportunityid),
+        ]))
+        .then(async (request) => {
+          // fetch and delete the profile from the role
+          const profRole = await DataStore.query(ProfileRole, (p) => p.and(p => [
+            p.roleId.eq(request[0].roleID),
+            p.profileId.eq(request[0].profileID)
+          ]));
+          await DataStore.delete(profRole[0]);
+
+          // delete the profile from the opportunity
+          const oppProf = await DataStore.query(OpportunityProfile, (o) => o.and(o => [
+          o.opportunityId.eq(request[0].opportunityID),
+          o.profileId.eq(request[0].profileID)
+          ]));
+          await DataStore.delete(oppProf[0]);
+
+          // delete the request
+          DataStore.delete(request[0]);
+        })
+        .then(() => {
+          getJoinedOpportunities();
+          getAllOpportunities();
+        })
+        .catch((err) => {
+          console.log(err);
+          alert('Error deleting the upcoming opportunity');
+        });
       }
     }}
     sx={{
@@ -189,6 +205,7 @@ export default function OpportunitiesCard({
   opportunity,
   getPendingOpportunities,
   getCreatedOpportunities,
+  getJoinedOpportunities,
   getAllOpportunities,
 }) {
   const [creator, setCreator] = useState('');
@@ -197,6 +214,7 @@ export default function OpportunitiesCard({
   const [showOppForm, setShowOppForm] = useState(false);
   const [showDeleteForm, setShowDeleteForm] = useState(false);
   const [requestMessage, setRequestMessage] = React.useState('');
+  const [oppRoles, setOppRoles] = useState(false);
   const {userProfile} = useAuth();
 
   const handleReqModalClose = () => {
@@ -227,21 +245,38 @@ export default function OpportunitiesCard({
     setRequestMessage(e.target.value);
   };
 
+  const extractRoles = () => {
+    const p = Promise.resolve(opportunity.Roles.values);
+    const roleNames = [];
+    p.then(value => {
+      for (let i = 0; i < value.length; i++) {
+        const k =  Promise.resolve(value[i]);
+        k.then(value => {
+          roleNames.push(value);
+        });
+      }
+    });
+    console.log(roleNames);
+    setOppRoles(roleNames);
+  };
+
   const handleRequestClick = (e) => {
     // Send request here
     // For consistency in the db, instead of null
     // role will be empty string
     const requestData = {
-      requestee: creator.profileid,
-      requester: userProfile.profileid,
+      requestee: creator.id,
+      requester: userProfile.id,
       requestmessage: requestMessage,
-      opportunityid: opportunity.eventid,
+      opportunityid: opportunity.id,
       role: '',
       toevent: true,
     };
+    console.log(requestData);
     postRequestToOpportunity(requestData);
     setshowReqForm(false);
     setRequestMessage('');
+    extractRoles();
   };
 
   const handleEditOpp = async (data) => {
@@ -363,85 +398,54 @@ export default function OpportunitiesCard({
         }
   };
 
-  const postRequestToOpportunity = async (requestData) => {
-    /*
-    fetch(`/api/postRequest`, {
-      method: 'POST',
-      body: JSON.stringify(requestData),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-        .then((res) => {
-          if (res.status === 201) {
-            toast.success(`Applied to ${opportunity.eventname}`, {
-              position: 'top-right',
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-            getPendingOpportunities();
-            getAllOpportunities();
-          } else if (res.status === 409) {
-            toast.warning(`You Already Applied to This Event`, {
-              position: 'top-right',
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-          } else {
-            toast.error(`Something Went Wrong. Please Try Again.`, {
-              position: 'top-right',
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          alert('Something Went Wrong. Please Try Again.');
-        });
-      */
-      const requestedRole = await DataStore.query(Role, (r) => r.and(r => [
-        r.name.eq(requestData.role),
-        r.opportunityID.eq(requestData.opportunityid)
-       ]))
-      const req = await DataStore.query(Request, (r) => r.and(r => [
-        r.roleID.eq(requestedRole.id),
+  const postRequestToOpportunity = (requestData) => {
+    //console.log(oppRoles[0].name);
+    //console.log(requestData);
+    DataStore.query(Role, (r) => r.and(r => [
+      r.name.eq(requestData.role),
+      r.opportunityID.eq(requestData.opportunityid)
+    ]))
+    .then((res) => {
+      DataStore.query(Request, (r) => r.and(r => [
+        r.roleID.eq(res.id),
         r.opportunityID.eq(requestData.opportunityid),
         r.profileID.eq(requestData.requester)
        ]))
-      if (req === undefined) {
-        const newRequest = await DataStore.save(
-            new Request({
-            "status": RequestStatus.PENDING,
-            "responseMessage": " ",
-            "requestTime": new Date().toISOString(),
-            "responseTime": new Date().toISOString(),
-            "requestMessage": requestData.requestmessage,
-            "opportunityID": requestData.opportunityid,
-            "roleID": requestedRole.id,
-            "profileID": requestData.requester
+       .then((json) => {
+        if (json.length == 0) {
+          let rid;
+          for (let i = 0; i < oppRoles.length; i++)
+          {
+            if(oppRoles[i].name == 'General Participant')
+            {
+              rid = oppRoles[i].id;
+              break;
+            }
+          }
+          DataStore.save(
+              new Request({
+              "status": RequestStatus.PENDING,
+              "responseMessage": " ",
+              "requestTime": new Date().toISOString(),
+              "responseTime": new Date().toISOString(),
+              "requestMessage": requestData.requestmessage,
+              "roleID": rid,
+              "opportunityID": requestData.opportunityid,
+              "profileID": requestData.requester
+            })
+          )
+          .then((third) => {
+            console.log(third);
+            getPendingOpportunities();
+            getAllOpportunities();
           })
-        );
-        console.log(newRequest);
-        getPendingOpportunities();
-        getAllOpportunities();
-      }
-      else {
-        console.log("You have already applied to this opportunity.");
-      }
-  };
+        }
+        else {
+          console.log("You have already applied to this opportunity.");
+        }
+       })
+    })
+};
 
   const formatDate = (date, time) => {
     const dateOptions = {
@@ -506,7 +510,6 @@ export default function OpportunitiesCard({
     DataStore.query(Profile, opportunity.profileID)
     .then((res) => {
       setCreator(res);
-      console.log(res);
     })
     .catch((err) => {
       console.log(err);
@@ -520,6 +523,7 @@ export default function OpportunitiesCard({
   
   useEffect(() => {
     getOpportunityCreator(opportunity);
+    extractRoles(opportunity);
   }, [opportunity]);
 
   return (
@@ -562,6 +566,7 @@ export default function OpportunitiesCard({
                     profileid={userProfile.id}
                     getPendingOpportunities={getPendingOpportunities}
                     getAllOpportunities={getAllOpportunities}
+                    getJoinedOpportunities={getJoinedOpportunities}
                     onClick={ type === 'created' ?
                       handleDeleteModalOpen : null
                     }

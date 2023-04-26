@@ -38,6 +38,7 @@ export default function OpportunitiesList({
   getPendingOpportunities,
   getCreatedOpportunities,
   getAllOpportunities,
+  getJoinedOpportunities,
 }) {
   const [displayOpps, setDisplayOpps] = useState([]);
   const [search, setSearch] = useState('');
@@ -226,6 +227,7 @@ export default function OpportunitiesList({
             getPendingOpportunities={getPendingOpportunities}
             getCreatedOpportunities={getCreatedOpportunities}
             getAllOpportunities={getAllOpportunities}
+            getJoinedOpportunities={getJoinedOpportunities}
           />
         ))}
       </MuiBox>
