@@ -379,7 +379,7 @@ function Opportunities({
     setShowOppForm(!showOppForm);
   };
 
-  const onSubmit = async (data) => {
+  const onSubmit = (data) => {
     console.log("Starting process...");
     const newOpportunity = {
       assignedRoles: {},
@@ -393,66 +393,7 @@ function Opportunities({
     };
     console.log("Object created...");
     console.log(newOpportunity);
-    /*
-    fetch(`/api/postOpportunity`, {
-      method: 'POST',
-      body: JSON.stringify(newOpportunity),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-        .then((res) => {
-          if (!res.ok) {
-            throw res;
-          }
-          return res.json();
-        })
-        .then(async (res) => {
-          toast.success('Opportunity Created', {
-            position: 'top-right',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-          handleModalClose();
-          // insert the roles into role table
-          for (let i = 0; i < newOpportunity.roles.length; i++) {
-            const newRole = {
-              opportunityid: res.opportunityid,
-              // keeping it null until it's fully implemented
-              tagid: 'c7e29de9-5b88-49fe-a3f5-750a3a62aee5',
-              responsibility: '',
-              isfilled: false,
-              rolename: newOpportunity.roles[i],
-              qualifications: [],
-            };
-            // console.log(newRole);
-            await fetch(`/api/postRole`, {
-              method: 'POST',
-              body: JSON.stringify(newRole),
-              headers: {
-                'Content-Type': 'application/json',
-              },
-            })
-                .then((res) => {
-                  // console.log(res);
-                })
-                .catch((error) => {
-                  console.log(error);
-                });
-          }
-        })
-        .then(() => {
-          getCreatedOpportunities();
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      */
-        const ampOpp = await DataStore.save(
+        DataStore.save(
           new Opportunity({
           "zoomLink": newOpportunity.zoomLink,
           "organizations": [newOpportunity.organization],
@@ -474,82 +415,88 @@ function Opportunities({
           "keywords": newOpportunity.keywords,
           "status": newOpportunity.status
         })
-      );
-      console.log(ampOpp);
-      console.log("Saved...");
-        toast.success('Opportunity Created', {
-          position: 'top-right',
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        handleModalClose();
-        console.log("New roles: " + newOpportunity.roles.length);
-          const gp = {
-            opportunityID: ampOpp.id,
-            // keeping it null until it's fully implemented
-            //tagid: 'c7e29de9-5b88-49fe-a3f5-750a3a62aee5',
-            responsibility: '',
-            description: '',
-            isfilled: false,
-            name: "General Participant",
-            qualifications: [],
-            capacity: 0,
-            Majors: [],
-            Profiles: [],
-            Requests: []
-          };
-          const gpCreation = await DataStore.save(
-            new Role({
-            "name": gp.name,
-            "description": gp.description,
-            "isFilled": gp.isfilled,
-            "qualifications": gp.qualifications,
-            "Majors": gp.Majors,
-            "Profiles": gp.Profiles,
-            "opportunityID": gp.opportunityID,
-            "Requests": gp.Requests,
-            "capacity": gp.capacity
-          })
-          );
-          console.log("Making new role...");
-          console.log(gpCreation);
-        
-          for (let i = 0; i < newOpportunity.roles.length; i++) {
-            const newRole = {
-              opportunityID: ampOpp.id,
+      )
+      .then((res) => {
+        console.log(res);
+        console.log("Saved...");
+          toast.success('Opportunity Created', {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+          handleModalClose();
+          console.log("New roles: " + newOpportunity.roles.length);
+            const gp = {
+              opportunityID: res.id,
               // keeping it null until it's fully implemented
               //tagid: 'c7e29de9-5b88-49fe-a3f5-750a3a62aee5',
               responsibility: '',
               description: '',
               isfilled: false,
-              name: newOpportunity.roles[i],
+              name: "General Participant",
               qualifications: [],
               capacity: 0,
               Majors: [],
               Profiles: [],
               Requests: []
             };
-            const newRoleCreation = await DataStore.save(
+            DataStore.save(
               new Role({
-              "name": newRole.name,
-              "description": newRole.description,
-              "isFilled": newRole.isfilled,
-              "qualifications": newRole.qualifications,
-              "Majors": newRole.Majors,
-              "Profiles": newRole.Profiles,
-              "opportunityID": newRole.opportunityID,
-              "Requests": newRole.Requests,
-              "capacity": newRole.capacity
+              "name": gp.name,
+              "description": gp.description,
+              "isFilled": gp.isfilled,
+              "qualifications": gp.qualifications,
+              "Majors": gp.Majors,
+              "Profiles": gp.Profiles,
+              "opportunityID": gp.opportunityID,
+              "Requests": gp.Requests,
+              "capacity": gp.capacity
             })
-            );
-            console.log("Making new role...");
-            console.log(newRoleCreation);
-        }
-      console.log("Creating...");
+            )
+            .then((json) => {
+              console.log("Making new role...");
+              console.log(json);
+            })
+          
+            for (let i = 0; i < newOpportunity.roles.length; i++) {
+              const newRole = {
+                opportunityID: res.id,
+                // keeping it null until it's fully implemented
+                //tagid: 'c7e29de9-5b88-49fe-a3f5-750a3a62aee5',
+                responsibility: '',
+                description: '',
+                isfilled: false,
+                name: newOpportunity.roles[i],
+                qualifications: [],
+                capacity: 0,
+                Majors: [],
+                Profiles: [],
+                Requests: []
+              };
+              DataStore.save(
+                new Role({
+                "name": newRole.name,
+                "description": newRole.description,
+                "isFilled": newRole.isfilled,
+                "qualifications": newRole.qualifications,
+                "Majors": newRole.Majors,
+                "Profiles": newRole.Profiles,
+                "opportunityID": newRole.opportunityID,
+                "Requests": newRole.Requests,
+                "capacity": newRole.capacity
+              })
+              )
+              .then((third) => {
+                console.log("Making new role...");
+                console.log(third);
+              })
+          }
+        console.log("Creating...");
+      })
   };
 
   // Reset filters when switching tabs

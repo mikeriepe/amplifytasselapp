@@ -151,17 +151,22 @@ const MoreIcon = ({ anchorEl, open, handleClick, handleClose }) => (
 export default function ProfileHeader({ data }) {
   const [majors, setMajors] = useState(null);
 
+  const extractMajors = async () => {
+    try {
+      const value = await Promise.resolve(data[0].Majors.values);
+      const majorNames = [];
+      for (let i = 0; i < value.length; i++) {
+        const k = await Promise.resolve(value[i].major);
+        majorNames.push(k.name);
+      }
+      setMajors(majorNames);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
   useEffect(() => {
-    console.log('gothere');
-    console.log('data.id', data.id);
-    DataStore.query(Major, (m) => m.profiles.profile.id.eq(data.id))
-      .then((majors) => {
-        console.log('majors', majors);
-        setMajors(majors);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    extractMajors();
   }, []);
 
   const handleError = (e) => {
@@ -181,21 +186,21 @@ export default function ProfileHeader({ data }) {
     <Header>
       <Banner image={ExampleCover} />
       <Content>
-        <Avatar image={data.picture} handleError={handleError} />
+        <Avatar image={data[0]?.picture} handleError={handleError} />
         <Box
           sx={{ display: 'flex', height: '100%' }}
         >
           <Text>
             <h2 className='text-dark ellipsis'>
-              {data.firstName + ' ' + data.lastName}
+              {data[0].firstName + ' ' + data[0].lastName}
             </h2>
             <h5 className='text-bold text-blue ellipsis'>
-              {majors && majors.map((major) => (
-                <p key={major.id}>{major.name}</p>
+              {majors?.length >0 && majors.map((major,index) => (
+                <p key={index}>{majors[index]}</p>
               ))}
             </h5>
-            <p className='ellipsis'>Class of {data.graduationYear}</p>
-            <p className='ellipsis'>{data.location}</p>
+            <p className='ellipsis'>Class of {data[0].graduationYear}</p>
+            <p className='ellipsis'>{data[0].location}</p>
           </Text>
           <MoreIcon anchorEl={anchorEl} open={open}
             handleClick={handleClick} handleClose={handleClose} />
