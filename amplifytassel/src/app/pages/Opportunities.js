@@ -220,6 +220,7 @@ const getAllOpportunities = () => {
             allOpportunities={allOpportunities}
             getAllOpportunities={getAllOpportunities}
             getCreatedOpportunities={getCreatedOpportunities}
+            getJoinedOpportunities={getJoinedOpportunities}
             allKeywords={allKeywords}
             getAllKeywords={getAllKeywords}
           />
@@ -243,6 +244,7 @@ function Opportunities({
   getAllOpportunities,
   getCreatedOpportunities,
   getAllKeywords,
+  getJoinedOpportunities,
 }, props) {
   const {userProfile} = useAuth();
   const location = useLocation();
@@ -278,6 +280,8 @@ function Opportunities({
           setOppTypeFilter={setOppTypeFilter}
           orgTypeFilter={orgTypeFilter}
           setOrgTypeFilter={setOrgTypeFilter}
+          getJoinedOpportunities={getJoinedOpportunities}
+          getAllOpportunities={getAllOpportunities}
         />,
     },
     {

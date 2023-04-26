@@ -26,7 +26,7 @@ import OpportunityForm from './OpportunityForm';
 import ThemedButton from './ThemedButton';
 
 import { DataStore } from '@aws-amplify/datastore';
-import { Opportunity, Profile, Request, Role, RequestStatus } from '../../models';
+import { Opportunity, Profile, Request, Role, RequestStatus, ProfileRole, OpportunityProfile } from '../../models';
 
 
 const IconStyling = {
@@ -82,7 +82,8 @@ const OutlinedIconButton = ({
   opportunityid,
   profileid,
   getPendingOpportunities,
-  getAllOpportunities}, props) => (
+  getAllOpportunities,
+  getJoinedOpportunities}, props) => (
   <ButtonBase
     component='div'
     onMouseDown={(e) => {
@@ -110,6 +111,41 @@ const OutlinedIconButton = ({
         .catch((err) => {
           console.log(err);
           alert('Error deleting the pending request');
+        });
+      } else if (type === 'upcoming') {
+        console.log("upcoming delete button is clicked");
+        // A user can only have 1 request to an opportunity at a time
+        // So we can assume the fetched request will be the pending one
+        const req = await DataStore.query(Request, (r) => r.and(r => [
+          r.status.eq('APPROVED'),
+          r.profileID.eq(profileid),
+          r.opportunityID.eq(opportunityid),
+        ]))
+        .then(async (request) => {
+          // fetch and delete the profile from the role
+          const profRole = await DataStore.query(ProfileRole, (p) => p.and(p => [
+            p.roleId.eq(request[0].roleID),
+            p.profileId.eq(request[0].profileID)
+          ]));
+          await DataStore.delete(profRole[0]);
+
+          // delete the profile from the opportunity
+          const oppProf = await DataStore.query(OpportunityProfile, (o) => o.and(o => [
+          o.opportunityId.eq(request[0].opportunityID),
+          o.profileId.eq(request[0].profileID)
+          ]));
+          await DataStore.delete(oppProf[0]);
+
+          // delete the request
+          DataStore.delete(request[0]);
+        })
+        .then(() => {
+          getJoinedOpportunities();
+          getAllOpportunities();
+        })
+        .catch((err) => {
+          console.log(err);
+          alert('Error deleting the upcoming opportunity');
         });
       }
     }}
@@ -169,6 +205,7 @@ export default function OpportunitiesCard({
   opportunity,
   getPendingOpportunities,
   getCreatedOpportunities,
+  getJoinedOpportunities,
   getAllOpportunities,
 }) {
   const [creator, setCreator] = useState('');
@@ -529,6 +566,7 @@ export default function OpportunitiesCard({
                     profileid={userProfile.id}
                     getPendingOpportunities={getPendingOpportunities}
                     getAllOpportunities={getAllOpportunities}
+                    getJoinedOpportunities={getJoinedOpportunities}
                     onClick={ type === 'created' ?
                       handleDeleteModalOpen : null
                     }
