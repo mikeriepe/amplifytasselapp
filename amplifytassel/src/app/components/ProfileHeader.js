@@ -192,15 +192,15 @@ export default function ProfileHeader({ data,editButton }) {
         >
           <Text>
             <h2 className='text-dark ellipsis'>
-              {data[0].firstName + ' ' + data[0].lastName}
+              {data[0]?.firstName + ' ' + data[0]?.lastName}
             </h2>
             <h5 className='text-bold text-blue ellipsis'>
               {majors?.length >0 && majors.map((major,index) => (
                 <p key={index}>{majors[index]}</p>
               ))}
             </h5>
-            <p className='ellipsis'>Class of {data[0].graduationYear}</p>
-            <p className='ellipsis'>{data[0].location}</p>
+            <p className='ellipsis'>Class of {data[0]?.graduationYear}</p>
+            <p className='ellipsis'>{data[0]?.location}</p>
           </Text>
           {
             editButton && <MoreIcon anchorEl={anchorEl} open={open}
