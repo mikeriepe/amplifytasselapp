@@ -26,7 +26,7 @@ import OpportunityForm from './OpportunityForm';
 import ThemedButton from './ThemedButton';
 
 import { DataStore } from '@aws-amplify/datastore';
-import { Opportunity, Profile, Request, Role, RequestStatus, ProfileRole, OpportunityProfile } from '../../models';
+import { Opportunity, Profile, Request, Role, RequestStatus, ProfileRole, OpportunityProfile, Keyword, KeywordOpportunity } from '../../models';
 
 
 const IconStyling = {
@@ -215,6 +215,7 @@ export default function OpportunitiesCard({
   const [showDeleteForm, setShowDeleteForm] = useState(false);
   const [requestMessage, setRequestMessage] = React.useState('');
   const [oppRoles, setOppRoles] = useState(false);
+  const [oppKeywords, setOppKeywords] = useState(false);
   const {userProfile} = useAuth();
 
   const handleReqModalClose = () => {
@@ -256,8 +257,21 @@ export default function OpportunitiesCard({
         });
       }
     });
-    console.log(roleNames);
     setOppRoles(roleNames);
+  };
+
+  const extractKeywords = () => {
+    const p = Promise.resolve(opportunity.keywords.values);
+    const keywords = [];
+    p.then(value => {
+      for (let i = 0; i < value.length; i++) {
+        const k =  Promise.resolve(value[i].keyword);
+        k.then(value => {
+          keywords.push(value.name);
+        });
+      }
+    });
+    setOppKeywords(keywords);
   };
 
   const handleRequestClick = (e) => {
@@ -280,127 +294,172 @@ export default function OpportunitiesCard({
   };
 
   const handleEditOpp = async (data) => {
-    const editedOpportunity = {
-      Roles: opportunity.Roles,
-      eventBanner: opportunity.eventBanner,
-      status: opportunity.status,
-      profilesJoined: opportunity.profilesJoined,
-      //preferences: {},
-      profileID: opportunity.profileID,
-      Requests: opportunity.Requests,
-      ...data,
-    };
-    console.log("Object created...");
-    console.log(editedOpportunity);
-    /*
-    fetch(`/api/updateOpportunity`, {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-        .then((res) => {
-          if (!res.ok) {
-            throw res;
-          }
-          return res;
-        })
-        .then((json) => {
-          toast.success('Opportunity Updated', {
-            position: 'top-right',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-          handleOppModalClose();
-          if (getCreatedOpportunities) {
-            getCreatedOpportunities();
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    */
-        const original = await DataStore.query(Opportunity, opportunity.id);
-  
-        const updatedPost = await DataStore.save(
-          Opportunity.copyOf(original, updated => {
-            updated.zoomLink = editedOpportunity.zoomLink
-            updated.organizations = editedOpportunity.organizations
-            updated.description = editedOpportunity.description
-            updated.eventBanner = editedOpportunity.eventBanner
-            updated.eventName = editedOpportunity.eventName
-            updated.startTime = editedOpportunity.startTime
-            updated.endTime = editedOpportunity.endTime
-            updated.locationType = editedOpportunity.locationType
-            updated.location = editedOpportunity.location
-            updated.eventData = editedOpportunity.eventData
-            updated.subject = editedOpportunity.subject
-            updated.preferences = editedOpportunity.preferences
-            updated.profileID = editedOpportunity.profileID
-            updated.status = editedOpportunity.status
-            updated.Roles = editedOpportunity.Roles
-            updated.Posts = editedOpportunity.Posts
-            updated.Requests = editedOpportunity.Requests
-            updated.profilesJoined = editedOpportunity.profilesJoined
-            updated.keywords = editedOpportunity.keywords
-            
+
+    if (oppRoles.length > data.roles.length) {
+      for (let i = 1; i < data.roles.length; i++) {
+        if (oppRoles[i] === data.roles[i]) {
+          //keep
+        } else {
+          DataStore.delete(Role, (r) => r.and(r => [
+            r.name.eq(oppRoles[i].name),
+            r.opportunityID.eq(opportunity.id)
+            ]));
+          DataStore.save(
+            new Role({
+              name: data.roles[i],
+              opportunityID: opportunity.id,
+            })
+          );
+        }
+      }
+      for (let i = data.roles.length; i < oppRoles.length; i++) {
+        DataStore.delete(Role, (r) => r.and(r => [
+          r.name.eq(oppRoles[i].name),
+          r.opportunityID.eq(opportunity.id)
+          ]));
+      }
+
+    } else if (oppRoles.length < data.roles.length) {
+      console.log('data.roles.length is longer...');
+      for (let i = 1; i < oppRoles.length; i++) {
+        if (oppRoles[i] === data.roles[i]) {
+          //keep
+        } else {
+          DataStore.delete(Role, (r) => r.and(r => [
+            r.name.eq(oppRoles[i].name),
+            r.opportunityID.eq(opportunity.id)
+            ]));
+          DataStore.save(
+            new Role({
+              name: data.roles[i],
+              opportunityID: opportunity.id,
+            })
+          );
+        }
+      }
+      for (let i = oppRoles.length; i < data.roles.length; i++) {
+        DataStore.save(
+          new Role({
+            name: data.roles[i],
+            opportunityID: opportunity.id,
           })
         );
-        console.log(updatedPost);
-        if (getCreatedOpportunities) {
-          getCreatedOpportunities();
+      }
+
+    } else {
+      console.log('same length...');
+      for (let i = 1; i < oppRoles.length; i++) {
+        if (oppRoles[i] === data.roles[i]) {
+          //keep
+        } else {
+          DataStore.delete(Role, (r) => r.and(r => [
+            r.name.eq(oppRoles[i].name),
+            r.opportunityID.eq(opportunity.id)
+            ]));
+          DataStore.save(
+            new Role({
+              name: data.roles[i],
+              opportunityID: opportunity.id,
+            })
+          );
         }
+      }
+    }
+
+    let allKeywords = [];
+    const keywordsToUpdate = [];
+    DataStore.query(Keyword)
+    .then((res) => {
+      allKeywords = res;
+      for (let i = 0; i < res.length; i++) {
+        for (let j = 0; j < Object.keys(data.keywords).length; j++) {
+          if (data.keywords[`keyword${j}`] === res[i].name) {
+            keywordsToUpdate.push(res[i]);
+          }
+        }
+      }
+    })
+    .then((res) => {
+      if (keywordsToUpdate.length > oppKeywords.length) {
+        console.log('Need to add keyword relation');
+        DataStore.query(KeywordOpportunity)
+        .then((res) => {
+          let relationshipExists = false;
+          for (let j = 0; j < keywordsToUpdate.length; j++) {
+            for (let i = 0; i < res.length; i++) {
+              if (res[i].keywordId === keywordsToUpdate[j].id && res[i].opportunityId === opportunity.id) {
+                relationshipExists = true;
+              }
+            }
+            if (relationshipExists === false) {
+              DataStore.save(
+                new KeywordOpportunity({
+                  keywordId: keywordsToUpdate[j].id,
+                  opportunityId: opportunity.id,
+                })
+              );
+            }
+            relationshipExists = false;
+          }
+        })
+      } else if (keywordsToUpdate.length < oppKeywords.length) {
+        console.log('Need to delete keyword relation');
+        let needToRemove = true;
+        for (let i = 0; i < oppKeywords.length; i++) {
+          for (let j = 0; j < keywordsToUpdate.length; j++) {
+            if (oppKeywords[i] === keywordsToUpdate[j].name) {
+              needToRemove = false;
+            }
+          }
+          if (needToRemove === true) {
+            let idToRemove = '';
+            for (let n = 0; n < allKeywords.length; n++) {
+              if (allKeywords[n].name === oppKeywords[i]) {
+                idToRemove = allKeywords[n].id;
+              }
+            }
+            DataStore.delete(KeywordOpportunity, (k) => k.and(k => [
+              k.keywordId.eq(idToRemove),
+              k.opportunityId.eq(opportunity.id)
+              ]));
+          }
+          needToRemove = true;
+        }
+      } else {
+        console.log('No action needed on keyword relations');
+      }
+    })
+    .then((res) => {
+      DataStore.save(Opportunity.copyOf(opportunity, updated => {
+        updated.eventName = data.name;
+        updated.description = data.description;
+        updated.eventData = data.eventdata;
+        updated.startTime = data.startTime.toISOString();
+        updated.endTime = data.endTime.toISOString();
+        updated.locationType = data.locationType;
+        updated.location = data.location;
+        updated.organizations = data.organizations;
+        updated.subject = data.subject;
+      })
+      )
+      .then((res) => {
+        handleOppModalClose();
+        getCreatedOpportunities();
+        console.log(res);
+      });
+    });
   };
 
   const handleDeleteOpp = async (opportunity) => {
-    /*
-    fetch(`/api/deleteOpportunity/${opportunity.eventid}`, {
-      method: 'DELETE',
-      body: JSON.stringify(opportunity),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-        .then((res) => {
-          if (!res.ok) {
-            throw res;
-          }
-          return res;
-        })
-        .then((json) => {
-          toast.success('Opportunity Deleted', {
-            position: 'top-right',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-          handleDeleteModalClose();
-          if (getCreatedOpportunities) {
-            getCreatedOpportunities();
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    */
         const modelToDelete = await DataStore.query(Opportunity, opportunity.id);
         DataStore.delete(modelToDelete);
         if (getCreatedOpportunities) {
           getCreatedOpportunities();
+          handleDeleteModalClose();
         }
   };
 
   const postRequestToOpportunity = (requestData) => {
-    //console.log(oppRoles[0].name);
-    //console.log(requestData);
     DataStore.query(Role, (r) => r.and(r => [
       r.name.eq(requestData.role),
       r.opportunityID.eq(requestData.opportunityid)
@@ -447,7 +506,7 @@ export default function OpportunitiesCard({
     })
 };
 
-  const formatDate = (date, time) => {
+  const formatDate = (time) => {
     const dateOptions = {
       year: 'numeric',
       month: 'long',
@@ -459,7 +518,7 @@ export default function OpportunitiesCard({
       minute: '2-digit',
     };
 
-    const convertDate = new Date(date).toLocaleDateString([], dateOptions);
+    const convertDate = new Date(time).toLocaleDateString([], dateOptions);
     const convertTime = new Date(time).toLocaleTimeString([], timeOptions);
 
     return `${convertDate} at ${convertTime}`;
@@ -490,23 +549,6 @@ export default function OpportunitiesCard({
   };
 
   const getOpportunityCreator = async () => {
-    /*
-    fetch(`/api/getProfileName/${opportunity.usersponsors.creator}`)
-    .then((res) => {
-      if (!res.ok) {
-        throw res;
-      }
-      return res.json();
-    })
-    .then((json) => {
-      setCreator(json);
-    })
-    .catch((err) => {
-      console.log(err);
-      alert('Error retrieving opportunity creators profile');
-    });
-    */
-    
     DataStore.query(Profile, opportunity.profileID)
     .then((res) => {
       setCreator(res);
@@ -515,15 +557,38 @@ export default function OpportunitiesCard({
       console.log(err);
       alert('Error retrieving opportunity creators profile');
     });
-    
-    //const creatorCall = await DataStore.query(Profile, opportunity.profileID);
-    //console.log(creatorCall);
+  };
+
+  const editOppFormValues = {
+    oppId : opportunity.id,
+    starttime: new Date(opportunity.startTime),
+    startdate: new Date(opportunity.startTime),
+    endtime: new Date(opportunity.endTime),
+    enddate: new Date(opportunity.endTime),
+    //organization: [],
+    zoomLink : opportunity.zoomLink,
+    organizations : opportunity.organizations,
+    description : opportunity.description,
+    eventBanner : opportunity.eventBanner,
+    name : opportunity.eventName,
+    startTime : opportunity.startTime,
+    endTime : opportunity.endTime,
+    locationType : opportunity.locationType,
+    location : opportunity.location,
+    eventdata : opportunity.eventData,
+    subject : opportunity.subject,
+    preferences : opportunity.preferences,
+    profileID : opportunity.profileID,
+    status : opportunity.status,
+    Roles : oppRoles,
+    keywords : oppKeywords
   };
 
   
   useEffect(() => {
     getOpportunityCreator(opportunity);
     extractRoles(opportunity);
+    extractKeywords(opportunity);
   }, [opportunity]);
 
   return (
@@ -665,7 +730,7 @@ export default function OpportunitiesCard({
                   >
                     <OpportunityForm
                       onClose={handleOppModalClose}
-                      defaultValues={opportunity}
+                      defaultValues={editOppFormValues}
                       onSubmit={handleEditOpp}
                     />
                   </Modal>
@@ -695,14 +760,12 @@ export default function OpportunitiesCard({
                 >
                   <EventNoteRoundedIcon sx={IconStyling} />
                   <p className='text-bold ellipsis'>
-                    {//formatDate(opportunity.startdate, opportunity.starttime)
-                     opportunity.startTime
+                    {formatDate(opportunity.startTime)
                     }
                   </p>
                   <ArrowForwardRoundedIcon sx={IconStyling} />
                   <p className='text-bold ellipsis'>
-                    {//formatDate(opportunity.enddate, opportunity.endtime)
-                     opportunity.endTime
+                    {formatDate(opportunity.endTime)
                     }
                   </p>
                 </div>

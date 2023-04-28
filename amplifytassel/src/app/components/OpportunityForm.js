@@ -25,6 +25,7 @@ import {CheckboxInput} from './CheckboxInput';
 import {DateInput} from './DateInput';
 import { DataStore } from 'aws-amplify';
 import { Keyword } from '../../models';
+import { Opportunity } from '../../models';
 
 
 /**
@@ -36,6 +37,7 @@ import { Keyword } from '../../models';
  */
 export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
   const [opportunityTypes, setOpportunityTypes] = useState([]);
+  const [temp, setTemp] = useState('');
 
   // Selected tags by the user
   const [selectedTags, setSelectedTags] = useState(
@@ -44,38 +46,9 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
     [],
   );
   const [allTags, setAllTags] = useState([]);
-  console.log(defaultValues.keywords);
   const getKeywords = () => {
-    /*
-    fetch(`/api/getKeywords`)
-        .then((res) => {
-          if (!res.ok) {
-            throw res;
-          }
-          return res.json();
-        })
-        .then((json) => {
-          const tempKeywords = [];
-          for (let i = 0; i < json.length; i++) {
-            tempKeywords.push(json[i].value);
-          }
-          const filteredAllTags = tempKeywords.
-              filter((x) => !selectedTags.includes(x));
-          setAllTags(filteredAllTags);
-        })
-        .catch((err) => {
-          console.log(err);
-          alert('Error retrieving keywords, please try again');
-        });
-    */
    DataStore.query(Keyword)
    .then((res) => {
-    //if (!res.ok) {
-      //throw res;
-    //}
-    //return res.json();
-   //})
-   //.then((json) => {
     const tempKeywords = [];
     for (let i = 0; i < res.length; i++) {
       tempKeywords.push(res[i].name);
@@ -87,66 +60,69 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
     console.log(err);
     alert('Error retrieving keywords, please try again');
    });
-   //console.log(qKeywords);
   };
 
   const [currLocationType, setCurrLocationType] = useState(
       defaultValues.locationType,
   );
+
   const [currSponsorType, setCurrSponsorType] = useState(
-      defaultValues.organizations ?
-      'organization sponsor' :
-      'user sponsor',
+    defaultValues.organizations === undefined ? 'user sponsor' : 
+    (defaultValues.organizations[0] === '' ? 'user sponsor' : 'organization sponsor')
   );
+
   const [currRoles, setCurrRoles] = useState(
     defaultValues.Roles && defaultValues.Roles !== null ?
-    defaultValues.Roles : [],
+    defaultValues.Roles : ['General Participant'],
   );
   const [roleError, setRoleError] = useState('');
-  const maxRoles = 3;
+  const maxRoles = 4;
   // All tags array hardcoded for now
   // Will be stored in the DB in the future
   // setAllTags
   // const [allTags, setAllTags] = useState(filteredAllTags);
   const validationSchema = Yup.object().shape({
-    eventName: Yup.string().required('Event name is required'),
+    name: Yup.string().required('Event name is required'),
     locationType: Yup.string().required('Location type is required'),
     //organizations: Yup.string().notRequired(),
     location: Yup.object().shape({
       'address': Yup.string().when([], {
         is: () => currLocationType != 'remote',
-        then: Yup.string().required('Street address is required'),
-        otherwise: Yup.string().notRequired(),
+        then: () => Yup.string().required('Street address is required'),
+        otherwise: () => Yup.string().notRequired(),
       }),
       'city': Yup.string().when([], {
         is: () => currLocationType != 'remote',
-        then: Yup.string().required('City is required'),
-        otherwise: Yup.string().notRequired(),
+        then: () => Yup.string().required('City is required'),
+        otherwise: () => Yup.string().notRequired(),
       }),
       'state': Yup.string().when([], {
         is: () => currLocationType != 'remote',
-        then: Yup.string().required('State/province is required'),
-        otherwise: Yup.string().notRequired(),
+        then: () => Yup.string().required('State/province is required'),
+        otherwise: () => Yup.string().notRequired(),
       }),
       'zip': Yup.string().when([], {
         is: () => currLocationType != 'remote',
-        then: Yup.string().required('Zip code is required'),
-        otherwise: Yup.string().notRequired(),
+        then: () => Yup.string().required('Zip code is required'),
+        otherwise: () => Yup.string().notRequired(),
       }),
     }),
     // TODO: check website format?
     zoomLink: Yup.string().when([], {
       is: () => currLocationType != 'in-person',
-      then: Yup.string().required('Event zoom link is required'),
-      otherwise: Yup.string().notRequired(),
+      then: () => Yup.string().required('Event zoom link is required'),
+      otherwise: () => Yup.string().notRequired(),
     }),
-    organizations: Yup.string().when([], {
-      is: () => currSponsorType == 'organization sponsor',
-      then: Yup.string().required('Organization is required'),
-      otherwise: Yup.string().notRequired(),
-    }),
+    
+    // organizations: Yup.string().when([], {
+    //   is: () => currSponsorType == 'organization sponsor',
+    //   then: Yup.string().required('Organization is required'),
+    //   otherwise: Yup.string().notRequired(),
+    // }),
+    
     description: Yup.string().required('Description is required'),
     eventdata: Yup.string().required('Other details required'),
+    //opportunitytype: Yup.string().required('Opportunity type is required'),
     startdate: Yup
         .date()
         .required('Start date is required'),
@@ -154,18 +130,18 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
         .date()
         .min(Yup.ref('startdate'), 'End date must be after start date')
         .required('End date is required'),
-    //opportunitytype: Yup.string().required('Opportunity type is required'),
-    
+
     starttime: Yup
         .date()
         .required('Start time is required'),
     endtime: Yup
-        .date()
-        .min(Yup.ref('starttime'), 'End time must be after start time')
-        .required('End time is required'),
+    .date()
+    .min(Yup.ref('starttime'), 'End time must be after start time')
+    .required('End time is required'),
     
     subject: Yup.string().required('Subject is required'),
     keywords: Yup.object().notRequired(),
+    
   });
   /*
   const getOpportunityTypes = () => {
@@ -240,14 +216,16 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
   const handleRemoveRoleClick = (e) => {
     const rolesCopy = [...currRoles];
     const roleIndex = parseInt(e.target.parentElement.id, 10);
-    rolesCopy.splice(roleIndex, 1);
+    rolesCopy.splice(roleIndex + 1, 1);
     setCurrRoles(rolesCopy);
+    console.log(rolesCopy);
+    console.log(currRoles);
   };
 
   const handleRoleChange = (e) => {
     const roleIndex = parseInt(e.target.id, 10);
     const rolesCopy = [...currRoles];
-    rolesCopy[roleIndex] = e.target.value;
+    rolesCopy[roleIndex + 1] = e.target.value;
     setCurrRoles(rolesCopy);
   };
 
@@ -288,7 +266,7 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
     getValues,
     setValue,
   } = useForm({
-    //resolver: yupResolver(validationSchema),
+    resolver: yupResolver(validationSchema),
     defaultValues: defaultValues,
   });
 
@@ -464,7 +442,7 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
 
             {
               currRoles.length > 0 &&
-              currRoles.map((role, index) => (
+              (currRoles.slice(1,currRoles.length)).map((role, index) => (
                 <Box
                   key={`role${index}`}
                   id={index.toString()}
@@ -476,7 +454,7 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
                     }}
                     name={`role${index}`}
                     id={index.toString()}
-                    value={role}
+                    value={role.name}
                     onChange={handleRoleChange}
                     label='Role Name'
                   />
