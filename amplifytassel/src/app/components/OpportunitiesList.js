@@ -81,7 +81,6 @@ export default function OpportunitiesList({
       return 0;
     } else {
       const numOppKeywords = Object.keys(opp.keywords).length;
-      console.log(numOppKeywords);
       if (numOppKeywords === 0) {
         return 0;
       }

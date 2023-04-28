@@ -89,7 +89,6 @@ export default function FetchWrapper() {
     DataStore.query(Keyword)
     .then((res) => {
       setAllKeywords(res);
-      console.log(res);
     })
     .catch((err) => {
       console.log(err);
@@ -157,8 +156,6 @@ export default function FetchWrapper() {
 };
 
 const getAllOpportunities = () => {
-  console.log("Getting all...");
-  //DataStore.query(Opportunity, (o) => o.status.eq('APPROVED'))
   DataStore.query(Opportunity, (o) => o.and(o => [
     o.status.eq('APPROVED'),
     o.profileID.ne(userProfile.id),
@@ -169,8 +166,6 @@ const getAllOpportunities = () => {
       o.Requests.profileID.eq(userProfile.id)
     ]))
     .then((res) => {
-      console.log(firstList);
-      console.log(res);
       for (let i = 0; i < res.length; i++) {
         for (let j = 0; j < firstList.length; j++) {
           if (res[i].id === firstList[j].id) {
@@ -353,6 +348,7 @@ function Opportunities({
 
   const formValues = {
     //eventName: '',
+    isNewOpp : true,
     locationType: 'in-person',
     location: {
       'address': '',
@@ -360,9 +356,9 @@ function Opportunities({
       'city': '',
       'zip': '',
     },
-    //sponsortype: 'user sponsor',
+    sponsortype: 'user sponsor',
     zoomLink: '',
-    organization: [],
+    //organization: [],
     description: '',
     eventData: '',
     startdate: new Date(),
@@ -379,7 +375,8 @@ function Opportunities({
     setShowOppForm(!showOppForm);
   };
 
-  const onSubmit = (data) => {
+  const onSubmit = (data, isNewOpp) => {
+    console.log(isNewOpp);
     console.log("Starting process...");
     const newOpportunity = {
       assignedRoles: {},
@@ -430,38 +427,6 @@ function Opportunities({
           });
           handleModalClose();
           console.log("New roles: " + newOpportunity.roles.length);
-            const gp = {
-              opportunityID: res.id,
-              // keeping it null until it's fully implemented
-              //tagid: 'c7e29de9-5b88-49fe-a3f5-750a3a62aee5',
-              responsibility: '',
-              description: '',
-              isfilled: false,
-              name: "General Participant",
-              qualifications: [],
-              capacity: 0,
-              Majors: [],
-              Profiles: [],
-              Requests: []
-            };
-            DataStore.save(
-              new Role({
-              "name": gp.name,
-              "description": gp.description,
-              "isFilled": gp.isfilled,
-              "qualifications": gp.qualifications,
-              "Majors": gp.Majors,
-              "Profiles": gp.Profiles,
-              "opportunityID": gp.opportunityID,
-              "Requests": gp.Requests,
-              "capacity": gp.capacity
-            })
-            )
-            .then((json) => {
-              console.log("Making new role...");
-              console.log(json);
-            })
-          
             for (let i = 0; i < newOpportunity.roles.length; i++) {
               const newRole = {
                 opportunityID: res.id,
@@ -496,6 +461,9 @@ function Opportunities({
               })
           }
         console.log("Creating...");
+      })
+      .then(() => {
+        getCreatedOpportunities();
       })
   };
 
