@@ -73,7 +73,7 @@ export default function NavBarLoggedIn() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [tabIndex, setTabIndex] = useState(window.location.pathname);
-  console.log(userProfile);
+  console.log('rendering navbarloggedin');
 
   // Pages ---------------------------------------------------------------------
 

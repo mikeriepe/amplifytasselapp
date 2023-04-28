@@ -152,11 +152,11 @@ export default function ProfileHeader({ data }) {
   const [majors, setMajors] = useState(null);
 
   useEffect(() => {
-    console.log('gothere');
-    console.log('data.id', data.id);
+    // console.log('gothere');
+    // console.log('data.id', data.id);
     DataStore.query(Major, (m) => m.profiles.profile.id.eq(data.id))
       .then((majors) => {
-        console.log('majors', majors);
+        // console.log('majors', majors);
         setMajors(majors);
       })
       .catch((err) => {

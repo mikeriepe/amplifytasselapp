@@ -29,12 +29,14 @@ export default function ProfileKeywords({ data }) {
 
   useEffect(() => {
     console.log('gothere3');
-    console.log('data.id', data.id);
+    // console.log('data.id', data.id);
     DataStore.query(Keyword, (k) => k.Profiles.profile.id.eq(data.id))
       .then((keywords) => {
-        console.log('keywords', keywords);
-        keywords.map((word, index) => (console.log(word)));
+        // console.log('keywords', keywords);
+        // keywords.map((word, index) => (console.log(word)));
         setKeywords(keywords);
+        console.log('gothere4');
+
       })
       .catch((err) => {
         console.log(err);

@@ -48,7 +48,7 @@ export default function ProfileAlert({data}) {
     e.preventDefault();
     DataStore.query(Profile, p => p.email.eq(data.profileEmail))
       .then((profiles) => {
-        console.log('profile', profiles);
+        // console.log('profile', profiles);
         DataStore.save(Profile.copyOf(profiles[0], updated => {
           updated.infoResponse = response;
           updated.status = ProfileStatus.UPDATED;
