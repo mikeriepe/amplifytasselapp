@@ -89,7 +89,6 @@ export default function FetchWrapper() {
     DataStore.query(Keyword)
     .then((res) => {
       setAllKeywords(res);
-      console.log(res);
     })
     .catch((err) => {
       console.log(err);
@@ -157,8 +156,6 @@ export default function FetchWrapper() {
 };
 
 const getAllOpportunities = () => {
-  console.log("Getting all...");
-  //DataStore.query(Opportunity, (o) => o.status.eq('APPROVED'))
   DataStore.query(Opportunity, (o) => o.and(o => [
     o.status.eq('APPROVED'),
     o.profileID.ne(userProfile.id),
@@ -169,8 +166,6 @@ const getAllOpportunities = () => {
       o.Requests.profileID.eq(userProfile.id)
     ]))
     .then((res) => {
-      console.log(firstList);
-      console.log(res);
       for (let i = 0; i < res.length; i++) {
         for (let j = 0; j < firstList.length; j++) {
           if (res[i].id === firstList[j].id) {
@@ -353,6 +348,7 @@ function Opportunities({
 
   const formValues = {
     //eventName: '',
+    isNewOpp : true,
     locationType: 'in-person',
     location: {
       'address': '',
@@ -360,9 +356,9 @@ function Opportunities({
       'city': '',
       'zip': '',
     },
-    //sponsortype: 'user sponsor',
+    sponsortype: 'user sponsor',
     zoomLink: '',
-    organization: [],
+    //organization: [],
     description: '',
     eventData: '',
     startdate: new Date(),
@@ -379,7 +375,8 @@ function Opportunities({
     setShowOppForm(!showOppForm);
   };
 
-  const onSubmit = (data) => {
+  const onSubmit = (data, isNewOpp) => {
+    console.log(isNewOpp);
     console.log("Starting process...");
     const newOpportunity = {
       assignedRoles: {},
@@ -496,6 +493,9 @@ function Opportunities({
               })
           }
         console.log("Creating...");
+      })
+      .then(() => {
+        getCreatedOpportunities();
       })
   };
 
