@@ -165,6 +165,10 @@ export default function PageHeader({
     const convertDate2 = new Date(date2);
 
     const compare = Math.abs(convertDate1 - convertDate2);
+    
+    if (compare == 0) {
+      return 'No Duration';
+    };
 
     const compareInMinutes = Math.floor(compare / (1000 * 60));
     const compareInHours = Math.floor(compare / (1000 * 60 * 60));
