@@ -28,7 +28,7 @@ export default function ProfileKeywords({ data }) {
 
   const extractKeywords = async () => {
     try {
-      const value = await Promise.resolve(data[0].keywords.values);
+      const value = await Promise.resolve(data.keywords.values);
       const keywordNames = [];
       for (let i = 0; i < value.length; i++) {
         const k = await Promise.resolve(value[i].keyword);
