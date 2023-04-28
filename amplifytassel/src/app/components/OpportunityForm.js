@@ -73,7 +73,7 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
 
   const [currRoles, setCurrRoles] = useState(
     defaultValues.Roles && defaultValues.Roles !== null ?
-    defaultValues.Roles : [],
+    defaultValues.Roles : ['General Participant'],
   );
   const [roleError, setRoleError] = useState('');
   const maxRoles = 4;

@@ -427,38 +427,6 @@ function Opportunities({
           });
           handleModalClose();
           console.log("New roles: " + newOpportunity.roles.length);
-            const gp = {
-              opportunityID: res.id,
-              // keeping it null until it's fully implemented
-              //tagid: 'c7e29de9-5b88-49fe-a3f5-750a3a62aee5',
-              responsibility: '',
-              description: '',
-              isfilled: false,
-              name: "General Participant",
-              qualifications: [],
-              capacity: 0,
-              Majors: [],
-              Profiles: [],
-              Requests: []
-            };
-            DataStore.save(
-              new Role({
-              "name": gp.name,
-              "description": gp.description,
-              "isFilled": gp.isfilled,
-              "qualifications": gp.qualifications,
-              "Majors": gp.Majors,
-              "Profiles": gp.Profiles,
-              "opportunityID": gp.opportunityID,
-              "Requests": gp.Requests,
-              "capacity": gp.capacity
-            })
-            )
-            .then((json) => {
-              console.log("Making new role...");
-              console.log(json);
-            })
-          
             for (let i = 0; i < newOpportunity.roles.length; i++) {
               const newRole = {
                 opportunityID: res.id,
