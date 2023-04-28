@@ -82,44 +82,47 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
   // setAllTags
   // const [allTags, setAllTags] = useState(filteredAllTags);
   const validationSchema = Yup.object().shape({
-    eventName: Yup.string().required('Event name is required'),
+    name: Yup.string().required('Event name is required'),
     locationType: Yup.string().required('Location type is required'),
     //organizations: Yup.string().notRequired(),
     location: Yup.object().shape({
       'address': Yup.string().when([], {
         is: () => currLocationType != 'remote',
-        then: Yup.string().required('Street address is required'),
-        otherwise: Yup.string().notRequired(),
+        then: () => Yup.string().required('Street address is required'),
+        otherwise: () => Yup.string().notRequired(),
       }),
       'city': Yup.string().when([], {
         is: () => currLocationType != 'remote',
-        then: Yup.string().required('City is required'),
-        otherwise: Yup.string().notRequired(),
+        then: () => Yup.string().required('City is required'),
+        otherwise: () => Yup.string().notRequired(),
       }),
       'state': Yup.string().when([], {
         is: () => currLocationType != 'remote',
-        then: Yup.string().required('State/province is required'),
-        otherwise: Yup.string().notRequired(),
+        then: () => Yup.string().required('State/province is required'),
+        otherwise: () => Yup.string().notRequired(),
       }),
       'zip': Yup.string().when([], {
         is: () => currLocationType != 'remote',
-        then: Yup.string().required('Zip code is required'),
-        otherwise: Yup.string().notRequired(),
+        then: () => Yup.string().required('Zip code is required'),
+        otherwise: () => Yup.string().notRequired(),
       }),
     }),
     // TODO: check website format?
     zoomLink: Yup.string().when([], {
       is: () => currLocationType != 'in-person',
-      then: Yup.string().required('Event zoom link is required'),
-      otherwise: Yup.string().notRequired(),
+      then: () => Yup.string().required('Event zoom link is required'),
+      otherwise: () => Yup.string().notRequired(),
     }),
+    
     // organizations: Yup.string().when([], {
     //   is: () => currSponsorType == 'organization sponsor',
     //   then: Yup.string().required('Organization is required'),
     //   otherwise: Yup.string().notRequired(),
     // }),
+    
     description: Yup.string().required('Description is required'),
     eventdata: Yup.string().required('Other details required'),
+    //opportunitytype: Yup.string().required('Opportunity type is required'),
     startdate: Yup
         .date()
         .required('Start date is required'),
@@ -127,18 +130,18 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
         .date()
         .min(Yup.ref('startdate'), 'End date must be after start date')
         .required('End date is required'),
-    //opportunitytype: Yup.string().required('Opportunity type is required'),
-    
+
     starttime: Yup
         .date()
         .required('Start time is required'),
     endtime: Yup
-        .date()
-        .min(Yup.ref('starttime'), 'End time must be after start time')
-        .required('End time is required'),
+    .date()
+    .min(Yup.ref('starttime'), 'End time must be after start time')
+    .required('End time is required'),
     
     subject: Yup.string().required('Subject is required'),
     keywords: Yup.object().notRequired(),
+    
   });
   /*
   const getOpportunityTypes = () => {
@@ -263,7 +266,7 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
     getValues,
     setValue,
   } = useForm({
-    //resolver: yupResolver(validationSchema),
+    resolver: yupResolver(validationSchema),
     defaultValues: defaultValues,
   });
 
