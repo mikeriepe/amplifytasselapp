@@ -68,7 +68,7 @@ export default function MyProfile() {
             }}
           />
           <ProfileHeader data={userProfile} />
-          <ProfileAbout data={userProfile?.about} />
+          <ProfileAbout data={userProfile} />
           <ProfileWork data={userProfile?.experience} />
           <ProfileVolunteer data={userProfile?.volunteerExperience} />
           <ProfileKeywords data={userProfile} />

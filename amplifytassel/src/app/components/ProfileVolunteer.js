@@ -26,14 +26,14 @@ export default function ProfileVolunteer({data}) {
     <Volunteer>
       <h4 className='text-dark'>Volunteer Experience</h4>
       <div className='flow-medium'>
-        {data[0]?.volunteerExperience && data[0].volunteerExperience.length >0 ? Object.keys(data[0]?.volunteerExperience).map((exp, index) => (
+        {data?.volunteerExperience && data.volunteerExperience.length >0 ? Object.keys(data[0]?.volunteerExperience).map((exp, index) => (
           <div key={`volunteer-experience-${index}`}>
-            <h5>{data[0]?.volunteerExperience[exp].title}</h5>
-            <p className='text-bold text-blue'>{data[0]?.volunteerExperience[exp].company}</p>
-            <p>{data[0]?.volunteerExperience[exp].location}</p>
-            <p>{data[0]?.volunteerExperience[exp].end !== '' ?
-            (data[0]?.volunteerExperience[exp].start + ' - ' + data[0]?.volunteerExperience[exp].end) : data[0]?.volunteerExperience[exp].start}</p>
-            <p style={{marginTop: '0.5em'}}>{data[0]?.volunteerExperience[exp].description}</p>
+            <h5>{data?.volunteerExperience[exp].title}</h5>
+            <p className='text-bold text-blue'>{data?.volunteerExperience[exp].company}</p>
+            <p>{data?.volunteerExperience[exp].location}</p>
+            <p>{data?.volunteerExperience[exp].end !== '' ?
+            (data?.volunteerExperience[exp].start + ' - ' + data?.volunteerExperience[exp].end) : data?.volunteerExperience[exp].start}</p>
+            <p style={{marginTop: '0.5em'}}>{data?.volunteerExperience[exp].description}</p>
           </div>
         )) : (
           <p>None</p>

@@ -149,11 +149,12 @@ const MoreIcon = ({ anchorEl, open, handleClick, handleClose }) => (
  * @return {HTML} Profile header component
  */
 export default function ProfileHeader({ data,editButton }) {
+  
   const [majors, setMajors] = useState(null);
 
   const extractMajors = async () => {
     try {
-      const value = await Promise.resolve(data[0].Majors.values);
+      const value = await Promise.resolve(data.Majors.values);
       const majorNames = [];
       for (let i = 0; i < value.length; i++) {
         const k = await Promise.resolve(value[i].major);
@@ -186,21 +187,21 @@ export default function ProfileHeader({ data,editButton }) {
     <Header>
       <Banner image={ExampleCover} />
       <Content>
-        <Avatar image={data[0]?.picture} handleError={handleError} />
+        <Avatar image={data?.picture} handleError={handleError} />
         <Box
           sx={{ display: 'flex', height: '100%' }}
         >
           <Text>
             <h2 className='text-dark ellipsis'>
-              {data[0]?.firstName + ' ' + data[0]?.lastName}
+              {data?.firstName + ' ' + data?.lastName}
             </h2>
             <h5 className='text-bold text-blue ellipsis'>
               {majors?.length >0 && majors.map((major,index) => (
                 <p key={index}>{majors[index]}</p>
               ))}
             </h5>
-            <p className='ellipsis'>Class of {data[0]?.graduationYear}</p>
-            <p className='ellipsis'>{data[0]?.location}</p>
+            <p className='ellipsis'>Class of {data?.graduationYear}</p>
+            <p className='ellipsis'>{data?.location}</p>
           </Text>
           {
             editButton && <MoreIcon anchorEl={anchorEl} open={open}
