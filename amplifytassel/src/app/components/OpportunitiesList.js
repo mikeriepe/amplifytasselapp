@@ -45,6 +45,10 @@ export default function OpportunitiesList({
   const [dropdownSelect, setDropdownSelect] = useState('Recommended');
   const {userProfile} = useAuth();
 
+  const handleDropdown = ((dropdown) => {
+    console.log(dropdown);
+    setDropdownSelect(dropdown);
+  });
   // Component first renders
   useEffect(() => {
     setDisplayOpps(opportunities);
@@ -56,9 +60,7 @@ export default function OpportunitiesList({
     applyFilters();
   }, [locationFilter, oppTypeFilter, orgTypeFilter, search, dropdownSelect]);
 
-  const handleDropdown = ((dropdown) => {
-    setDropdownSelect(dropdown);
-  });
+  
 
   const profileKeywords = [];
   let numProfileKeywords = 0;
@@ -99,20 +101,23 @@ export default function OpportunitiesList({
     return count;
   });
 
-  const handleSort = ((opps) => {
+  const handleSort = (opps) => {
+    let sortedOpps = [...opps]; // Make a shallow copy of opps array to avoid modifying the original array
+  
     if (dropdownSelect === 'Alphabet') {
-      opps.sort((a, b) => a.eventName.localeCompare(b.eventName));
+      sortedOpps.sort((a, b) => a.eventName.localeCompare(b.eventName));
     } else if (dropdownSelect === 'Major') {
       // 'zzz' puts the null values at the end
-      opps.sort((a, b) => (a.subject ? a.subject : 'zzz')
+      sortedOpps.sort((a, b) => (a.subject ? a.subject : 'zzz')
           .localeCompare(b.subject ? b.subject : 'zzz'));
     } else if (dropdownSelect === 'Recommended') {
-      opps.sort(function(a, b) {
+      sortedOpps.sort(function(a, b) {
         return (calcNumMatchKeywords(a) < calcNumMatchKeywords(b)) ? 1 : -1;
       });
     }
-    return opps;
-  });
+  
+    return sortedOpps;
+  };
 
   // Fuzzy search on given searchData
   // If the search bar is empty, the searchData is all the opps
@@ -177,9 +182,9 @@ export default function OpportunitiesList({
     });
 
     // setDisplayOpps(copyOpps);
-    handleSort(copyOpps);
+    const filteredOpps = handleSort(copyOpps);
     // searches the filtered opp list
-    searchOpportunity(search, copyOpps);
+    searchOpportunity(search, filteredOpps);
   };
 
   return (
@@ -217,6 +222,7 @@ export default function OpportunitiesList({
           <ThemedDropdown
             menuItems={['Recommended', 'Alphabet', 'Major']}
             sortSelection={handleDropdown}
+            value={dropdownSelect}
           />
         </div>
         {displayOpps.map((opportunity, index) => (

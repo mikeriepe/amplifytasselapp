@@ -148,7 +148,7 @@ const MoreIcon = ({ anchorEl, open, handleClick, handleClose }) => (
  * creates Profile header
  * @return {HTML} Profile header component
  */
-export default function ProfileHeader({ data }) {
+export default function ProfileHeader({ data,editButton }) {
   const [majors, setMajors] = useState(null);
 
   const extractMajors = async () => {
@@ -202,8 +202,11 @@ export default function ProfileHeader({ data }) {
             <p className='ellipsis'>Class of {data[0].graduationYear}</p>
             <p className='ellipsis'>{data[0].location}</p>
           </Text>
-          <MoreIcon anchorEl={anchorEl} open={open}
+          {
+            editButton && <MoreIcon anchorEl={anchorEl} open={open}
             handleClick={handleClick} handleClose={handleClose} />
+          }
+          
         </Box>
       </Content>
     </Header>

@@ -134,6 +134,7 @@ export default function PageHeader({
   title,
   subtitle,
   host,
+  hostprofileid,
   avatar,
   banner,
   backUrl,
@@ -179,6 +180,10 @@ export default function PageHeader({
     if (days) return `${compareInDays} Days`;
     return 'Error calculating dates';
   };
+  const navigate = useNavigate();
+  function hostProfileFunction(profileid) {
+    navigate(`/profile/${profileid}`);
+  }
   return (
     <Header type={type}>
       {banner && <Banner image={banner} backUrl={backUrl} type={type} />}
@@ -201,7 +206,7 @@ export default function PageHeader({
             <p className='text-bold'>
               {`${subtitle}`}
               &nbsp;&nbsp;
-              <span className='text-blue'>{host}</span>
+              <span className='text-blue clickable' onClick={() => hostProfileFunction(hostprofileid)}>{host}</span>
             </p>
           </div>
         </div>
