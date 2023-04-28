@@ -68,9 +68,9 @@ export default function MyProfile() {
             }}
           />
           <ProfileHeader data={userProfile} />
-          <ProfileAbout data={userProfile?.about} />
-          <ProfileWork data={userProfile?.experience} />
-          <ProfileVolunteer data={userProfile?.volunteerExperience} />
+          <ProfileAbout data={userProfile} />
+          <ProfileWork data={userProfile} />
+          <ProfileVolunteer data={userProfile} />
           <ProfileKeywords data={userProfile} />
           <Button onClick={handleDeactivateAccount}>
             Deactivate Account
