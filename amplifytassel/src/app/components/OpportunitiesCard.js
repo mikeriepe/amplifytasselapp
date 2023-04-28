@@ -506,7 +506,7 @@ export default function OpportunitiesCard({
     })
 };
 
-  const formatDate = (date, time) => {
+  const formatDate = (time) => {
     const dateOptions = {
       year: 'numeric',
       month: 'long',
@@ -518,7 +518,7 @@ export default function OpportunitiesCard({
       minute: '2-digit',
     };
 
-    const convertDate = new Date(date).toLocaleDateString([], dateOptions);
+    const convertDate = new Date(time).toLocaleDateString([], dateOptions);
     const convertTime = new Date(time).toLocaleTimeString([], timeOptions);
 
     return `${convertDate} at ${convertTime}`;
@@ -561,30 +561,11 @@ export default function OpportunitiesCard({
 
   const editOppFormValues = {
     oppId : opportunity.id,
-    // //eventName: '',
-    // isNewOpp : false,
-    // locationType: opportunity.locationType,
-    // location: opportunity.location,
-    // //sponsortype: 'user sponsor',
-    // zoomLink: opportunity.zoomLink,
-    // organization: opportunity.organization,
-    // description: opportunity.description,
-    // eventData: opportunity.eventData,
-    // startdate: opportunity.startTime,
-    // enddate: opportunity.endTime,
-    // //organizationtype: '',
-    // //opportunitytype: '',
-    // starttime: opportunity.startTime,
-    // endtime: opportunity.endTime,
-    // subject: opportunity.subject,
-    // //keywords: [allKeywords],
-    // ~~~
     starttime: new Date(opportunity.startTime),
     startdate: new Date(opportunity.startTime),
     endtime: new Date(opportunity.endTime),
     enddate: new Date(opportunity.endTime),
     //organization: [],
-    // ~~~
     zoomLink : opportunity.zoomLink,
     organizations : opportunity.organizations,
     description : opportunity.description,
@@ -601,9 +582,6 @@ export default function OpportunitiesCard({
     status : opportunity.status,
     Roles : oppRoles,
     keywords : oppKeywords
-    // Posts : opportunity.Posts,
-    // Requests : opportunity.Requests,
-    // profilesJoined : opportunity.profilesJoined,
   };
 
   
@@ -782,14 +760,12 @@ export default function OpportunitiesCard({
                 >
                   <EventNoteRoundedIcon sx={IconStyling} />
                   <p className='text-bold ellipsis'>
-                    {//formatDate(opportunity.startdate, opportunity.starttime)
-                     opportunity.startTime
+                    {formatDate(opportunity.startTime)
                     }
                   </p>
                   <ArrowForwardRoundedIcon sx={IconStyling} />
                   <p className='text-bold ellipsis'>
-                    {//formatDate(opportunity.enddate, opportunity.endtime)
-                     opportunity.endTime
+                    {formatDate(opportunity.endTime)
                     }
                   </p>
                 </div>
