@@ -83,7 +83,6 @@ export default function UpdateProfile() {
   const [showVolunteerForm, setShowVolunteerForm] = useState(false);
   const [showDeleteVolunteerModal, setShowDeleteVolunteerModal] = useState(false);
 
-  // TODO: use this state to implement select and update profile majors
   const [selectedMajors, setSelectedMajors] = useState([]);
   const [totalMajors, setTotalMajors] = useState([]);
 
@@ -159,11 +158,10 @@ export default function UpdateProfile() {
             profile: profile
           })
         );
-        // console.log('gothere');
       }
     }
 
-    // TODO: Update Majors Relationship
+    // Update Majors Relationship
     const profileMajors = await DataStore.query(ProfileMajor, pm => pm.profileId.eq(userProfile.id));
     // console.log('profileMajors', profileMajors);
     for (const pm of profileMajors) {
@@ -287,54 +285,6 @@ export default function UpdateProfile() {
                     <div>
                       {totalMajors.length && <MultiSelect data={totalMajors} />}
                     </div>
-                    {/* TODO: implement search and select majors */}
-                    {/* SEARCH MAJORS(UNFINISHED) */}
-                    {/* <MuiBox className='flow-small' sx={{ flexGrow: 1 }}>
-                      <div
-                        className='flex-horizontal flex-space-between'
-                        style={{ width: '100%', marginBottom: '1em' }}
-                      >
-                        <TextField
-                          placeholder='Search'
-                          size='small'
-                          onChange={(e) => setSearch(e.target.value)}
-                          InputProps={{
-                            style: {
-                              fontSize: '0.9rem',
-                              backgroundColor: 'white',
-                              borderRadius: '10px',
-                            },
-                            startAdornment: (
-                              <InputAdornment position='start'>
-                                <SearchRoundedIcon color='tertiary' />
-                              </InputAdornment>
-                            ),
-                          }}
-                          sx={{
-                            'width': 'auto',
-                            '& .MuiOutlinedInput-root': {
-                              '& fieldset': {
-                                borderColor: 'rgba(0, 0, 0, 0.15)',
-                              },
-                            },
-                          }}
-                        />
-                        <ThemedDropdown
-                          menuItems={['Recommended', 'Alphabet', 'Major']}
-                          sortSelection={handleDropdown}
-                        />
-                      </div>
-                      {displayOpps.map((opportunity, index) => (
-                        <OpportunitiesCard
-                          key={`opportunity-${index}`}
-                          type={type}
-                          opportunity={opportunity}
-                          getPendingOpportunities={getPendingOpportunities}
-                          getCreatedOpportunities={getCreatedOpportunities}
-                          getAllOpportunities={getAllOpportunities}
-                        />
-                      ))}
-                    </MuiBox> */}
                   </div>
                   <div className='grid-flow-small'>
                     <p className='text-bold'>

@@ -11,6 +11,9 @@ import {TextInput} from './TextInput';
 import {DateInput} from './DateInput';
 import ThemedButton from './ThemedButton';
 import useAuth from '../util/AuthContext';
+import { Profile } from '../../models';
+import { DataStore } from 'aws-amplify';
+import {CheckboxInput} from './CheckboxInput';
 
 
 /**
@@ -21,26 +24,26 @@ import useAuth from '../util/AuthContext';
  * @return {HTML} VolunteerExperienceEditModal component
  */
 export default function VolunteerExperienceEditModal({onClose, index}) {
-  const {userProfile} = useAuth();
+  const {userProfile, setUserProfile} = useAuth();
 
-  const existingLocation =
-  userProfile.volunteeringexperience[index].location.split(', ');
+  const existingLocation = userProfile.volunteerExperience[index].location.split(', ');
 
   const formValues = {
-    jobtitle: userProfile.volunteeringexperience[index].title,
-    company: userProfile.volunteeringexperience[index].company,
+    jobtitle: userProfile.volunteerExperience[index].title,
+    company: userProfile.volunteerExperience[index].company,
     jobcity: existingLocation[0],
     jobstate: existingLocation[1],
-    description: userProfile.volunteeringexperience[index].description,
-    startdate: (new Date(userProfile.volunteeringexperience[index].start)),
-    enddate: userProfile.volunteeringexperience[index].end === '' ? '' :
-    (new Date(userProfile.volunteeringexperience[index].end)),
+    description: userProfile.volunteerExperience[index].description,
+    startdate: (new Date(userProfile.volunteerExperience[index].start)),
+    enddate: userProfile.volunteerExperience[index].end === '' ? '' :
+    (new Date(userProfile.volunteerExperience[index].end)),
+    currentPosition: userProfile.volunteerExperience[index].currentPosition
   };
 
   const methods = useForm({defaultValues: formValues});
-  const {handleSubmit, control, register} = methods;
+  const {handleSubmit, control, register} = methods; 
 
-  const updateVolunteerExperience = (data) => {
+  const updateProfile = (data) => {
     let startDate = '';
     if (data.startdate !== '') {
       startDate = data.startdate.toISOString().split('T')[0];
@@ -50,10 +53,6 @@ export default function VolunteerExperienceEditModal({onClose, index}) {
     }
 
     let endDate = '';
-    console.log(data.enddate);
-    if (data.enddate === null) {
-      console.log(data.enddate);
-    }
     if (data.enddate !== '' && data.enddate !== null) {
       endDate = data.enddate.toISOString().split('T')[0];
       const endDateValues = endDate.split('-').reverse('');
@@ -76,38 +75,44 @@ export default function VolunteerExperienceEditModal({onClose, index}) {
       description: data.description,
       start: startDate,
       end: data.enddate !== null ? endDate : '',
+      currentPosition: data.currentPosition,
     };
-    userProfile.volunteeringexperience[index] = newVolunteerExperience;
-  };
 
-  const updateProfile = () => {
-    fetch(`/api/updateProfile`, {
-      method: 'POST',
-      body: JSON.stringify({userid: userProfile.userid, ...userProfile}),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-        .then((res) => {
-          if (!res.ok) {
-            throw res;
-          }
-          return res.json();
-        }); toast.success('Account updated', {
-      position: 'top-right',
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
-    return;
+    DataStore.query(Profile, userProfile.id)
+      .then((profile) => {
+        DataStore.save(Profile.copyOf(profile, updated => {
+          updated.volunteerExperience[index].title = newVolunteerExperience.title;
+          updated.volunteerExperience[index].company = newVolunteerExperience.company;
+          updated.volunteerExperience[index].location = newVolunteerExperience.location;
+          updated.volunteerExperience[index].description = newVolunteerExperience.description;
+          updated.volunteerExperience[index].start = newVolunteerExperience.start;
+          updated.volunteerExperience[index].end = newVolunteerExperience.end;
+          updated.volunteerExperience[index].currentPosition = newVolunteerExperience.currentPosition;
+        }))
+          .then(() => {
+            DataStore.query(Profile, userProfile.id)
+              .then((profile) => {
+                setUserProfile(profile);
+                toast.success('Account updated', {
+                  position: 'top-right',
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                })
+              })
+          })
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const onSubmit = (data) => {
-    updateVolunteerExperience(data);
-    updateProfile();
+    // updateVolunteerExperience(data);
+    updateProfile(data);
     onClose();
   };
 
@@ -217,6 +222,11 @@ export default function VolunteerExperienceEditModal({onClose, index}) {
             register={register}
           />
 
+          <CheckboxInput
+            name='currentPosition'
+            control={control}
+            label='Current Position'
+          />
         </Box>
       </Box>
 
