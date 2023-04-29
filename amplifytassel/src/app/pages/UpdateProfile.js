@@ -132,11 +132,11 @@ export default function UpdateProfile() {
 
   // selectedTags, keywords, selectedMajors, majors
   const updateProfile = async () => {
-    console.log('selectedKeywords', selectedKeywords);
-    console.log('allKeywoards', allKeywords);
+    // console.log('selectedKeywords', selectedKeywords);
+    // console.log('allKeywoards', allKeywords);
     // // UPDATE KEYWORDS Relationship(so that it == selectedKeywords)
     const selectedKeywordIDs = selectedKeywords.map((keyword) => keyword.id);
-    console.log('selectedKeywordIDs', selectedKeywordIDs);
+    // console.log('selectedKeywordIDs', selectedKeywordIDs);
     const keywordProfiles = await DataStore.query(KeywordProfile, kp => kp.profileId.eq(userProfile.id));
     // delete keywords that no longer belong to profile(not in selectedKeywords)
     for (const keywordProfile of keywordProfiles) {
@@ -146,33 +146,33 @@ export default function UpdateProfile() {
     }
     // add new keywords(keywords that are in selectedKeywords but not in keywordProfiles)
     const kpKeywordIDs = keywordProfiles.map((kp) => kp.keywordId);
-    console.log('kpKeywordIDs', kpKeywordIDs);
+    // console.log('kpKeywordIDs', kpKeywordIDs);
     for (const selectedKeywordID of selectedKeywordIDs) {
       if (!kpKeywordIDs.includes(selectedKeywordID)) {
         let keyword = await DataStore.query(Keyword, selectedKeywordID);
         let profile = await DataStore.query(Profile, userProfile.id);
-        console.log('keyword', keyword);
-        console.log('profile', profile);
+        // console.log('keyword', keyword);
+        // console.log('profile', profile);
         await DataStore.save(
           new KeywordProfile({
             keyword: keyword,
             profile: profile
           })
         );
-        console.log('gothere');
+        // console.log('gothere');
       }
     }
 
     // TODO: Update Majors Relationship
     const profileMajors = await DataStore.query(ProfileMajor, pm => pm.profileId.eq(userProfile.id));
-    console.log('profileMajors', profileMajors);
+    // console.log('profileMajors', profileMajors);
     for (const pm of profileMajors) {
       await DataStore.delete(pm);
     }
     const profile = await DataStore.query(Profile, userProfile.id);
     for (const majorName of selectedMajors) {
       let [major] = await DataStore.query(Major, m => m.name.eq(majorName));
-      console.log('major', major);
+      // console.log('major', major);
       await DataStore.save(
         new ProfileMajor({
           major: major,
@@ -182,40 +182,30 @@ export default function UpdateProfile() {
     }
 
     // Update Profile Fields: graduationYear, location, about
-    await (DataStore.query(Profile, userProfile.id)
-      .then((res) => {
-        DataStore.save(Profile.copyOf(res, updated => {
-          updated.graduationYear = values[1].graduationYear;
-          updated.location = values[1].location;
-          updated.about = values[1].about;
-        }))
-      })
-      .then(() => {
-        return DataStore.query(Profile, userProfile.id);
-      })
-      .then((profile) => {
-        setUserProfile(profile);
-        console.log('userProfile', userProfile);
-        toast.success('Account updated', {
-          position: 'top-right',
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      }));
+    let res = await DataStore.query(Profile, userProfile.id)
+    await DataStore.save(Profile.copyOf(res, updated => {
+      updated.graduationYear = values[1].graduationYear;
+      updated.location = values[1].location;
+      updated.about = values[1].about;
+    }));
+    res = await DataStore.query(Profile, userProfile.id);
+    setUserProfile(res);
+    // console.log('userProfile', userProfile);
+    toast.success('Account updated', {
+      position: 'top-right',
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
   };
   
   useEffect(() => {
     // get selectedKeywords, keywords, allKeywords
     DataStore.query(Keyword, (k) => k.Profiles.profile.id.eq(userProfile.id))
       .then((keywords) => {
-        // setProfileKeywords(keywords);
         setSelectedKeywords(keywords);
         setValues({
           1: {
@@ -240,22 +230,18 @@ export default function UpdateProfile() {
     // get all majors
     DataStore.query(Major)
       .then((majorsTotal) => {
-        console.log('majorsTotal', majorsTotal);
+        // console.log('majorsTotal', majorsTotal);
         setTotalMajors(majorsTotal.map(major => major.name));
         return DataStore.query(Major, m => m.profiles.profileId.eq(userProfile.id));
       })
       .then((majorsSelected) => {
-        console.log('majorsSelected', majorsSelected.map(major => major.name));
+        // console.log('majorsSelected', majorsSelected.map(major => major.name));
         setSelectedMajors(majorsSelected.map(major => major.name));
       })
       .catch((err) => {
         console.log(err);
       })
   }, []);
-
-  useEffect(() => {
-    console.log('useEffect selectedMajors', selectedMajors);
-  }, [selectedMajors]);
 
   const handleSubmit = async (e) => {
     await updateProfile();
