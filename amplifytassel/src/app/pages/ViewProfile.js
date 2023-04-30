@@ -31,7 +31,7 @@ export default function ViewProfile() {
   
 
   const getProfile = async () => {
-    DataStore.query(Profile,(params.profileid))
+    DataStore.query(Profile, params.profileid)
     .then((res) => {
         setProfile(res);
         console.log(res);

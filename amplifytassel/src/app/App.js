@@ -9,6 +9,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
 import Approvals from './pages/Approvals';
+import UpdateProfile from './pages/UpdateProfile';
 import NavBarLoggedIn from './components/NavBarLoggedIn';
 import Settings from './pages/Settings';
 import './stylesheets/App.css';
@@ -47,6 +48,7 @@ const App = () => {
           <Route path='/opportunities' element={<Opportunities />}/>
           <Route path='/myprofile' element={<MyProfile />}/>
           <Route path='/landing' element={<Landing />}/>
+          <Route path='/updateprofile' element={<UpdateProfile />} />
         </Routes>
       </Box>
     </Box>

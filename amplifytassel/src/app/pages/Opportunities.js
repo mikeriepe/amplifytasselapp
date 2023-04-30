@@ -347,7 +347,7 @@ function Opportunities({
   ];
 
   const formValues = {
-    //eventName: '',
+    name: '',
     isNewOpp : true,
     locationType: 'in-person',
     location: {
@@ -368,6 +368,7 @@ function Opportunities({
     starttime: new Date(),
     endtime: new Date(),
     subject: '',
+    eventdata: '',
     //keywords: [allKeywords],
   };
 

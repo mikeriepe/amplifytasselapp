@@ -12,7 +12,8 @@ export default function Settings() {
   const {user, userProfile, setUserProfile} = useAuth();
   
   const testQuery = () => {
-    DataStore.query(KeywordProfile, k => k.profileId.eq(userProfile.id))
+    let profileIds = ['2cda8741-543a-4614-83cc-c28fae98adf2', '03bc5db5-46b3-4100-942b-e9ddb89ec1cc'];
+    DataStore.query(KeywordProfile, k => k)
       .then((kpRelationship) => {
         console.log('kpRelationship', kpRelationship);
       })

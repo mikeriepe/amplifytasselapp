@@ -26,7 +26,7 @@ export default function ProfileVolunteer({data}) {
     <Volunteer>
       <h4 className='text-dark'>Volunteer Experience</h4>
       <div className='flow-medium'>
-        {data?.volunteerExperience && data.volunteerExperience.length >0 ? Object.keys(data[0]?.volunteerExperience).map((exp, index) => (
+        {data?.volunteerExperience && data.volunteerExperience.length >0 ? Object.keys(data?.volunteerExperience).map((exp, index) => (
           <div key={`volunteer-experience-${index}`}>
             <h5>{data?.volunteerExperience[exp].title}</h5>
             <p className='text-bold text-blue'>{data?.volunteerExperience[exp].company}</p>
