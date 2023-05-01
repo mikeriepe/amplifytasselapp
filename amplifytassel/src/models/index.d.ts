@@ -26,6 +26,44 @@ export enum RequestStatus {
   REJECTED = "REJECTED"
 }
 
+type EagerWorkHistory = {
+  readonly end?: string | null;
+  readonly start?: string | null;
+  readonly title?: string | null;
+  readonly company?: string | null;
+  readonly location?: string | null;
+  readonly description?: string | null;
+  readonly currentPosition?: boolean | null;
+}
+
+type LazyWorkHistory = {
+  readonly end?: string | null;
+  readonly start?: string | null;
+  readonly title?: string | null;
+  readonly company?: string | null;
+  readonly location?: string | null;
+  readonly description?: string | null;
+  readonly currentPosition?: boolean | null;
+}
+
+export declare type WorkHistory = LazyLoading extends LazyLoadingDisabled ? EagerWorkHistory : LazyWorkHistory
+
+export declare const WorkHistory: (new (init: ModelInit<WorkHistory>) => WorkHistory)
+
+type EagerAvailability = {
+  readonly times?: DaysOfWeek | null;
+  readonly year?: number | null;
+}
+
+type LazyAvailability = {
+  readonly times?: DaysOfWeek | null;
+  readonly year?: number | null;
+}
+
+export declare type Availability = LazyLoading extends LazyLoadingDisabled ? EagerAvailability : LazyAvailability
+
+export declare const Availability: (new (init: ModelInit<Availability>) => Availability)
+
 type EagerDaysOfWeek = {
   readonly monday?: TimeSpan | null;
   readonly tuesday?: TimeSpan | null;
@@ -50,6 +88,20 @@ export declare type DaysOfWeek = LazyLoading extends LazyLoadingDisabled ? Eager
 
 export declare const DaysOfWeek: (new (init: ModelInit<DaysOfWeek>) => DaysOfWeek)
 
+type EagerTimeSpan = {
+  readonly startTime?: string | null;
+  readonly endTime?: string | null;
+}
+
+type LazyTimeSpan = {
+  readonly startTime?: string | null;
+  readonly endTime?: string | null;
+}
+
+export declare type TimeSpan = LazyLoading extends LazyLoadingDisabled ? EagerTimeSpan : LazyTimeSpan
+
+export declare const TimeSpan: (new (init: ModelInit<TimeSpan>) => TimeSpan)
+
 type EagerLocation = {
   readonly zip?: string | null;
   readonly city?: string | null;
@@ -67,58 +119,6 @@ type LazyLocation = {
 export declare type Location = LazyLoading extends LazyLoadingDisabled ? EagerLocation : LazyLocation
 
 export declare const Location: (new (init: ModelInit<Location>) => Location)
-
-type EagerAvailability = {
-  readonly times?: DaysOfWeek | null;
-  readonly year?: number | null;
-}
-
-type LazyAvailability = {
-  readonly times?: DaysOfWeek | null;
-  readonly year?: number | null;
-}
-
-export declare type Availability = LazyLoading extends LazyLoadingDisabled ? EagerAvailability : LazyAvailability
-
-export declare const Availability: (new (init: ModelInit<Availability>) => Availability)
-
-type EagerTimeSpan = {
-  readonly startTime?: string | null;
-  readonly endTime?: string | null;
-}
-
-type LazyTimeSpan = {
-  readonly startTime?: string | null;
-  readonly endTime?: string | null;
-}
-
-export declare type TimeSpan = LazyLoading extends LazyLoadingDisabled ? EagerTimeSpan : LazyTimeSpan
-
-export declare const TimeSpan: (new (init: ModelInit<TimeSpan>) => TimeSpan)
-
-type EagerWorkHistory = {
-  readonly end?: string | null;
-  readonly start?: string | null;
-  readonly title?: string | null;
-  readonly company?: string | null;
-  readonly location?: string | null;
-  readonly description?: string | null;
-  readonly currentPosition?: boolean | null;
-}
-
-type LazyWorkHistory = {
-  readonly end?: string | null;
-  readonly start?: string | null;
-  readonly title?: string | null;
-  readonly company?: string | null;
-  readonly location?: string | null;
-  readonly description?: string | null;
-  readonly currentPosition?: boolean | null;
-}
-
-export declare type WorkHistory = LazyLoading extends LazyLoadingDisabled ? EagerWorkHistory : LazyWorkHistory
-
-export declare const WorkHistory: (new (init: ModelInit<WorkHistory>) => WorkHistory)
 
 type EagerKeyword = {
   readonly [__modelMeta__]: {
@@ -150,152 +150,6 @@ export declare type Keyword = LazyLoading extends LazyLoadingDisabled ? EagerKey
 
 export declare const Keyword: (new (init: ModelInit<Keyword>) => Keyword) & {
   copyOf(source: Keyword, mutator: (draft: MutableModel<Keyword>) => MutableModel<Keyword> | void): Keyword;
-}
-
-type EagerOrganization = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<Organization, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly name?: string | null;
-  readonly email?: string | null;
-  readonly website?: string | null;
-  readonly description?: string | null;
-  readonly instagram?: string | null;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-type LazyOrganization = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<Organization, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly name?: string | null;
-  readonly email?: string | null;
-  readonly website?: string | null;
-  readonly description?: string | null;
-  readonly instagram?: string | null;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-export declare type Organization = LazyLoading extends LazyLoadingDisabled ? EagerOrganization : LazyOrganization
-
-export declare const Organization: (new (init: ModelInit<Organization>) => Organization) & {
-  copyOf(source: Organization, mutator: (draft: MutableModel<Organization>) => MutableModel<Organization> | void): Organization;
-}
-
-type EagerComment = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<Comment, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly content?: string | null;
-  readonly createdTimestamp?: number | null;
-  readonly postID: string;
-  readonly profileID: string;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-type LazyComment = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<Comment, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly content?: string | null;
-  readonly createdTimestamp?: number | null;
-  readonly postID: string;
-  readonly profileID: string;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-export declare type Comment = LazyLoading extends LazyLoadingDisabled ? EagerComment : LazyComment
-
-export declare const Comment: (new (init: ModelInit<Comment>) => Comment) & {
-  copyOf(source: Comment, mutator: (draft: MutableModel<Comment>) => MutableModel<Comment> | void): Comment;
-}
-
-type EagerRole = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<Role, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly name?: string | null;
-  readonly description?: string | null;
-  readonly isFilled?: boolean | null;
-  readonly qualifications?: (string | null)[] | null;
-  readonly Majors?: (RoleMajor | null)[] | null;
-  readonly Profiles?: (ProfileRole | null)[] | null;
-  readonly opportunityID: string;
-  readonly Requests?: (Request | null)[] | null;
-  readonly capacity?: number | null;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-type LazyRole = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<Role, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly name?: string | null;
-  readonly description?: string | null;
-  readonly isFilled?: boolean | null;
-  readonly qualifications?: (string | null)[] | null;
-  readonly Majors: AsyncCollection<RoleMajor>;
-  readonly Profiles: AsyncCollection<ProfileRole>;
-  readonly opportunityID: string;
-  readonly Requests: AsyncCollection<Request>;
-  readonly capacity?: number | null;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-export declare type Role = LazyLoading extends LazyLoadingDisabled ? EagerRole : LazyRole
-
-export declare const Role: (new (init: ModelInit<Role>) => Role) & {
-  copyOf(source: Role, mutator: (draft: MutableModel<Role>) => MutableModel<Role> | void): Role;
-}
-
-type EagerMajor = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<Major, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly name?: string | null;
-  readonly profiles?: (ProfileMajor | null)[] | null;
-  readonly Roles?: (RoleMajor | null)[] | null;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-type LazyMajor = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<Major, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly name?: string | null;
-  readonly profiles: AsyncCollection<ProfileMajor>;
-  readonly Roles: AsyncCollection<RoleMajor>;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-export declare type Major = LazyLoading extends LazyLoadingDisabled ? EagerMajor : LazyMajor
-
-export declare const Major: (new (init: ModelInit<Major>) => Major) & {
-  copyOf(source: Major, mutator: (draft: MutableModel<Major>) => MutableModel<Major> | void): Major;
 }
 
 type EagerProfile = {
@@ -372,6 +226,82 @@ export declare type Profile = LazyLoading extends LazyLoadingDisabled ? EagerPro
 
 export declare const Profile: (new (init: ModelInit<Profile>) => Profile) & {
   copyOf(source: Profile, mutator: (draft: MutableModel<Profile>) => MutableModel<Profile> | void): Profile;
+}
+
+type EagerMajor = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Major, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly name?: string | null;
+  readonly profiles?: (ProfileMajor | null)[] | null;
+  readonly Roles?: (RoleMajor | null)[] | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyMajor = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Major, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly name?: string | null;
+  readonly profiles: AsyncCollection<ProfileMajor>;
+  readonly Roles: AsyncCollection<RoleMajor>;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type Major = LazyLoading extends LazyLoadingDisabled ? EagerMajor : LazyMajor
+
+export declare const Major: (new (init: ModelInit<Major>) => Major) & {
+  copyOf(source: Major, mutator: (draft: MutableModel<Major>) => MutableModel<Major> | void): Major;
+}
+
+type EagerRole = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Role, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly name?: string | null;
+  readonly description?: string | null;
+  readonly isFilled?: boolean | null;
+  readonly qualifications?: (string | null)[] | null;
+  readonly Majors?: (RoleMajor | null)[] | null;
+  readonly Profiles?: (ProfileRole | null)[] | null;
+  readonly opportunityID: string;
+  readonly Requests?: (Request | null)[] | null;
+  readonly capacity?: number | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyRole = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Role, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly name?: string | null;
+  readonly description?: string | null;
+  readonly isFilled?: boolean | null;
+  readonly qualifications?: (string | null)[] | null;
+  readonly Majors: AsyncCollection<RoleMajor>;
+  readonly Profiles: AsyncCollection<ProfileRole>;
+  readonly opportunityID: string;
+  readonly Requests: AsyncCollection<Request>;
+  readonly capacity?: number | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type Role = LazyLoading extends LazyLoadingDisabled ? EagerRole : LazyRole
+
+export declare const Role: (new (init: ModelInit<Role>) => Role) & {
+  copyOf(source: Role, mutator: (draft: MutableModel<Role>) => MutableModel<Role> | void): Role;
 }
 
 type EagerRequest = {
@@ -454,6 +384,40 @@ export declare const Post: (new (init: ModelInit<Post>) => Post) & {
   copyOf(source: Post, mutator: (draft: MutableModel<Post>) => MutableModel<Post> | void): Post;
 }
 
+type EagerComment = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Comment, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly content?: string | null;
+  readonly createdTimestamp?: number | null;
+  readonly postID: string;
+  readonly profileID: string;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyComment = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Comment, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly content?: string | null;
+  readonly createdTimestamp?: number | null;
+  readonly postID: string;
+  readonly profileID: string;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type Comment = LazyLoading extends LazyLoadingDisabled ? EagerComment : LazyComment
+
+export declare const Comment: (new (init: ModelInit<Comment>) => Comment) & {
+  copyOf(source: Comment, mutator: (draft: MutableModel<Comment>) => MutableModel<Comment> | void): Comment;
+}
+
 type EagerOpportunity = {
   readonly [__modelMeta__]: {
     identifier: ManagedIdentifier<Opportunity, 'id'>;
@@ -516,6 +480,42 @@ export declare type Opportunity = LazyLoading extends LazyLoadingDisabled ? Eage
 
 export declare const Opportunity: (new (init: ModelInit<Opportunity>) => Opportunity) & {
   copyOf(source: Opportunity, mutator: (draft: MutableModel<Opportunity>) => MutableModel<Opportunity> | void): Opportunity;
+}
+
+type EagerOrganization = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Organization, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly name?: string | null;
+  readonly email?: string | null;
+  readonly website?: string | null;
+  readonly description?: string | null;
+  readonly instagram?: string | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyOrganization = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Organization, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly name?: string | null;
+  readonly email?: string | null;
+  readonly website?: string | null;
+  readonly description?: string | null;
+  readonly instagram?: string | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type Organization = LazyLoading extends LazyLoadingDisabled ? EagerOrganization : LazyOrganization
+
+export declare const Organization: (new (init: ModelInit<Organization>) => Organization) & {
+  copyOf(source: Organization, mutator: (draft: MutableModel<Organization>) => MutableModel<Organization> | void): Organization;
 }
 
 type EagerNote = {
@@ -616,84 +616,16 @@ export declare const KeywordOpportunity: (new (init: ModelInit<KeywordOpportunit
   copyOf(source: KeywordOpportunity, mutator: (draft: MutableModel<KeywordOpportunity>) => MutableModel<KeywordOpportunity> | void): KeywordOpportunity;
 }
 
-type EagerRoleMajor = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<RoleMajor, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly roleId?: string | null;
-  readonly majorId?: string | null;
-  readonly role: Role;
-  readonly major: Major;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-type LazyRoleMajor = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<RoleMajor, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly roleId?: string | null;
-  readonly majorId?: string | null;
-  readonly role: AsyncItem<Role>;
-  readonly major: AsyncItem<Major>;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-export declare type RoleMajor = LazyLoading extends LazyLoadingDisabled ? EagerRoleMajor : LazyRoleMajor
-
-export declare const RoleMajor: (new (init: ModelInit<RoleMajor>) => RoleMajor) & {
-  copyOf(source: RoleMajor, mutator: (draft: MutableModel<RoleMajor>) => MutableModel<RoleMajor> | void): RoleMajor;
-}
-
-type EagerProfileRole = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<ProfileRole, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly roleId?: string | null;
-  readonly profileId?: string | null;
-  readonly role: Role;
-  readonly profile: Profile;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-type LazyProfileRole = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<ProfileRole, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly roleId?: string | null;
-  readonly profileId?: string | null;
-  readonly role: AsyncItem<Role>;
-  readonly profile: AsyncItem<Profile>;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-export declare type ProfileRole = LazyLoading extends LazyLoadingDisabled ? EagerProfileRole : LazyProfileRole
-
-export declare const ProfileRole: (new (init: ModelInit<ProfileRole>) => ProfileRole) & {
-  copyOf(source: ProfileRole, mutator: (draft: MutableModel<ProfileRole>) => MutableModel<ProfileRole> | void): ProfileRole;
-}
-
 type EagerProfileMajor = {
   readonly [__modelMeta__]: {
     identifier: ManagedIdentifier<ProfileMajor, 'id'>;
     readOnlyFields: 'createdAt' | 'updatedAt';
   };
   readonly id: string;
-  readonly majorId?: string | null;
   readonly profileId?: string | null;
-  readonly major: Major;
+  readonly majorId?: string | null;
   readonly profile: Profile;
+  readonly major: Major;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -704,10 +636,10 @@ type LazyProfileMajor = {
     readOnlyFields: 'createdAt' | 'updatedAt';
   };
   readonly id: string;
-  readonly majorId?: string | null;
   readonly profileId?: string | null;
-  readonly major: AsyncItem<Major>;
+  readonly majorId?: string | null;
   readonly profile: AsyncItem<Profile>;
+  readonly major: AsyncItem<Major>;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -716,6 +648,40 @@ export declare type ProfileMajor = LazyLoading extends LazyLoadingDisabled ? Eag
 
 export declare const ProfileMajor: (new (init: ModelInit<ProfileMajor>) => ProfileMajor) & {
   copyOf(source: ProfileMajor, mutator: (draft: MutableModel<ProfileMajor>) => MutableModel<ProfileMajor> | void): ProfileMajor;
+}
+
+type EagerProfileRole = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<ProfileRole, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly profileId?: string | null;
+  readonly roleId?: string | null;
+  readonly profile: Profile;
+  readonly role: Role;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyProfileRole = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<ProfileRole, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly profileId?: string | null;
+  readonly roleId?: string | null;
+  readonly profile: AsyncItem<Profile>;
+  readonly role: AsyncItem<Role>;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type ProfileRole = LazyLoading extends LazyLoadingDisabled ? EagerProfileRole : LazyProfileRole
+
+export declare const ProfileRole: (new (init: ModelInit<ProfileRole>) => ProfileRole) & {
+  copyOf(source: ProfileRole, mutator: (draft: MutableModel<ProfileRole>) => MutableModel<ProfileRole> | void): ProfileRole;
 }
 
 type EagerOpportunityProfile = {
@@ -750,4 +716,38 @@ export declare type OpportunityProfile = LazyLoading extends LazyLoadingDisabled
 
 export declare const OpportunityProfile: (new (init: ModelInit<OpportunityProfile>) => OpportunityProfile) & {
   copyOf(source: OpportunityProfile, mutator: (draft: MutableModel<OpportunityProfile>) => MutableModel<OpportunityProfile> | void): OpportunityProfile;
+}
+
+type EagerRoleMajor = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<RoleMajor, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly majorId?: string | null;
+  readonly roleId?: string | null;
+  readonly major: Major;
+  readonly role: Role;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyRoleMajor = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<RoleMajor, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly majorId?: string | null;
+  readonly roleId?: string | null;
+  readonly major: AsyncItem<Major>;
+  readonly role: AsyncItem<Role>;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type RoleMajor = LazyLoading extends LazyLoadingDisabled ? EagerRoleMajor : LazyRoleMajor
+
+export declare const RoleMajor: (new (init: ModelInit<RoleMajor>) => RoleMajor) & {
+  copyOf(source: RoleMajor, mutator: (draft: MutableModel<RoleMajor>) => MutableModel<RoleMajor> | void): RoleMajor;
 }
