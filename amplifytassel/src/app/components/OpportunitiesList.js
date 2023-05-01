@@ -44,6 +44,7 @@ export default function OpportunitiesList({
   const [search, setSearch] = useState('');
   const [dropdownSelect, setDropdownSelect] = useState('Recommended');
   const {userProfile} = useAuth();
+  
 
   const handleDropdown = ((dropdown) => {
     console.log(dropdown);
@@ -74,50 +75,71 @@ export default function OpportunitiesList({
     });
   }
 
-  const calcNumMatchKeywords = ((opp) => {
+  const calcNumMatchKeywords = async (opp) => {
     const oppKeywords = [];
-    if (opp.keywords === null || userProfile.keywords === null ||
-      numProfileKeywords === 0) {
-      return 0;
-    } else {
-      const numOppKeywords = Object.keys(opp.keywords).length;
-      if (numOppKeywords === 0) {
+    const profileKeywords = [];
+  
+    try {
+      // Fetch userProfile keywords
+      const profileKeywordValues = await userProfile?.keywords?.values;
+      profileKeywordValues.forEach(function (keywordObj) {
+        profileKeywords.push(keywordObj.keywordId);
+      });
+  
+      // Fetch opportunity keywords
+      const oppKeywordValues = await opp?.keywords?.values;
+      if (oppKeywordValues.length === 0) {
+      //   console.log("EventName", opp.eventName);
+      // console.log("returning 0");
         return 0;
       }
-      const keys = Object.keys(opp.keywords);
-      keys.forEach(function(key) {
-        oppKeywords.push(userProfile.keywords[key]);
+      oppKeywordValues.forEach(function (keywordObj) {
+        oppKeywords.push(keywordObj.keywordId);
       });
+  
+      // Calculate common keywords
+      const commonKeywords = oppKeywords.filter((keyword) => profileKeywords.includes(keyword));
+      // console.log("EventName", opp.eventName);
+      // console.log("Common Keywords", commonKeywords.length);
+      return commonKeywords.length;
+  
+    } catch (error) {
+      console.error("Error fetching keywords:", error);
+      return 0;
     }
-    let count = 0;
-    for (let i = 0; i < profileKeywords.length; i++) {
-      for (let j = 0; j < oppKeywords.length; j++) {
-        if (oppKeywords[j] === profileKeywords[i]) {
-          count++;
-        }
-      }
-    }
-    return count;
-  });
+  };
+  
+  const asyncSort = async (array, compareFn) => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        array.sort(compareFn);
+        resolve(array);
+      }, 0);
+    });
+  };
 
-  const handleSort = (opps) => {
-    let sortedOpps = [...opps]; // Make a shallow copy of opps array to avoid modifying the original array
+  const handleSort = async (opps) => {
+    let sortedOpps;
   
     if (dropdownSelect === 'Alphabet') {
-      sortedOpps.sort((a, b) => a.eventName.localeCompare(b.eventName));
+      sortedOpps = opps.sort((a, b) => a.eventName.localeCompare(b.eventName));
     } else if (dropdownSelect === 'Major') {
-      // 'zzz' puts the null values at the end
-      sortedOpps.sort((a, b) => (a.subject ? a.subject : 'zzz')
-          .localeCompare(b.subject ? b.subject : 'zzz'));
+      sortedOpps = opps.sort((a, b) => (a.subject ? a.subject : 'zzz')
+        .localeCompare(b.subject ? b.subject : 'zzz'));
     } else if (dropdownSelect === 'Recommended') {
-      sortedOpps.sort(function(a, b) {
-        return (calcNumMatchKeywords(a) < calcNumMatchKeywords(b)) ? 1 : -1;
-      });
+      const oppsWithCommonKeywords = [];
+  
+      for await (const opp of opps) {
+        const commonKeywords = await calcNumMatchKeywords(opp);
+        oppsWithCommonKeywords.push({ opp, commonKeywords });
+      }
+  
+      sortedOpps = oppsWithCommonKeywords.sort((a, b) => b.commonKeywords - a.commonKeywords)
+        .map(({ opp }) => opp);
     }
   
     return sortedOpps;
   };
-
   // Fuzzy search on given searchData
   // If the search bar is empty, the searchData is all the opps
   // Function is called at the end of applyFilters() with the
@@ -144,7 +166,7 @@ export default function OpportunitiesList({
     }
   };
 
-  const applyFilters = () => {
+  const applyFilters = async () => {
     // Set all filters to lowercase for comparison
     const locationFilterLower = locationFilter.map((filter) => {
       return filter.toLowerCase();
@@ -181,7 +203,7 @@ export default function OpportunitiesList({
     });
 
     // setDisplayOpps(copyOpps);
-    const filteredOpps = handleSort(copyOpps);
+    const filteredOpps = await handleSort(copyOpps);
     // searches the filtered opp list
     searchOpportunity(search, filteredOpps);
   };

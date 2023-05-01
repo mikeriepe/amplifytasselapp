@@ -279,8 +279,8 @@ export default function PageHeader({
             <AccessibilityRoundedIcon sx={IconStyling} />
             <p className='text-bold ellipsis'>
               {
-                data.locationType.charAt(0).toUpperCase() +
-                  data.locationType.slice(1)
+                data?.locationType?.charAt(0).toUpperCase() +
+                  data?.locationType?.slice(1)
               }
             </p>
           </div>

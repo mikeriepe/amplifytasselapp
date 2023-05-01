@@ -84,6 +84,7 @@ function ViewOpportunity({opportunity}) {
   const [requestedRole, setRequestedRole] = React.useState('');
   // REMOVE REQUESTED ROLE STATE
   // list of all the participants
+
   useState(opportunity);
 
   // list of assigned roles in the opportunity
