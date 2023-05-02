@@ -27,6 +27,7 @@ export declare type ProfileCreateFormInputValues = {
     schoolEmail?: string;
     infoRequest?: string;
     infoResponse?: string;
+    banner?: string;
 };
 export declare type ProfileCreateFormValidationValues = {
     email?: ValidationFunction<string>;
@@ -43,6 +44,7 @@ export declare type ProfileCreateFormValidationValues = {
     schoolEmail?: ValidationFunction<string>;
     infoRequest?: ValidationFunction<string>;
     infoResponse?: ValidationFunction<string>;
+    banner?: ValidationFunction<string>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type ProfileCreateFormOverridesProps = {
@@ -61,6 +63,7 @@ export declare type ProfileCreateFormOverridesProps = {
     schoolEmail?: PrimitiveOverrideProps<TextFieldProps>;
     infoRequest?: PrimitiveOverrideProps<TextFieldProps>;
     infoResponse?: PrimitiveOverrideProps<TextFieldProps>;
+    banner?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type ProfileCreateFormProps = React.PropsWithChildren<{
     overrides?: ProfileCreateFormOverridesProps | undefined | null;

@@ -7,9 +7,9 @@ import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {useForm} from 'react-hook-form';
 import {toast} from 'react-toastify';
 
-import {TextInput} from './TextInput';
-import {DateInput} from './DateInput';
-import {CheckboxInput} from './CheckboxInput';
+import {TextInput2} from './TextInput2';
+import {DateInput2} from './DateInput2';
+import {CheckboxInput2} from './CheckboxInput2';
 import ThemedButton from '../components/ThemedButton';
 import useAuth from '../util/AuthContext';
 
@@ -156,14 +156,14 @@ export default function WorkExperienceForm({onClose}) {
         }}
       >
         <Box>
-          <TextInput
+          <TextInput2
             name='jobtitle'
             control={control}
             label='Job Title'
             register={register}
           />
 
-          <TextInput
+          <TextInput2
             name='company'
             control={control}
             label='Company'
@@ -179,14 +179,14 @@ export default function WorkExperienceForm({onClose}) {
             }}
           >
             {
-              <TextInput
+              <TextInput2
                 name='jobcity'
                 control={control}
                 label='City'
                 register={register}
               />
             }
-            <TextInput
+            <TextInput2
               name='jobstate'
               control={control}
               label='State'
@@ -205,13 +205,13 @@ export default function WorkExperienceForm({onClose}) {
                   gridGap: '10px',
                 }}
               >
-                <DateInput
+                <DateInput2
                   name='startdate'
                   control={control}
                   label='Start Date'
                   register={register}
                 />
-                <DateInput
+                <DateInput2
                   name='enddate'
                   control={control}
                   label='End Date'
@@ -221,7 +221,7 @@ export default function WorkExperienceForm({onClose}) {
             </LocalizationProvider>
           </Box>
 
-          <TextInput
+          <TextInput2
             name='description'
             control={control}
             label='Enter Description'
@@ -229,7 +229,7 @@ export default function WorkExperienceForm({onClose}) {
             register={register}
           />
 
-          <CheckboxInput
+          <CheckboxInput2
             name='currentPosition'
             control={control}
             label='Current Position'

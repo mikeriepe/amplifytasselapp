@@ -786,6 +786,13 @@ export const schema = {
                         ]
                     }
                 },
+                "banner": {
+                    "name": "banner",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -2216,5 +2223,5 @@ export const schema = {
         }
     },
     "codegenVersion": "3.4.0",
-    "version": "3aa38aea5bb42c782b0af6472ed0ffd3"
+    "version": "50b9de2c13a6dda8e043aebe04c3b2db"
 };
