@@ -126,7 +126,8 @@ const MoreIcon = ({ anchorEl, open, handleClick, handleClose, hiddenFileInput })
  * creates Profile header
  * @return {HTML} Profile header component
  */
-export default function ProfileHeader({ data }) {
+export default function ProfileHeader({ data,editButton }) {
+  
   const [majors, setMajors] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const hiddenFileInput = React.useRef(null);
@@ -187,13 +188,15 @@ export default function ProfileHeader({ data }) {
             <p className='ellipsis'>Class of {data.graduationYear}</p>
             <p className='ellipsis'>{data.location}</p>
           </Text>
-          { (data && data.id === userProfile.id) && (
+          {
+            editButton && 
             <>
               <MoreIcon anchorEl={anchorEl} open={open}
               handleClick={handleClick} handleClose={handleClose} updateSelectedFile={updateSelectedFile} hiddenFileInput={hiddenFileInput}/>
               <input type="file" accept="image/x-png,image/jpeg" ref={hiddenFileInput} multiple={false} onChange={(e) => updateSelectedFile(e.target.files[0])} hidden/>
             </>
-          )}
+          }
+          
         </Box>
       </Content>
     </Header>

@@ -180,6 +180,7 @@ const getAllOpportunities = () => {
         }
       }
       setAllOpportunities(timeBoxedList);
+      console.log(allOpportunities);
     })
   })
   .catch((err) => {
@@ -260,7 +261,6 @@ function Opportunities({
   const [oppTypeFilter, setOppTypeFilter] = useState([]);
   const [orgTypeFilter, setOrgTypeFilter] = useState([]);
   const [showOppForm, setShowOppForm] = useState(false);
-  
   const tabs = [
     {
       name: 'Upcoming',
