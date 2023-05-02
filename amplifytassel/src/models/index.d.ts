@@ -329,6 +329,7 @@ type EagerProfile = {
   readonly infoResponse?: string | null;
   readonly Requests?: (Request | null)[] | null;
   readonly keywords?: (KeywordProfile | null)[] | null;
+  readonly banner?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -364,6 +365,7 @@ type LazyProfile = {
   readonly infoResponse?: string | null;
   readonly Requests: AsyncCollection<Request>;
   readonly keywords: AsyncCollection<KeywordProfile>;
+  readonly banner?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }

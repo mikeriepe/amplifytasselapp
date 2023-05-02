@@ -3,17 +3,14 @@ import { styled } from '@mui/material';
 import MuiAvatar from '@mui/material/Avatar';
 import MuiBox from '@mui/material/Box';
 import MuiPaper from '@mui/material/Paper';
-import ExampleCover from '../assets/examplecover.png';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { Link } from 'react-router-dom';
-
-import { DataStore } from '@aws-amplify/datastore';
-import { Profile, Major } from '../../models';
-
+import ProfileBanner from './ProfileBanner.js'
+import useAuth from '../util/AuthContext.js';
 
 
 const Header = styled((props) => (
@@ -26,30 +23,6 @@ const Header = styled((props) => (
   border: '0.5px solid rgba(0, 0, 0, 0.15)',
   borderRadius: '10px',
 }));
-
-const Banner = ({ image }, props) => (
-  <MuiBox
-    sx={{
-      height: '65%',
-      width: '100%',
-      borderRadius: '10px',
-    }}
-    {...props}
-  >
-    <img
-      src={image}
-      style={{
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        objectFit: 'cover',
-        height: '100%',
-        width: '100%',
-        borderRadius: '10px 10px 0 0',
-      }}
-    />
-  </MuiBox>
-);
 
 const Content = ({ children }, props) => (
   <MuiBox sx={{ height: '35%' }} {...props}>
@@ -101,7 +74,7 @@ const Text = ({ children }, props) => (
 
 const ITEM_HEIGHT = 48;
 
-const MoreIcon = ({ anchorEl, open, handleClick, handleClose }) => (
+const MoreIcon = ({ anchorEl, open, handleClick, handleClose, hiddenFileInput }) => (
   <MuiBox
     sx={{
       marginRight: '3em',
@@ -140,6 +113,11 @@ const MoreIcon = ({ anchorEl, open, handleClick, handleClose }) => (
       <Link to='/updateprofile'>
         <MenuItem onClick={handleClose}>Edit Personal Info</MenuItem>
       </Link>
+        <MenuItem onClick={() => {
+          handleClose();
+          hiddenFileInput.current.click();
+        }}>Edit Profile Banner
+        </MenuItem>
     </Menu>
   </MuiBox>
 );
@@ -151,6 +129,9 @@ const MoreIcon = ({ anchorEl, open, handleClick, handleClose }) => (
 export default function ProfileHeader({ data,editButton }) {
   
   const [majors, setMajors] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const hiddenFileInput = React.useRef(null);
+  const { userProfile } = useAuth();
 
   const extractMajors = async () => {
     try {
@@ -183,9 +164,13 @@ export default function ProfileHeader({ data,editButton }) {
     setAnchorEl(null);
   };
 
+  const updateSelectedFile = (file) => {
+    setSelectedFile(file);
+  };
+
   return (
     <Header>
-      <Banner image={ExampleCover} />
+      <ProfileBanner selectedFile={selectedFile} data={data}/>
       <Content>
         <Avatar image={data?.picture} handleError={handleError} />
         <Box
@@ -204,8 +189,12 @@ export default function ProfileHeader({ data,editButton }) {
             <p className='ellipsis'>{data.location}</p>
           </Text>
           {
-            editButton && <MoreIcon anchorEl={anchorEl} open={open}
-            handleClick={handleClick} handleClose={handleClose} />
+            editButton && 
+            <>
+              <MoreIcon anchorEl={anchorEl} open={open}
+              handleClick={handleClick} handleClose={handleClose} updateSelectedFile={updateSelectedFile} hiddenFileInput={hiddenFileInput}/>
+              <input type="file" accept="image/x-png,image/jpeg" ref={hiddenFileInput} multiple={false} onChange={(e) => updateSelectedFile(e.target.files[0])} hidden/>
+            </>
           }
           
         </Box>
