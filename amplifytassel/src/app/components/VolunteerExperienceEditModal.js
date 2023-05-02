@@ -43,7 +43,7 @@ export default function VolunteerExperienceEditModal({onClose, index}) {
   };
 
   const methods = useForm({defaultValues: formValues});
-  const {handleSubmit, control, register} = methods;
+  const {handleSubmit, control, register} = methods; 
 
   const updateProfile = async (data) => {
     let startDate = '';
