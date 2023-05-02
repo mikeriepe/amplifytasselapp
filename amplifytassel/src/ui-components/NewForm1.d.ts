@@ -18,12 +18,14 @@ export declare type NewForm1InputValues = {
     location?: string;
     graduationYear?: string;
     Field0?: string;
+    banner?: string;
 };
 export declare type NewForm1ValidationValues = {
     about?: ValidationFunction<string>;
     location?: ValidationFunction<string>;
     graduationYear?: ValidationFunction<string>;
     Field0?: ValidationFunction<string>;
+    banner?: ValidationFunction<string>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type NewForm1OverridesProps = {
@@ -32,6 +34,7 @@ export declare type NewForm1OverridesProps = {
     location?: PrimitiveOverrideProps<TextFieldProps>;
     graduationYear?: PrimitiveOverrideProps<TextFieldProps>;
     Field0?: PrimitiveOverrideProps<SelectFieldProps>;
+    banner?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type NewForm1Props = React.PropsWithChildren<{
     overrides?: NewForm1OverridesProps | undefined | null;
