@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {useState, useEffect} from 'react';
+import {useNavigate} from 'react-router-dom';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -62,15 +63,19 @@ const Card = styled((props) => (
   borderRadius: '10px',
 }));
 
-const Avatar = ({image}, props) => (
+const Avatar = ({ image, handleAvatarClick, profileid }, props) => (
   <MuiAvatar
     {...props}
     src={image}
+    onClick={() => handleAvatarClick(profileid)}
     sx={{
       height: '2.5rem',
       width: '2.5rem',
       border: '0.5px solid rgba(0, 0, 0, 0.15)',
       marginRight: '1rem',
+      ':hover': {
+        cursor: 'pointer'
+      }
     }}
   />
 );
@@ -83,6 +88,11 @@ const Avatar = ({image}, props) => (
 function Row(props) {
   const {row, handleSelect} = props;
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+
+  function handleAvatarClick(profileid) {
+    navigate(`/Profile/${profileid}`);
+  }
 
   return (
     <React.Fragment>
@@ -103,7 +113,9 @@ function Row(props) {
         <TableCell className='data-cell' component='th' scope='row'
           sx={{display: 'flex',
             flexDirection: 'row'}}>
-          <Avatar image={row.profilePicture} />
+          <Avatar image={row.profilePicture} 
+          handleAvatarClick={handleAvatarClick} 
+          profileid={row.id}/>
           {/* eslint-disable-next-line max-len */}
           <div className='text-center-vert'>{`${row.firstName} ${row.lastName}`}</div>
         </TableCell>

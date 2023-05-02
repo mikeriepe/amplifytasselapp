@@ -50,7 +50,7 @@ export default function ViewProfile() {
     <Page>
       {profile && profile !== null && (
         <>
-          <ProfileHeader data={profile} />
+          <ProfileHeader data={profile} editButton={false} />
           <ProfileAbout data={profile}/>
           <ProfileWork data={profile}/>
           <ProfileVolunteer data={profile}/>
