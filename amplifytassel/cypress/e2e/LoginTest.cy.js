@@ -14,11 +14,10 @@ describe('Sign In:', () => {
 
     cy.wait(4000);
 
-    // cy.get(selectors.DashboardNavigateStarButton).click();
     cy.visit('http://localhost:3000/dashboard');
 
     // Step 3: Make an assertion (Check for sign-out text)
-      cy.get(selectors.DashboardHeader).contains('Welcome back');
+    cy.get(selectors.DashboardHeader).contains('Welcome back');
   });
 })
 
