@@ -27,6 +27,7 @@ import ThemedButton from './ThemedButton';
 
 import { DataStore } from '@aws-amplify/datastore';
 import { Opportunity, Profile, Request, Role, RequestStatus, ProfileRole, OpportunityProfile, Keyword, KeywordOpportunity } from '../../models';
+import { Storage } from 'aws-amplify';
 
 
 const IconStyling = {
@@ -209,7 +210,7 @@ export default function OpportunitiesCard({
   getAllOpportunities,
 }) {
   const [creator, setCreator] = useState('');
-
+  const [profilePicture, setProfilePicture] = useState(null);
   const [showReqForm, setshowReqForm] = useState(false);
   const [showOppForm, setShowOppForm] = useState(false);
   const [showDeleteForm, setShowDeleteForm] = useState(false);
@@ -244,6 +245,17 @@ export default function OpportunitiesCard({
 
   const handleRequestMessage = (e) => {
     setRequestMessage(e.target.value);
+  };
+
+  const downloadProfilePicture = async () => {
+    if (creator.picture !== null) {
+      const file = await Storage.get(creator.picture, {
+        level: "public"
+      });
+      setProfilePicture(file);
+    } else {
+      setProfilePicture("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png");
+    }
   };
 
   const extractRoles = () => {
@@ -591,6 +603,12 @@ export default function OpportunitiesCard({
     extractKeywords(opportunity);
   }, [opportunity]);
 
+  useEffect(() => {
+    if (creator) {
+      downloadProfilePicture();
+    }
+  }, [creator]);
+
   return (
     <>
       {opportunity &&(
@@ -608,7 +626,7 @@ export default function OpportunitiesCard({
                   {opportunity.eventName}
                 </h4>
                 <div className='flex-flow-large flex-align-center'>
-                  <Avatar image={creator.picture} />
+                  <Avatar image={profilePicture} />
                   <p className='text-bold text-disabled'>
                     Hosted by:&nbsp;
                     <span className='text-blue'>

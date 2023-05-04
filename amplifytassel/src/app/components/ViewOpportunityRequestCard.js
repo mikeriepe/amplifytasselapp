@@ -13,6 +13,7 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import { DataStore } from '@aws-amplify/datastore';
 import { Profile, Role } from '../../models';
+import { Storage } from 'aws-amplify';
 
 
 const Avatar = ({image}, props) => (
@@ -31,6 +32,8 @@ export default function ViewOpportunityRequestCard({
   const [open, setOpen] = useState(false);
   const [requester, setRequester] = useState(null);
   const [role, setRole] = useState('');
+  const [profilePicture, setProfilePicture] = useState(null);
+
   const navigate = useNavigate();
   const navigateToProfile = (profileid) => {
     navigate(`/Profile/${profileid}`);
@@ -50,10 +53,27 @@ export default function ViewOpportunityRequestCard({
     setRole(requestRole[0].name);
   };
 
+  const downloadProfilePicture = async () => {
+    if (requester.picture !== null) {
+      const file = await Storage.get(requester.picture, {
+        level: "public"
+      });
+      setProfilePicture(file);
+    } else {
+      setProfilePicture("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png");
+    }
+  };
+
   useEffect(() => {
     getRequester(request);
     getRole(request);
   }, [request]);
+
+  useEffect(() => {
+    if (requester) {
+      downloadProfilePicture();
+    }
+  }, [requester]);
 
   const formatDate = (date) => {
     const dateOptions = {
@@ -114,7 +134,7 @@ export default function ViewOpportunityRequestCard({
                 cursor: 'pointer',
               }}
             >
-              <Avatar image={requester?.picture}/>
+              <Avatar image={profilePicture}/>
             </div>
             <p>{`${requester?.firstName} ${requester?.lastName}`}</p>
           </div>

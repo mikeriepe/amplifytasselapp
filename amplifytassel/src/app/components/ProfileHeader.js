@@ -151,11 +151,10 @@ export default function ProfileHeader({ data,editButton }) {
   const [selectedProfileFile, setSelectedProfileFile] = useState(null);
   const [fileKey, setFileKey] = useState(null);
   const [profilePicture, setProfilePicture] = useState(null);
-  const [loading, setLoading] = useState(true);
   const hiddenInputProfilePicture = React.useRef(null);
   const BANNER_FILE_SIZE_LIMIT = 2097152;
   // ----
-  const { userProfile } = useAuth();
+  const { userProfile, setUserProfile } = useAuth();
 
   const getProfilePictureKey = async () => {
     let user = await DataStore.query(Profile, p => p.id.eq(data.id));
@@ -171,12 +170,10 @@ export default function ProfileHeader({ data,editButton }) {
     } else {
       setProfilePicture("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png");
     }
-    setLoading(false);
   };
 
   const uploadFile = async () => {
     try {
-      setLoading(true);
       // Check the banner size
       if(selectedProfileFile.size > BANNER_FILE_SIZE_LIMIT){
         toast.error(
@@ -190,7 +187,6 @@ export default function ProfileHeader({ data,editButton }) {
             draggable: true,
             progress: undefined,
           });
-          setLoading(false);
           return;
       };
 
@@ -203,12 +199,15 @@ export default function ProfileHeader({ data,editButton }) {
       // Delete the old profile picture
       await Storage.remove(user[0].picture);
   
-      // update the banner field
+      // update the profile picture
       await DataStore.save(
         Profile.copyOf(user[0], updated => {
           updated.picture = result.key;
         })
       );
+
+      // update the userProfile context
+      setUserProfile({...userProfile, picture: result.key});
 
       setFileKey(result.key);
       toast.success(
@@ -234,7 +233,6 @@ export default function ProfileHeader({ data,editButton }) {
           draggable: true,
           progress: undefined,
         });
-      setLoading(false);
     }
   };
 
@@ -284,8 +282,6 @@ export default function ProfileHeader({ data,editButton }) {
   useEffect(() => {
     if (fileKey !== null) {
       downloadFile();
-    } else {
-      setLoading(false);
     }
   }, [fileKey]);
 

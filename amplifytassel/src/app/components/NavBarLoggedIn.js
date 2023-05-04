@@ -25,6 +25,7 @@ import Notification from './Notification';
 import ThemedButton from './ThemedButton';
 import useAuth from '../util/AuthContext';
 import * as Nav from './NavBarComponents';
+import { Storage } from 'aws-amplify';
 
 import { Auth } from 'aws-amplify';
 
@@ -73,7 +74,7 @@ export default function NavBarLoggedIn() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [tabIndex, setTabIndex] = useState(window.location.pathname);
-  console.log('rendering navbarloggedin');
+  const [profilePicture, setProfilePicture] = useState(null);
 
   // Pages ---------------------------------------------------------------------
 
@@ -116,6 +117,17 @@ export default function NavBarLoggedIn() {
 
   // Profile -------------------------------------------------------------------
 
+  const downloadProfilePicture = async () => {
+    if (userProfile.picture !== null) {
+      const file = await Storage.get(userProfile.picture, {
+        level: "public"
+      });
+      setProfilePicture(file);
+    } else {
+      setProfilePicture("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png");
+    }
+  };
+
   const handleError = (e) => {
     e.target.src = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png';
   };
@@ -149,6 +161,10 @@ export default function NavBarLoggedIn() {
   useEffect(() => {
     setTabIndex(window.location.pathname);
   }, []);
+
+  useEffect(() => {
+    downloadProfilePicture();
+  }, [userProfile]);
 
   return (
     <>
@@ -191,7 +207,7 @@ export default function NavBarLoggedIn() {
               <ThemedButton
                 startIcon={
                   <Avatar
-                    src={userProfile?.picture}
+                    src={profilePicture}
                     alt='Remy Sharp'
                     onError={handleError}
                     style={{marginRight: 5}}
