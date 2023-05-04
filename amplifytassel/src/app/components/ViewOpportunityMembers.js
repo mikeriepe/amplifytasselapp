@@ -57,6 +57,7 @@ export default function ViewOpportunityMembers({
   const [profiles, setProfiles] = useState([]);
 
   const handleClick = (profileid) => {
+    console.log(owner.profileid);
     navigate(`/Profile/${profileid}`);
   };
 
@@ -84,7 +85,7 @@ export default function ViewOpportunityMembers({
         {isCreator ? 'Your Members' : 'Members'}
       </h4>
       <div style={{paddingBottom: 'calc(1.5em - 0.5em)'}}>
-        <Member handleClick={handleClick} profileid={owner.profileID}>
+        <Member handleClick={handleClick} profileid={owner.profileid}>
           <Avatar image={owner.avatar} />
           <div>
             <div className='flex-align-center'>
@@ -120,7 +121,7 @@ export default function ViewOpportunityMembers({
               <Member
                 key={`member-${index}`}
                 handleClick={handleClick}
-                profileid={profile.profileID}
+                profileid={profile.id}
               >
                 <Avatar image={profile.picture} />
                 <div>

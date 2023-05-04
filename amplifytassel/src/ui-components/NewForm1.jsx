@@ -33,7 +33,8 @@ export default function NewForm1(props) {
     about: "",
     location: "",
     graduationYear: "",
-    Field0: undefined,
+    Field0: "",
+    banner: "",
   };
   const [about, setAbout] = React.useState(initialValues.about);
   const [location, setLocation] = React.useState(initialValues.location);
@@ -41,6 +42,7 @@ export default function NewForm1(props) {
     initialValues.graduationYear
   );
   const [Field0, setField0] = React.useState(initialValues.Field0);
+  const [banner, setBanner] = React.useState(initialValues.banner);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     const cleanValues = profileRecord
@@ -50,6 +52,7 @@ export default function NewForm1(props) {
     setLocation(cleanValues.location);
     setGraduationYear(cleanValues.graduationYear);
     setField0(cleanValues.Field0);
+    setBanner(cleanValues.banner);
     setErrors({});
   };
   const [profileRecord, setProfileRecord] = React.useState(profile);
@@ -66,6 +69,7 @@ export default function NewForm1(props) {
     location: [],
     graduationYear: [],
     Field0: [],
+    banner: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -96,6 +100,7 @@ export default function NewForm1(props) {
           location,
           graduationYear,
           Field0,
+          banner,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -125,6 +130,12 @@ export default function NewForm1(props) {
               modelFields[key] = undefined;
             }
           });
+          const modelFieldsToSave = {
+            about: modelFields.about,
+            location: modelFields.location,
+            graduationYear: modelFields.graduationYear,
+            banner: modelFields.banner,
+          };
           await DataStore.save(
             Profile.copyOf(profileRecord, (updated) => {
               Object.assign(updated, modelFields);
@@ -155,6 +166,7 @@ export default function NewForm1(props) {
               location,
               graduationYear,
               Field0,
+              banner,
             };
             const result = onChange(modelFields);
             value = result?.about ?? value;
@@ -182,6 +194,7 @@ export default function NewForm1(props) {
               location: value,
               graduationYear,
               Field0,
+              banner,
             };
             const result = onChange(modelFields);
             value = result?.location ?? value;
@@ -209,6 +222,7 @@ export default function NewForm1(props) {
               location,
               graduationYear: value,
               Field0,
+              banner,
             };
             const result = onChange(modelFields);
             value = result?.graduationYear ?? value;
@@ -235,6 +249,7 @@ export default function NewForm1(props) {
               location,
               graduationYear,
               Field0: value,
+              banner,
             };
             const result = onChange(modelFields);
             value = result?.Field0 ?? value;
@@ -265,6 +280,34 @@ export default function NewForm1(props) {
           {...getOverrideProps(overrides, "Field0option2")}
         ></option>
       </SelectField>
+      <TextField
+        label="Banner"
+        isRequired={false}
+        isReadOnly={false}
+        value={banner}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              about,
+              location,
+              graduationYear,
+              Field0,
+              banner: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.banner ?? value;
+          }
+          if (errors.banner?.hasError) {
+            runValidationTasks("banner", value);
+          }
+          setBanner(value);
+        }}
+        onBlur={() => runValidationTasks("banner", banner)}
+        errorMessage={errors.banner?.errorMessage}
+        hasError={errors.banner?.hasError}
+        {...getOverrideProps(overrides, "banner")}
+      ></TextField>
       <Flex
         justifyContent="space-between"
         {...getOverrideProps(overrides, "CTAFlex")}

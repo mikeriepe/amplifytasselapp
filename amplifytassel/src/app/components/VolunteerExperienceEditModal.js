@@ -2,18 +2,19 @@ import Box from '@mui/material/Box';
 import React from 'react';
 import {StepLabel} from '@mui/material';
 import Paper from '@mui/material/Paper';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
+import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
+
 import {useForm} from 'react-hook-form';
 import {toast} from 'react-toastify';
 
-import {TextInput} from './TextInput';
-import {DateInput} from './DateInput';
+import {TextInput2} from './TextInput2';
+import {DateInput2} from './DateInput2';
+import {CheckboxInput2} from './CheckboxInput2';
 import ThemedButton from './ThemedButton';
 import useAuth from '../util/AuthContext';
-import { Profile } from '../../models';
 import { DataStore } from 'aws-amplify';
-import {CheckboxInput} from './CheckboxInput';
+import { Profile } from '../../models';
 
 
 /**
@@ -26,7 +27,8 @@ import {CheckboxInput} from './CheckboxInput';
 export default function VolunteerExperienceEditModal({onClose, index}) {
   const {userProfile, setUserProfile} = useAuth();
 
-  const existingLocation = userProfile.volunteerExperience[index].location.split(', ');
+  const existingLocation =
+  userProfile.volunteerExperience[index].location.split(', ');
 
   const formValues = {
     jobtitle: userProfile.volunteerExperience[index].title,
@@ -37,13 +39,13 @@ export default function VolunteerExperienceEditModal({onClose, index}) {
     startdate: (new Date(userProfile.volunteerExperience[index].start)),
     enddate: userProfile.volunteerExperience[index].end === '' ? '' :
     (new Date(userProfile.volunteerExperience[index].end)),
-    currentPosition: userProfile.volunteerExperience[index].currentPosition
+    currentPosition: userProfile.volunteerExperience[index].currentPosition,
   };
 
   const methods = useForm({defaultValues: formValues});
   const {handleSubmit, control, register} = methods; 
 
-  const updateProfile = (data) => {
+  const updateProfile = async (data) => {
     let startDate = '';
     if (data.startdate !== '') {
       startDate = data.startdate.toISOString().split('T')[0];
@@ -68,6 +70,9 @@ export default function VolunteerExperienceEditModal({onClose, index}) {
     } else {
       newLocation = data.jobstate;
     }
+
+    console.log('data.currentPosition', data.currentPosition);
+
     const newVolunteerExperience = {
       title: data.jobtitle,
       company: data.company,
@@ -77,42 +82,29 @@ export default function VolunteerExperienceEditModal({onClose, index}) {
       end: data.enddate !== null ? endDate : '',
       currentPosition: data.currentPosition,
     };
-
-    DataStore.query(Profile, userProfile.id)
-      .then((profile) => {
-        DataStore.save(Profile.copyOf(profile, updated => {
-          updated.volunteerExperience[index].title = newVolunteerExperience.title;
-          updated.volunteerExperience[index].company = newVolunteerExperience.company;
-          updated.volunteerExperience[index].location = newVolunteerExperience.location;
-          updated.volunteerExperience[index].description = newVolunteerExperience.description;
-          updated.volunteerExperience[index].start = newVolunteerExperience.start;
-          updated.volunteerExperience[index].end = newVolunteerExperience.end;
-          updated.volunteerExperience[index].currentPosition = newVolunteerExperience.currentPosition;
-        }))
-          .then(() => {
-            DataStore.query(Profile, userProfile.id)
-              .then((profile) => {
-                setUserProfile(profile);
-                toast.success('Account updated', {
-                  position: 'top-right',
-                  autoClose: 5000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-                })
-              })
-          })
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    
+    // userProfile.volunteerExperience[index] = newVolunteerExperience;
+    console.log('gothere69');
+    let profile = await DataStore.query(Profile, userProfile.id);
+    await DataStore.save(Profile.copyOf(profile, updated => {
+      updated.volunteerExperience[index] = newVolunteerExperience;
+    }));
+    profile = await DataStore.query(Profile, userProfile.id);
+    setUserProfile(profile);
+    toast.success('Account updated', {
+      position: 'top-right',
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
   };
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     // updateVolunteerExperience(data);
-    updateProfile(data);
+    await updateProfile(data);
     onClose();
   };
 
@@ -149,14 +141,14 @@ export default function VolunteerExperienceEditModal({onClose, index}) {
         }}
       >
         <Box>
-          <TextInput
+          <TextInput2
             name='jobtitle'
             control={control}
             label='Job Title'
             register={register}
           />
 
-          <TextInput
+          <TextInput2
             name='company'
             control={control}
             label='Organization'
@@ -172,14 +164,14 @@ export default function VolunteerExperienceEditModal({onClose, index}) {
             }}
           >
             {
-              <TextInput
+              <TextInput2
                 name='jobcity'
                 control={control}
                 label='City'
                 register={register}
               />
             }
-            <TextInput
+            <TextInput2
               name='jobstate'
               control={control}
               label='State'
@@ -198,13 +190,13 @@ export default function VolunteerExperienceEditModal({onClose, index}) {
                   gridGap: '10px',
                 }}
               >
-                <DateInput
+                <DateInput2
                   name='startdate'
                   control={control}
                   label='Start Date'
                   register={register}
                 />
-                <DateInput
+                <DateInput2
                   name='enddate'
                   control={control}
                   label='End Date'
@@ -214,7 +206,7 @@ export default function VolunteerExperienceEditModal({onClose, index}) {
             </LocalizationProvider>
           </Box>
 
-          <TextInput
+          <TextInput2
             name='description'
             control={control}
             label='Enter Description'
@@ -222,7 +214,7 @@ export default function VolunteerExperienceEditModal({onClose, index}) {
             register={register}
           />
 
-          <CheckboxInput
+          <CheckboxInput2
             name='currentPosition'
             control={control}
             label='Current Position'

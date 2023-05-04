@@ -76,7 +76,7 @@ export default function WorkExperienceCard({jobIndex}) {
                 {userProfile.experience[jobIndex].company}</p>
               <p>{userProfile.experience[jobIndex].location}</p>
               <p>{userProfile.experience[jobIndex].start +
-                ' - ' + (userProfile.experience[jobIndex].end === '' ?
+                ' - ' + (userProfile.experience[jobIndex].end === '' || userProfile.experience[jobIndex].currentPosition ?
                 'present' : userProfile.experience[jobIndex].end)}</p>
               <p style={{marginTop: '0.5em'}}>
                 {userProfile.experience[jobIndex].description}</p>

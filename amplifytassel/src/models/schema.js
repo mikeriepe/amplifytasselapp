@@ -358,6 +358,13 @@ export const schema = {
                         ]
                     }
                 },
+                "banner": {
+                    "name": "banner",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -589,6 +596,13 @@ export const schema = {
                     "name": "capacity",
                     "isArray": false,
                     "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "banner": {
+                    "name": "banner",
+                    "isArray": false,
+                    "type": "String",
                     "isRequired": false,
                     "attributes": []
                 },
@@ -2215,6 +2229,11 @@ export const schema = {
             }
         }
     },
+<<<<<<< HEAD
     "codegenVersion": "3.3.5",
     "version": "3aa38aea5bb42c782b0af6472ed0ffd3"
+=======
+    "codegenVersion": "3.4.0",
+    "version": "50b9de2c13a6dda8e043aebe04c3b2db"
+>>>>>>> 8ed013b60530e923a26ef318b7fa49531fecf2a7
 };

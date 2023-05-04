@@ -67,7 +67,7 @@ export default function MyProfile() {
               'infoResponse': userProfile.infoResponse,
             }}
           />
-          <ProfileHeader data={userProfile} />
+          <ProfileHeader data={userProfile} editButton={true} />
           <ProfileAbout data={userProfile} />
           <ProfileWork data={userProfile} />
           <ProfileVolunteer data={userProfile} />

@@ -44,6 +44,7 @@ export default function ProfileCreateForm(props) {
     schoolEmail: "",
     infoRequest: "",
     infoResponse: "",
+    banner: "",
   };
   const [email, setEmail] = React.useState(initialValues.email);
   const [about, setAbout] = React.useState(initialValues.about);
@@ -67,6 +68,7 @@ export default function ProfileCreateForm(props) {
   const [infoResponse, setInfoResponse] = React.useState(
     initialValues.infoResponse
   );
+  const [banner, setBanner] = React.useState(initialValues.banner);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     setEmail(initialValues.email);
@@ -83,6 +85,7 @@ export default function ProfileCreateForm(props) {
     setSchoolEmail(initialValues.schoolEmail);
     setInfoRequest(initialValues.infoRequest);
     setInfoResponse(initialValues.infoResponse);
+    setBanner(initialValues.banner);
     setErrors({});
   };
   const validations = {
@@ -100,6 +103,7 @@ export default function ProfileCreateForm(props) {
     schoolEmail: [],
     infoRequest: [],
     infoResponse: [],
+    banner: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -140,6 +144,7 @@ export default function ProfileCreateForm(props) {
           schoolEmail,
           infoRequest,
           infoResponse,
+          banner,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -208,6 +213,7 @@ export default function ProfileCreateForm(props) {
               schoolEmail,
               infoRequest,
               infoResponse,
+              banner,
             };
             const result = onChange(modelFields);
             value = result?.email ?? value;
@@ -245,6 +251,7 @@ export default function ProfileCreateForm(props) {
               schoolEmail,
               infoRequest,
               infoResponse,
+              banner,
             };
             const result = onChange(modelFields);
             value = result?.about ?? value;
@@ -282,6 +289,7 @@ export default function ProfileCreateForm(props) {
               schoolEmail,
               infoRequest,
               infoResponse,
+              banner,
             };
             const result = onChange(modelFields);
             value = result?.location ?? value;
@@ -319,6 +327,7 @@ export default function ProfileCreateForm(props) {
               schoolEmail,
               infoRequest,
               infoResponse,
+              banner,
             };
             const result = onChange(modelFields);
             value = result?.picture ?? value;
@@ -356,6 +365,7 @@ export default function ProfileCreateForm(props) {
               schoolEmail,
               infoRequest,
               infoResponse,
+              banner,
             };
             const result = onChange(modelFields);
             value = result?.firstName ?? value;
@@ -393,6 +403,7 @@ export default function ProfileCreateForm(props) {
               schoolEmail,
               infoRequest,
               infoResponse,
+              banner,
             };
             const result = onChange(modelFields);
             value = result?.lastName ?? value;
@@ -430,6 +441,7 @@ export default function ProfileCreateForm(props) {
               schoolEmail,
               infoRequest,
               infoResponse,
+              banner,
             };
             const result = onChange(modelFields);
             value = result?.status ?? value;
@@ -498,6 +510,7 @@ export default function ProfileCreateForm(props) {
               schoolEmail,
               infoRequest,
               infoResponse,
+              banner,
             };
             const result = onChange(modelFields);
             value = result?.graduationYear ?? value;
@@ -535,6 +548,7 @@ export default function ProfileCreateForm(props) {
               schoolEmail,
               infoRequest,
               infoResponse,
+              banner,
             };
             const result = onChange(modelFields);
             value = result?.active ?? value;
@@ -572,6 +586,7 @@ export default function ProfileCreateForm(props) {
               schoolEmail,
               infoRequest,
               infoResponse,
+              banner,
             };
             const result = onChange(modelFields);
             value = result?.isAdmin ?? value;
@@ -609,6 +624,7 @@ export default function ProfileCreateForm(props) {
               schoolEmail,
               infoRequest,
               infoResponse,
+              banner,
             };
             const result = onChange(modelFields);
             value = result?.isApproved ?? value;
@@ -646,6 +662,7 @@ export default function ProfileCreateForm(props) {
               schoolEmail: value,
               infoRequest,
               infoResponse,
+              banner,
             };
             const result = onChange(modelFields);
             value = result?.schoolEmail ?? value;
@@ -683,6 +700,7 @@ export default function ProfileCreateForm(props) {
               schoolEmail,
               infoRequest: value,
               infoResponse,
+              banner,
             };
             const result = onChange(modelFields);
             value = result?.infoRequest ?? value;
@@ -720,6 +738,7 @@ export default function ProfileCreateForm(props) {
               schoolEmail,
               infoRequest,
               infoResponse: value,
+              banner,
             };
             const result = onChange(modelFields);
             value = result?.infoResponse ?? value;
@@ -733,6 +752,44 @@ export default function ProfileCreateForm(props) {
         errorMessage={errors.infoResponse?.errorMessage}
         hasError={errors.infoResponse?.hasError}
         {...getOverrideProps(overrides, "infoResponse")}
+      ></TextField>
+      <TextField
+        label="Banner"
+        isRequired={false}
+        isReadOnly={false}
+        value={banner}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              email,
+              about,
+              location,
+              picture,
+              firstName,
+              lastName,
+              status,
+              graduationYear,
+              active,
+              isAdmin,
+              isApproved,
+              schoolEmail,
+              infoRequest,
+              infoResponse,
+              banner: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.banner ?? value;
+          }
+          if (errors.banner?.hasError) {
+            runValidationTasks("banner", value);
+          }
+          setBanner(value);
+        }}
+        onBlur={() => runValidationTasks("banner", banner)}
+        errorMessage={errors.banner?.errorMessage}
+        hasError={errors.banner?.hasError}
+        {...getOverrideProps(overrides, "banner")}
       ></TextField>
       <Flex
         justifyContent="space-between"
