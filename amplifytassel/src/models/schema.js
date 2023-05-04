@@ -572,7 +572,7 @@ export const schema = {
                 "picture": {
                     "name": "picture",
                     "isArray": false,
-                    "type": "AWSURL",
+                    "type": "String",
                     "isRequired": false,
                     "attributes": []
                 },
@@ -1284,6 +1284,13 @@ export const schema = {
                     "type": {
                         "enum": "OpportunityStatus"
                     },
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "bannerKey": {
+                    "name": "bannerKey",
+                    "isArray": false,
+                    "type": "String",
                     "isRequired": false,
                     "attributes": []
                 },
@@ -2223,5 +2230,5 @@ export const schema = {
         }
     },
     "codegenVersion": "3.4.0",
-    "version": "50b9de2c13a6dda8e043aebe04c3b2db"
+    "version": "f2b5b685349d65aac33569d674344b73"
 };

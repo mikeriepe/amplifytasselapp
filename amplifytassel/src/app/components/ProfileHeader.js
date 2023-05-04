@@ -12,6 +12,13 @@ import { Link } from 'react-router-dom';
 import ProfileBanner from './ProfileBanner.js'
 import useAuth from '../util/AuthContext.js';
 
+import { DataStore } from '@aws-amplify/datastore';
+import { Storage } from 'aws-amplify';
+import { Profile } from '../../models';
+import { v4 as uuidv4 } from 'uuid';
+import {toast} from 'react-toastify';
+
+
 
 const Header = styled((props) => (
   <MuiPaper elevation={0} {...props} />
@@ -74,7 +81,7 @@ const Text = ({ children }, props) => (
 
 const ITEM_HEIGHT = 48;
 
-const MoreIcon = ({ anchorEl, open, handleClick, handleClose, hiddenFileInput }) => (
+const MoreIcon = ({ anchorEl, open, handleClick, handleClose, hiddenFileInput, hiddenInputProfilePicture }) => (
   <MuiBox
     sx={{
       marginRight: '3em',
@@ -118,6 +125,11 @@ const MoreIcon = ({ anchorEl, open, handleClick, handleClose, hiddenFileInput })
           hiddenFileInput.current.click();
         }}>Edit Profile Banner
         </MenuItem>
+        <MenuItem onClick={() => {
+          handleClose();
+          hiddenInputProfilePicture.current.click();
+        }}>Edit Profile Picture
+        </MenuItem>
     </Menu>
   </MuiBox>
 );
@@ -129,9 +141,102 @@ const MoreIcon = ({ anchorEl, open, handleClick, handleClose, hiddenFileInput })
 export default function ProfileHeader({ data,editButton }) {
   
   const [majors, setMajors] = useState(null);
+  
+  // Profile Banner States
   const [selectedFile, setSelectedFile] = useState(null);
   const hiddenFileInput = React.useRef(null);
+  // ----
+
+  // Profile Picture States
+  const [selectedProfileFile, setSelectedProfileFile] = useState(null);
+  const [fileKey, setFileKey] = useState(null);
+  const [profilePicture, setProfilePicture] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const hiddenInputProfilePicture = React.useRef(null);
+  const BANNER_FILE_SIZE_LIMIT = 2097152;
+  // ----
   const { userProfile } = useAuth();
+
+  const getProfilePictureKey = async () => {
+    let user = await DataStore.query(Profile, p => p.id.eq(data.id));
+    setFileKey(user[0].picture);
+  };
+
+  const downloadFile = async () => {
+    if (fileKey !== null) {
+      const file = await Storage.get(fileKey, {
+        level: "public"
+      });
+      setProfilePicture(file);
+    } else {
+      setProfilePicture("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png");
+    }
+    setLoading(false);
+  };
+
+  const uploadFile = async () => {
+    try {
+      setLoading(true);
+      // Check the banner size
+      if(selectedProfileFile.size > BANNER_FILE_SIZE_LIMIT){
+        toast.error(
+          `The image cannot be larger than 2 MB, please try again.`,
+          {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+          setLoading(false);
+          return;
+      };
+
+      const result = await Storage.put(selectedProfileFile.name + "-" + uuidv4(), selectedProfileFile, {
+        contentType: selectedProfileFile.type,
+      });
+      // fetch the user
+      let user = await DataStore.query(Profile, p => p.id.eq(data.id));
+  
+      // Delete the old profile picture
+      await Storage.remove(user[0].picture);
+  
+      // update the banner field
+      await DataStore.save(
+        Profile.copyOf(user[0], updated => {
+          updated.picture = result.key;
+        })
+      );
+
+      setFileKey(result.key);
+      toast.success(
+        `Successfully uploaded ${selectedProfileFile.name}`,
+        {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+    } catch {
+      toast.error(
+        `There has been an error, please try again later.`,
+        {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      setLoading(false);
+    }
+  };
 
   const extractMajors = async () => {
     try {
@@ -168,11 +273,34 @@ export default function ProfileHeader({ data,editButton }) {
     setSelectedFile(file);
   };
 
+  const updateSelectedProfilePic = (file) => {
+    setSelectedProfileFile(file);
+  };
+
+  useEffect(() => {
+    getProfilePictureKey();
+  }, []);
+
+  useEffect(() => {
+    if (fileKey !== null) {
+      downloadFile();
+    } else {
+      setLoading(false);
+    }
+  }, [fileKey]);
+
+  useEffect(() => {
+    // A file has been selected upload it to the db
+    if (selectedProfileFile){
+      uploadFile();
+    }
+  }, [selectedProfileFile])
+
   return (
     <Header>
       <ProfileBanner selectedFile={selectedFile} data={data}/>
       <Content>
-        <Avatar image={data?.picture} handleError={handleError} />
+        <Avatar image={profilePicture} handleError={handleError} />
         <Box
           sx={{ display: 'flex', height: '100%' }}
         >
@@ -191,9 +319,10 @@ export default function ProfileHeader({ data,editButton }) {
           {
             editButton && 
             <>
-              <MoreIcon anchorEl={anchorEl} open={open}
+              <MoreIcon anchorEl={anchorEl} open={open} hiddenInputProfilePicture={hiddenInputProfilePicture}
               handleClick={handleClick} handleClose={handleClose} updateSelectedFile={updateSelectedFile} hiddenFileInput={hiddenFileInput}/>
               <input type="file" accept="image/x-png,image/jpeg" ref={hiddenFileInput} multiple={false} onChange={(e) => updateSelectedFile(e.target.files[0])} hidden/>
+              <input type="file" accept="image/x-png,image/jpeg" ref={hiddenInputProfilePicture} multiple={false} onChange={(e) => updateSelectedProfilePic(e.target.files[0])} hidden/>
             </>
           }
           

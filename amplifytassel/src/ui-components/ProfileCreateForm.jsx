@@ -92,7 +92,7 @@ export default function ProfileCreateForm(props) {
     email: [{ type: "Required" }, { type: "Email" }],
     about: [],
     location: [],
-    picture: [{ type: "URL" }],
+    picture: [],
     firstName: [],
     lastName: [],
     status: [],
