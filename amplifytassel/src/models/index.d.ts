@@ -481,6 +481,7 @@ type EagerOpportunity = {
   readonly profilesJoined?: (OpportunityProfile | null)[] | null;
   readonly keywords?: (KeywordOpportunity | null)[] | null;
   readonly status?: OpportunityStatus | keyof typeof OpportunityStatus | null;
+  readonly bannerKey?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -510,6 +511,7 @@ type LazyOpportunity = {
   readonly profilesJoined: AsyncCollection<OpportunityProfile>;
   readonly keywords: AsyncCollection<KeywordOpportunity>;
   readonly status?: OpportunityStatus | keyof typeof OpportunityStatus | null;
+  readonly bannerKey?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
