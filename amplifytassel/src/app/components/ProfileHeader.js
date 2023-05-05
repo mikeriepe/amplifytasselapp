@@ -200,14 +200,14 @@ export default function ProfileHeader({ data,editButton }) {
       await Storage.remove(user[0].picture);
   
       // update the profile picture
-      await DataStore.save(
+      const updatedUserProfile = await DataStore.save(
         Profile.copyOf(user[0], updated => {
           updated.picture = result.key;
         })
       );
 
       // update the userProfile context
-      setUserProfile({...userProfile, picture: result.key});
+      setUserProfile(updatedUserProfile);
 
       setFileKey(result.key);
       toast.success(
