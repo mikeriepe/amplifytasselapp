@@ -5,6 +5,8 @@ import MuiAvatar from '@mui/material/Avatar';
 import MuiBox from '@mui/material/Box';
 import ArrowDropUpRoundedIcon from '@mui/icons-material/ArrowDropUpRounded';
 import ForumsComment from './ForumsComment';
+import { Storage } from 'aws-amplify';
+
 
 const Headline = styled((props) => (
   <MuiBox {...props} />
@@ -36,8 +38,18 @@ const PosterAvatar = ({image}, props) => (
  */
 export default function ForumsPost({post, comments, getComments}) {
   const [expanded, setExpanded] = useState(false);
-  console.log(comments);
-  console.log(post);
+  const [profilePicture, setProfilePicture] = useState(null);
+
+  const downloadProfilePicture = async () => {
+    if (post.picture !== null) {
+      const file = await Storage.get(post.picture, {
+        level: "public"
+      });
+      setProfilePicture(file);
+    } else {
+      setProfilePicture("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png");
+    }
+  };
 
   const handleClick = () => {
     setExpanded(!expanded);
@@ -65,10 +77,14 @@ export default function ForumsPost({post, comments, getComments}) {
     getComments(post.id);
   }, []);
 
+  useEffect(() => {
+    downloadProfilePicture();
+  }, [post]);
+
   return (
     <>
       <Headline>
-        <PosterAvatar image={post.picture} />
+        <PosterAvatar image={profilePicture} />
         <div>
           <div className='text-bold text-dark'>{post.title}</div>
           <p className='text-bold text-blue'>
