@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box';
 import React, {useState, useEffect} from 'react';
-import {StepLabel, IconButton, FormHelperText} from '@mui/material';
+import {StepLabel, IconButton, FormHelperText, Hidden} from '@mui/material';
 import Paper from '@mui/material/Paper';
 import Skeleton from '@mui/material/Skeleton';
 import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
@@ -11,6 +11,8 @@ import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import {toast} from 'react-toastify';
 import Chip from '@mui/material/Chip';
+import MuiBox from '@mui/material/Box';
+import { v4 as uuidv4 } from 'uuid';
 // import Stack from '@mui/material/Stack';
 
 import {yupResolver} from '@hookform/resolvers/yup';
@@ -23,9 +25,26 @@ import {TimeInput} from './TimeInput.js';
 import {DropdownInput} from './DropdownInput';
 import {CheckboxInput} from './CheckboxInput';
 import {DateInput} from './DateInput';
-import { DataStore } from 'aws-amplify';
+import { DataStore, Storage } from 'aws-amplify';
 import { Keyword } from '../../models';
 import { Opportunity } from '../../models';
+
+const Banner = ({image}, props) => {
+  return (
+    <MuiBox sx={{height: '130px', width: '130px'}} {...props}>
+      <img
+        src={image}
+        style={{
+          height: '100%',
+          width: '100%',
+          objectFit: 'cover',
+          border: '0.5px solid rgba(0, 0, 0, 0.15)',
+          borderRadius: '10px',
+        }}
+      />
+    </MuiBox>
+  );
+};
 
 
 /**
@@ -38,13 +57,19 @@ import { Opportunity } from '../../models';
 export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
   const [opportunityTypes, setOpportunityTypes] = useState([]);
   const [temp, setTemp] = useState('');
-
+  const [fileData, setFileData] = useState();
+  const [fileKey, setFileKey] = useState(defaultValues.bannerKey);
+  const [banner, setBanner] = useState(null);
   // Selected tags by the user
   const [selectedTags, setSelectedTags] = useState(
     defaultValues.keywords ?
     Object.values(defaultValues.keywords) :
     [],
   );
+  //if(defaultValues.bannerKey.length > 5)
+  //{
+
+  //}
   const [allTags, setAllTags] = useState([]);
   const getKeywords = () => {
    DataStore.query(Keyword)
@@ -270,10 +295,33 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
     defaultValues: defaultValues,
   });
 
+  const uploadFile = () => {
+      Storage.put(uuidv4() + "-" + fileData.name, fileData, {
+        contentType: fileData.type,
+      })
+      .then((res) => {
+        console.log(res);
+        console.log(res.key);
+        setFileKey(res.key);
+      })
+      .catch((err) => {
+        console.log(err);
+        console.log("Error uploading img");
+      })
+  }
+
+  const downloadFile = async () => {
+    const img = await Storage.get(fileKey, {
+      level: "public"
+    });
+    setBanner(img);
+  }
+
   useEffect(() => {
     //getOpportunityTypes();
     getKeywords();
-  }, []);
+    downloadFile();
+  }, [fileKey]);
 
   const handleDeleteTag = (tagIndexToDelete) => () => {
     const tempSelectedTags = [...selectedTags];
@@ -556,7 +604,49 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
 
         {/* RIGHT SECTION */}
         <Box>
-
+        <Box 
+            sx={{
+            display: 'grid',
+            gridAutoFlow: 'column',
+            gridGap: '0.5vw',
+            gridTemplateColumns: '22.5vw',
+            marginBottom: '5px',
+          }}
+        >
+        <Box
+          sx={{
+            justifyContent: 'end'
+          }}
+        >
+          { fileKey.length > 5 && 
+            <Banner image={banner} />
+          }
+        </Box>
+          <Box
+            sx={{
+              display: 'grid',
+              gridAutoFlow: 'row',
+              //gridAutoColumns: 'max-content',
+              gridGap: '10px',
+              marginTop: '5px',
+              justifyContent: 'center'
+            }}
+            >
+              <ThemedButton variant="themed" component="label" color={'yellow'} aria-label='Choose button'>
+                Choose Image
+                <input hidden accept="image/*" type="file" onChange={(e) => setFileData(e.target.files[0])}/>
+              </ThemedButton>
+            <ThemedButton
+              aria-label='Upload button'
+              color={'blue'}
+              variant={'themed'}
+              onClick={uploadFile}
+            >
+              Upload Image
+            </ThemedButton>
+          </Box>
+          </Box>
+          
           {/* DATE PICKERS */}
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <Box
@@ -564,6 +654,7 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
                 display: 'grid',
                 gridAutoFlow: 'column',
                 gridGap: '10px',
+                marginTop: '10px'
               }}
             >
               <DateInput
@@ -671,7 +762,7 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
             register={register}
           />
         </Box>
-      </Box>
+        </Box>
 
       {/* Submit/Cancel Button wrapper */}
       <Box
@@ -746,6 +837,8 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
             // Convert the selected tags to an object
             const tagstToSubmit = convertTagsToObject(selectedTags);
             setValue('keywords', tagstToSubmit);
+
+            setValue('bannerKey', fileKey);
 
             handleSubmit(onSubmit)();
           }}
