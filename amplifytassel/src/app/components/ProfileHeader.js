@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { styled } from '@mui/material';
+import { styled} from '@mui/material';
 import MuiAvatar from '@mui/material/Avatar';
 import MuiBox from '@mui/material/Box';
 import MuiPaper from '@mui/material/Paper';
@@ -11,6 +11,9 @@ import MenuItem from '@mui/material/MenuItem';
 import { Link } from 'react-router-dom';
 import ProfileBanner from './ProfileBanner.js'
 import useAuth from '../util/AuthContext.js';
+import level1 from '../assets/level1.png';
+import LinearProgressWithLabel from '@mui/material/LinearProgress';
+import Typography from '@mui/material/Typography';
 
 import { DataStore } from '@aws-amplify/datastore';
 import { Storage } from 'aws-amplify';
@@ -131,6 +134,59 @@ const MoreIcon = ({ anchorEl, open, handleClick, handleClose, hiddenFileInput, h
         }}>Edit Profile Picture
         </MenuItem>
     </Menu>
+  </MuiBox>
+
+);
+const Level = ({ level }) => (
+  <MuiBox
+    sx={{
+      display: 'flex',
+      alignItems: 'center',
+      marginLeft: '1em',
+      marginRight: '1em',
+      minWidth: '5em',
+      width: '150px', 
+      height: 'auto', 
+    }}
+    //  403x403
+  >
+    <div style={{
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: '100%'
+}}>
+  <img src={level1} alt=""  />
+  {/* <p style={{
+    fontSize: '1.5em',
+    color: 'gold'
+  }}>
+    Level {level}
+  </p> */}
+</div>
+
+  </MuiBox>
+);
+// make xp bar bigger
+// add xp till next level
+// check if it can have marks saying 25%,50%
+const XPBar = ({ progress }) => (
+  <MuiBox
+    sx={{
+      display: 'flex',
+      alignItems: 'center',
+      marginLeft: '1em',
+      minWidth: '10em'
+    }}
+  >
+    <div className='flex' style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  <LinearProgressWithLabel variant="determinate" value={progress} sx={{ height: 15, width: 150 }}/>
+  <div style={{ display: 'flex', justifyContent: 'center' }}>
+    <Typography variant="caption" sx={{ marginTop: '0.5em',  fontSize: '1.0rem' }}>XP to next level: {100-progress}</Typography>
+  </div>
+</div>
+
   </MuiBox>
 );
 
@@ -292,6 +348,9 @@ export default function ProfileHeader({ data,editButton }) {
     }
   }, [selectedProfileFile])
 
+  const level = 1; // replace this with a dynamic value
+  const progress = 65; 
+
   return (
     <Header>
       <ProfileBanner selectedFile={selectedFile} data={data}/>
@@ -312,6 +371,8 @@ export default function ProfileHeader({ data,editButton }) {
             <p className='ellipsis'>Class of {data.graduationYear}</p>
             <p className='ellipsis'>{data.location}</p>
           </Text>
+          <Level level={level} sx={{ flex: 1 }}/>
+          { editButton && <XPBar progress={progress} sx={{ flex: 1 }}/> }
           {
             editButton && 
             <>
