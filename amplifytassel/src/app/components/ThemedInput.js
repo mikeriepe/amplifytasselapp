@@ -43,6 +43,7 @@ export default function ThemedInput({
   step,
   fill,
   error,
+  label,
   content=null,
 }) {
   const value = useInputContext();
@@ -68,7 +69,7 @@ export default function ThemedInput({
     <>
       {type === 'text' ? (
         <OutlinedInput
-          inputProps={{'aria-label': 'Input text'}}
+          inputProps={label ? {'aria-label': label} : {'aria-label': 'Input text'}}
           placeholder={placeholder}
           type={type}
           value={content !== null ? content : values[index]}
@@ -79,7 +80,7 @@ export default function ThemedInput({
         />
       ) : (
         <OutlinedInput
-          inputProps={{'aria-label': 'Input password'}}
+          inputProps={label ? {'aria-label': label} : {'aria-label': 'Input password'}}
           placeholder={placeholder}
           type={showPassword ? 'text' : 'password'}
           value={values[index]}

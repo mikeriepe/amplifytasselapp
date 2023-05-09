@@ -36,6 +36,7 @@ import '../stylesheets/ApprovalTable.css';
 
 import { DataStore } from '@aws-amplify/datastore';
 import { Profile } from './../../models';
+import { Storage } from 'aws-amplify';
 
 const Page = styled((props) => (
   <Box {...props} />
@@ -89,6 +90,22 @@ function Row(props) {
   const {row, handleSelect} = props;
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const [profilePicture, setProfilePicture] = useState(null);
+
+  const downloadProfilePicture = async () => {
+    if (row.picture !== null) {
+      const file = await Storage.get(row.picture, {
+        level: "public"
+      });
+      setProfilePicture(file);
+    } else {
+      setProfilePicture("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png");
+    }
+  };
+
+  useEffect(() => {
+    downloadProfilePicture();
+  }, [row])
 
   function handleAvatarClick(profileid) {
     navigate(`/Profile/${profileid}`);
@@ -113,7 +130,7 @@ function Row(props) {
         <TableCell className='data-cell' component='th' scope='row'
           sx={{display: 'flex',
             flexDirection: 'row'}}>
-          <Avatar image={row.profilePicture} 
+          <Avatar image={profilePicture} 
           handleAvatarClick={handleAvatarClick} 
           profileid={row.id}/>
           {/* eslint-disable-next-line max-len */}
