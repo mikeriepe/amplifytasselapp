@@ -84,12 +84,12 @@ export default function WorkExperienceForm({onClose}) {
       currentPosition: data.currentPosition,
     };
 
-    const experienceObj = [...(userProfile.experience)];
+    // IFNULL
+    const experienceObj = (userProfile.experience ? [...(userProfile.experience)] : []);
     console.log('experienceObj', experienceObj);
     experienceObj.push(newWorkExperience);
 
     const sortedExperience = sortWorkExperience(experienceObj);
-    
     console.log('sortedExperience', sortedExperience);
 
     DataStore.query(Profile, userProfile.id)

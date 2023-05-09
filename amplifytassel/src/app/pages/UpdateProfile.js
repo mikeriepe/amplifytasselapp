@@ -122,13 +122,6 @@ export default function UpdateProfile() {
     setAllKeywords(tempAllTags);
   };
 
-  if (userProfile.experience === null) {
-    userProfile.experience = {};
-  }
-  if (userProfile.volunteerExperience === null) {
-    userProfile.volunteerExperience = {};
-  }
-
   // selectedTags, keywords, selectedMajors, majors
   const updateProfile = async () => {
     // console.log('selectedKeywords', selectedKeywords);

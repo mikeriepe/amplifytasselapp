@@ -227,6 +227,7 @@ export default function WorkExperienceEditModal({onClose, index}) {
           <CheckboxInput2
             name='currentPosition'
             control={control}
+            defaultChecked={userProfile.experience[index].currentPosition}
             label='Current Position'
           />
         </Box>

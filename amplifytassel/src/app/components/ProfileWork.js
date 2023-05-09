@@ -37,7 +37,7 @@ export default function ProfileWork({data}) {
             <p className='text-bold text-blue'>{data?.experience[job].company}</p>
             <p>{data?.experience[job].location}</p>
             <p>{data?.experience[job].start + ' - ' +
-            (data?.experience[job].end === '' ? 'present' : data?.experience[job].end)}</p>
+            (data?.experience[job].end === '' ? 'Present' : data?.experience[job].end)}</p>
             <p style={{marginTop: '0.5em'}}>{data?.experience[job].description}</p>
           </div>
         )) : (
