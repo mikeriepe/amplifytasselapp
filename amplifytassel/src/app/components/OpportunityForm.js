@@ -645,9 +645,6 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
         >
         { fileDataURL != null &&
           <Box
-            sx={{
-              justifyContent: 'start'
-            }}
           >
               <Banner image={fileDataURL} />
           </Box>
@@ -659,7 +656,7 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
               //gridAutoColumns: 'max-content',
               gridGap: '100px',
               marginTop: '5px',
-              justifyContent: 'start'
+              justifyContent: 'center'
             }}
             >
               <ThemedButton variant="themed" component="label" color={'blue'} aria-label='Choose button'>
