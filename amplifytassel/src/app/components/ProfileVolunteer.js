@@ -31,8 +31,9 @@ export default function ProfileVolunteer({data}) {
             <h5>{data?.volunteerExperience[exp].title}</h5>
             <p className='text-bold text-blue'>{data?.volunteerExperience[exp].company}</p>
             <p>{data?.volunteerExperience[exp].location}</p>
-            <p>{data?.volunteerExperience[exp].end !== '' ?
-            (data?.volunteerExperience[exp].start + ' - ' + data?.volunteerExperience[exp].end) : data?.volunteerExperience[exp].start}</p>
+            <p>{data?.volunteerExperience[exp].start +
+                ' - ' + (data?.volunteerExperience[exp].end === '' || data?.volunteerExperience[exp].currentPosition ?
+                'Present' : data?.volunteerExperience[exp].end)}</p>
             <p style={{marginTop: '0.5em'}}>{data?.volunteerExperience[exp].description}</p>
           </div>
         )) : (

@@ -217,6 +217,7 @@ export default function VolunteerExperienceEditModal({onClose, index}) {
           <CheckboxInput2
             name='currentPosition'
             control={control}
+            defaultChecked={userProfile.volunteerExperience[index].currentPosition}
             label='Current Position'
           />
         </Box>
