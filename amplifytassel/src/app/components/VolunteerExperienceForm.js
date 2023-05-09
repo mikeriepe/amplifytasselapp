@@ -115,7 +115,7 @@ export default function VolunteerExperienceForm({onClose}) {
       currentPosition: data.currentPosition,
     };
     
-    const volunteerExperienceCpy = [...(userProfile.volunteerExperience)];
+    const volunteerExperienceCpy = (userProfile.volunteerExperience ? [...(userProfile.volunteerExperience)] : []);
     volunteerExperienceCpy.push(newVolunteerExperience);
 
     const sortedVolunteerExperience = sortWorkExperience(volunteerExperienceCpy);
