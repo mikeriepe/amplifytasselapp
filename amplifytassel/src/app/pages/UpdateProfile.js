@@ -24,6 +24,8 @@ import VolunteerExperienceDeleteModal from
 import VolunteerExperienceList from '../components/VolunteerExperienceList';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
+import Tooltip from '@mui/material/Tooltip';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 
 import { DataStore } from '@aws-amplify/datastore';
@@ -267,6 +269,9 @@ export default function UpdateProfile() {
                     <p className='text-bold'>
                       Graduation Year
                       <span className='text-bold text-warning'>*</span>
+                      <Tooltip title="Fill out this field to get 10 points" arrow>
+                        <HelpOutlineIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px' }} />
+                      </Tooltip>
                     </p>
                     <ThemedInput
                       placeholder={'Enter your graduation year'}
@@ -281,6 +286,9 @@ export default function UpdateProfile() {
                   <div className='grid-flow-small'>
                     <p className='text-bold'>
                       Major <span className='text-bold text-warning'>*</span>
+                      <Tooltip title="Fill out this field to get 10 points" arrow>
+                        <HelpOutlineIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px' }} />
+                      </Tooltip>
                     </p>
                     <div>
                       {totalMajors.length && <MultiSelect data={totalMajors} />}
@@ -289,7 +297,11 @@ export default function UpdateProfile() {
                   <div className='grid-flow-small'>
                     <p className='text-bold'>
                       Location
+                      <Tooltip title="Fill out this field to get 10 points" arrow>
+                        <HelpOutlineIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px' }} />
+                      </Tooltip>
                     </p>
+                    
                     <ThemedInput
                       placeholder={'Santa Cruz, CA'}
                       type={'text'}
@@ -303,6 +315,9 @@ export default function UpdateProfile() {
                   <div className='grid-flow-small'>
                     <p className='text-bold'>
                       About You
+                      <Tooltip title="Fill out this field to get 10 points" arrow>
+                        <HelpOutlineIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px' }} />
+                      </Tooltip>
                     </p>
                     <ThemedInput
                       placeholder={'Tell people a little about yourself'}
@@ -321,6 +336,9 @@ export default function UpdateProfile() {
                     >
                       <p className='text-bold'>
                         Work Experience
+                        <Tooltip title="Fill out this field to get 10 points" arrow>
+                        <HelpOutlineIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px' }} />
+                      </Tooltip>
                       </p>
                       <div className='flex-space-between flex-align-center'>
                         {(
@@ -363,6 +381,9 @@ export default function UpdateProfile() {
                     >
                       <p className='text-bold'>
                         Volunteer Experience
+                        <Tooltip title="Fill out this field to get 10 points" arrow>
+                        <HelpOutlineIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px' }} />
+                      </Tooltip>
                       </p>
                       <div className='flex-space-between flex-align-center'>
                         {(
@@ -405,6 +426,9 @@ export default function UpdateProfile() {
                     >
                       <p className='text-bold'>
                         Interests
+                        <Tooltip title="Fill out this field to get 10 points" arrow>
+                        <HelpOutlineIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px' }} />
+                      </Tooltip>
                       </p>
                     </div>
                     <div className='flex'>
