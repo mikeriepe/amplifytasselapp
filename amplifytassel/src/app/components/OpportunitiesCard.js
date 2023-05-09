@@ -198,6 +198,8 @@ const OutlinedButton = (props) => {
   );
 };
 
+const imageMimeType = /image\/(png|jpg|jpeg)/i;
+
 /**
  * @return {JSX}
  */
@@ -219,6 +221,8 @@ export default function OpportunitiesCard({
   const [requestMessage, setRequestMessage] = React.useState('');
   const [oppRoles, setOppRoles] = useState(false);
   const [oppKeywords, setOppKeywords] = useState(false);
+  const [fileData, setFileData] = useState(null);
+  const [fileDataURL, setFileDataURL] = useState(null);
   const {userProfile} = useAuth();
 
   const handleReqModalClose = () => {
@@ -264,7 +268,7 @@ export default function OpportunitiesCard({
     const img = await Storage.get(opportunity.bannerKey, {
       level: "public"
     });
-    setBanner(img);
+    setFileDataURL(img);
   }
 
   const extractRoles = () => {
@@ -815,7 +819,7 @@ export default function OpportunitiesCard({
               className='flex-horizontal flex-align-center'
               style={{padding: '1.5em'}}
             >
-              <Banner image={banner} />
+              <Banner image={fileDataURL} />
               <div className='flex-vertical'>
                 <div
                   className='flex-horizontal flex-flow-large flex-align-center'

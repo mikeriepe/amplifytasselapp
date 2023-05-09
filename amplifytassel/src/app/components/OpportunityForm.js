@@ -31,7 +31,7 @@ import { Opportunity } from '../../models';
 
 const Banner = ({image}, props) => {
   return (
-    <MuiBox sx={{height: '130px', width: '130px'}} {...props}>
+    <MuiBox sx={{height: '130px', width: '260px'}} {...props}>
       <img
         src={image}
         style={{
@@ -46,6 +46,7 @@ const Banner = ({image}, props) => {
   );
 };
 
+const imageMimeType = /image\/(png|jpg|jpeg)/i;
 
 /**
  * OpportunityForm
@@ -57,7 +58,8 @@ const Banner = ({image}, props) => {
 export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
   const [opportunityTypes, setOpportunityTypes] = useState([]);
   const [temp, setTemp] = useState('');
-  const [fileData, setFileData] = useState();
+  const [fileData, setFileData] = useState(null);
+  const [fileDataURL, setFileDataURL] = useState(defaultValues.eventBanner);
   const [fileKey, setFileKey] = useState(defaultValues.bannerKey);
   const [banner, setBanner] = useState(null);
   // Selected tags by the user
@@ -295,20 +297,6 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
     defaultValues: defaultValues,
   });
 
-  const uploadFile = () => {
-      Storage.put(uuidv4() + "-" + fileData.name, fileData, {
-        contentType: fileData.type,
-      })
-      .then((res) => {
-        console.log(res);
-        console.log(res.key);
-        setFileKey(res.key);
-      })
-      .catch((err) => {
-        console.log(err);
-        console.log("Error uploading img");
-      })
-  }
 
   const downloadFile = async () => {
     const img = await Storage.get(fileKey, {
@@ -317,11 +305,52 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
     setBanner(img);
   }
 
+  const changeHandler = (e) => {
+    const file = e.target.files[0];
+    if (!file.type.match(imageMimeType)) {
+      alert("Image mime type is not valid");
+      return;
+    }
+    setFileData(file);
+  }
+
+  useEffect(() => {
+    let fileReader, isCancel = false;
+    if (fileData) {
+      fileReader = new FileReader();
+      fileReader.onload = (e) => {
+        const { result } = e.target;
+        if (result && !isCancel) {
+          setFileDataURL(result)
+        }
+      }
+      fileReader.readAsDataURL(fileData);
+    }
+    return () => {
+      isCancel = true;
+      if (fileReader && fileReader.readyState === 1) {
+        fileReader.abort();
+      }
+    }
+
+  }, [fileData]);
+
   useEffect(() => {
     //getOpportunityTypes();
     getKeywords();
     downloadFile();
+    console.log(fileKey);
+    //setAndUpload(fileData);
   }, [fileKey]);
+
+  /*
+  useEffect(() => {
+    if(fileData) {
+      uploadFile();
+    }
+  }, [fileData])
+  */
+
 
   const handleDeleteTag = (tagIndexToDelete) => () => {
     const tempSelectedTags = [...selectedTags];
@@ -611,39 +640,32 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
             gridGap: '0.5vw',
             gridTemplateColumns: '22.5vw',
             marginBottom: '5px',
+            alignItems: 'center'
           }}
         >
-        <Box
-          sx={{
-            justifyContent: 'end'
-          }}
-        >
-          { fileKey.length > 5 && 
-            <Banner image={banner} />
-          }
-        </Box>
+        { fileDataURL != null &&
           <Box
             sx={{
-              display: 'grid',
+              justifyContent: 'start'
+            }}
+          >
+              <Banner image={fileDataURL} />
+          </Box>
+        }
+          <Box
+            sx={{
+              //display: 'grid',
               gridAutoFlow: 'row',
               //gridAutoColumns: 'max-content',
-              gridGap: '10px',
+              gridGap: '100px',
               marginTop: '5px',
-              justifyContent: 'center'
+              justifyContent: 'start'
             }}
             >
-              <ThemedButton variant="themed" component="label" color={'yellow'} aria-label='Choose button'>
+              <ThemedButton variant="themed" component="label" color={'blue'} aria-label='Choose button'>
                 Choose Image
-                <input hidden accept="image/*" type="file" onChange={(e) => setFileData(e.target.files[0])}/>
+                <input hidden accept="image/*" type="file" onChange={changeHandler}/>
               </ThemedButton>
-            <ThemedButton
-              aria-label='Upload button'
-              color={'blue'}
-              variant={'themed'}
-              onClick={uploadFile}
-            >
-              Upload Image
-            </ThemedButton>
           </Box>
           </Box>
           
@@ -786,61 +808,78 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
           aria-label='Next step button'
           color={'blue'}
           variant={'themed'}
-          onClick={() => {
+          onClick={async () => {
             console.log('SAVE CLICKED');
-            // convert times to those on given days
-            const values = getValues();
+            //const key = await uploadFile();
+            //console.log(key);
+            //if(fileKey.length > 0) {
+              //await Storage.remove(fileKey);
+            //}
+            Storage.put(uuidv4() + "-" + fileData.name, fileData, {
+              contentType: fileData.type,
+            })
+            .then((res) => {
+              console.log(res);
+              setValue('bannerKey', res.key);
+               // convert times to those on given days
+              const values = getValues();
 
-            const combinedStart = combineTimeDate(
-                new Date(values.starttime),
-                new Date(values.startdate),
-            );
-            setValue('startTime', combinedStart);
-            //setValue('startdate', combinedStart);
+              const combinedStart = combineTimeDate(
+                  new Date(values.starttime),
+                  new Date(values.startdate),
+              );
+              setValue('startTime', combinedStart);
+              //setValue('startdate', combinedStart);
 
-            const combinedEnd = combineTimeDate(
-                new Date(values.endtime),
-                new Date(values.enddate),
-            );
-            setValue('endTime', combinedEnd);
-            //setValue('enddate', combinedEnd);
+              const combinedEnd = combineTimeDate(
+                  new Date(values.endtime),
+                  new Date(values.enddate),
+              );
+              setValue('endTime', combinedEnd);
+              //setValue('enddate', combinedEnd);
 
-            // manual role validation
-            // ensure none are empty
-            if (currRoles.includes('')) {
-              setRoleError('Role name is required');
-              return;
-            }
+              // manual role validation
+              // ensure none are empty
+              if (currRoles.includes('')) {
+                setRoleError('Role name is required');
+                return;
+              }
 
-            // Make sure no values written
-            // to DB that do not match location/sponsor type
-            if (values.locationType == 'in-person') {
-              setValue('zoomLink', '');
-            }
+              // Make sure no values written
+              // to DB that do not match location/sponsor type
+              if (values.locationType == 'in-person') {
+                setValue('zoomLink', '');
+              }
 
-            if (values.locationType == 'remote') {
-              setValue('location.zip', '');
-              setValue('location.city', '');
-              setValue('location.state', '');
-              setValue('location.address', '');
+              if (values.locationType == 'remote') {
+                setValue('location.zip', '');
+                setValue('location.city', '');
+                setValue('location.state', '');
+                setValue('location.address', '');
 
-              setValue('location', {});
-            }
+                setValue('location', {});
+              }
 
-            if (currSponsorType == 'user sponsor') {
-              setValue('organization', '');
-            }
+              if (currSponsorType == 'user sponsor') {
+                setValue('organization', '');
+              }
 
-            // set curr roles in values
-            setValue('roles', currRoles);
+              // set curr roles in values
+              setValue('roles', currRoles);
 
-            // Convert the selected tags to an object
-            const tagstToSubmit = convertTagsToObject(selectedTags);
-            setValue('keywords', tagstToSubmit);
+              // Convert the selected tags to an object
+              const tagstToSubmit = convertTagsToObject(selectedTags);
+              setValue('keywords', tagstToSubmit);
 
-            setValue('bannerKey', fileKey);
+              //setValue('bannerKey', await uploadFile());
 
-            handleSubmit(onSubmit)();
+              handleSubmit(onSubmit)();
+            })
+            .catch((err) => {
+              console.log(err);
+              console.log("Error uploading img");
+            })
+           
           }}
         >
           Save
