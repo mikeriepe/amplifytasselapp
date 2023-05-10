@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import useAuth from '../util/AuthContext';
 
 import { DataStore } from '@aws-amplify/datastore';
@@ -7,19 +7,26 @@ import { Keyword, KeywordProfile, Profile } from '../../models';
 // Animation Libraries
 import Confetti from 'react-confetti'
 import useWindowSize from "../util/useWindowSize"
-import { animated, useSpring, useSprings } from '@react-spring/web'
+import { animated, useSpring, useSprings, useSpringRef, useChain, useTransition, useTrail } from '@react-spring/web'
 import StarRoundedIcon from '@mui/icons-material/StarRounded';
 
-// Example animation from react-spring
-const StarFalling = ({ isVisible, children }) => {
-  const styles = useSpring({
-    position: "absolute",
-    opacity: isVisible ? 1 : 0,
-    y: isVisible ? 0 : 240,
-    x: isVisible ? 240 : 0,
+const StarFalling = ({ windowWidth, windowHeight, hideAnimation, children }) => {
+  const firstStep = useSpring({
+    from: { position: "absolute", opacity: 0, x: (windowWidth/windowHeight) * 200, y: windowHeight - 200},
+    to: [
+      { opacity: 1, x: (windowWidth/windowHeight) * 500, y: windowHeight - 500},
+      { opacity: 0, x: windowWidth - (windowWidth/windowHeight) * 200, y: 200, onRest: hideAnimation},
+    ],
+    config: {
+      friction: 40,
+    },
   })
 
-  return <animated.div style={styles}>{children}</animated.div>
+  return (
+    <animated.div style={firstStep}>
+      {children}
+    </animated.div>
+  )
 }
 
 /**
@@ -31,6 +38,10 @@ export default function Settings() {
   const { width, height } = useWindowSize();
   const [showConfetti, setShowConfetti] = useState(false);
   const [fadeVisible, setFadeVisible] = useState(false)
+
+  const hideAnimation = () => {
+    setFadeVisible(false);
+  };
   
   const testQuery = () => {
     let profileIds = ['2cda8741-543a-4614-83cc-c28fae98adf2', '03bc5db5-46b3-4100-942b-e9ddb89ec1cc'];
@@ -46,12 +57,14 @@ export default function Settings() {
   return (
     <div className='Settings'>
       <h1>Settings</h1>
-      <StarFalling isVisible={fadeVisible}>
-        <StarRoundedIcon
-          className='icon-yellow'
-          sx={{mr: 3, transform: 'scale(2)'}}
-        />
-      </StarFalling>
+      {fadeVisible &&
+        <StarFalling windowWidth={width} windowHeight={height} hideAnimation={hideAnimation}>
+          <StarRoundedIcon
+            className='icon-yellow'
+            sx={{mr: 3, transform: 'scale(3)'}}
+          />
+        </StarFalling>
+      }
       <button onClick={testQuery}>test</button>
       <button onClick={() => {setFadeVisible(!fadeVisible)}}>Star Button</button>
       <button onClick={() => {
