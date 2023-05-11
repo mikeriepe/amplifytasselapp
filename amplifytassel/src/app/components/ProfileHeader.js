@@ -363,13 +363,13 @@ export default function ProfileHeader({ data,editButton }) {
             <h2 className='text-dark ellipsis' aria-label='Profile Header Full Name'>
               {data.firstName + ' ' + data.lastName}
             </h2>
-            <h5 className='text-bold text-blue ellipsis'>
+            <h5 className='text-bold text-blue ellipsis' aria-label='Profile Header Majors'>
               {majors?.length >0 && majors.map((major,index) => (
                 <p key={index}>{majors[index]}</p>
               ))}
             </h5>
-            <p className='ellipsis'>Class of {data.graduationYear}</p>
-            <p className='ellipsis'>{data.location}</p>
+            <p className='ellipsis' aria-label='Profile Header Graduation Year'>Class of {data.graduationYear}</p>
+            <p className='ellipsis' aria-label='Profile Header Location'>{data.location}</p>
           </Text>
           <Level level={level} sx={{ flex: 1 }}/>
           { editButton && <XPBar progress={progress} sx={{ flex: 1 }}/> }

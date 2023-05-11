@@ -75,7 +75,7 @@ export default function ProfileAlert({data}) {
           severity="warning"
           icon={<WarningIcon fontSize="inherit" className='icon' />}
         >
-          <div className='alert-text' color="warning">
+          <div className='alert-text' color="warning" aria-label='Profile Alert Pending'>
             Your account is <strong>pending approval</strong>. <br />
             In the mean time, tell us a little about yourself!
           </div>

@@ -72,7 +72,7 @@ export default function MyProfile() {
           <ProfileWork data={userProfile} />
           <ProfileVolunteer data={userProfile} />
           <ProfileKeywords data={userProfile} />
-          <Button onClick={handleDeactivateAccount}>
+          <Button onClick={handleDeactivateAccount} aria-label='Profile Deactivate Account'>
             Deactivate Account
           </Button>
         </>
