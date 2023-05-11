@@ -618,6 +618,10 @@ export default function OpportunitiesCard({
     });
   };
 
+  //const bannerImage = await Storage.get(opportunity.bannerKey, {
+    //level: 'public'
+  //});
+
   const editOppFormValues = {
     oppId : opportunity.id,
     starttime: new Date(opportunity.startTime),

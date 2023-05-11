@@ -31,7 +31,7 @@ import { Opportunity } from '../../models';
 
 const Banner = ({image}, props) => {
   return (
-    <MuiBox sx={{height: '130px', width: '260px'}} {...props}>
+    <MuiBox sx={{height: '130px', width: '200px'}} {...props}>
       <img
         src={image}
         style={{
@@ -62,6 +62,17 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
   const [fileDataURL, setFileDataURL] = useState(defaultValues.eventBanner);
   const [fileKey, setFileKey] = useState(defaultValues.bannerKey);
   const [banner, setBanner] = useState(null);
+  if(fileKey != '' && fileDataURL == defaultValues.eventBanner) {
+    Storage.get(fileKey, {
+      level: 'public'
+    })
+    .then((res) => {
+      setFileDataURL(res);
+    })
+    .catch((err) => {
+      console.log("Error:" + err);
+    })
+  }
   // Selected tags by the user
   const [selectedTags, setSelectedTags] = useState(
     defaultValues.keywords ?
@@ -70,7 +81,6 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
   );
   //if(defaultValues.bannerKey.length > 5)
   //{
-
   //}
   const [allTags, setAllTags] = useState([]);
   const getKeywords = () => {
