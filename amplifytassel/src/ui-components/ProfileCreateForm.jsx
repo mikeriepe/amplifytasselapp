@@ -45,6 +45,7 @@ export default function ProfileCreateForm(props) {
     infoRequest: "",
     infoResponse: "",
     banner: "",
+    points: "",
   };
   const [email, setEmail] = React.useState(initialValues.email);
   const [about, setAbout] = React.useState(initialValues.about);
@@ -69,6 +70,7 @@ export default function ProfileCreateForm(props) {
     initialValues.infoResponse
   );
   const [banner, setBanner] = React.useState(initialValues.banner);
+  const [points, setPoints] = React.useState(initialValues.points);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     setEmail(initialValues.email);
@@ -86,6 +88,7 @@ export default function ProfileCreateForm(props) {
     setInfoRequest(initialValues.infoRequest);
     setInfoResponse(initialValues.infoResponse);
     setBanner(initialValues.banner);
+    setPoints(initialValues.points);
     setErrors({});
   };
   const validations = {
@@ -104,6 +107,7 @@ export default function ProfileCreateForm(props) {
     infoRequest: [],
     infoResponse: [],
     banner: [],
+    points: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -146,6 +150,7 @@ export default function ProfileCreateForm(props) {
           infoRequest,
           infoResponse,
           banner,
+          points,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -215,6 +220,7 @@ export default function ProfileCreateForm(props) {
               infoRequest,
               infoResponse,
               banner,
+              points,
             };
             const result = onChange(modelFields);
             value = result?.email ?? value;
@@ -253,6 +259,7 @@ export default function ProfileCreateForm(props) {
               infoRequest,
               infoResponse,
               banner,
+              points,
             };
             const result = onChange(modelFields);
             value = result?.about ?? value;
@@ -291,6 +298,7 @@ export default function ProfileCreateForm(props) {
               infoRequest,
               infoResponse,
               banner,
+              points,
             };
             const result = onChange(modelFields);
             value = result?.location ?? value;
@@ -329,6 +337,7 @@ export default function ProfileCreateForm(props) {
               infoRequest,
               infoResponse,
               banner,
+              points,
             };
             const result = onChange(modelFields);
             value = result?.picture ?? value;
@@ -367,6 +376,7 @@ export default function ProfileCreateForm(props) {
               infoRequest,
               infoResponse,
               banner,
+              points,
             };
             const result = onChange(modelFields);
             value = result?.firstName ?? value;
@@ -405,6 +415,7 @@ export default function ProfileCreateForm(props) {
               infoRequest,
               infoResponse,
               banner,
+              points,
             };
             const result = onChange(modelFields);
             value = result?.lastName ?? value;
@@ -443,6 +454,7 @@ export default function ProfileCreateForm(props) {
               infoRequest,
               infoResponse,
               banner,
+              points,
             };
             const result = onChange(modelFields);
             value = result?.status ?? value;
@@ -512,6 +524,7 @@ export default function ProfileCreateForm(props) {
               infoRequest,
               infoResponse,
               banner,
+              points,
             };
             const result = onChange(modelFields);
             value = result?.graduationYear ?? value;
@@ -550,6 +563,7 @@ export default function ProfileCreateForm(props) {
               infoRequest,
               infoResponse,
               banner,
+              points,
             };
             const result = onChange(modelFields);
             value = result?.active ?? value;
@@ -588,6 +602,7 @@ export default function ProfileCreateForm(props) {
               infoRequest,
               infoResponse,
               banner,
+              points,
             };
             const result = onChange(modelFields);
             value = result?.isAdmin ?? value;
@@ -626,6 +641,7 @@ export default function ProfileCreateForm(props) {
               infoRequest,
               infoResponse,
               banner,
+              points,
             };
             const result = onChange(modelFields);
             value = result?.isApproved ?? value;
@@ -664,6 +680,7 @@ export default function ProfileCreateForm(props) {
               infoRequest,
               infoResponse,
               banner,
+              points,
             };
             const result = onChange(modelFields);
             value = result?.schoolEmail ?? value;
@@ -702,6 +719,7 @@ export default function ProfileCreateForm(props) {
               infoRequest: value,
               infoResponse,
               banner,
+              points,
             };
             const result = onChange(modelFields);
             value = result?.infoRequest ?? value;
@@ -740,6 +758,7 @@ export default function ProfileCreateForm(props) {
               infoRequest,
               infoResponse: value,
               banner,
+              points,
             };
             const result = onChange(modelFields);
             value = result?.infoResponse ?? value;
@@ -778,6 +797,7 @@ export default function ProfileCreateForm(props) {
               infoRequest,
               infoResponse,
               banner: value,
+              points,
             };
             const result = onChange(modelFields);
             value = result?.banner ?? value;
@@ -791,6 +811,49 @@ export default function ProfileCreateForm(props) {
         errorMessage={errors.banner?.errorMessage}
         hasError={errors.banner?.hasError}
         {...getOverrideProps(overrides, "banner")}
+      ></TextField>
+      <TextField
+        label="Points"
+        isRequired={false}
+        isReadOnly={false}
+        type="number"
+        step="any"
+        value={points}
+        onChange={(e) => {
+          let value = isNaN(parseInt(e.target.value))
+            ? e.target.value
+            : parseInt(e.target.value);
+          if (onChange) {
+            const modelFields = {
+              email,
+              about,
+              location,
+              picture,
+              firstName,
+              lastName,
+              status,
+              graduationYear,
+              active,
+              isAdmin,
+              isApproved,
+              schoolEmail,
+              infoRequest,
+              infoResponse,
+              banner,
+              points: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.points ?? value;
+          }
+          if (errors.points?.hasError) {
+            runValidationTasks("points", value);
+          }
+          setPoints(value);
+        }}
+        onBlur={() => runValidationTasks("points", points)}
+        errorMessage={errors.points?.errorMessage}
+        hasError={errors.points?.hasError}
+        {...getOverrideProps(overrides, "points")}
       ></TextField>
       <Flex
         justifyContent="space-between"

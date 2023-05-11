@@ -360,7 +360,7 @@ export default function ProfileHeader({ data,editButton }) {
           sx={{ display: 'flex', height: '100%' }}
         >
           <Text>
-            <h2 className='text-dark ellipsis'>
+            <h2 className='text-dark ellipsis' aria-label='Profile Header Full Name'>
               {data.firstName + ' ' + data.lastName}
             </h2>
             <h5 className='text-bold text-blue ellipsis'>
