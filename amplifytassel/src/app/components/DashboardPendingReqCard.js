@@ -1,10 +1,11 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import MuiBox from '@mui/material/Box';
 import {useNavigate} from 'react-router-dom';
 import Chip from '@mui/material/Chip';
 import Box from '@mui/material/Box';
+import { Storage } from 'aws-amplify';
 
 /**
  * @return {JSX}
@@ -12,6 +13,20 @@ import Box from '@mui/material/Box';
 export default function DashboardPendingReqCard({
   opportunity,
 }) {
+
+  const [banner, setBanner] = useState(null);
+
+  const downloadFile = async () => {
+    const img = await Storage.get(opportunity.bannerKey, {
+      level: "public"
+    });
+    setBanner(img);
+  }
+
+  useEffect(() => {
+    downloadFile();
+  }, []);
+
   const navigate = useNavigate();
   const navigateToOpp = (oppid) => {
     navigate(`/Opportunity/${oppid}`);
@@ -93,7 +108,7 @@ export default function DashboardPendingReqCard({
           <div
             className='flex-horizontal flex-align-center flex-flow-large'
           >
-            <Banner image={opportunity.eventBanner} />
+            <Banner image={banner} />
             <div
               className='flex-vertical flex-align-left flex-flow-large'
             >

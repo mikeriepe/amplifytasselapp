@@ -4,7 +4,7 @@ import MuiAvatar from '@mui/material/Avatar';
 import MuiBox from '@mui/material/Box';
 import MuiPaper from '@mui/material/Paper';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import Box from '@mui/material/Box';
+import { Modal, Box } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -14,6 +14,10 @@ import useAuth from '../util/AuthContext.js';
 import level1 from '../assets/level1.png';
 import LinearProgressWithLabel from '@mui/material/LinearProgress';
 import Typography from '@mui/material/Typography';
+import Tooltip from '@mui/material/Tooltip';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import MuiCard from '@mui/material/Card';
+import PointsExplainationCard from './PointsExplainationCard.js';
 
 import { DataStore } from '@aws-amplify/datastore';
 import { Storage } from 'aws-amplify';
@@ -87,12 +91,13 @@ const ITEM_HEIGHT = 48;
 const MoreIcon = ({ anchorEl, open, handleClick, handleClose, hiddenFileInput, hiddenInputProfilePicture }) => (
   <MuiBox
     sx={{
-      marginRight: '3em',
+      margin: '2em',
       display: 'flex',
       flexGrow: 1,
       flexDirection: 'column',
       justifyContent: 'center',
       height: '75%',
+      
     }}
   >
     <IconButton
@@ -116,7 +121,7 @@ const MoreIcon = ({ anchorEl, open, handleClick, handleClose, hiddenFileInput, h
       PaperProps={{
         style: {
           maxHeight: ITEM_HEIGHT * 4.5,
-          width: '20ch',
+          width: '21.5ch',
         },
       }}
     >
@@ -177,7 +182,8 @@ const XPBar = ({ progress }) => (
       display: 'flex',
       alignItems: 'center',
       marginLeft: '1em',
-      minWidth: '10em'
+      minWidth: '10em',
+      marginTop: '3em'
     }}
   >
     <div className='flex' style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -197,6 +203,7 @@ const XPBar = ({ progress }) => (
 export default function ProfileHeader({ data,editButton }) {
   
   const [majors, setMajors] = useState(null);
+  const [showExplainationModal, setShowExplainationModal] = useState(false);
   
   // Profile Banner States
   const [selectedFile, setSelectedFile] = useState(null);
@@ -372,7 +379,24 @@ export default function ProfileHeader({ data,editButton }) {
             <p className='ellipsis' aria-label='Profile Header Location'>{data.location}</p>
           </Text>
           <Level level={level} sx={{ flex: 1 }}/>
-          { editButton && <XPBar progress={progress} sx={{ flex: 1 }}/> }
+          <Box sx={{
+              display: 'flex',
+              alignItems: 'center',
+              flexDirection: 'column',
+              justifyContent: 'center',
+            }}>
+          { editButton && <XPBar progress={progress} sx={{ flex: 2 }}/> }
+          <p
+              className='text-blue hover-underline clickable no-highlight text-small'
+              onClick={() => setShowExplainationModal(true)}
+            >
+              What's this?
+            </p>
+          </Box>
+          <Box sx={{
+              display: 'flex',
+              alignItems: 'center',
+            }}>
           {
             editButton && 
             <>
@@ -382,9 +406,18 @@ export default function ProfileHeader({ data,editButton }) {
               <input type="file" accept="image/x-png,image/jpeg" ref={hiddenInputProfilePicture} multiple={false} onChange={(e) => updateSelectedProfilePic(e.target.files[0])} hidden/>
             </>
           }
+          </Box>
           
         </Box>
       </Content>
+      <Modal
+        open={showExplainationModal}
+        onBackdropClick={() => setShowExplainationModal(false)}
+        onClose={() => setShowExplainationModal(false)}
+      >
+        <PointsExplainationCard onClose={() =>
+          setShowExplainationModal(!showExplainationModal)} />
+      </Modal>
     </Header>
   );
 }

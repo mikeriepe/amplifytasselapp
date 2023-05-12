@@ -24,13 +24,15 @@ import VolunteerExperienceDeleteModal from
 import VolunteerExperienceList from '../components/VolunteerExperienceList';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
+import Tooltip from '@mui/material/Tooltip';
+import HelpIcon from '@mui/icons-material/Help';
 
 
 import { DataStore } from '@aws-amplify/datastore';
 import { Keyword, KeywordProfile, Profile, Major, ProfileMajor } from '../../models';
 import MultiSelect from '../components/MultiSelect';
 import { Dataset } from '@mui/icons-material';
-
+import { PointsAddition } from '../util/PointsAddition';
 
 
 const Page = styled((props) => (
@@ -88,7 +90,6 @@ export default function UpdateProfile() {
 
   const [selectedKeywords, setSelectedKeywords] = useState([]);
   const [allKeywords, setAllKeywords] = useState([]);
-
   const [values, setValues] = useState({
     1: {
       graduationYear: userProfile.graduationYear,
@@ -96,7 +97,7 @@ export default function UpdateProfile() {
       about: userProfile.about,
     },
   });
-
+// add util file and util functions that adds the points when called
   const handleDeleteTag = (tagIndex) => () => {
     const tempSelectedTags = [...selectedKeywords];
     // add the to be deleted tag back to all tags
@@ -152,6 +153,8 @@ export default function UpdateProfile() {
           })
         );
       }
+
+      PointsAddition(10,userProfile.id);
     }
 
     // Update Majors Relationship
@@ -260,6 +263,9 @@ export default function UpdateProfile() {
                     <p className='text-bold'>
                       Graduation Year
                       <span className='text-bold text-warning'>*</span>
+                      <Tooltip title="Fill out this field to get 10 points" arrow>
+                        <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
+                      </Tooltip>
                     </p>
                     <ThemedInput
                       placeholder={'Enter your graduation year'}
@@ -274,6 +280,9 @@ export default function UpdateProfile() {
                   <div className='grid-flow-small' aria-label={'Update Profile Major'}>
                     <p className='text-bold'>
                       Major <span className='text-bold text-warning'>*</span>
+                      <Tooltip title="Fill out this field to get 10 points" arrow>
+                        <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
+                      </Tooltip>
                     </p>
                     <div>
                       {totalMajors.length && <MultiSelect data={totalMajors} />}
@@ -282,7 +291,11 @@ export default function UpdateProfile() {
                   <div className='grid-flow-small' aria-label={'Update Profile Location'}>
                     <p className='text-bold'>
                       Location
+                      <Tooltip title="Fill out this field to get 10 points" arrow>
+                        <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
+                      </Tooltip>
                     </p>
+                    
                     <ThemedInput
                       placeholder={'Santa Cruz, CA'}
                       type={'text'}
@@ -296,6 +309,9 @@ export default function UpdateProfile() {
                   <div className='grid-flow-small' aria-label={'Update Profile About'}>
                     <p className='text-bold'>
                       About You
+                      <Tooltip title="Fill out this field to get 10 points" arrow>
+                        <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
+                      </Tooltip>
                     </p>
                     <ThemedInput
                       placeholder={'Tell people a little about yourself'}
@@ -314,6 +330,9 @@ export default function UpdateProfile() {
                     >
                       <p className='text-bold' aria-label={'Update Profile Work Experience'}>
                         Work Experience
+                        <Tooltip title="Fill out this field to get 10 points" arrow>
+                        <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
+                      </Tooltip>
                       </p>
                       <div className='flex-space-between flex-align-center'>
                         {(
@@ -356,6 +375,9 @@ export default function UpdateProfile() {
                     >
                       <p className='text-bold' aria-label={'Update Profile Volunteer Experience'}>
                         Volunteer Experience
+                        <Tooltip title="Fill out this field to get 10 points" arrow>
+                        <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
+                      </Tooltip>
                       </p>
                       <div className='flex-space-between flex-align-center'>
                         {(
@@ -398,6 +420,9 @@ export default function UpdateProfile() {
                     >
                       <p className='text-bold' aria-label={'Update Profile Interests'}>
                         Interests
+                        <Tooltip title="Fill out this field to get 10 points" arrow>
+                        <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
+                      </Tooltip>
                       </p>
                     </div>
                     <div className='flex'>

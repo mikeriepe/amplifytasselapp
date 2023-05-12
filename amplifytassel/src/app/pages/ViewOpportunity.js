@@ -12,7 +12,7 @@ import ViewOpportunityRequests from '../components/ViewOpportunityRequests';
 import useAuth from '../util/AuthContext';
 import RequestModal from '../components/RequestOpportunityModal';
 import {toast} from 'react-toastify';
-import { DataStore } from '@aws-amplify/datastore';
+import { DataStore, Storage } from 'aws-amplify';
 import { Opportunity, Role, Profile, Keyword, Request } from '../../models';
 
 const Page = styled((props) => (
@@ -78,6 +78,7 @@ function ViewOpportunity({opportunity}) {
   const [isCreator, setIsCreator] = useState(false);
   const [creator, setCreator] = useState(null);
   const [tab, setTab] = useState(0);
+  const [banner, setBanner] = useState(null);
 
   const [showReqForm, setshowReqForm] = React.useState(false);
   const [requestMessage, setRequestMessage] = React.useState('');
@@ -252,11 +253,19 @@ function ViewOpportunity({opportunity}) {
     // Add error check here for the case where there are no matching opps
   };
 
+  const downloadFile = async () => {
+    const img = await Storage.get(opportunity.bannerKey, {
+      level: "public"
+    });
+    setBanner(img);
+  }
+
   useEffect(() => {
     if (opportunity) {
       getOpportunityCreator();
       handleIsCreator();
     }
+    downloadFile();
   }, []);
 
   return (
@@ -273,7 +282,7 @@ function ViewOpportunity({opportunity}) {
               host={`${creator?.firstName} ${creator?.lastName}`}
               hostprofileid={creator?.id}
               avatar={creator?.picture}
-              banner={opportunity?.eventBanner}
+              banner={banner}
               backUrl={'/opportunities'}
               data={opportunity}
               components={
