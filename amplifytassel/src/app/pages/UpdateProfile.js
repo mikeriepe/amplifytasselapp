@@ -256,7 +256,7 @@ export default function UpdateProfile() {
                   </p>
                 </div>
                 <div className='grid-flow-large' width='100%'>
-                  <div className='grid-flow-small'>
+                  <div className='grid-flow-small' aria-label={'Update Profile Grad Year'}>
                     <p className='text-bold'>
                       Graduation Year
                       <span className='text-bold text-warning'>*</span>
@@ -271,7 +271,7 @@ export default function UpdateProfile() {
                         null : values[1].graduationYear}
                     />
                   </div>
-                  <div className='grid-flow-small'>
+                  <div className='grid-flow-small' aria-label={'Update Profile Major'}>
                     <p className='text-bold'>
                       Major <span className='text-bold text-warning'>*</span>
                     </p>
@@ -279,7 +279,7 @@ export default function UpdateProfile() {
                       {totalMajors.length && <MultiSelect data={totalMajors} />}
                     </div>
                   </div>
-                  <div className='grid-flow-small'>
+                  <div className='grid-flow-small' aria-label={'Update Profile Location'}>
                     <p className='text-bold'>
                       Location
                     </p>
@@ -293,7 +293,7 @@ export default function UpdateProfile() {
                         null : values[1].location}
                     />
                   </div>
-                  <div className='grid-flow-small'>
+                  <div className='grid-flow-small' aria-label={'Update Profile About'}>
                     <p className='text-bold'>
                       About You
                     </p>
@@ -312,7 +312,7 @@ export default function UpdateProfile() {
                       className='flex-space-between flex-align-center'
                       style={{ background: 'var(--background-primary)' }}
                     >
-                      <p className='text-bold'>
+                      <p className='text-bold' aria-label={'Update Profile Work Experience'}>
                         Work Experience
                       </p>
                       <div className='flex-space-between flex-align-center'>
@@ -354,7 +354,7 @@ export default function UpdateProfile() {
                       className='flex-space-between flex-align-center'
                       style={{ background: 'var(--background-primary)' }}
                     >
-                      <p className='text-bold'>
+                      <p className='text-bold' aria-label={'Update Profile Volunteer Experience'}>
                         Volunteer Experience
                       </p>
                       <div className='flex-space-between flex-align-center'>
@@ -396,7 +396,7 @@ export default function UpdateProfile() {
                       className='flex-space-between flex-align-center'
                       style={{ background: 'var(--background-primary)' }}
                     >
-                      <p className='text-bold'>
+                      <p className='text-bold' aria-label={'Update Profile Interests'}>
                         Interests
                       </p>
                     </div>
