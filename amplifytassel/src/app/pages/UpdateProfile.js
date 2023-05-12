@@ -259,7 +259,7 @@ export default function UpdateProfile() {
                   </p>
                 </div>
                 <div className='grid-flow-large' width='100%'>
-                  <div className='grid-flow-small'>
+                  <div className='grid-flow-small' aria-label={'Update Profile Grad Year'}>
                     <p className='text-bold'>
                       Graduation Year
                       <span className='text-bold text-warning'>*</span>
@@ -277,7 +277,7 @@ export default function UpdateProfile() {
                         null : values[1].graduationYear}
                     />
                   </div>
-                  <div className='grid-flow-small'>
+                  <div className='grid-flow-small' aria-label={'Update Profile Major'}>
                     <p className='text-bold'>
                       Major <span className='text-bold text-warning'>*</span>
                       <Tooltip title="Fill out this field to get 10 points" arrow>
@@ -288,7 +288,7 @@ export default function UpdateProfile() {
                       {totalMajors.length && <MultiSelect data={totalMajors} />}
                     </div>
                   </div>
-                  <div className='grid-flow-small'>
+                  <div className='grid-flow-small' aria-label={'Update Profile Location'}>
                     <p className='text-bold'>
                       Location
                       <Tooltip title="Fill out this field to get 10 points" arrow>
@@ -306,7 +306,7 @@ export default function UpdateProfile() {
                         null : values[1].location}
                     />
                   </div>
-                  <div className='grid-flow-small'>
+                  <div className='grid-flow-small' aria-label={'Update Profile About'}>
                     <p className='text-bold'>
                       About You
                       <Tooltip title="Fill out this field to get 10 points" arrow>
@@ -328,7 +328,7 @@ export default function UpdateProfile() {
                       className='flex-space-between flex-align-center'
                       style={{ background: 'var(--background-primary)' }}
                     >
-                      <p className='text-bold'>
+                      <p className='text-bold' aria-label={'Update Profile Work Experience'}>
                         Work Experience
                         <Tooltip title="Fill out this field to get 10 points" arrow>
                         <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
@@ -373,7 +373,7 @@ export default function UpdateProfile() {
                       className='flex-space-between flex-align-center'
                       style={{ background: 'var(--background-primary)' }}
                     >
-                      <p className='text-bold'>
+                      <p className='text-bold' aria-label={'Update Profile Volunteer Experience'}>
                         Volunteer Experience
                         <Tooltip title="Fill out this field to get 10 points" arrow>
                         <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
@@ -418,7 +418,7 @@ export default function UpdateProfile() {
                       className='flex-space-between flex-align-center'
                       style={{ background: 'var(--background-primary)' }}
                     >
-                      <p className='text-bold'>
+                      <p className='text-bold' aria-label={'Update Profile Interests'}>
                         Interests
                         <Tooltip title="Fill out this field to get 10 points" arrow>
                         <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />

@@ -30,7 +30,7 @@ export default function ProfileWork({data}) {
   return (
     <Work>
       <h4 className='text-dark'>Work Experience</h4>
-      <div className='flow-medium'>
+      <div className='flow-medium' aria-label='Profile Work Experience'>
         {data?.experience && data.experience.length >0 ? Object.keys(data?.experience).map((job, index) => (
           <div key={`work-experience-${index}`}>
             <h5>{data?.experience.title}</h5>
