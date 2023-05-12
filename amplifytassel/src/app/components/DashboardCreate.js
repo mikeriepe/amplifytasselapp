@@ -1,0 +1,229 @@
+import React, {useState} from 'react';
+import {styled} from '@mui/material/styles';
+import MuiBox from '@mui/material/Box';
+import Box from '@mui/material/Box';
+import MuiCard from '@mui/material/Card';
+import AddIcon from '@mui/icons-material/Add';
+import Button from '@mui/material/Button';
+import OpportunityForm from '../components/OpportunityForm';
+import {Modal} from '@mui/material';
+import useAuth from '../util/AuthContext';
+import {toast} from 'react-toastify';
+
+import { DataStore } from '@aws-amplify/datastore';
+import { Opportunity } from '../../models';
+import { Role } from '../../models';
+import { OpportunityStatus} from '../../models';
+
+const Display = styled((props) => (
+  <MuiCard elevation={0} {...props} />
+))(() => ({
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  height: 'auto',
+  width: '100%',
+  background: 'var(--primary-blue-main)',
+  boxShadow: '0px 4px 50px -15px rgba(0, 86, 166, 0.15)',
+  border: '0.5px solid rgba(0, 0, 0, 0.15)',
+  borderRadius: '10px',
+  marginTop: '1em',
+}));
+
+const HeadingText = ({children}, props) => (
+  <MuiBox
+    sx={{
+      display: 'flex',
+      flexGrow: 1,
+      flexDirection: 'column',
+      justifyContent: 'center',
+      height: '100%',
+      lineHeight: 1.5,
+      color: 'white',
+      fontWeight: 'bold',
+      fontSize: '1.2rem',
+      margin: '1em',
+    }}
+    {...props}
+  >
+    {children}
+  </MuiBox>
+);
+
+const formValues = {
+  name: '',
+  isNewOpp : true,
+  locationType: 'in-person',
+  location: {
+    'address': '',
+    'state': '',
+    'city': '',
+    'zip': '',
+  },
+  sponsortype: 'user sponsor',
+  zoomLink: '',
+  //organization: [],
+  description: '',
+  eventData: '',
+  startdate: new Date(),
+  enddate: new Date(),
+  //organizationtype: '',
+  //opportunitytype: '',
+  starttime: new Date(),
+  endtime: new Date(),
+  subject: '',
+  eventdata: '',
+  //keywords: [allKeywords],
+};
+
+/**
+ * creates Dashboard header
+ * @return {HTML} Dashboard header component
+ */
+export default function DashboardCreate({getCreatedOpportunities}) {
+  const {userProfile} = useAuth();
+  const [showOppForm, setShowOppForm] = useState(false);
+
+  const handleModalClose = () => {
+    setShowOppForm(!showOppForm);
+  };
+
+  const onSubmit = (data, isNewOpp) => {
+    console.log(isNewOpp);
+    console.log("Starting process...");
+    const newOpportunity = {
+      assignedRoles: {},
+      eventBanner: 'https://www.sorenkaplan.com/wp-content/uploads/2017/07/Testing.jpg',
+      status: OpportunityStatus.PENDING,
+      profilesJoined: [],
+      //preferences: {},
+      profileID: userProfile.id,
+      Requests: {},
+      ...data,
+    };
+    console.log("Object created...");
+    console.log(newOpportunity);
+        DataStore.save(
+          new Opportunity({
+          "zoomLink": newOpportunity.zoomLink,
+          "organizations": [newOpportunity.organization],
+          "description": newOpportunity.description,
+          "eventBanner":  newOpportunity.eventBanner,
+          "eventName": newOpportunity.name,
+          "startTime": newOpportunity.startTime.toISOString(),
+          "endTime": newOpportunity.endTime.toISOString(),
+          "locationType": newOpportunity.locationType,
+          "location": newOpportunity.location,
+          "eventData": newOpportunity.eventdata,
+          "subject": newOpportunity.subject,
+          "preferences": [],
+          "Roles": newOpportunity.roles,
+          "Posts": newOpportunity.Posts,
+          "Requests": newOpportunity.Requests,
+          "profileID": newOpportunity.profileID,
+          "profilesJoined": newOpportunity.profilesJoined,
+          "keywords": newOpportunity.keywords,
+          "status": newOpportunity.status
+        })
+      )
+      .then((res) => {
+        console.log(res);
+        console.log("Saved...");
+          toast.success('Opportunity Created', {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+          handleModalClose();
+          console.log("New roles: " + newOpportunity.roles.length);
+            for (let i = 0; i < newOpportunity.roles.length; i++) {
+              const newRole = {
+                opportunityID: res.id,
+                // keeping it null until it's fully implemented
+                //tagid: 'c7e29de9-5b88-49fe-a3f5-750a3a62aee5',
+                responsibility: '',
+                description: '',
+                isfilled: false,
+                name: newOpportunity.roles[i],
+                qualifications: [],
+                capacity: 0,
+                Majors: [],
+                Profiles: [],
+                Requests: []
+              };
+              DataStore.save(
+                new Role({
+                "name": newRole.name,
+                "description": newRole.description,
+                "isFilled": newRole.isfilled,
+                "qualifications": newRole.qualifications,
+                "Majors": newRole.Majors,
+                "Profiles": newRole.Profiles,
+                "opportunityID": newRole.opportunityID,
+                "Requests": newRole.Requests,
+                "capacity": newRole.capacity
+              })
+              )
+              .then((third) => {
+                console.log("Making new role...");
+                console.log(third);
+              })
+          }
+        console.log("Creating...");
+      })
+      .then(() => {
+        getCreatedOpportunities();
+      })
+  };
+
+  return (
+    <Display>
+      <HeadingText>
+         Create new Opportunities
+      </HeadingText>
+      <Box sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: '26px',
+        marginBottom: '1em',
+      }}>
+        <Button onClick={() => setShowOppForm(true)}
+          sx={{
+            'height': '100%',
+            'lineHeight': 1.5,
+            'color': 'white',
+            'fontSize': '.7rem',
+            'marginLeft': '2em',
+            'bgcolor': '#249BCE',
+            'padding': '.7rem',
+            'borderRadius': '26px',
+            ':hover': {bgcolor: '#34cceb', color: 'white'},
+          }}
+        >
+          Create an Opportunity
+        </Button>
+        <AddIcon
+          sx={{
+            fontSize: '7em',
+            color: 'white'}}/>
+      </Box>
+      <Modal
+        open={showOppForm}
+        onBackdropClick={() => setShowOppForm(false)}
+        onClose={() => setShowOppForm(false)}
+        sx={{overflow: 'scroll'}}
+      >
+        <OpportunityForm
+          onClose={handleModalClose}
+          defaultValues={formValues}
+          onSubmit={onSubmit}
+        />
+      </Modal>
+    </Display>
+  );
+}
