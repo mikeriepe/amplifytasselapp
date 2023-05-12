@@ -23,13 +23,3 @@ describe('Sign In:', () => {
     cy.get(selectors.DashboardHeader).contains('Welcome back');
   });
 })
-
-// export const selectors = {
-//   // Auth component classes
-//   logInButtonOnLandingPage: '[aria-label="Login page button"]',
-//   LoginEmailInput: '[aria-label="Login Email input field"]',
-//   LoginPasswordInput: '[aria-label="Login Password input field"]',
-//   LoginButton: '[aria-label="Login button"]',
-//   DashboardNavigateStarButton: '[data-testid="StarRoundedIcon"]',
-//   DashboardHeader: '[aria-label="Dashboard Header"]'
-// }
