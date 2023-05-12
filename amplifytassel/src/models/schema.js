@@ -793,6 +793,13 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
+                "points": {
+                    "name": "points",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -2230,5 +2237,5 @@ export const schema = {
         }
     },
     "codegenVersion": "3.4.0",
-    "version": "f2b5b685349d65aac33569d674344b73"
+    "version": "46a83cfaefd9aac99439850bf5b80702"
 };

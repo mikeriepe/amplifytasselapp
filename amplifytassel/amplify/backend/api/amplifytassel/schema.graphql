@@ -78,6 +78,7 @@ type Profile @model @auth(rules: [{allow: public}]) {
   Requests: [Request] @hasMany(indexName: "byProfile", fields: ["id"])
   keywords: [Keyword] @manyToMany(relationName: "KeywordProfile")
   banner: String
+  points: Int
 }
 
 type Request @model @auth(rules: [{allow: public}]) {
