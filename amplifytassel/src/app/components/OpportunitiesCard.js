@@ -25,7 +25,7 @@ import RequestModal from './RequestOpportunityModal';
 import OpportunityForm from './OpportunityForm';
 import ThemedButton from './ThemedButton';
 
-import { DataStore } from '@aws-amplify/datastore';
+import { DataStore } from 'aws-amplify';
 import { Opportunity, Profile, Request, Role, RequestStatus, ProfileRole, OpportunityProfile, Keyword, KeywordOpportunity } from '../../models';
 import { Storage } from 'aws-amplify';
 
@@ -198,6 +198,8 @@ const OutlinedButton = (props) => {
   );
 };
 
+const imageMimeType = /image\/(png|jpg|jpeg)/i;
+
 /**
  * @return {JSX}
  */
@@ -211,12 +213,16 @@ export default function OpportunitiesCard({
 }) {
   const [creator, setCreator] = useState('');
   const [profilePicture, setProfilePicture] = useState(null);
+  const [banner, setBanner] = useState(null);
+  const [bKey, setBKey] = useState(null);
   const [showReqForm, setshowReqForm] = useState(false);
   const [showOppForm, setShowOppForm] = useState(false);
   const [showDeleteForm, setShowDeleteForm] = useState(false);
   const [requestMessage, setRequestMessage] = React.useState('');
   const [oppRoles, setOppRoles] = useState(false);
   const [oppKeywords, setOppKeywords] = useState(false);
+  const [fileData, setFileData] = useState(null);
+  const [fileDataURL, setFileDataURL] = useState(null);
   const {userProfile} = useAuth();
 
   const handleReqModalClose = () => {
@@ -257,6 +263,13 @@ export default function OpportunitiesCard({
       setProfilePicture("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png");
     }
   };
+
+  const downloadFile = async () => {
+    const img = await Storage.get(opportunity.bannerKey, {
+      level: "public"
+    });
+    setFileDataURL(img);
+  }
 
   const extractRoles = () => {
     const p = Promise.resolve(opportunity.Roles.values);
@@ -441,24 +454,58 @@ export default function OpportunitiesCard({
         console.log('No action needed on keyword relations');
       }
     })
-    .then((res) => {
-      DataStore.save(Opportunity.copyOf(opportunity, updated => {
-        updated.eventName = data.name;
-        updated.description = data.description;
-        updated.eventData = data.eventdata;
-        updated.startTime = data.startTime.toISOString();
-        updated.endTime = data.endTime.toISOString();
-        updated.locationType = data.locationType;
-        updated.location = data.location;
-        updated.organizations = data.organizations;
-        updated.subject = data.subject;
-      })
-      )
-      .then((res) => {
-        handleOppModalClose();
-        getCreatedOpportunities();
-        console.log(res);
-      });
+    .then(async (res) => {
+      if(data.bannerKey != null) {
+        const image = await Storage.get(data.bannerKey, {
+          level: 'public'
+        });
+        await Storage.remove(opportunity.bannerKey);
+        //console.log(data.bannerKey);
+        DataStore.save(Opportunity.copyOf(opportunity, updated => {
+          updated.eventName = data.name;
+          updated.description = data.description;
+          updated.eventData = data.eventdata;
+          updated.startTime = data.startTime.toISOString();
+          updated.endTime = data.endTime.toISOString();
+          updated.locationType = data.locationType;
+          updated.location = data.location;
+          updated.organizations = data.organizations;
+          updated.subject = data.subject;
+          updated.bannerKey = data.bannerKey;
+          updated.eventBanner = image;
+        })
+        )
+        .then((res) => {
+          handleOppModalClose();
+          getCreatedOpportunities();
+          console.log(res);
+        });
+      }
+      else {
+        const image = await Storage.get(opportunity.bannerKey, {
+          level: 'public'
+        })
+          console.log('opp');
+          DataStore.save(Opportunity.copyOf(opportunity, updated => {
+            updated.eventName = data.name;
+            updated.description = data.description;
+            updated.eventData = data.eventdata;
+            updated.startTime = data.startTime.toISOString();
+            updated.endTime = data.endTime.toISOString();
+            updated.locationType = data.locationType;
+            updated.location = data.location;
+            updated.organizations = data.organizations;
+            updated.subject = data.subject;
+            updated.bannerKey = opportunity.bannerKey;
+            updated.eventBanner = image;
+          })
+          )
+        .then((res) => {
+          handleOppModalClose();
+          getCreatedOpportunities();
+          console.log(res);
+        });
+      }
     });
   };
 
@@ -571,6 +618,10 @@ export default function OpportunitiesCard({
     });
   };
 
+  //const bannerImage = await Storage.get(opportunity.bannerKey, {
+    //level: 'public'
+  //});
+
   const editOppFormValues = {
     oppId : opportunity.id,
     starttime: new Date(opportunity.startTime),
@@ -593,7 +644,8 @@ export default function OpportunitiesCard({
     profileID : opportunity.profileID,
     status : opportunity.status,
     Roles : oppRoles,
-    keywords : oppKeywords
+    keywords : oppKeywords,
+    bannerKey: opportunity.bannerKey
   };
 
   
@@ -607,6 +659,7 @@ export default function OpportunitiesCard({
     if (creator) {
       downloadProfilePicture();
     }
+    downloadFile();
   }, [creator]);
 
   return (
@@ -770,7 +823,7 @@ export default function OpportunitiesCard({
               className='flex-horizontal flex-align-center'
               style={{padding: '1.5em'}}
             >
-              <Banner image={opportunity.eventBanner} />
+              <Banner image={fileDataURL} />
               <div className='flex-vertical'>
                 <div
                   className='flex-horizontal flex-flow-large flex-align-center'

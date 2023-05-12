@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box';
 import React, {useState, useEffect} from 'react';
-import {StepLabel, IconButton, FormHelperText} from '@mui/material';
+import {StepLabel, IconButton, FormHelperText, Hidden} from '@mui/material';
 import Paper from '@mui/material/Paper';
 import Skeleton from '@mui/material/Skeleton';
 import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
@@ -11,6 +11,8 @@ import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import {toast} from 'react-toastify';
 import Chip from '@mui/material/Chip';
+import MuiBox from '@mui/material/Box';
+import { v4 as uuidv4 } from 'uuid';
 // import Stack from '@mui/material/Stack';
 
 import {yupResolver} from '@hookform/resolvers/yup';
@@ -23,10 +25,28 @@ import {TimeInput} from './TimeInput.js';
 import {DropdownInput} from './DropdownInput';
 import {CheckboxInput} from './CheckboxInput';
 import {DateInput} from './DateInput';
-import { DataStore } from 'aws-amplify';
+import { DataStore, Storage } from 'aws-amplify';
 import { Keyword } from '../../models';
 import { Opportunity } from '../../models';
 
+const Banner = ({image}, props) => {
+  return (
+    <MuiBox sx={{height: '130px', width: '200px'}} {...props}>
+      <img
+        src={image}
+        style={{
+          height: '100%',
+          width: '100%',
+          objectFit: 'cover',
+          border: '0.5px solid rgba(0, 0, 0, 0.15)',
+          borderRadius: '10px',
+        }}
+      />
+    </MuiBox>
+  );
+};
+
+const imageMimeType = /image\/(png|jpg|jpeg)/i;
 
 /**
  * OpportunityForm
@@ -38,13 +58,30 @@ import { Opportunity } from '../../models';
 export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
   const [opportunityTypes, setOpportunityTypes] = useState([]);
   const [temp, setTemp] = useState('');
-
+  const [fileData, setFileData] = useState(null);
+  const [fileDataURL, setFileDataURL] = useState(defaultValues.eventBanner);
+  const [fileKey, setFileKey] = useState(defaultValues.bannerKey);
+  const [banner, setBanner] = useState(null);
+  if(fileKey != '' && fileDataURL == defaultValues.eventBanner) {
+    Storage.get(fileKey, {
+      level: 'public'
+    })
+    .then((res) => {
+      setFileDataURL(res);
+    })
+    .catch((err) => {
+      console.log("Error:" + err);
+    })
+  }
   // Selected tags by the user
   const [selectedTags, setSelectedTags] = useState(
     defaultValues.keywords ?
     Object.values(defaultValues.keywords) :
     [],
   );
+  //if(defaultValues.bannerKey.length > 5)
+  //{
+  //}
   const [allTags, setAllTags] = useState([]);
   const getKeywords = () => {
    DataStore.query(Keyword)
@@ -270,10 +307,60 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
     defaultValues: defaultValues,
   });
 
+
+  const downloadFile = async () => {
+    const img = await Storage.get(fileKey, {
+      level: "public"
+    });
+    setBanner(img);
+  }
+
+  const changeHandler = (e) => {
+    const file = e.target.files[0];
+    if (!file.type.match(imageMimeType)) {
+      alert("Image mime type is not valid");
+      return;
+    }
+    setFileData(file);
+  }
+
+  useEffect(() => {
+    let fileReader, isCancel = false;
+    if (fileData) {
+      fileReader = new FileReader();
+      fileReader.onload = (e) => {
+        const { result } = e.target;
+        if (result && !isCancel) {
+          setFileDataURL(result)
+        }
+      }
+      fileReader.readAsDataURL(fileData);
+    }
+    return () => {
+      isCancel = true;
+      if (fileReader && fileReader.readyState === 1) {
+        fileReader.abort();
+      }
+    }
+
+  }, [fileData]);
+
   useEffect(() => {
     //getOpportunityTypes();
     getKeywords();
-  }, []);
+    downloadFile();
+    console.log(fileKey);
+    //setAndUpload(fileData);
+  }, [fileKey]);
+
+  /*
+  useEffect(() => {
+    if(fileData) {
+      uploadFile();
+    }
+  }, [fileData])
+  */
+
 
   const handleDeleteTag = (tagIndexToDelete) => () => {
     const tempSelectedTags = [...selectedTags];
@@ -556,7 +643,39 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
 
         {/* RIGHT SECTION */}
         <Box>
-
+        <Box 
+            sx={{
+            display: 'grid',
+            gridAutoFlow: 'column',
+            gridGap: '0.5vw',
+            gridTemplateColumns: '22.5vw',
+            marginBottom: '5px',
+            alignItems: 'center'
+          }}
+        >
+        { fileDataURL != null &&
+          <Box
+          >
+              <Banner image={fileDataURL} />
+          </Box>
+        }
+          <Box
+            sx={{
+              //display: 'grid',
+              gridAutoFlow: 'row',
+              //gridAutoColumns: 'max-content',
+              gridGap: '100px',
+              marginTop: '5px',
+              justifyContent: 'center'
+            }}
+            >
+              <ThemedButton variant="themed" component="label" color={'blue'} aria-label='Choose button'>
+                Choose Image
+                <input hidden accept="image/*" type="file" onChange={changeHandler}/>
+              </ThemedButton>
+          </Box>
+          </Box>
+          
           {/* DATE PICKERS */}
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <Box
@@ -564,6 +683,7 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
                 display: 'grid',
                 gridAutoFlow: 'column',
                 gridGap: '10px',
+                marginTop: '10px'
               }}
             >
               <DateInput
@@ -671,7 +791,7 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
             register={register}
           />
         </Box>
-      </Box>
+        </Box>
 
       {/* Submit/Cancel Button wrapper */}
       <Box
@@ -695,59 +815,78 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
           aria-label='Next step button'
           color={'blue'}
           variant={'themed'}
-          onClick={() => {
+          onClick={async () => {
             console.log('SAVE CLICKED');
-            // convert times to those on given days
-            const values = getValues();
+            //const key = await uploadFile();
+            //console.log(key);
+            //if(fileKey.length > 0) {
+              //await Storage.remove(fileKey);
+            //}
+            Storage.put(uuidv4() + "-" + fileData.name, fileData, {
+              contentType: fileData.type,
+            })
+            .then((res) => {
+              console.log(res);
+              setValue('bannerKey', res.key);
+               // convert times to those on given days
+              const values = getValues();
 
-            const combinedStart = combineTimeDate(
-                new Date(values.starttime),
-                new Date(values.startdate),
-            );
-            setValue('startTime', combinedStart);
-            //setValue('startdate', combinedStart);
+              const combinedStart = combineTimeDate(
+                  new Date(values.starttime),
+                  new Date(values.startdate),
+              );
+              setValue('startTime', combinedStart);
+              //setValue('startdate', combinedStart);
 
-            const combinedEnd = combineTimeDate(
-                new Date(values.endtime),
-                new Date(values.enddate),
-            );
-            setValue('endTime', combinedEnd);
-            //setValue('enddate', combinedEnd);
+              const combinedEnd = combineTimeDate(
+                  new Date(values.endtime),
+                  new Date(values.enddate),
+              );
+              setValue('endTime', combinedEnd);
+              //setValue('enddate', combinedEnd);
 
-            // manual role validation
-            // ensure none are empty
-            if (currRoles.includes('')) {
-              setRoleError('Role name is required');
-              return;
-            }
+              // manual role validation
+              // ensure none are empty
+              if (currRoles.includes('')) {
+                setRoleError('Role name is required');
+                return;
+              }
 
-            // Make sure no values written
-            // to DB that do not match location/sponsor type
-            if (values.locationType == 'in-person') {
-              setValue('zoomLink', '');
-            }
+              // Make sure no values written
+              // to DB that do not match location/sponsor type
+              if (values.locationType == 'in-person') {
+                setValue('zoomLink', '');
+              }
 
-            if (values.locationType == 'remote') {
-              setValue('location.zip', '');
-              setValue('location.city', '');
-              setValue('location.state', '');
-              setValue('location.address', '');
+              if (values.locationType == 'remote') {
+                setValue('location.zip', '');
+                setValue('location.city', '');
+                setValue('location.state', '');
+                setValue('location.address', '');
 
-              setValue('location', {});
-            }
+                setValue('location', {});
+              }
 
-            if (currSponsorType == 'user sponsor') {
-              setValue('organization', '');
-            }
+              if (currSponsorType == 'user sponsor') {
+                setValue('organization', '');
+              }
 
-            // set curr roles in values
-            setValue('roles', currRoles);
+              // set curr roles in values
+              setValue('roles', currRoles);
 
-            // Convert the selected tags to an object
-            const tagstToSubmit = convertTagsToObject(selectedTags);
-            setValue('keywords', tagstToSubmit);
+              // Convert the selected tags to an object
+              const tagstToSubmit = convertTagsToObject(selectedTags);
+              setValue('keywords', tagstToSubmit);
 
-            handleSubmit(onSubmit)();
+              //setValue('bannerKey', await uploadFile());
+
+              handleSubmit(onSubmit)();
+            })
+            .catch((err) => {
+              console.log(err);
+              console.log("Error uploading img");
+            })
+           
           }}
         >
           Save

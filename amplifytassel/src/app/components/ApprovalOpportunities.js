@@ -32,7 +32,7 @@ import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import {styled} from '@mui/material/styles';
 import '../stylesheets/ApprovalTable.css';
 
-import { DataStore } from '@aws-amplify/datastore';
+import { DataStore, Storage } from 'aws-amplify';
 import { Opportunity } from './../../models';
 import { Profile } from './../../models';
 
@@ -84,6 +84,19 @@ function Row(props) {
   const {row, handleSelect, profile} = props;
   const [open, setOpen] = useState(false);
 
+  const [banner, setBanner] = useState(null);
+
+  const downloadFile = async () => {
+    const img = await Storage.get(row.bannerKey, {
+      level: "public"
+    });
+    setBanner(img);
+  }
+
+  useEffect(() => {
+    downloadFile();
+  }, []);
+
   return (
     <React.Fragment>
       <TableRow>
@@ -103,7 +116,7 @@ function Row(props) {
         <TableCell className='data-cell' component='th' scope='row'
           sx={{display: 'flex',
             flexDirection: 'row'}}>
-          <Avatar image={row.eventBanner} />
+          <Avatar image={banner} />
           {/* eslint-disable-next-line max-len */}
           <div className='text-center-vert'>{`${row.eventName}`}</div>
         </TableCell>
