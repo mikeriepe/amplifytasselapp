@@ -75,10 +75,9 @@ export default function VolunteerExperienceCard({jobIndex}) {
               <p className='text-bold text-blue'>
                 {userProfile.volunteerExperience[jobIndex].company}</p>
               <p>{userProfile.volunteerExperience[jobIndex].location}</p>
-              <p>{userProfile.volunteerExperience[jobIndex].end !== '' ?
-              (userProfile.volunteerExperience[jobIndex].start + ' - ' +
-              userProfile.volunteerExperience[jobIndex].end) :
-              userProfile.volunteerExperience[jobIndex].start}</p>
+              <p>{userProfile.volunteerExperience[jobIndex].start +
+                ' - ' + (userProfile.volunteerExperience[jobIndex].end === '' || userProfile.volunteerExperience[jobIndex].currentPosition ?
+                'Present' : userProfile.volunteerExperience[jobIndex].end)}</p>
               <p style={{marginTop: '0.5em'}}>
                 {userProfile.volunteerExperience[jobIndex].description}</p>
             </div>
