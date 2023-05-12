@@ -90,7 +90,6 @@ export default function UpdateProfile() {
 
   const [selectedKeywords, setSelectedKeywords] = useState([]);
   const [allKeywords, setAllKeywords] = useState([]);
-
   const [values, setValues] = useState({
     1: {
       graduationYear: userProfile.graduationYear,
