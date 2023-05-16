@@ -157,8 +157,6 @@ export default function UpdateProfile() {
     // Calculate the points and add them
     const pointsToAdd = await calculatePointsEarned(userProfile, selectedMajors, selectedKeywords, values);
     PointsAddition(pointsToAdd, userProfile.id);
-    console.log(pointsToAdd);
-    console.log(userProfile.points);
 
     // console.log('selectedKeywords', selectedKeywords);
     // console.log('allKeywoards', allKeywords);
