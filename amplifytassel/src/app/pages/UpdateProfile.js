@@ -33,6 +33,7 @@ import { Keyword, KeywordProfile, Profile, Major, ProfileMajor } from '../../mod
 import MultiSelect from '../components/MultiSelect';
 import { Dataset } from '@mui/icons-material';
 import { PointsAddition } from '../util/PointsAddition';
+import { ConsoleLogger } from '@aws-amplify/core';
 
 
 const Page = styled((props) => (
@@ -123,8 +124,42 @@ export default function UpdateProfile() {
     setAllKeywords(tempAllTags);
   };
 
+  const calculatePointsEarned = async (userProfile, selctdMajors, selctdKeywords, selctdVals) => {
+    var pointsToBeAdded = 0;
+
+    // Check location
+    if (userProfile.location === null && selctdVals[1].location !== null) {
+      pointsToBeAdded += 10;
+    }
+
+    // Check about
+    if (userProfile.about === null && selctdVals[1].about !== null) {
+      pointsToBeAdded += 10;
+    }
+    
+    const existingKeywords = await userProfile.keywords.values;
+    // Check Keywords
+    if (existingKeywords.length === 0 && selctdKeywords.length > 0) {
+      pointsToBeAdded += 10;
+    }
+
+    const existingMajors = await userProfile.Majors.values;
+    // Check Majors
+    if (existingMajors.length === 0 && selctdMajors.length > 0) {
+      pointsToBeAdded += 10;
+    }
+
+    return pointsToBeAdded;
+  };
+
   // selectedTags, keywords, selectedMajors, majors
   const updateProfile = async () => {
+    // Calculate the points and add them
+    const pointsToAdd = await calculatePointsEarned(userProfile, selectedMajors, selectedKeywords, values);
+    PointsAddition(pointsToAdd, userProfile.id);
+    console.log(pointsToAdd);
+    console.log(userProfile.points);
+
     // console.log('selectedKeywords', selectedKeywords);
     // console.log('allKeywoards', allKeywords);
     // // UPDATE KEYWORDS Relationship(so that it == selectedKeywords)
@@ -153,8 +188,6 @@ export default function UpdateProfile() {
           })
         );
       }
-
-      PointsAddition(10,userProfile.id);
     }
 
     // Update Majors Relationship
@@ -239,7 +272,6 @@ export default function UpdateProfile() {
 
   const handleSubmit = async (e) => {
     await updateProfile();
-    console.log('updated profile');
     navigate('/myProfile');
   };
 

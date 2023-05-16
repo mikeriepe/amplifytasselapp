@@ -15,7 +15,7 @@ import useAuth from '../util/AuthContext';
 
 import { DataStore } from '@aws-amplify/datastore';
 import { Profile } from '../../models';
-
+import { PointsAddition } from '../util/PointsAddition';
 
 
 export const sortWorkExperience = (experience) => {
@@ -91,6 +91,10 @@ export default function WorkExperienceForm({onClose}) {
 
     const sortedExperience = sortWorkExperience(experienceObj);
     console.log('sortedExperience', sortedExperience);
+
+    // Add 10 points everytime a work experience is added
+    PointsAddition(10, userProfile.id);
+    
 
     DataStore.query(Profile, userProfile.id)
       .then((res) => {
