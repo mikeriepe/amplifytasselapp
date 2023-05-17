@@ -33,7 +33,6 @@ import { Keyword, KeywordProfile, Profile, Major, ProfileMajor } from '../../mod
 import MultiSelect from '../components/MultiSelect';
 import { Dataset } from '@mui/icons-material';
 import { PointsAddition } from '../util/PointsAddition';
-import { ConsoleLogger } from '@aws-amplify/core';
 
 
 const Page = styled((props) => (
@@ -137,13 +136,13 @@ export default function UpdateProfile() {
       pointsToBeAdded += 10;
     }
     
-    const existingKeywords = await userProfile.keywords.values;
+    const existingKeywords = await DataStore.query(KeywordProfile, kp => kp.profileId.eq(userProfile.id));
     // Check Keywords
     if (existingKeywords.length === 0 && selctdKeywords.length > 0) {
       pointsToBeAdded += 10;
     }
 
-    const existingMajors = await userProfile.Majors.values;
+    const existingMajors = await DataStore.query(ProfileMajor, pm => pm.profileId.eq(userProfile.id));
     // Check Majors
     if (existingMajors.length === 0 && selctdMajors.length > 0) {
       pointsToBeAdded += 10;
@@ -208,6 +207,7 @@ export default function UpdateProfile() {
 
     // Update Profile Fields: graduationYear, location, about
     let res = await DataStore.query(Profile, userProfile.id)
+    console.log(res);
     await DataStore.save(Profile.copyOf(res, updated => {
       updated.graduationYear = values[1].graduationYear;
       updated.location = values[1].location;
