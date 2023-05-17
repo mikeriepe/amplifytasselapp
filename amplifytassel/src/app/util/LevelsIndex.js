@@ -1,0 +1,10 @@
+export { default as level1 } from '../assets/level1-icon.png';
+export { default as level2 } from '../assets/level2-icon.png';
+export { default as level3 } from '../assets/level3-icon.png';
+export { default as level4 } from '../assets/level4-icon.png';
+export { default as level5 } from '../assets/level5-icon.png';
+export { default as level6 } from '../assets/level6-icon.png';
+export { default as level7 } from '../assets/level7-icon.png';
+export { default as level8 } from '../assets/level8-icon.png';
+export { default as level9 } from '../assets/level9-icon.png';
+export { default as level10 } from '../assets/level10-icon.png';
