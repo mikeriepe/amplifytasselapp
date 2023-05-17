@@ -369,7 +369,7 @@ function Opportunities({
     endtime: new Date(),
     subject: '',
     eventdata: '',
-    eventBanner: 'https://www.sorenkaplan.com/wp-content/uploads/2017/07/Testing.jpg',
+    eventBanner: 'https://www.ucsc.edu/about/images/mascot-550_v2.jpg',
     bannerKey: ''
     //keywords: [allKeywords],
   };

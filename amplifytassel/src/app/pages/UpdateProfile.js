@@ -85,7 +85,6 @@ export default function UpdateProfile() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showVolunteerForm, setShowVolunteerForm] = useState(false);
   const [showDeleteVolunteerModal, setShowDeleteVolunteerModal] = useState(false);
-
   const [selectedMajors, setSelectedMajors] = useState([]);
   const [totalMajors, setTotalMajors] = useState([]);
 

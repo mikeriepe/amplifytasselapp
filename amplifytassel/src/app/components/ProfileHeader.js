@@ -11,7 +11,8 @@ import MenuItem from '@mui/material/MenuItem';
 import { Link } from 'react-router-dom';
 import ProfileBanner from './ProfileBanner.js'
 import useAuth from '../util/AuthContext.js';
-import level1 from '../assets/level1.png';
+//import level1 from '../assets/level1.png';
+import {level1,level2,level3,level4,level5,level6,level7,level8,level9,level10} from '../util/LevelsIndex.js'; 
 import LinearProgressWithLabel from '@mui/material/LinearProgress';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
@@ -24,6 +25,7 @@ import { Storage } from 'aws-amplify';
 import { Profile } from '../../models';
 import { v4 as uuidv4 } from 'uuid';
 import {toast} from 'react-toastify';
+import { calculateUserLevel } from '../util/PointsAddition.js';
 
 
 
@@ -162,7 +164,7 @@ const Level = ({ level }) => (
   justifyContent: 'center',
   width: '100%'
 }}>
-  <img src={level1} alt=""  />
+  <img src={level} alt=""  />
   {/* <p style={{
     fontSize: '1.5em',
     color: 'gold'
@@ -355,7 +357,42 @@ export default function ProfileHeader({ data,editButton }) {
     }
   }, [selectedProfileFile])
 
-  const level = 1; // replace this with a dynamic value
+  let level = 1; // replace this with a dynamic value
+  console.log(calculateUserLevel(data.points));
+  switch (calculateUserLevel(data.points)) {
+    case 1:
+      level = level1;
+      break;
+    case 2:
+      level = level2;
+      break;
+    case 3:
+      level = level3;
+      break;
+    case 4:
+      level = level4;
+      break;
+    case 5:
+      level = level5;
+      break;
+    case 6:
+      level = level6;
+      break;
+    case 7:
+      level = level7;
+      break;
+    case 8:
+      level = level8;
+      break;
+    case 9:
+      level = level9;
+      break;
+    case 10:
+      level = level10;
+      break;
+    default:
+      level = level1;
+  }
   const progress = 65; 
 
   return (
@@ -386,12 +423,14 @@ export default function ProfileHeader({ data,editButton }) {
               justifyContent: 'center',
             }}>
           { editButton && <XPBar progress={progress} sx={{ flex: 2 }}/> }
+          { editButton &&
           <p
               className='text-blue hover-underline clickable no-highlight text-small'
               onClick={() => setShowExplainationModal(true)}
             >
               What's this?
             </p>
+          }
           </Box>
           <Box sx={{
               display: 'flex',
