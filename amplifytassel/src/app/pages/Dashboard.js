@@ -6,7 +6,7 @@ import useAuth from '../util/AuthContext';
 import DashboardHeader from '../components/DashboardHeader';
 import DashboardUpcoming from '../components/DashboardUpcoming';
 import DashboardBrowse from '../components/DashboardBrowse';
-// import DashboardCreate from '../components/DashboardCreate';
+import DashboardCreate from '../components/DashboardCreate';
 import DashboardPendingReqs from '../components/DashboardPendingReqs';
 
 import { DataStore } from '@aws-amplify/datastore';
@@ -60,10 +60,10 @@ export default function Dashboard() {
             }}>
             <Grid item xs={6} md={3}>
               <DashboardBrowse data={userProfile} />
-              {/* <DashboardCreate
+              <DashboardCreate
                 data={userProfile}
                 getCreatedOpportunities={getCreatedOpportunities}
-              /> */}
+              />
             </Grid>
             <Grid item xs={6} md={9}>
               <DashboardPendingReqs
