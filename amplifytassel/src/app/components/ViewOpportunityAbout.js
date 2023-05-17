@@ -71,7 +71,7 @@ function DescriptionCard({description}) {
       <h4 className='text-dark' style={{paddingBottom: '1.5em'}}>
         Description
       </h4>
-      <p>{description}</p>
+      <p aria-label='View Opportunity Description'>{description}</p>
     </Description>
   );
 }
@@ -99,7 +99,7 @@ function TagsCard({tags}) {
   // convert tags to an array
   const tagsArr = [...tags];
   return (
-    <TagsPaper>
+    <TagsPaper aria-label='View Opportunity Keywords'>
       <h4 className='text-dark' style={{paddingBottom: '1.5em'}}>
         Tags
       </h4>
@@ -298,7 +298,7 @@ function RolesCard({
       <h4 className='text-dark' style={{padding: '1.5em 2em 1.5em 2em'}}>
         Roles
       </h4>
-      <Box>
+      <Box aria-label='View Opportunity Roles'>
         {
           roles && roles.map((role, index) => (
             <Accordion

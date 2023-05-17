@@ -102,7 +102,7 @@ export default function ViewOpportunityMembers({
       >
         {isCreator ? 'Your Members' : 'Members'}
       </h4>
-      <div style={{paddingBottom: 'calc(1.5em - 0.5em)'}}>
+      <div style={{paddingBottom: 'calc(1.5em - 0.5em)'}} aria-label='View Opportunity Members'>
         <Member handleClick={handleClick} profileid={owner.profileid}>
           <Avatar image={owner.avatar} />
           <div>
