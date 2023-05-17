@@ -10,10 +10,11 @@ import OpportunityForm from '../components/OpportunityForm';
 import {Modal} from '@mui/material';
 import {toast} from 'react-toastify';
 import {useLocation} from 'react-router-dom';
-import { DataStore } from '@aws-amplify/datastore';
+import { DataStore, Storage } from 'aws-amplify';
 import { Opportunity } from '../../models';
 import { Role } from '../../models';
 import { OpportunityStatus, Keyword } from '../../models';
+import { PointsAddition } from '../util/PointsAddition';
 
 
 const Page = styled((props) => (
@@ -369,6 +370,8 @@ function Opportunities({
     endtime: new Date(),
     subject: '',
     eventdata: '',
+    eventBanner: 'https://www.ucsc.edu/about/images/mascot-550_v2.jpg',
+    bannerKey: ''
     //keywords: [allKeywords],
   };
 
@@ -376,12 +379,12 @@ function Opportunities({
     setShowOppForm(!showOppForm);
   };
 
-  const onSubmit = (data, isNewOpp) => {
+  const onSubmit = async (data, isNewOpp) => {
     console.log(isNewOpp);
     console.log("Starting process...");
     const newOpportunity = {
       assignedRoles: {},
-      eventBanner: 'https://www.sorenkaplan.com/wp-content/uploads/2017/07/Testing.jpg',
+      //eventBanner: 'https://www.sorenkaplan.com/wp-content/uploads/2017/07/Testing.jpg',
       status: OpportunityStatus.PENDING,
       profilesJoined: [],
       //preferences: {},
@@ -389,6 +392,10 @@ function Opportunities({
       Requests: {},
       ...data,
     };
+    PointsAddition(50, userProfile.id);
+    const image = await Storage.get(data.bannerKey, {
+      level: 'public'
+    });
     console.log("Object created...");
     console.log(newOpportunity);
         DataStore.save(
@@ -396,7 +403,7 @@ function Opportunities({
           "zoomLink": newOpportunity.zoomLink,
           "organizations": [newOpportunity.organization],
           "description": newOpportunity.description,
-          "eventBanner":  newOpportunity.eventBanner,
+          "eventBanner":  image,
           "eventName": newOpportunity.name,
           "startTime": newOpportunity.startTime.toISOString(),
           "endTime": newOpportunity.endTime.toISOString(),
@@ -411,7 +418,8 @@ function Opportunities({
           "profileID": newOpportunity.profileID,
           "profilesJoined": newOpportunity.profilesJoined,
           "keywords": newOpportunity.keywords,
-          "status": newOpportunity.status
+          "status": newOpportunity.status,
+          "bannerKey" : newOpportunity.bannerKey
         })
       )
       .then((res) => {
@@ -426,6 +434,7 @@ function Opportunities({
             draggable: true,
             progress: undefined,
           });
+          
           handleModalClose();
           console.log("New roles: " + newOpportunity.roles.length);
             for (let i = 0; i < newOpportunity.roles.length; i++) {

@@ -4,7 +4,7 @@ import TableRow from '@mui/material/TableRow';
 import MuiBox from '@mui/material/Box';
 import {useNavigate} from 'react-router-dom';
 
-import { DataStore } from '@aws-amplify/datastore';
+import { DataStore, Storage } from 'aws-amplify';
 import { Request } from './../../models';
 
 /**
@@ -14,6 +14,7 @@ export default function DashboardPendingOppCard({
   opportunity,
 }) {
   const [requests, setRequests] = useState([]);
+  const [banner, setBanner] = useState(null);
   const navigate = useNavigate();
   const navigateToOpp = (oppid) => {
     navigate(`/Opportunity/${oppid}`);
@@ -33,9 +34,17 @@ export default function DashboardPendingOppCard({
     });
   };
 
+  const downloadFile = async () => {
+    const img = await Storage.get(opportunity.bannerKey, {
+      level: "public"
+    });
+    setBanner(img);
+  }
+
   useEffect(() => {
     setRequests([]);
     getPendingRequestsReceived();
+    downloadFile();
   }, [opportunity]);
 
   const formatDate = (date) => {
@@ -136,7 +145,7 @@ export default function DashboardPendingOppCard({
           <div
             className='flex-horizontal flex-align-center flex-flow-large'
           >
-            <Banner image={opportunity.eventBanner} />
+            <Banner image={banner} />
             <div
               className='flex-vertical flex-align-left flex-flow-large'
             >

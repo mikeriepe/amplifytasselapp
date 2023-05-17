@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
 import {styled} from '@mui/material/styles';
 import MuiAvatar from '@mui/material/Avatar';
@@ -8,6 +8,7 @@ import TextField from '@mui/material/TextField';
 import ThemedButton from './ThemedButton';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import useAuth from '../util/AuthContext';
+import { Storage } from 'aws-amplify';
 
 const Paper = styled((props) => (
   <MuiPaper elevation={0} component='form' {...props} />
@@ -80,6 +81,23 @@ export default function ForumsNewPost({postNewPost}) {
   const {userProfile} = useAuth();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [profilePicture, setProfilePicture] = useState(null);
+
+  const downloadProfilePicture = async () => {
+    if (userProfile.picture !== null) {
+      const file = await Storage.get(userProfile.picture, {
+        level: "public"
+      });
+      setProfilePicture(file);
+    } else {
+      setProfilePicture("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png");
+    }
+  };
+
+  useEffect(() => {
+    downloadProfilePicture();
+  }, [userProfile]);
+
 
   const handleSubmit = (e) => {
     if (title.length === 0 || content.length === 0) {
@@ -113,7 +131,7 @@ export default function ForumsNewPost({postNewPost}) {
         name='title'
         value={title}
         handleChange={(e) => handleChange(e)}
-        image={userProfile?.picture}
+        image={profilePicture}
         placeholder={'Title'}
       />
       <Input

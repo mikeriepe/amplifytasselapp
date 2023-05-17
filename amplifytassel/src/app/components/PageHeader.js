@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {styled} from '@mui/material/styles';
 import Divider from '@mui/material/Divider';
@@ -13,6 +13,7 @@ import DevicesOutlinedIcon from '@mui/icons-material/DevicesOutlined';
 import EventNoteRoundedIcon from '@mui/icons-material/EventNoteRounded';
 import FmdGoodOutlinedIcon from '@mui/icons-material/FmdGoodOutlined';
 import TimerOutlinedIcon from '@mui/icons-material/TimerOutlined';
+import { Storage } from 'aws-amplify';
 
 const IconStyling = {
   fontSize: '0.9rem',
@@ -143,6 +144,19 @@ export default function PageHeader({
   tabs,
   tabNumber,
 }) {
+  const [profilePicture, setProfilePicture] = useState(null);
+
+  const downloadProfilePicture = async () => {
+    if (avatar !== null) {
+      const file = await Storage.get(avatar, {
+        level: "public"
+      });
+      setProfilePicture(file);
+    } else {
+      setProfilePicture("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png");
+    }
+  };
+
   const formatDate = (date) => {
     const dateOptions = {
       year: 'numeric',
@@ -188,6 +202,11 @@ export default function PageHeader({
   function hostProfileFunction(profileid) {
     navigate(`/profile/${profileid}`);
   }
+
+  useEffect(() => {
+    downloadProfilePicture();
+  }, [avatar]);
+
   return (
     <Header type={type}>
       {banner && <Banner image={banner} backUrl={backUrl} type={type} />}
@@ -196,8 +215,8 @@ export default function PageHeader({
           className='flex-horizontal flex-align-center flex-flow-large'
           style={{paddingInline: '3em'}}
         >
-          {avatar && <Avatar image={avatar} />}
-          <div className='flex-vertical flex-flow-small text-lineheight-24'>
+          {avatar && <Avatar image={profilePicture} />}
+          <div className='flex-vertical flex-flow-small text-lineheight-24' aria-label='Page Header Title'>
             {type === 'viewopportunity' ? (
               <h3 className='text-dark'>
                 {title}
@@ -207,7 +226,7 @@ export default function PageHeader({
                 {title}
               </h2>
             )}
-            <p className='text-bold'>
+            <p className='text-bold' aria-label='Page Header Host'>
               {`${subtitle}`}
               &nbsp;&nbsp;
               <span className='text-blue clickable' onClick={() => hostProfileFunction(hostprofileid)}>{host}</span>
@@ -240,7 +259,7 @@ export default function PageHeader({
             style={{paddingInline: '3em'}}
           >
             <EventNoteRoundedIcon sx={IconStyling} />
-            <p className='text-bold'>
+            <p className='text-bold' aria-label='Page Header Start Date'>
               {
                 `
                   ${formatDate(data?.startTime).date}
@@ -249,7 +268,7 @@ export default function PageHeader({
               }
             </p>
             <ArrowForwardRoundedIcon sx={IconStyling} />
-            <p className='text-bold'>
+            <p className='text-bold' aria-label='Page Header End Date'>
               {
                 data.endTime ?
                 `
@@ -268,7 +287,7 @@ export default function PageHeader({
             style={{paddingInline: '3em', marginTop: '0.25em'}}
           >
             <TimerOutlinedIcon sx={IconStyling} />
-            <p className='text-bold'>
+            <p className='text-bold' aria-label='Page Header Duration'>
               {calculateDuration(data?.startTime, data?.endTime)}
             </p>
           </div>
@@ -277,7 +296,7 @@ export default function PageHeader({
             style={{paddingInline: '3em', marginTop: '0.25em'}}
           >
             <AccessibilityRoundedIcon sx={IconStyling} />
-            <p className='text-bold ellipsis'>
+            <p className='text-bold ellipsis' aria-label='Page Header Location Type'>
               {
                 data?.locationType?.charAt(0).toUpperCase() +
                   data?.locationType?.slice(1)
@@ -291,6 +310,7 @@ export default function PageHeader({
             <div
               className='flex-horizontal flex-flow-large flex-align-center'
               style={{paddingInline: '3em', marginTop: '0.25em'}}
+              aria-label='Page Header Location'
             >
               <FmdGoodOutlinedIcon sx={IconStyling} />
               <p className='text-bold'>

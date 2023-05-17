@@ -34,7 +34,6 @@ export default function ViewProfile() {
     DataStore.query(Profile, params.profileid)
     .then((res) => {
         setProfile(res);
-        console.log(res);
       })
       .catch((err)=>{
         console.log(err);

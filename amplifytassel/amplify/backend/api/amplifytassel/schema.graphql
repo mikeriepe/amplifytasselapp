@@ -57,7 +57,7 @@ type Profile @model @auth(rules: [{allow: public}]) {
   about: String
   location: String
   availability: Availability
-  picture: AWSURL
+  picture: String
   firstName: String
   lastName: String
   status: ProfileStatus
@@ -78,6 +78,7 @@ type Profile @model @auth(rules: [{allow: public}]) {
   Requests: [Request] @hasMany(indexName: "byProfile", fields: ["id"])
   keywords: [Keyword] @manyToMany(relationName: "KeywordProfile")
   banner: String
+  points: Int
 }
 
 type Request @model @auth(rules: [{allow: public}]) {
@@ -123,6 +124,7 @@ type Opportunity @model @auth(rules: [{allow: public}]) {
   profilesJoined: [Profile] @manyToMany(relationName: "OpportunityProfile")
   keywords: [Keyword] @manyToMany(relationName: "KeywordOpportunity")
   status: OpportunityStatus
+  bannerKey: String
 }
 
 enum ProfileStatus {

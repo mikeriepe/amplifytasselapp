@@ -1,0 +1,65 @@
+{
+    "id": "c01acf28-952d-4489-9a77-fc0a3aa41a29",
+    "email": "kurira@socam.me",
+    "about": "Can't feel pain...",
+    "location": "Santa Cruz, CA",
+    "picture": "download.jpeg-c107a688-e18c-4641-8300-9e12166f36c8",
+    "firstName": "Test",
+    "lastName": "Dummy",
+    "status": "PENDING",
+    "graduationYear": "2001",
+    "active": true,
+    "isAdmin": false,
+    "isApproved": false,
+    "schoolEmail": "testDummy@ucsc.edu",
+    "infoRequest": null,
+    "infoResponse": null,
+    "banner": "desktop-wallpaper-caution-tape-warning-backgrounds-in-pinterest-caution-tape.jpg-bd1e14a6-2c7a-43a4-81d6-69ad4da95c3e",
+    "points": null,
+    "createdAt": "2023-05-11T21:55:52.703Z",
+    "updatedAt": "2023-05-11T22:27:22.387Z",
+    "volunteerExperience": [
+        {
+            "end": "04/24/2023",
+            "start": "04/02/2023",
+            "title": "Children's Doll",
+            "company": "Garage Sales Inc.",
+            "location": "Reno, NV",
+            "description": "Given to kid",
+            "currentPosition": false
+        }
+    ],
+    "availability": null,
+    "experience": [
+        {
+            "end": "",
+            "start": "01/24/2023",
+            "title": "Storage Closet Resident",
+            "company": "Stunt Doubles Inc.",
+            "location": "Santa Cruz, CA",
+            "description": "Sit in a storage closet, its dark in here :(",
+            "currentPosition": true
+        },
+        {
+            "end": "06/21/2022",
+            "start": "05/02/2016",
+            "title": "Stunt Double",
+            "company": "Marvel Studios",
+            "location": "Hollywood, CA",
+            "description": "Fell off buildings",
+            "currentPosition": false
+        },
+        {
+            "end": "01/12/2016",
+            "start": "05/01/2013",
+            "title": "Car Crash Testing",
+            "company": "Toyota",
+            "location": "Santa Cruz, CA",
+            "description": "Drove into walls",
+            "currentPosition": false
+        }
+    ],
+    "_version": 10,
+    "_lastChangedAt": 1683844042400,
+    "_deleted": null
+}

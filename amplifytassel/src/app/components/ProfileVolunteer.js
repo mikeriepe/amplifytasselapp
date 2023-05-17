@@ -25,14 +25,15 @@ export default function ProfileVolunteer({data}) {
   return (
     <Volunteer>
       <h4 className='text-dark'>Volunteer Experience</h4>
-      <div className='flow-medium'>
+      <div className='flow-medium' aria-label='Profile Volunteer Experience'>
         {data?.volunteerExperience && data.volunteerExperience.length >0 ? Object.keys(data?.volunteerExperience).map((exp, index) => (
           <div key={`volunteer-experience-${index}`}>
             <h5>{data?.volunteerExperience[exp].title}</h5>
             <p className='text-bold text-blue'>{data?.volunteerExperience[exp].company}</p>
             <p>{data?.volunteerExperience[exp].location}</p>
-            <p>{data?.volunteerExperience[exp].end !== '' ?
-            (data?.volunteerExperience[exp].start + ' - ' + data?.volunteerExperience[exp].end) : data?.volunteerExperience[exp].start}</p>
+            <p>{data?.volunteerExperience[exp].start +
+                ' - ' + (data?.volunteerExperience[exp].end === '' || data?.volunteerExperience[exp].currentPosition ?
+                'Present' : data?.volunteerExperience[exp].end)}</p>
             <p style={{marginTop: '0.5em'}}>{data?.volunteerExperience[exp].description}</p>
           </div>
         )) : (

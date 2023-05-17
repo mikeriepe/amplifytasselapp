@@ -56,7 +56,7 @@ export default function DashboardHeader({data}) {
 
   return (
     <Header>
-      <h2 className='text-dark ellipsis text-large'>
+      <h2 className='text-dark ellipsis text-large' aria-label='Dashboard Header'>
          Welcome back, {data.firstName}!
       </h2>
       <h5 className='text-bold ellipsis'>

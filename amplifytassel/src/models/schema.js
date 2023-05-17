@@ -529,9 +529,16 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
-                "qualifications": {
-                    "name": "qualifications",
-                    "isArray": true,
+                "picture": {
+                    "name": "picture",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "firstName": {
+                    "name": "firstName",
+                    "isArray": false,
                     "type": "String",
                     "isRequired": false,
                     "attributes": [],
@@ -603,6 +610,13 @@ export const schema = {
                     "name": "banner",
                     "isArray": false,
                     "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "points": {
+                    "name": "points",
+                    "isArray": false,
+                    "type": "Int",
                     "isRequired": false,
                     "attributes": []
                 },
@@ -1204,6 +1218,13 @@ export const schema = {
                     "type": {
                         "enum": "OpportunityStatus"
                     },
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "bannerKey": {
+                    "name": "bannerKey",
+                    "isArray": false,
+                    "type": "String",
                     "isRequired": false,
                     "attributes": []
                 },
@@ -2234,6 +2255,5 @@ export const schema = {
     "version": "3aa38aea5bb42c782b0af6472ed0ffd3"
 =======
     "codegenVersion": "3.4.0",
-    "version": "50b9de2c13a6dda8e043aebe04c3b2db"
->>>>>>> 8ed013b60530e923a26ef318b7fa49531fecf2a7
+    "version": "46a83cfaefd9aac99439850bf5b80702"
 };

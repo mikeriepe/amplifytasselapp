@@ -35,6 +35,7 @@ export default function NewForm1(props) {
     graduationYear: "",
     Field0: "",
     banner: "",
+    points: "",
   };
   const [about, setAbout] = React.useState(initialValues.about);
   const [location, setLocation] = React.useState(initialValues.location);
@@ -43,6 +44,7 @@ export default function NewForm1(props) {
   );
   const [Field0, setField0] = React.useState(initialValues.Field0);
   const [banner, setBanner] = React.useState(initialValues.banner);
+  const [points, setPoints] = React.useState(initialValues.points);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     const cleanValues = profileRecord
@@ -53,6 +55,7 @@ export default function NewForm1(props) {
     setGraduationYear(cleanValues.graduationYear);
     setField0(cleanValues.Field0);
     setBanner(cleanValues.banner);
+    setPoints(cleanValues.points);
     setErrors({});
   };
   const [profileRecord, setProfileRecord] = React.useState(profile);
@@ -70,6 +73,7 @@ export default function NewForm1(props) {
     graduationYear: [],
     Field0: [],
     banner: [],
+    points: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -101,6 +105,7 @@ export default function NewForm1(props) {
           graduationYear,
           Field0,
           banner,
+          points,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -135,6 +140,7 @@ export default function NewForm1(props) {
             location: modelFields.location,
             graduationYear: modelFields.graduationYear,
             banner: modelFields.banner,
+            points: modelFields.points,
           };
           await DataStore.save(
             Profile.copyOf(profileRecord, (updated) => {
@@ -167,6 +173,7 @@ export default function NewForm1(props) {
               graduationYear,
               Field0,
               banner,
+              points,
             };
             const result = onChange(modelFields);
             value = result?.about ?? value;
@@ -195,6 +202,7 @@ export default function NewForm1(props) {
               graduationYear,
               Field0,
               banner,
+              points,
             };
             const result = onChange(modelFields);
             value = result?.location ?? value;
@@ -223,6 +231,7 @@ export default function NewForm1(props) {
               graduationYear: value,
               Field0,
               banner,
+              points,
             };
             const result = onChange(modelFields);
             value = result?.graduationYear ?? value;
@@ -250,6 +259,7 @@ export default function NewForm1(props) {
               graduationYear,
               Field0: value,
               banner,
+              points,
             };
             const result = onChange(modelFields);
             value = result?.Field0 ?? value;
@@ -294,6 +304,7 @@ export default function NewForm1(props) {
               graduationYear,
               Field0,
               banner: value,
+              points,
             };
             const result = onChange(modelFields);
             value = result?.banner ?? value;
@@ -307,6 +318,39 @@ export default function NewForm1(props) {
         errorMessage={errors.banner?.errorMessage}
         hasError={errors.banner?.hasError}
         {...getOverrideProps(overrides, "banner")}
+      ></TextField>
+      <TextField
+        label="Points"
+        isRequired={false}
+        isReadOnly={false}
+        type="number"
+        step="any"
+        value={points}
+        onChange={(e) => {
+          let value = isNaN(parseInt(e.target.value))
+            ? e.target.value
+            : parseInt(e.target.value);
+          if (onChange) {
+            const modelFields = {
+              about,
+              location,
+              graduationYear,
+              Field0,
+              banner,
+              points: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.points ?? value;
+          }
+          if (errors.points?.hasError) {
+            runValidationTasks("points", value);
+          }
+          setPoints(value);
+        }}
+        onBlur={() => runValidationTasks("points", points)}
+        errorMessage={errors.points?.errorMessage}
+        hasError={errors.points?.hasError}
+        {...getOverrideProps(overrides, "points")}
       ></TextField>
       <Flex
         justifyContent="space-between"

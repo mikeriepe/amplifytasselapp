@@ -1,9 +1,10 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {Link as RouterLink} from 'react-router-dom';
 import {styled} from '@mui/material/styles';
 import CardActionArea from '@mui/material/CardActionArea';
 import MuiBox from '@mui/material/Box';
 import MuiCard from '@mui/material/Card';
+import { Storage } from 'aws-amplify';
 
 const Card = styled((props) => (
   <MuiCard elevation={0} {...props} />
@@ -86,6 +87,20 @@ const TimeText = ({children}, props) => (
 export default function DashboardOppThumbnail({
   opportunity,
 }) {
+
+  const [banner, setBanner] = useState(null);
+
+  const downloadFile = async () => {
+    const img = await Storage.get(opportunity.bannerKey, {
+      level: "public"
+    });
+    setBanner(img);
+  }
+
+  useEffect(() => {
+    downloadFile();
+  }, []);
+
   const formatDate = (startTime) => {
     const dateOptions = {
       year: 'numeric',
@@ -116,7 +131,7 @@ export default function DashboardOppThumbnail({
               className='flex-horizontal flex-align-center'
               style={{padding: '1.5em'}}
             >
-              <Banner image={opportunity.eventBanner} />
+              <Banner image={banner} />
             </div>
             <EventTitleText className='text-bold'>
               {`

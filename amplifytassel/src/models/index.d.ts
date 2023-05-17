@@ -184,6 +184,7 @@ type EagerProfile = {
   readonly Requests?: (Request | null)[] | null;
   readonly keywords?: (KeywordProfile | null)[] | null;
   readonly banner?: string | null;
+  readonly points?: number | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -220,6 +221,7 @@ type LazyProfile = {
   readonly Requests: AsyncCollection<Request>;
   readonly keywords: AsyncCollection<KeywordProfile>;
   readonly banner?: string | null;
+  readonly points?: number | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -445,6 +447,7 @@ type EagerOpportunity = {
   readonly profilesJoined?: (OpportunityProfile | null)[] | null;
   readonly keywords?: (KeywordOpportunity | null)[] | null;
   readonly status?: OpportunityStatus | keyof typeof OpportunityStatus | null;
+  readonly bannerKey?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -474,6 +477,7 @@ type LazyOpportunity = {
   readonly profilesJoined: AsyncCollection<OpportunityProfile>;
   readonly keywords: AsyncCollection<KeywordOpportunity>;
   readonly status?: OpportunityStatus | keyof typeof OpportunityStatus | null;
+  readonly bannerKey?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }

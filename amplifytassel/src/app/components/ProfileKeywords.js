@@ -47,7 +47,7 @@ export default function ProfileKeywords({ data }) {
   return (
     <Keywords>
       <h4 className='text-dark'>Interests</h4>
-      <div>
+      <div aria-label='Profile Keywords'>
         {userKeywords?.length>0 ? userKeywords.map((word, index) => (
           <Chip
             label={userKeywords[index]}

@@ -246,6 +246,7 @@ function LoginForm({active, handleNextPage, login}) {
             index={'useremail'}
             step={'login'}
             fill={'email'}
+            label={'Login Email input field'}
           />
         </div>
         <div className='grid-flow-small'>
@@ -257,6 +258,7 @@ function LoginForm({active, handleNextPage, login}) {
             type={'password'}
             index={'userpassword'}
             step={'login'}
+            label={'Login Password input field'}
           />
           <p
             className='text-blue clickable'

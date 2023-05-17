@@ -12,6 +12,8 @@ import ForumsPost from './ForumsPost';
 import useAuth from '../util/AuthContext';
 import { DataStore } from '@aws-amplify/datastore';
 import { Post, Comment, Profile } from '../../models';
+import { Storage } from 'aws-amplify';
+
 
 const Paper = styled((props) => (
   <MuiPaper elevation={0} {...props} />
@@ -127,6 +129,18 @@ export default function ViewOpportunityForums({id}) {
   const [posts, setPosts] = useState([]);
   const [comments, setComments] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [profilePicture, setProfilePicture] = useState(null);
+
+  const downloadProfilePicture = async () => {
+    if (userProfile.picture !== null) {
+      const file = await Storage.get(userProfile.picture, {
+        level: "public"
+      });
+      setProfilePicture(file);
+    } else {
+      setProfilePicture("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png");
+    }
+  };
 
   const sortByDate = (array) => {
     return array.sort((a, b) =>
@@ -209,6 +223,10 @@ export default function ViewOpportunityForums({id}) {
     getPosts();
   }, []);
 
+  useEffect(() => {
+    downloadProfilePicture();
+  }, [userProfile]);
+
   return (
     <>
       <ForumsNewPost postNewPost={postNewPost} />
@@ -224,7 +242,7 @@ export default function ViewOpportunityForums({id}) {
             <Input
               postNewComment={postNewComment}
               name='content'
-              image={userProfile?.picture}
+              image={profilePicture}
               postid={post.id}
             />
           </Paper>
