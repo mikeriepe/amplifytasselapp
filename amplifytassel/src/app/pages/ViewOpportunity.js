@@ -14,6 +14,7 @@ import RequestModal from '../components/RequestOpportunityModal';
 import {toast} from 'react-toastify';
 import { DataStore, Storage } from 'aws-amplify';
 import { Opportunity, Role, Profile, Keyword, Request } from '../../models';
+import { PointsAddition } from '../util/PointsAddition';
 
 const Page = styled((props) => (
   <MuiBox {...props} />
@@ -119,6 +120,7 @@ function ViewOpportunity({opportunity}) {
       role: requestedRole,
     };
     postRequestToOpportunity(requestData);
+    PointsAddition(25,requestData.requester);
     setshowReqForm(false);
     setRequestMessage('');
   };
@@ -337,6 +339,7 @@ function ViewOpportunity({opportunity}) {
             handleRequestMessage={handleRequestMessage}
             handleRequestClick={handleRequestClick}
             opportunityName={opportunity.eventName}
+            profile
           />
         </>
       }

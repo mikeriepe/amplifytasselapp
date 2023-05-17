@@ -24,7 +24,7 @@ import useAuth from '../util/AuthContext';
 import RequestModal from './RequestOpportunityModal';
 import OpportunityForm from './OpportunityForm';
 import ThemedButton from './ThemedButton';
-
+import { PointsAddition } from '../util/PointsAddition';
 import { DataStore } from 'aws-amplify';
 import { Opportunity, Profile, Request, Role, RequestStatus, ProfileRole, OpportunityProfile, Keyword, KeywordOpportunity } from '../../models';
 import { Storage } from 'aws-amplify';
@@ -312,6 +312,7 @@ export default function OpportunitiesCard({
       toevent: true,
     };
     console.log(requestData);
+    PointsAddition(25,requestData.requester);
     postRequestToOpportunity(requestData);
     setshowReqForm(false);
     setRequestMessage('');

@@ -14,6 +14,7 @@ import { DataStore, Storage } from 'aws-amplify';
 import { Opportunity } from '../../models';
 import { Role } from '../../models';
 import { OpportunityStatus, Keyword } from '../../models';
+import { PointsAddition } from '../util/PointsAddition';
 
 
 const Page = styled((props) => (
@@ -391,6 +392,7 @@ function Opportunities({
       Requests: {},
       ...data,
     };
+    PointsAddition(50, userProfile.id);
     const image = await Storage.get(data.bannerKey, {
       level: 'public'
     });
@@ -432,6 +434,7 @@ function Opportunities({
             draggable: true,
             progress: undefined,
           });
+          
           handleModalClose();
           console.log("New roles: " + newOpportunity.roles.length);
             for (let i = 0; i < newOpportunity.roles.length; i++) {
