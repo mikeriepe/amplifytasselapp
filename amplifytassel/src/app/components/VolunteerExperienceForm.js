@@ -16,6 +16,7 @@ import {sortWorkExperience} from './WorkExperienceForm';
 
 import { DataStore } from '@aws-amplify/datastore';
 import { Profile } from '../../models';
+import { PointsAddition } from '../util/PointsAddition';
 
 
 
@@ -119,6 +120,9 @@ export default function VolunteerExperienceForm({onClose}) {
     volunteerExperienceCpy.push(newVolunteerExperience);
 
     const sortedVolunteerExperience = sortWorkExperience(volunteerExperienceCpy);
+
+    // Add 10 points everytime a volunteer experience is added
+    PointsAddition(10, userProfile.id);
 
     DataStore.query(Profile, userProfile.id)
       .then((res) => {
