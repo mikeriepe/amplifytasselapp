@@ -15,4 +15,17 @@ export const selectors = {
     ProfileVolunteerExperience: '[aria-label="Profile Volunteer Experience"]',
     ProfileKeywords: '[aria-label="Profile Keywords"]',
     ProfileDeactivateAccount: '[aria-label="Profile Deactivate Account"]',
+    ViewOpportunityTitle: '[aria-label="Page Header Title"]',
+    ViewOpportunityHost: '[aria-label="Page Header Host"]',
+    ViewOpportunityStartDate: '[aria-label="Page Header Start Date"]',
+    ViewOpportunityEndDate: '[aria-label="Page Header End Date"]',
+    ViewOpportunityDuration: '[aria-label="Page Header Duration"]',
+    ViewOpportunityLocationType: '[aria-label="Page Header Location Type"]',
+    ViewOpportunityLocation: '[aria-label="Page Header Location"]',
+    ViewOpportunityMembers: '[aria-label="View Opportunity Members"]',
+    ViewOpportunityDescription: '[aria-label="View Opportunity Description"]',
+    ViewOpportunityRoles: '[aria-label="View Opportunity Roles"]',
+    ViewOpportunityKeywords: '[aria-label="View Opportunity Keywords"]',
+
+    
 }
