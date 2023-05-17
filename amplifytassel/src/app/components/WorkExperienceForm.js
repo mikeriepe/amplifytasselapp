@@ -6,6 +6,8 @@ import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
 import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {useForm} from 'react-hook-form';
 import {toast} from 'react-toastify';
+import {yupResolver} from '@hookform/resolvers/yup';
+import * as Yup from 'yup';
 
 import {TextInput2} from './TextInput2';
 import {DateInput2} from './DateInput2';
@@ -46,8 +48,29 @@ export default function WorkExperienceForm({onClose}) {
     currentPosition: false,
   };
 
-  const methods = useForm({defaultValues: formValues});
-  const {handleSubmit, control, register} = methods;
+  const validationSchema = Yup.object().shape({
+    jobtitle: Yup.string().required('Job title is required'),
+    company: Yup.string().required('Company name is required'),
+    jobcity: Yup.string().required('Job city is required'),
+    jobstate: Yup.string().required('Job state is required'),
+    description: Yup.string().notRequired(),
+    startdate: Yup
+        .date()
+        .required('Start date is required'),
+    enddate: Yup
+        .date()
+        .min(Yup.ref('startdate'), 'End date must be after start date')
+        .required('End date is required'),
+  });
+
+  const {
+    register,
+    control,
+    handleSubmit,
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+    defaultValues: formValues,
+  });
 
   const updateProfile = (data) => {
     let startDate = '';
@@ -91,15 +114,13 @@ export default function WorkExperienceForm({onClose}) {
 
     const sortedExperience = sortWorkExperience(experienceObj);
     console.log('sortedExperience', sortedExperience);
-
-    // Add 10 points everytime a work experience is added
-    PointsAddition(10, userProfile.id);
     
-
     DataStore.query(Profile, userProfile.id)
       .then((res) => {
         DataStore.save(Profile.copyOf(res, updated => {
           updated.experience = sortedExperience;
+          // Add 10 points everytime a work experience is added
+          updated.points += 10;
         }))
       })
       .then(() => {
