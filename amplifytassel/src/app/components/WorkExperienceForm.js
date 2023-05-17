@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box';
-import React from 'react';
+import React, { useState } from 'react';
 import {StepLabel} from '@mui/material';
 import Paper from '@mui/material/Paper';
 import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
@@ -36,6 +36,12 @@ export const sortWorkExperience = (experience) => {
  */
 export default function WorkExperienceForm({onClose}) {
   const {userProfile, setUserProfile} = useAuth();
+  const [curPosition, setCurPosition] = useState(false);
+
+  const handleCurPositionChange = (e) => {
+    const value = e.target.checked;
+    setCurPosition(value);
+  };
 
   const formValues = {
     jobtitle: '',
@@ -57,10 +63,11 @@ export default function WorkExperienceForm({onClose}) {
     startdate: Yup
         .date()
         .required('Start date is required'),
-    enddate: Yup
-        .date()
-        .min(Yup.ref('startdate'), 'End date must be after start date')
-        .required('End date is required'),
+    enddate: Yup.date().when([], {
+      is: () => curPosition,
+      then: () => Yup.date().notRequired(),
+      otherwise: () => Yup.date().min(Yup.ref('startdate'), 'End date must be after start date').required('End date is required'),
+    })
   });
 
   const {
@@ -236,12 +243,14 @@ export default function WorkExperienceForm({onClose}) {
                   label='Start Date'
                   register={register}
                 />
-                <DateInput2
-                  name='enddate'
-                  control={control}
-                  label='End Date'
-                  register={register}
-                />
+                {!curPosition &&
+                  <DateInput2
+                    name='enddate'
+                    control={control}
+                    label='End Date'
+                    register={register}
+                  />
+                }
               </Box>
             </LocalizationProvider>
           </Box>
@@ -258,6 +267,7 @@ export default function WorkExperienceForm({onClose}) {
             name='currentPosition'
             control={control}
             label='Current Position'
+            customOnChange={handleCurPositionChange}
           />
         </Box>
       </Box>
