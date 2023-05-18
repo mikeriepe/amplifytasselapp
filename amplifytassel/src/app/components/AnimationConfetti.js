@@ -7,8 +7,12 @@ import Confetti from 'react-confetti';
  */
 
 export default function AnimationConfetti({setVisible}) {
+  const height = Math.max(
+    document.body.scrollHeight, document.documentElement.scrollHeight,
+    document.body.offsetHeight, document.documentElement.offsetHeight,
+    document.body.clientHeight, document.documentElement.clientHeight
+  );
   const width = window.innerWidth;
-  const height = window.innerHeight;
 
   return (
     <Confetti
