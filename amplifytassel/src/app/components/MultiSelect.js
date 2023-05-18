@@ -11,6 +11,17 @@ import {
 import CancelIcon from "@mui/icons-material/Cancel";
 import CheckIcon from "@mui/icons-material/Check";
 
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
 export const MultiSelectContext = createContext();
 export const useMultiSelectContext = () => useContext(MultiSelectContext);
 
@@ -27,6 +38,7 @@ export default function MultiSelect({data}) {
       <InputLabel>Select Major(s)</InputLabel>
       <Select
         multiple
+        MenuProps={MenuProps}
         value={selectedMajors}
         onChange={(e) => setSelectedMajors(e.target.value)}
         input={<OutlinedInput label="Multiple Select" />}

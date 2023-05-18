@@ -255,6 +255,9 @@ export default function UpdateProfile() {
     DataStore.query(Major)
       .then((majorsTotal) => {
         // console.log('majorsTotal', majorsTotal);
+        majorsTotal = majorsTotal.sort(function(a, b) {
+          return (a.name > b.name) ? 1 : -1;
+        })
         setTotalMajors(majorsTotal.map(major => major.name));
         return DataStore.query(Major, m => m.profiles.profileId.eq(userProfile.id));
       })

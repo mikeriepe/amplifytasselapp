@@ -26,7 +26,7 @@ import {DropdownInput} from './DropdownInput';
 import {CheckboxInput} from './CheckboxInput';
 import {DateInput} from './DateInput';
 import { DataStore, Storage } from 'aws-amplify';
-import { Keyword } from '../../models';
+import { Keyword, Major } from '../../models';
 import { Opportunity } from '../../models';
 
 const Banner = ({image}, props) => {
@@ -62,6 +62,8 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
   const [fileDataURL, setFileDataURL] = useState(defaultValues.eventBanner);
   const [fileKey, setFileKey] = useState(defaultValues.bannerKey);
   const [banner, setBanner] = useState(null);
+  const [selectedMajors, setSelectedMajors] = useState([]);
+  const [totalMajors, setTotalMajors] = useState([]);
   if(fileKey != '' && fileDataURL == defaultValues.eventBanner) {
     Storage.get(fileKey, {
       level: 'public'
@@ -351,6 +353,19 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
     downloadFile();
     console.log(fileKey);
     //setAndUpload(fileData);
+
+    // get all majors
+    DataStore.query(Major)
+    .then((majorsTotal) => {
+      // console.log('majorsTotal', majorsTotal);
+      majorsTotal = majorsTotal.sort(function(a, b) {
+        return (a.name > b.name) ? 1 : -1;
+      })
+      setTotalMajors(majorsTotal.map(major => major.name));
+    })
+    .catch((err) => {
+      console.log(err);
+    })
   }, [fileKey]);
 
   /*
@@ -781,7 +796,7 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
             name='subject'
             control={control}
             label='Subject'
-            options={subjectOptions}
+            options={totalMajors}
             register={register}
           />
           <TextInput
