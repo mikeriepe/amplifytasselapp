@@ -162,7 +162,7 @@ export default function UpdateProfile() {
     // Calculate the points and add them
     const pointsToAdd = await calculatePointsEarned(userProfile, selectedMajors, selectedKeywords, values);
     const oldPoints = userProfile.points;
-    PointsAddition(pointsToAdd, userProfile.id);
+    PointsAddition(pointsToAdd, userProfile.id, setUserProfile);
     // Check if they leveled up
     let toasterStr = '';
     if (pointsToAdd > 0) {
