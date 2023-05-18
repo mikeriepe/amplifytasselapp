@@ -15,7 +15,8 @@ import { Opportunity } from '../../models';
 import { Role } from '../../models';
 import { OpportunityStatus, Keyword } from '../../models';
 import { PointsAddition } from '../util/PointsAddition';
-
+import useAnimation from '../util/AnimationContext';
+import { calculateIfUserLeveledUp } from '../util/PointsAddition';
 
 const Page = styled((props) => (
   <MuiBox {...props} />
@@ -243,8 +244,12 @@ function Opportunities({
   getAllKeywords,
   getJoinedOpportunities,
 }, props) {
-  const {userProfile} = useAuth();
+  const {userProfile, setUserProfile} = useAuth();
   const location = useLocation();
+  const {
+    setShowConfettiAnimation,
+    setShowStarAnimation
+  } = useAnimation();
   //const keywords = await DataStore.query(Keyword);
   let defaultTab = null;
   if (location.state === null) {
@@ -392,7 +397,19 @@ function Opportunities({
       Requests: {},
       ...data,
     };
-    PointsAddition(50, userProfile.id);
+    let toasterStr = '';
+    const oldPoints = userProfile.points;
+    const isLevelUp = calculateIfUserLeveledUp(oldPoints, 50);
+    PointsAddition(50, userProfile.id, setUserProfile);
+    if (isLevelUp) {
+      // Display confetti animation
+      setShowConfettiAnimation(true);
+      toasterStr = 'and you leveled up!';
+    } else {
+      // Display star animation
+      setShowStarAnimation(true);
+      toasterStr = 'and you earned 50 points!';
+    }
     const image = await Storage.get(data.bannerKey, {
       level: 'public'
     });
@@ -425,7 +442,7 @@ function Opportunities({
       .then((res) => {
         console.log(res);
         console.log("Saved...");
-          toast.success('Opportunity Created', {
+          toast.success(`Opportunity Created ${toasterStr}`, {
             position: 'top-right',
             autoClose: 5000,
             hideProgressBar: false,

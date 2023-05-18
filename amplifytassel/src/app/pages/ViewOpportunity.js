@@ -15,6 +15,8 @@ import {toast} from 'react-toastify';
 import { DataStore, Storage } from 'aws-amplify';
 import { Opportunity, Role, Profile, Keyword, Request } from '../../models';
 import { PointsAddition } from '../util/PointsAddition';
+import useAnimation from '../util/AnimationContext';
+import { calculateIfUserLeveledUp } from '../util/PointsAddition';
 
 const Page = styled((props) => (
   <MuiBox {...props} />
@@ -75,7 +77,7 @@ export default function FetchWrapper() {
  */
 function ViewOpportunity({opportunity}) {
   const params = useParams();
-  const {userProfile} = useAuth();
+  const {userProfile, setUserProfile} = useAuth();
   const [isCreator, setIsCreator] = useState(false);
   const [creator, setCreator] = useState(null);
   const [tab, setTab] = useState(0);
@@ -84,6 +86,11 @@ function ViewOpportunity({opportunity}) {
   const [showReqForm, setshowReqForm] = React.useState(false);
   const [requestMessage, setRequestMessage] = React.useState('');
   const [requestedRole, setRequestedRole] = React.useState('');
+
+  const {
+    setShowConfettiAnimation,
+    setShowStarAnimation
+  } = useAnimation();
   // REMOVE REQUESTED ROLE STATE
   // list of all the participants
 
@@ -119,13 +126,13 @@ function ViewOpportunity({opportunity}) {
       opportunityid: opportunity.id,
       role: requestedRole,
     };
+
     postRequestToOpportunity(requestData);
-    PointsAddition(25,requestData.requester);
     setshowReqForm(false);
     setRequestMessage('');
   };
 
-  const postRequestToOpportunity = async (requestData) => {
+  const postRequestToOpportunity = async (requestData, toasterStr) => {
     // Check if the profile already sent a request to this opportunity
     // extract the general participant role from the roles
     let genParticipantRole = {}
@@ -153,6 +160,20 @@ function ViewOpportunity({opportunity}) {
         progress: undefined,
       });
     } else {
+      let toasterStr = '';
+      const oldPoints = userProfile.points;
+      const isLevelUp = calculateIfUserLeveledUp(oldPoints, 25);
+      PointsAddition(25, requestData.requester, setUserProfile);
+      if (isLevelUp) {
+        // Display confetti animation
+        setShowConfettiAnimation(true);
+        toasterStr = 'and you leveled up!';
+      } else {
+        // Display star animation
+        setShowStarAnimation(true);
+        toasterStr = 'and you earned 25 points!';
+      }
+
       await DataStore.save(
         new Request({
           status: 'PENDING',
@@ -164,7 +185,7 @@ function ViewOpportunity({opportunity}) {
         })
       );
       // toast notification
-      toast.success(`Applied to ${opportunity.eventName}`, {
+      toast.success(`Applied to ${opportunity.eventName} ${toasterStr}`, {
         position: 'top-right',
         autoClose: 5000,
         hideProgressBar: false,
