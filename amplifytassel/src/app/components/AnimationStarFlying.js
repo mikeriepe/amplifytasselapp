@@ -21,9 +21,8 @@ export default function AnimationStarFlying({setVisible}) {
       { opacity: 0, x: width * 0.90, y: window.pageYOffset + height * 0.10, onRest: () => {setVisible(false);}},
     ],
     config: {
-      friction: 40,
+      friction: 30,
     },
-    delay: 100,
   })
 
   return (
