@@ -1,17 +1,18 @@
 import { DataStore } from '@aws-amplify/datastore';
 import {  Profile } from '../../models';
+import useAuth from './AuthContext';
 
-export async function PointsAddition(points, profileid) {
-
+export async function PointsAddition(points, profileid, setUserProfile) {
   try{
-  let res = await DataStore.query(Profile, profileid);
-  await DataStore.save(Profile.copyOf(res, updated => {
-      updated.points = updated.points + points;
-    }));
+    let res = await DataStore.query(Profile, profileid);
+    const updatedProfile = await DataStore.save(Profile.copyOf(res, updated => {
+        updated.points = updated.points + points;
+      }));
+    setUserProfile(updatedProfile);
   }
   catch (error) {
-      console.error("Error updating points: ", error);
-      return false;
+    console.error("Error updating points: ", error);
+    return false;
   }
   return true;
 }
