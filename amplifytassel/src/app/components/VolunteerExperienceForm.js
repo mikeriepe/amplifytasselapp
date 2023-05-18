@@ -15,11 +15,12 @@ import {CheckboxInput2} from './CheckboxInput2';
 import ThemedButton from '../components/ThemedButton';
 import useAuth from '../util/AuthContext';
 import {sortWorkExperience} from './WorkExperienceForm';
+import useAnimation from '../util/AnimationContext';
 
 import { DataStore } from '@aws-amplify/datastore';
 import { Profile } from '../../models';
-import { PointsAddition } from '../util/PointsAddition';
 
+import { calculateIfUserLeveledUp } from '../util/PointsAddition';
 
 
 /**
@@ -37,6 +38,12 @@ export default function VolunteerExperienceForm({onClose}) {
     const value = e.target.checked;
     setCurPosition(value);
   };
+
+  // animations
+  const {
+    setShowConfettiAnimation,
+    setShowStarAnimation
+  } = useAnimation();
 
   const formValues = {
     jobtitle: '',
@@ -151,6 +158,8 @@ export default function VolunteerExperienceForm({onClose}) {
 
     const sortedVolunteerExperience = sortWorkExperience(volunteerExperienceCpy);
 
+    let toasterStr = '';
+
     DataStore.query(Profile, userProfile.id)
       .then((res) => {
         DataStore.save(Profile.copyOf(res, updated => {
@@ -158,13 +167,26 @@ export default function VolunteerExperienceForm({onClose}) {
           // Add 10 points everytime a volunteer experience is added
           updated.points += 10;
         }))
+        // Check if they leveled up
+        const isLevelUp = calculateIfUserLeveledUp(res.points, 10);
+        if (isLevelUp) {
+          // Display confetti animation
+          setShowConfettiAnimation(true);
+          // Toaster notification to tell them they leveled up
+          toasterStr = 'and you leveled up!';
+        } else {
+          // Display star animation
+          setShowStarAnimation(true);
+          // Toaster notification to tell them they earned 10 points
+          toasterStr = 'and you earned 10 points!';
+        }
       })
       .then(() => {
         console.log('volunteer experience updated');
         const userProfileCpy = {...userProfile};
         userProfileCpy.volunteerExperience = sortedVolunteerExperience;
         setUserProfile(userProfileCpy);
-        toast.success('Account updated', {
+        toast.success(`Account updated ${toasterStr}`, {
           position: 'top-right',
           autoClose: 5000,
           hideProgressBar: false,

@@ -14,11 +14,11 @@ import {DateInput2} from './DateInput2';
 import {CheckboxInput2} from './CheckboxInput2';
 import ThemedButton from '../components/ThemedButton';
 import useAuth from '../util/AuthContext';
+import useAnimation from '../util/AnimationContext';
 
 import { DataStore } from '@aws-amplify/datastore';
 import { Profile } from '../../models';
-import { PointsAddition } from '../util/PointsAddition';
-
+import { calculateIfUserLeveledUp } from '../util/PointsAddition';
 
 export const sortWorkExperience = (experience) => {
   const experienceSorted = [...experience].sort((a, b) => (
@@ -37,6 +37,12 @@ export const sortWorkExperience = (experience) => {
 export default function WorkExperienceForm({onClose}) {
   const {userProfile, setUserProfile} = useAuth();
   const [curPosition, setCurPosition] = useState(false);
+
+  // animations
+  const {
+    setShowConfettiAnimation,
+    setShowStarAnimation
+  } = useAnimation();
 
   const handleCurPositionChange = (e) => {
     const value = e.target.checked;
@@ -122,6 +128,8 @@ export default function WorkExperienceForm({onClose}) {
     const sortedExperience = sortWorkExperience(experienceObj);
     console.log('sortedExperience', sortedExperience);
     
+    let toasterStr = '';
+
     DataStore.query(Profile, userProfile.id)
       .then((res) => {
         DataStore.save(Profile.copyOf(res, updated => {
@@ -129,13 +137,24 @@ export default function WorkExperienceForm({onClose}) {
           // Add 10 points everytime a work experience is added
           updated.points += 10;
         }))
+        // Check if they leveled up
+        const isLevelUp = calculateIfUserLeveledUp(res.points, 10);
+        if (isLevelUp) {
+          // Display confetti animation
+          setShowConfettiAnimation(true);
+          toasterStr = 'and you leveled up!';
+        } else {
+          // Display star animation
+          setShowStarAnimation(true);
+          toasterStr = 'and you earned 10 points!';
+        }
       })
       .then(() => {
         console.log('experience updated');
         const userProfileCpy = {...userProfile};
         userProfileCpy.experience = sortedExperience;
         setUserProfile(userProfileCpy);
-        toast.success('Account updated', {
+        toast.success(`Account updated ${toasterStr}`, {
           position: 'top-right',
           autoClose: 5000,
           hideProgressBar: false,
