@@ -9,6 +9,8 @@ import OpportunityForm from '../components/OpportunityForm';
 import {Modal} from '@mui/material';
 import useAuth from '../util/AuthContext';
 import {toast} from 'react-toastify';
+import useAnimation from '../util/AnimationContext';
+import { calculateIfUserLeveledUp } from '../util/PointsAddition';
 
 import { DataStore, Storage } from 'aws-amplify';
 import { Opportunity } from '../../models';
@@ -85,8 +87,13 @@ const formValues = {
  * @return {HTML} Dashboard header component
  */
 export default function DashboardCreate({getCreatedOpportunities}) {
-  const {userProfile} = useAuth();
+  const {userProfile, setUserProfile} = useAuth();
   const [showOppForm, setShowOppForm] = useState(false);
+  
+  const {
+    setShowConfettiAnimation,
+    setShowStarAnimation
+  } = useAnimation();
 
   const handleModalClose = () => {
     setShowOppForm(!showOppForm);
@@ -105,7 +112,21 @@ export default function DashboardCreate({getCreatedOpportunities}) {
       Requests: {},
       ...data,
     };
-    PointsAddition(50, userProfile.id);
+
+    let toasterStr = '';
+    const oldPoints = userProfile.points;
+    const isLevelUp = calculateIfUserLeveledUp(oldPoints, 50);
+    PointsAddition(50, userProfile.id, setUserProfile);
+    if (isLevelUp) {
+      // Display confetti animation
+      setShowConfettiAnimation(true);
+      toasterStr = 'and you leveled up!';
+    } else {
+      // Display star animation
+      setShowStarAnimation(true);
+      toasterStr = 'and you earned 50 points!';
+    }
+
     if(data.imgData != null) {
       Storage.put(uuidv4() + "-" + data.imgData.name, data.imgData, {
         contentType: data.imgData.type,
@@ -144,9 +165,9 @@ export default function DashboardCreate({getCreatedOpportunities}) {
               })
             )
             .then((res) => {
-              console.log(res);
+              // console.log(res);
               console.log("Saved...");
-                toast.success('Opportunity Created', {
+                toast.success(`Opportunity Created ${toasterStr}`, {
                   position: 'top-right',
                   autoClose: 5000,
                   hideProgressBar: false,
@@ -233,7 +254,7 @@ export default function DashboardCreate({getCreatedOpportunities}) {
           .then((res) => {
             console.log(res);
             console.log("Saved...");
-              toast.success('Opportunity Created', {
+              toast.success(`Opportunity Created ${toasterStr}`, {
                 position: 'top-right',
                 autoClose: 5000,
                 hideProgressBar: false,

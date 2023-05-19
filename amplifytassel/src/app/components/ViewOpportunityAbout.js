@@ -13,6 +13,9 @@ import {toast} from 'react-toastify';
 import Chip from '@mui/material/Chip';
 import { DataStore } from '@aws-amplify/datastore';
 import { Major, Request, Profile } from '../../models';
+import useAnimation from '../util/AnimationContext';
+import { calculateIfUserLeveledUp } from '../util/PointsAddition';
+import { PointsAddition } from '../util/PointsAddition';
 
 /**
  * About tab for view opportunity
@@ -183,10 +186,15 @@ function RolesCard({
   const [expanded, setExpanded] = React.useState(null);
   const [majors, setMajors] = React.useState([]);
 
-  const {userProfile} = useAuth();
+  const {userProfile, setUserProfile} = useAuth();
   const [showReqForm, setshowReqForm] = React.useState(false);
   const [requestMessage, setRequestMessage] = React.useState('');
   const [requestedRole, setRequestedRole] = React.useState(null);
+
+  const {
+    setShowConfettiAnimation,
+    setShowStarAnimation
+  } = useAnimation();
 
   const handleModalClose = () => {
     setRequestedRole('');
@@ -234,6 +242,20 @@ function RolesCard({
         progress: undefined,
       });
     } else {
+      let toasterStr = '';
+      const oldPoints = userProfile.points;
+      const isLevelUp = calculateIfUserLeveledUp(oldPoints, 25);
+      PointsAddition(25, requestData.requester, setUserProfile);
+      if (isLevelUp) {
+        // Display confetti animation
+        setShowConfettiAnimation(true);
+        toasterStr = 'and you leveled up!';
+      } else {
+        // Display star animation
+        setShowStarAnimation(true);
+        toasterStr = 'and you earned 25 points!';
+      }
+
       await DataStore.save(
         new Request({
           status: 'PENDING',
@@ -245,7 +267,7 @@ function RolesCard({
         })
       );
       // toast notification
-      toast.success(`Applied to ${opportunityName}`, {
+      toast.success(`Applied to ${opportunityName} ${toasterStr}`, {
         position: 'top-right',
         autoClose: 5000,
         hideProgressBar: false,

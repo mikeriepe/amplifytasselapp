@@ -10,17 +10,18 @@ import StarRoundedIcon from '@mui/icons-material/StarRounded';
  */
 
 export default function AnimationStarFlying({setVisible}) {
+  // const {width, height} = useWindowSize();
   const width = window.innerWidth;
   const height = window.innerHeight;
 
   const firstStep = useSpring({
-    from: { position: "absolute", opacity: 0, x: width * 0.3, y: height * 0.7},
+    from: { position: "absolute", opacity: 0, x: width * 0.3, y: window.pageYOffset + height * 0.7},
     to: [
-      { opacity: 1, x: width * 0.50, y: height * 0.5},
-      { opacity: 0, x: width * 0.80, y: height * 0.2, onRest: () => {setVisible(false);}},
+      { opacity: 1, x: width * 0.50, y: window.pageYOffset + height * 0.50},
+      { opacity: 0, x: width * 0.90, y: window.pageYOffset + height * 0.10, onRest: () => {setVisible(false);}},
     ],
     config: {
-      friction: 40,
+      friction: 30,
     },
   })
 

@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box';
-import React from 'react';
+import React, {useState} from 'react';
 import {StepLabel} from '@mui/material';
 import Paper from '@mui/material/Paper';
 import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
@@ -15,11 +15,12 @@ import {CheckboxInput2} from './CheckboxInput2';
 import ThemedButton from '../components/ThemedButton';
 import useAuth from '../util/AuthContext';
 import {sortWorkExperience} from './WorkExperienceForm';
+import useAnimation from '../util/AnimationContext';
 
 import { DataStore } from '@aws-amplify/datastore';
 import { Profile } from '../../models';
-import { PointsAddition } from '../util/PointsAddition';
 
+import { calculateIfUserLeveledUp } from '../util/PointsAddition';
 
 
 /**
@@ -31,6 +32,18 @@ import { PointsAddition } from '../util/PointsAddition';
  */
 export default function VolunteerExperienceForm({onClose}) {
   const {userProfile, setUserProfile} = useAuth();
+  const [curPosition, setCurPosition] = useState(false);
+
+  const handleCurPositionChange = (e) => {
+    const value = e.target.checked;
+    setCurPosition(value);
+  };
+
+  // animations
+  const {
+    setShowConfettiAnimation,
+    setShowStarAnimation
+  } = useAnimation();
 
   const formValues = {
     jobtitle: '',
@@ -52,10 +65,11 @@ export default function VolunteerExperienceForm({onClose}) {
     startdate: Yup
         .date()
         .required('Start date is required'),
-    enddate: Yup
-        .date()
-        .min(Yup.ref('startdate'), 'End date must be after start date')
-        .required('End date is required'),
+    enddate: Yup.date().when([], {
+      is: () => curPosition,
+      then: () => Yup.date().notRequired(),
+      otherwise: () => Yup.date().min(Yup.ref('startdate'), 'End date must be after start date').required('End date is required'),
+    })
   });
 
   const {
@@ -144,6 +158,8 @@ export default function VolunteerExperienceForm({onClose}) {
 
     const sortedVolunteerExperience = sortWorkExperience(volunteerExperienceCpy);
 
+    let toasterStr = '';
+
     DataStore.query(Profile, userProfile.id)
       .then((res) => {
         DataStore.save(Profile.copyOf(res, updated => {
@@ -151,13 +167,30 @@ export default function VolunteerExperienceForm({onClose}) {
           // Add 10 points everytime a volunteer experience is added
           updated.points += 10;
         }))
+        .then((updatedProfile) => {
+          console.log(updatedProfile);
+          setUserProfile(updatedProfile);
+        })
+        // Check if they leveled up
+        const isLevelUp = calculateIfUserLeveledUp(res.points, 10);
+        if (isLevelUp) {
+          // Display confetti animation
+          setShowConfettiAnimation(true);
+          // Toaster notification to tell them they leveled up
+          toasterStr = 'and you leveled up!';
+        } else {
+          // Display star animation
+          setShowStarAnimation(true);
+          // Toaster notification to tell them they earned 10 points
+          toasterStr = 'and you earned 10 points!';
+        }
       })
       .then(() => {
         console.log('volunteer experience updated');
-        const userProfileCpy = {...userProfile};
-        userProfileCpy.volunteerExperience = sortedVolunteerExperience;
-        setUserProfile(userProfileCpy);
-        toast.success('Account updated', {
+        // const userProfileCpy = {...userProfile};
+        // userProfileCpy.volunteerExperience = sortedVolunteerExperience;
+        // setUserProfile(userProfileCpy);
+        toast.success(`Account updated ${toasterStr}`, {
           position: 'top-right',
           autoClose: 5000,
           hideProgressBar: false,
@@ -265,12 +298,14 @@ export default function VolunteerExperienceForm({onClose}) {
                   label='Start Date'
                   register={register}
                 />
-                <DateInput2
-                  name='enddate'
-                  control={control}
-                  label='End Date'
-                  register={register}
-                />
+                {!curPosition &&
+                  <DateInput2
+                    name='enddate'
+                    control={control}
+                    label='End Date'
+                    register={register}
+                  />
+                }
               </Box>
             </LocalizationProvider>
           </Box>
@@ -286,6 +321,7 @@ export default function VolunteerExperienceForm({onClose}) {
             name='currentPosition'
             control={control}
             label='Current Position'
+            customOnChange={handleCurPositionChange}
           />
         </Box>
       </Box>
