@@ -4,6 +4,17 @@ import FormHelperText from '@mui/material/FormHelperText';
 import Box from '@mui/material/Box';
 import {Controller} from 'react-hook-form';
 
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
 export const DropdownInput = ({
   name,
   control,
@@ -15,11 +26,19 @@ export const DropdownInput = ({
   const generateSingleOptions = () => {
     if (options) {
       return options.map((option) => {
-        return (
-          <MenuItem key={option.value} value={option.value}>
-            {option.label}
-          </MenuItem>
-        );
+        if (option.value === undefined) {
+          return (
+            <MenuItem key={option} value={option}>
+              {option}
+            </MenuItem>
+          );
+        } else {
+          return (
+            <MenuItem key={option.value} value={option.value}>
+              {option.value}
+            </MenuItem>
+          );
+        }
       });
     } else {
       return [];
@@ -44,7 +63,8 @@ export const DropdownInput = ({
                 marginBottom: '5px',
                 width: '-webkit-fill-available',
               }}
-              label={label}
+              label={name}
+              MenuProps={MenuProps}
               labelId='select-label'
               onChange={(e) => {
                 if (customOnChange) {

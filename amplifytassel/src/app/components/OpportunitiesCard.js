@@ -30,6 +30,7 @@ import { Opportunity, Profile, Request, Role, RequestStatus, ProfileRole, Opport
 import { Storage } from 'aws-amplify';
 import useAnimation from '../util/AnimationContext';
 import { calculateIfUserLeveledUp } from '../util/PointsAddition';
+import { v4 as uuidv4 } from 'uuid';
 
 
 const IconStyling = {
@@ -272,6 +273,7 @@ export default function OpportunitiesCard({
   };
 
   const downloadFile = async () => {
+    //console.log(opportunity.bannerKey);
     const img = await Storage.get(opportunity.bannerKey, {
       level: "public"
     });
@@ -462,12 +464,10 @@ export default function OpportunitiesCard({
       }
     })
     .then(async (res) => {
-      if(data.bannerKey != null) {
-        const image = await Storage.get(data.bannerKey, {
+      if (data.imgData == null) {
+        const image = await Storage.get(opportunity.bannerkey, {
           level: 'public'
         });
-        await Storage.remove(opportunity.bannerKey);
-        //console.log(data.bannerKey);
         DataStore.save(Opportunity.copyOf(opportunity, updated => {
           updated.eventName = data.name;
           updated.description = data.description;
@@ -478,7 +478,7 @@ export default function OpportunitiesCard({
           updated.location = data.location;
           updated.organizations = data.organizations;
           updated.subject = data.subject;
-          updated.bannerKey = data.bannerKey;
+          updated.bannerKey = opportunity.bannerKey;
           updated.eventBanner = image;
         })
         )
@@ -487,12 +487,45 @@ export default function OpportunitiesCard({
           getCreatedOpportunities();
           console.log(res);
         });
-      }
+      } 
       else {
-        const image = await Storage.get(opportunity.bannerKey, {
-          level: 'public'
-        })
-          console.log('opp');
+        if(data.imgData.name != 'sc.jpg') {
+          Storage.put(uuidv4() + "-" + data.imgData.name, data.imgData, {
+            contentType: data.imgData.type,
+          })
+          .then(async (res2) => {
+            const image = await Storage.get(res2.key, {
+              level: 'public'
+            });
+            if(opportunity.bannerKey != 'sc.jpg') {
+              await Storage.remove(opportunity.bannerKey);
+            }
+            //console.log(data.bannerKey);
+            DataStore.save(Opportunity.copyOf(opportunity, updated => {
+              updated.eventName = data.name;
+              updated.description = data.description;
+              updated.eventData = data.eventdata;
+              updated.startTime = data.startTime.toISOString();
+              updated.endTime = data.endTime.toISOString();
+              updated.locationType = data.locationType;
+              updated.location = data.location;
+              updated.organizations = data.organizations;
+              updated.subject = data.subject;
+              updated.bannerKey = res2.key;
+              updated.eventBanner = image;
+            })
+            )
+            .then((res) => {
+              handleOppModalClose();
+              getCreatedOpportunities();
+              console.log(res);
+            });
+          })
+        }
+        else {
+          const image = await Storage.get(opportunity.bannerkey, {
+            level: 'public'
+          });
           DataStore.save(Opportunity.copyOf(opportunity, updated => {
             updated.eventName = data.name;
             updated.description = data.description;
@@ -507,11 +540,12 @@ export default function OpportunitiesCard({
             updated.eventBanner = image;
           })
           )
-        .then((res) => {
-          handleOppModalClose();
-          getCreatedOpportunities();
-          console.log(res);
-        });
+          .then((res) => {
+            handleOppModalClose();
+            getCreatedOpportunities();
+            console.log(res);
+          });
+        }
       }
     });
   };
@@ -662,7 +696,7 @@ export default function OpportunitiesCard({
     zoomLink : opportunity.zoomLink,
     organizations : opportunity.organizations,
     description : opportunity.description,
-    eventBanner : opportunity.eventBanner,
+    //eventBanner : opportunity.eventBanner,
     name : opportunity.eventName,
     startTime : opportunity.startTime,
     endTime : opportunity.endTime,
@@ -676,6 +710,7 @@ export default function OpportunitiesCard({
     Roles : oppRoles,
     keywords : oppKeywords,
     bannerKey: opportunity.bannerKey
+
   };
 
   

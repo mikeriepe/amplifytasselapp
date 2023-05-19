@@ -26,6 +26,11 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import Tooltip from '@mui/material/Tooltip';
 import HelpIcon from '@mui/icons-material/Help';
+import Alert from '@mui/material/Alert';
+import InfoIcon from '@mui/icons-material/Info';
+import WarningIcon from '@mui/icons-material/Warning';
+import CheckIcon from '@mui/icons-material/Check';
+
 
 import useAnimation from '../util/AnimationContext';
 import { DataStore } from '@aws-amplify/datastore';
@@ -252,6 +257,9 @@ export default function UpdateProfile() {
     // get selectedKeywords, keywords, allKeywords
     DataStore.query(Keyword, (k) => k.Profiles.profile.id.eq(userProfile.id))
       .then((keywords) => {
+        keywords = keywords.sort(function(a, b) {
+          return (a.name > b.name) ? 1 : -1;
+        })
         setSelectedKeywords(keywords);
         setValues({
           1: {
@@ -266,6 +274,9 @@ export default function UpdateProfile() {
           .then((keywordsAll) => {
             // console.log('keywords', keywords);
             // console.log('keywordsAll', keywordsAll);
+            keywordsAll = keywordsAll.sort(function(a, b) {
+              return (a.name > b.name) ? 1 : -1;
+            })
             let keywordsIdArray = keywords.map((obj) => (obj.id));
             setAllKeywords(keywordsAll.filter(k => !keywordsIdArray.includes(k.id)));
           })
@@ -277,6 +288,9 @@ export default function UpdateProfile() {
     DataStore.query(Major)
       .then((majorsTotal) => {
         // console.log('majorsTotal', majorsTotal);
+        majorsTotal = majorsTotal.sort(function(a, b) {
+          return (a.name > b.name) ? 1 : -1;
+        })
         setTotalMajors(majorsTotal.map(major => major.name));
         return DataStore.query(Major, m => m.profiles.profileId.eq(userProfile.id));
       })
@@ -304,19 +318,33 @@ export default function UpdateProfile() {
                 { display: null }
               }>
                 <div>
+                  {(userProfile.points === null || userProfile.points === 0) &&
+                    <div>
+                      <Alert
+                        style={{ width: '800px', marginTop: '20px', textAlign: 'center' }}
+                        severity="info"
+                        icon={<InfoIcon fontSize="inherit" className='icon' />}
+                      >
+                        <div className='alert-text' color="warning">
+                          Earn <strong>+100</strong> Tassel points by filling out your profile!
+                        </div>
+                      </Alert>
+                      <div>
+                        <br></br>
+                      </div>
+                    </div>
+                  }
+                </div>
+                <div>
                   <h2 className='text-normal'>Update Profile</h2>
-                  <p className='text-light text-warning'>
-                    Required <span className='text-bold'>*</span>
-                  </p>
                 </div>
                 <div className='grid-flow-large' width='100%'>
                   <div className='grid-flow-small' aria-label={'Update Profile Grad Year'}>
                     <p className='text-bold'>
                       Graduation Year
-                      <span className='text-bold text-warning'>*</span>
-                      <Tooltip title="Fill out this field to get 10 points" arrow>
+                      {/* <Tooltip title="Fill out this field to get 10 points" arrow>
                         <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
-                      </Tooltip>
+                      </Tooltip> */}
                     </p>
                     <ThemedInput
                       placeholder={'Enter your graduation year'}
@@ -330,10 +358,10 @@ export default function UpdateProfile() {
                   </div>
                   <div className='grid-flow-small' aria-label={'Update Profile Major'}>
                     <p className='text-bold'>
-                      Major <span className='text-bold text-warning'>*</span>
-                      <Tooltip title="Fill out this field to get 10 points" arrow>
+                      Major
+                      {/* <Tooltip title="Fill out this field to get 10 points" arrow>
                         <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
-                      </Tooltip>
+                      </Tooltip> */}
                     </p>
                     <div>
                       {totalMajors.length && <MultiSelect data={totalMajors} />}
@@ -342,9 +370,9 @@ export default function UpdateProfile() {
                   <div className='grid-flow-small' aria-label={'Update Profile Location'}>
                     <p className='text-bold'>
                       Location
-                      <Tooltip title="Fill out this field to get 10 points" arrow>
+                      {/* <Tooltip title="Fill out this field to get 10 points" arrow>
                         <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
-                      </Tooltip>
+                      </Tooltip> */}
                     </p>
                     
                     <ThemedInput
@@ -360,9 +388,9 @@ export default function UpdateProfile() {
                   <div className='grid-flow-small' aria-label={'Update Profile About'}>
                     <p className='text-bold'>
                       About You
-                      <Tooltip title="Fill out this field to get 10 points" arrow>
+                      {/* <Tooltip title="Fill out this field to get 10 points" arrow>
                         <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
-                      </Tooltip>
+                      </Tooltip> */}
                     </p>
                     <ThemedInput
                       placeholder={'Tell people a little about yourself'}
@@ -381,9 +409,9 @@ export default function UpdateProfile() {
                     >
                       <p className='text-bold' aria-label={'Update Profile Work Experience'}>
                         Work Experience
-                        <Tooltip title="Fill out this field to get 10 points" arrow>
+                        {/* <Tooltip title="Fill out this field to get 10 points" arrow>
                         <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
-                      </Tooltip>
+                      </Tooltip> */}
                       </p>
                       <div className='flex-space-between flex-align-center'>
                         {(
@@ -426,9 +454,9 @@ export default function UpdateProfile() {
                     >
                       <p className='text-bold' aria-label={'Update Profile Volunteer Experience'}>
                         Volunteer Experience
-                        <Tooltip title="Fill out this field to get 10 points" arrow>
+                        {/* <Tooltip title="Fill out this field to get 10 points" arrow>
                         <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
-                      </Tooltip>
+                      </Tooltip> */}
                       </p>
                       <div className='flex-space-between flex-align-center'>
                         {(
@@ -471,9 +499,9 @@ export default function UpdateProfile() {
                     >
                       <p className='text-bold' aria-label={'Update Profile Interests'}>
                         Interests
-                        <Tooltip title="Fill out this field to get 10 points" arrow>
+                        {/* <Tooltip title="Fill out this field to get 10 points" arrow>
                         <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
-                      </Tooltip>
+                      </Tooltip> */}
                       </p>
                     </div>
                     <div className='flex'>
