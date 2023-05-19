@@ -144,7 +144,7 @@ export const schema = {
                 "picture": {
                     "name": "picture",
                     "isArray": false,
-                    "type": "AWSURL",
+                    "type": "String",
                     "isRequired": false,
                     "attributes": []
                 },
@@ -365,6 +365,13 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
+                "points": {
+                    "name": "points",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -529,16 +536,9 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
-                "picture": {
-                    "name": "picture",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "firstName": {
-                    "name": "firstName",
-                    "isArray": false,
+                "qualifications": {
+                    "name": "qualifications",
+                    "isArray": true,
                     "type": "String",
                     "isRequired": false,
                     "attributes": [],
@@ -601,20 +601,6 @@ export const schema = {
                 },
                 "capacity": {
                     "name": "capacity",
-                    "isArray": false,
-                    "type": "Int",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "banner": {
-                    "name": "banner",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "points": {
-                    "name": "points",
                     "isArray": false,
                     "type": "Int",
                     "isRequired": false,
@@ -2250,10 +2236,6 @@ export const schema = {
             }
         }
     },
-<<<<<<< HEAD
     "codegenVersion": "3.3.5",
-    "version": "3aa38aea5bb42c782b0af6472ed0ffd3"
-=======
-    "codegenVersion": "3.4.0",
     "version": "46a83cfaefd9aac99439850bf5b80702"
 };
