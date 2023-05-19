@@ -33,7 +33,7 @@ export default function NewForm1(props) {
     about: "",
     location: "",
     graduationYear: "",
-    Field0: "",
+    Field0: undefined,
     banner: "",
     points: "",
   };
@@ -135,13 +135,6 @@ export default function NewForm1(props) {
               modelFields[key] = undefined;
             }
           });
-          const modelFieldsToSave = {
-            about: modelFields.about,
-            location: modelFields.location,
-            graduationYear: modelFields.graduationYear,
-            banner: modelFields.banner,
-            points: modelFields.points,
-          };
           await DataStore.save(
             Profile.copyOf(profileRecord, (updated) => {
               Object.assign(updated, modelFields);
