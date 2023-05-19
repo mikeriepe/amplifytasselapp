@@ -230,6 +230,9 @@ export default function UpdateProfile() {
     // get selectedKeywords, keywords, allKeywords
     DataStore.query(Keyword, (k) => k.Profiles.profile.id.eq(userProfile.id))
       .then((keywords) => {
+        keywords = keywords.sort(function(a, b) {
+          return (a.name > b.name) ? 1 : -1;
+        })
         setSelectedKeywords(keywords);
         setValues({
           1: {
@@ -244,6 +247,9 @@ export default function UpdateProfile() {
           .then((keywordsAll) => {
             // console.log('keywords', keywords);
             // console.log('keywordsAll', keywordsAll);
+            keywordsAll = keywordsAll.sort(function(a, b) {
+              return (a.name > b.name) ? 1 : -1;
+            })
             let keywordsIdArray = keywords.map((obj) => (obj.id));
             setAllKeywords(keywordsAll.filter(k => !keywordsIdArray.includes(k.id)));
           })
