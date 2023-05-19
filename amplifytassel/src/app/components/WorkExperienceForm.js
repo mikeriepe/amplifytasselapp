@@ -137,6 +137,10 @@ export default function WorkExperienceForm({onClose}) {
           // Add 10 points everytime a work experience is added
           updated.points += 10;
         }))
+        .then((updatedProfile) => {
+          console.log(updatedProfile);
+          setUserProfile(updatedProfile);
+        })
         // Check if they leveled up
         const isLevelUp = calculateIfUserLeveledUp(res.points, 10);
         if (isLevelUp) {
@@ -148,12 +152,13 @@ export default function WorkExperienceForm({onClose}) {
           setShowStarAnimation(true);
           toasterStr = 'and you earned 10 points!';
         }
+        
       })
       .then(() => {
         console.log('experience updated');
-        const userProfileCpy = {...userProfile};
-        userProfileCpy.experience = sortedExperience;
-        setUserProfile(userProfileCpy);
+        // const userProfileCpy = {...userProfile};
+        // userProfileCpy.experience = sortedExperience;
+        // setUserProfile(userProfileCpy);
         toast.success(`Account updated ${toasterStr}`, {
           position: 'top-right',
           autoClose: 5000,

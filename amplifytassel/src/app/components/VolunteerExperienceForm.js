@@ -167,6 +167,10 @@ export default function VolunteerExperienceForm({onClose}) {
           // Add 10 points everytime a volunteer experience is added
           updated.points += 10;
         }))
+        .then((updatedProfile) => {
+          console.log(updatedProfile);
+          setUserProfile(updatedProfile);
+        })
         // Check if they leveled up
         const isLevelUp = calculateIfUserLeveledUp(res.points, 10);
         if (isLevelUp) {
@@ -183,9 +187,9 @@ export default function VolunteerExperienceForm({onClose}) {
       })
       .then(() => {
         console.log('volunteer experience updated');
-        const userProfileCpy = {...userProfile};
-        userProfileCpy.volunteerExperience = sortedVolunteerExperience;
-        setUserProfile(userProfileCpy);
+        // const userProfileCpy = {...userProfile};
+        // userProfileCpy.volunteerExperience = sortedVolunteerExperience;
+        // setUserProfile(userProfileCpy);
         toast.success(`Account updated ${toasterStr}`, {
           position: 'top-right',
           autoClose: 5000,
