@@ -65,6 +65,7 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
   const [selectedMajors, setSelectedMajors] = useState([]);
   const [totalMajors, setTotalMajors] = useState([]);
   if(fileKey != '' && fileDataURL == defaultValues.eventBanner) {
+    console.log(fileKey);
     Storage.get(fileKey, {
       level: 'public'
     })
@@ -351,7 +352,7 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
     //getOpportunityTypes();
     getKeywords();
     downloadFile();
-    console.log(fileKey);
+    //console.log(fileKey);
     //setAndUpload(fileData);
 
     // get all majors
@@ -837,13 +838,14 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
             //if(fileKey.length > 0) {
               //await Storage.remove(fileKey);
             //}
-            Storage.put(uuidv4() + "-" + fileData.name, fileData, {
-              contentType: fileData.type,
-            })
-            .then((res) => {
-              console.log(res);
-              setValue('bannerKey', res.key);
+            //Storage.put(uuidv4() + "-" + fileData.name, fileData, {
+              //contentType: fileData.type,
+            //})
+            //.then((res) => {
+              //console.log(res);
+              //setValue('bannerKey', res.key);
                // convert times to those on given days
+              setValue('imgData', fileData);
               const values = getValues();
 
               const combinedStart = combineTimeDate(
@@ -896,11 +898,11 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
               //setValue('bannerKey', await uploadFile());
 
               handleSubmit(onSubmit)();
-            })
-            .catch((err) => {
-              console.log(err);
-              console.log("Error uploading img");
-            })
+            //})
+            //.catch((err) => {
+              //console.log(err);
+              //console.log("Error uploading img");
+            //})
            
           }}
         >
