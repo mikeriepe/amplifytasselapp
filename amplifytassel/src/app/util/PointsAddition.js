@@ -87,3 +87,42 @@ export function calculateIfUserLeveledUp(oldPoints, pointsToAdd) {
     return false;
   }
 }
+
+/**
+ * Calculates the percentage filled in the XP bar.
+ * 
+ * @param {int} profilePoints - points on a user profile
+ * @return {float} percentage filled in the XP bar
+ */
+export function calculateXpBarPercentage(profilePoints) {
+  let level = calculateUserLevel(profilePoints);
+  let lowerBound = level == 1 ? 0 : levelToPointsMap[level - 1];
+  let upperBound = levelToPointsMap[level] ? levelToPointsMap[level] : Infinity;
+
+  // If the upper bound is infinity, then the user is level 10 and the XP bar should be fully filled
+  if (upperBound == Infinity) {
+    return 100;
+  } else {
+    let pointsIntoLevel = profilePoints - lowerBound;
+    let totalPointsThisLevel = upperBound - lowerBound;
+    return (pointsIntoLevel / totalPointsThisLevel) * 100;
+  }
+}
+
+/**
+ * Calculates how many points are needed until the user reaches the next level.
+ * 
+ * @param {int} profilePoints - points on a user profile
+ * @return {int} points needed until the next level
+ */
+export function calculatePointsToNextLevel(profilePoints) {
+  let level = calculateUserLevel(profilePoints);
+  let upperBound = levelToPointsMap[level] ? levelToPointsMap[level] : Infinity;
+
+  // If the upper bound is infinity, then the user is level 10 and no more points are needed for the next level
+  if (upperBound == Infinity) {
+    return 0;
+  } else {
+    return upperBound - profilePoints;
+  }
+}

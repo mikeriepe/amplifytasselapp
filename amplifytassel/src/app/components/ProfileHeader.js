@@ -25,7 +25,7 @@ import { Storage } from 'aws-amplify';
 import { Profile } from '../../models';
 import { v4 as uuidv4 } from 'uuid';
 import {toast} from 'react-toastify';
-import { calculateUserLevel } from '../util/PointsAddition.js';
+import { calculateUserLevel, calculateXpBarPercentage, calculatePointsToNextLevel } from '../util/PointsAddition.js';
 
 
 
@@ -178,7 +178,7 @@ const Level = ({ level }) => (
 // make xp bar bigger
 // add xp till next level
 // check if it can have marks saying 25%,50%
-const XPBar = ({ progress }) => (
+const XPBar = ({ progress,pointsToNextLevel }) => (
   <MuiBox
     sx={{
       display: 'flex',
@@ -191,7 +191,7 @@ const XPBar = ({ progress }) => (
     <div className='flex' style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
   <LinearProgressWithLabel variant="determinate" value={progress} sx={{ height: 15, width: 150 }}/>
   <div style={{ display: 'flex', justifyContent: 'center' }}>
-    <Typography variant="caption" sx={{ marginTop: '0.5em',  fontSize: '1.0rem' }}>XP to next level: {100-progress}</Typography>
+    <Typography variant="caption" sx={{ marginTop: '0.5em',  fontSize: '1.0rem' }}>XP to next level: {pointsToNextLevel}</Typography>
   </div>
 </div>
 
@@ -393,6 +393,12 @@ export default function ProfileHeader({ data,editButton }) {
     default:
       level = level1;
   }
+  let xpBarPercentage = calculateXpBarPercentage(data.points);
+  let pointsToNextLevel = calculatePointsToNextLevel(data.points);
+  console.log(data.points);
+  console.log(xpBarPercentage);
+  console.log(pointsToNextLevel);
+
   const progress = 65; 
 
   return (
@@ -422,7 +428,7 @@ export default function ProfileHeader({ data,editButton }) {
               flexDirection: 'column',
               justifyContent: 'center',
             }}>
-          { editButton && <XPBar progress={progress} sx={{ flex: 2 }}/> }
+          { editButton && <XPBar progress={xpBarPercentage} pointsToNextLevel= {pointsToNextLevel} sx={{ flex: 2 }}/> }
           { editButton &&
           <p
               className='text-blue hover-underline clickable no-highlight text-small'
