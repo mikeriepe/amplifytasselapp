@@ -18,16 +18,26 @@ import ViewOpportunity from './pages/ViewOpportunity';
 import Opportunities from './pages/Opportunities';
 import MyProfile from './pages/MyProfile';
 import ViewProfile from './pages/ViewProfile';
+import AnimationStarFlying from './components/AnimationStarFlying';
+import AnimationConfetti from './components/AnimationConfetti';
 
 import useAuth from './util/AuthContext';
 import { Amplify} from 'aws-amplify'
 import awsExports from "../aws-exports";
+import useAnimation from './util/AnimationContext';
 Amplify.configure(awsExports);
 
 const initialState = { name: '', description: '' }
 
 const App = () => {
   const {userProfile} = useAuth();
+  const {
+    showStarAnimation,
+    showConfettiAnimation,
+    setShowConfettiAnimation,
+    setShowStarAnimation
+  } = useAnimation();
+  
   return (
     <Box sx={{display: 'flex'}}>
       <ToastContainer />
@@ -51,6 +61,12 @@ const App = () => {
           <Route path='/updateprofile' element={<UpdateProfile />} />
         </Routes>
       </Box>
+      {showStarAnimation &&
+      <AnimationStarFlying setVisible={setShowStarAnimation} />
+      }
+      {showConfettiAnimation &&
+        <AnimationConfetti setVisible={setShowConfettiAnimation}/>
+      }
     </Box>
   )
 }

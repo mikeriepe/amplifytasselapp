@@ -15,6 +15,9 @@ import { Opportunity } from '../../models';
 import { Role } from '../../models';
 import { OpportunityStatus, Keyword } from '../../models';
 import { PointsAddition } from '../util/PointsAddition';
+import useAnimation from '../util/AnimationContext';
+import { calculateIfUserLeveledUp } from '../util/PointsAddition';
+import { v4 as uuidv4 } from 'uuid';
 
 
 const Page = styled((props) => (
@@ -243,8 +246,12 @@ function Opportunities({
   getAllKeywords,
   getJoinedOpportunities,
 }, props) {
-  const {userProfile} = useAuth();
+  const {userProfile, setUserProfile} = useAuth();
   const location = useLocation();
+  const {
+    setShowConfettiAnimation,
+    setShowStarAnimation
+  } = useAnimation();
   //const keywords = await DataStore.query(Keyword);
   let defaultTab = null;
   if (location.state === null) {
@@ -262,6 +269,7 @@ function Opportunities({
   const [oppTypeFilter, setOppTypeFilter] = useState([]);
   const [orgTypeFilter, setOrgTypeFilter] = useState([]);
   const [showOppForm, setShowOppForm] = useState(false);
+  const [bKey, setBKey] = useState('');
   const tabs = [
     {
       name: 'Upcoming',
@@ -370,7 +378,7 @@ function Opportunities({
     endtime: new Date(),
     subject: '',
     eventdata: '',
-    eventBanner: 'https://www.ucsc.edu/about/images/mascot-550_v2.jpg',
+    eventBanner: 'https://www.places4students.com/P4SFiles/sliders/119_ucsc-02-main-entrance-sign.jpg',
     bannerKey: ''
     //keywords: [allKeywords],
   };
@@ -392,89 +400,200 @@ function Opportunities({
       Requests: {},
       ...data,
     };
-    PointsAddition(50, userProfile.id);
-    const image = await Storage.get(data.bannerKey, {
-      level: 'public'
-    });
-    console.log("Object created...");
-    console.log(newOpportunity);
-        DataStore.save(
-          new Opportunity({
-          "zoomLink": newOpportunity.zoomLink,
-          "organizations": [newOpportunity.organization],
-          "description": newOpportunity.description,
-          "eventBanner":  image,
-          "eventName": newOpportunity.name,
-          "startTime": newOpportunity.startTime.toISOString(),
-          "endTime": newOpportunity.endTime.toISOString(),
-          "locationType": newOpportunity.locationType,
-          "location": newOpportunity.location,
-          "eventData": newOpportunity.eventdata,
-          "subject": newOpportunity.subject,
-          "preferences": [],
-          "Roles": newOpportunity.roles,
-          "Posts": newOpportunity.Posts,
-          "Requests": newOpportunity.Requests,
-          "profileID": newOpportunity.profileID,
-          "profilesJoined": newOpportunity.profilesJoined,
-          "keywords": newOpportunity.keywords,
-          "status": newOpportunity.status,
-          "bannerKey" : newOpportunity.bannerKey
-        })
-      )
+
+    let toasterStr = '';
+    const oldPoints = userProfile.points;
+    const isLevelUp = calculateIfUserLeveledUp(oldPoints, 50);
+    PointsAddition(50, userProfile.id, setUserProfile);
+    if (isLevelUp) {
+      // Display confetti animation
+      setShowConfettiAnimation(true);
+      toasterStr = 'and you leveled up!';
+    } else {
+      // Display star animation
+      setShowStarAnimation(true);
+      toasterStr = 'and you earned 50 points!';
+    }
+
+    if(data.imgData != null) {
+      Storage.put(uuidv4() + "-" + data.imgData.name, data.imgData, {
+        contentType: data.imgData.type,
+      })
       .then((res) => {
-        console.log(res);
-        console.log("Saved...");
-          toast.success('Opportunity Created', {
-            position: 'top-right',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-          
-          handleModalClose();
-          console.log("New roles: " + newOpportunity.roles.length);
-            for (let i = 0; i < newOpportunity.roles.length; i++) {
-              const newRole = {
-                opportunityID: res.id,
-                // keeping it null until it's fully implemented
-                //tagid: 'c7e29de9-5b88-49fe-a3f5-750a3a62aee5',
-                responsibility: '',
-                description: '',
-                isfilled: false,
-                name: newOpportunity.roles[i],
-                qualifications: [],
-                capacity: 0,
-                Majors: [],
-                Profiles: [],
-                Requests: []
-              };
+        //setBKey(res.key);
+        //console.log(bKey);
+        Storage.get(res.key, {
+          level: 'public'
+        })
+        .then((res2) => {
+          console.log("Object created...");
+          console.log(newOpportunity);
               DataStore.save(
-                new Role({
-                "name": newRole.name,
-                "description": newRole.description,
-                "isFilled": newRole.isfilled,
-                "qualifications": newRole.qualifications,
-                "Majors": newRole.Majors,
-                "Profiles": newRole.Profiles,
-                "opportunityID": newRole.opportunityID,
-                "Requests": newRole.Requests,
-                "capacity": newRole.capacity
+                new Opportunity({
+                "zoomLink": newOpportunity.zoomLink,
+                "organizations": [newOpportunity.organization],
+                "description": newOpportunity.description,
+                "eventBanner":  res2,
+                "eventName": newOpportunity.name,
+                "startTime": newOpportunity.startTime.toISOString(),
+                "endTime": newOpportunity.endTime.toISOString(),
+                "locationType": newOpportunity.locationType,
+                "location": newOpportunity.location,
+                "eventData": newOpportunity.eventdata,
+                "subject": newOpportunity.subject,
+                "preferences": [],
+                "Roles": newOpportunity.roles,
+                "Posts": newOpportunity.Posts,
+                "Requests": newOpportunity.Requests,
+                "profileID": newOpportunity.profileID,
+                "profilesJoined": newOpportunity.profilesJoined,
+                "keywords": newOpportunity.keywords,
+                "status": newOpportunity.status,
+                "bannerKey" : res.key
               })
-              )
-              .then((third) => {
-                console.log("Making new role...");
-                console.log(third);
-              })
-          }
-        console.log("Creating...");
+            )
+            .then((res) => {
+              console.log(res);
+              console.log("Saved...");
+                toast.success(`Opportunity Created ${toasterStr}`, {
+                  position: 'top-right',
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                });
+                
+                handleModalClose();
+                console.log("New roles: " + newOpportunity.roles.length);
+                  for (let i = 0; i < newOpportunity.roles.length; i++) {
+                    const newRole = {
+                      opportunityID: res.id,
+                      // keeping it null until it's fully implemented
+                      //tagid: 'c7e29de9-5b88-49fe-a3f5-750a3a62aee5',
+                      responsibility: '',
+                      description: '',
+                      isfilled: false,
+                      name: newOpportunity.roles[i],
+                      qualifications: [],
+                      capacity: 0,
+                      Majors: [],
+                      Profiles: [],
+                      Requests: []
+                    };
+                    DataStore.save(
+                      new Role({
+                      "name": newRole.name,
+                      "description": newRole.description,
+                      "isFilled": newRole.isfilled,
+                      "qualifications": newRole.qualifications,
+                      "Majors": newRole.Majors,
+                      "Profiles": newRole.Profiles,
+                      "opportunityID": newRole.opportunityID,
+                      "Requests": newRole.Requests,
+                      "capacity": newRole.capacity
+                    })
+                    )
+                    .then((third) => {
+                      console.log("Making new role...");
+                      console.log(third);
+                    })
+                }
+              console.log("Creating...");
+            })
+            .then(() => {
+              getCreatedOpportunities();
+            })
+        })
+        })
+    }
+    else {
+      Storage.get('sc.jpg', {
+        level: 'public'
       })
-      .then(() => {
-        getCreatedOpportunities();
+      .then((res) => {
+        console.log("Object created...");
+        console.log(newOpportunity);
+            DataStore.save(
+              new Opportunity({
+              "zoomLink": newOpportunity.zoomLink,
+              "organizations": [newOpportunity.organization],
+              "description": newOpportunity.description,
+              "eventBanner":  res,
+              "eventName": newOpportunity.name,
+              "startTime": newOpportunity.startTime.toISOString(),
+              "endTime": newOpportunity.endTime.toISOString(),
+              "locationType": newOpportunity.locationType,
+              "location": newOpportunity.location,
+              "eventData": newOpportunity.eventdata,
+              "subject": newOpportunity.subject,
+              "preferences": [],
+              "Roles": newOpportunity.roles,
+              "Posts": newOpportunity.Posts,
+              "Requests": newOpportunity.Requests,
+              "profileID": newOpportunity.profileID,
+              "profilesJoined": newOpportunity.profilesJoined,
+              "keywords": newOpportunity.keywords,
+              "status": newOpportunity.status,
+              "bannerKey" : 'sc.jpg'
+            })
+          )
+          .then((res) => {
+            console.log(res);
+            console.log("Saved...");
+              toast.success(`Opportunity Created ${toasterStr}`, {
+                position: 'top-right',
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+              });
+              
+              handleModalClose();
+              console.log("New roles: " + newOpportunity.roles.length);
+                for (let i = 0; i < newOpportunity.roles.length; i++) {
+                  const newRole = {
+                    opportunityID: res.id,
+                    // keeping it null until it's fully implemented
+                    //tagid: 'c7e29de9-5b88-49fe-a3f5-750a3a62aee5',
+                    responsibility: '',
+                    description: '',
+                    isfilled: false,
+                    name: newOpportunity.roles[i],
+                    qualifications: [],
+                    capacity: 0,
+                    Majors: [],
+                    Profiles: [],
+                    Requests: []
+                  };
+                  DataStore.save(
+                    new Role({
+                    "name": newRole.name,
+                    "description": newRole.description,
+                    "isFilled": newRole.isfilled,
+                    "qualifications": newRole.qualifications,
+                    "Majors": newRole.Majors,
+                    "Profiles": newRole.Profiles,
+                    "opportunityID": newRole.opportunityID,
+                    "Requests": newRole.Requests,
+                    "capacity": newRole.capacity
+                  })
+                  )
+                  .then((third) => {
+                    console.log("Making new role...");
+                    console.log(third);
+                  })
+              }
+            console.log("Creating...");
+          })
+          .then(() => {
+            getCreatedOpportunities();
+          })
       })
+    }
   };
 
   // Reset filters when switching tabs

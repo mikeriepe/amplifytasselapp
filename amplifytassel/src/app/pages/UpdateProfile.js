@@ -26,14 +26,21 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import Tooltip from '@mui/material/Tooltip';
 import HelpIcon from '@mui/icons-material/Help';
+import Alert from '@mui/material/Alert';
+import InfoIcon from '@mui/icons-material/Info';
+import WarningIcon from '@mui/icons-material/Warning';
+import CheckIcon from '@mui/icons-material/Check';
 
 
+import useAnimation from '../util/AnimationContext';
 import { DataStore } from '@aws-amplify/datastore';
 import { Keyword, KeywordProfile, Profile, Major, ProfileMajor } from '../../models';
 import MultiSelect from '../components/MultiSelect';
 import { Dataset } from '@mui/icons-material';
 import { PointsAddition } from '../util/PointsAddition';
 
+// Animations
+import { calculateIfUserLeveledUp } from '../util/PointsAddition';
 
 const Page = styled((props) => (
   <MuiBox {...props} />
@@ -86,7 +93,6 @@ export default function UpdateProfile() {
   const [showDeleteVolunteerModal, setShowDeleteVolunteerModal] = useState(false);
   const [selectedMajors, setSelectedMajors] = useState([]);
   const [totalMajors, setTotalMajors] = useState([]);
-
   const [selectedKeywords, setSelectedKeywords] = useState([]);
   const [allKeywords, setAllKeywords] = useState([]);
   const [values, setValues] = useState({
@@ -96,6 +102,12 @@ export default function UpdateProfile() {
       about: userProfile.about,
     },
   });
+
+  // animations
+  const {
+    setShowConfettiAnimation,
+    setShowStarAnimation
+  } = useAnimation();
 // add util file and util functions that adds the points when called
   const handleDeleteTag = (tagIndex) => () => {
     const tempSelectedTags = [...selectedKeywords];
@@ -154,7 +166,22 @@ export default function UpdateProfile() {
   const updateProfile = async () => {
     // Calculate the points and add them
     const pointsToAdd = await calculatePointsEarned(userProfile, selectedMajors, selectedKeywords, values);
-    PointsAddition(pointsToAdd, userProfile.id);
+    const oldPoints = userProfile.points;
+    PointsAddition(pointsToAdd, userProfile.id, setUserProfile);
+    // Check if they leveled up
+    let toasterStr = '';
+    if (pointsToAdd > 0) {
+      const isLevelUp = calculateIfUserLeveledUp(oldPoints, pointsToAdd);
+      if (isLevelUp) {
+        // Display confetti animation
+        setShowConfettiAnimation(true);
+        toasterStr = 'and you leveled up!';
+      } else {
+        // Display star animation
+        setShowStarAnimation(true);
+        toasterStr = `and you earned ${pointsToAdd} points!`;
+      }
+    }
 
     // console.log('selectedKeywords', selectedKeywords);
     // console.log('allKeywoards', allKeywords);
@@ -215,7 +242,7 @@ export default function UpdateProfile() {
     res = await DataStore.query(Profile, userProfile.id);
     setUserProfile(res);
     // console.log('userProfile', userProfile);
-    toast.success('Account updated', {
+    toast.success(`Account updated ${toasterStr}`, {
       position: 'top-right',
       autoClose: 5000,
       hideProgressBar: false,
@@ -230,6 +257,9 @@ export default function UpdateProfile() {
     // get selectedKeywords, keywords, allKeywords
     DataStore.query(Keyword, (k) => k.Profiles.profile.id.eq(userProfile.id))
       .then((keywords) => {
+        keywords = keywords.sort(function(a, b) {
+          return (a.name > b.name) ? 1 : -1;
+        })
         setSelectedKeywords(keywords);
         setValues({
           1: {
@@ -244,6 +274,9 @@ export default function UpdateProfile() {
           .then((keywordsAll) => {
             // console.log('keywords', keywords);
             // console.log('keywordsAll', keywordsAll);
+            keywordsAll = keywordsAll.sort(function(a, b) {
+              return (a.name > b.name) ? 1 : -1;
+            })
             let keywordsIdArray = keywords.map((obj) => (obj.id));
             setAllKeywords(keywordsAll.filter(k => !keywordsIdArray.includes(k.id)));
           })
@@ -255,6 +288,9 @@ export default function UpdateProfile() {
     DataStore.query(Major)
       .then((majorsTotal) => {
         // console.log('majorsTotal', majorsTotal);
+        majorsTotal = majorsTotal.sort(function(a, b) {
+          return (a.name > b.name) ? 1 : -1;
+        })
         setTotalMajors(majorsTotal.map(major => major.name));
         return DataStore.query(Major, m => m.profiles.profileId.eq(userProfile.id));
       })
@@ -282,19 +318,33 @@ export default function UpdateProfile() {
                 { display: null }
               }>
                 <div>
+                  {(userProfile.points === null || userProfile.points === 0) &&
+                    <div>
+                      <Alert
+                        style={{ width: '800px', marginTop: '20px', textAlign: 'center' }}
+                        severity="info"
+                        icon={<InfoIcon fontSize="inherit" className='icon' />}
+                      >
+                        <div className='alert-text' color="warning">
+                          Earn <strong>+100</strong> Tassel points by filling out your profile!
+                        </div>
+                      </Alert>
+                      <div>
+                        <br></br>
+                      </div>
+                    </div>
+                  }
+                </div>
+                <div>
                   <h2 className='text-normal'>Update Profile</h2>
-                  <p className='text-light text-warning'>
-                    Required <span className='text-bold'>*</span>
-                  </p>
                 </div>
                 <div className='grid-flow-large' width='100%'>
                   <div className='grid-flow-small' aria-label={'Update Profile Grad Year'}>
                     <p className='text-bold'>
                       Graduation Year
-                      <span className='text-bold text-warning'>*</span>
-                      <Tooltip title="Fill out this field to get 10 points" arrow>
+                      {/* <Tooltip title="Fill out this field to get 10 points" arrow>
                         <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
-                      </Tooltip>
+                      </Tooltip> */}
                     </p>
                     <ThemedInput
                       placeholder={'Enter your graduation year'}
@@ -308,10 +358,10 @@ export default function UpdateProfile() {
                   </div>
                   <div className='grid-flow-small' aria-label={'Update Profile Major'}>
                     <p className='text-bold'>
-                      Major <span className='text-bold text-warning'>*</span>
-                      <Tooltip title="Fill out this field to get 10 points" arrow>
+                      Major
+                      {/* <Tooltip title="Fill out this field to get 10 points" arrow>
                         <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
-                      </Tooltip>
+                      </Tooltip> */}
                     </p>
                     <div>
                       {totalMajors.length && <MultiSelect data={totalMajors} />}
@@ -320,9 +370,9 @@ export default function UpdateProfile() {
                   <div className='grid-flow-small' aria-label={'Update Profile Location'}>
                     <p className='text-bold'>
                       Location
-                      <Tooltip title="Fill out this field to get 10 points" arrow>
+                      {/* <Tooltip title="Fill out this field to get 10 points" arrow>
                         <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
-                      </Tooltip>
+                      </Tooltip> */}
                     </p>
                     
                     <ThemedInput
@@ -338,9 +388,9 @@ export default function UpdateProfile() {
                   <div className='grid-flow-small' aria-label={'Update Profile About'}>
                     <p className='text-bold'>
                       About You
-                      <Tooltip title="Fill out this field to get 10 points" arrow>
+                      {/* <Tooltip title="Fill out this field to get 10 points" arrow>
                         <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
-                      </Tooltip>
+                      </Tooltip> */}
                     </p>
                     <ThemedInput
                       placeholder={'Tell people a little about yourself'}
@@ -359,9 +409,9 @@ export default function UpdateProfile() {
                     >
                       <p className='text-bold' aria-label={'Update Profile Work Experience'}>
                         Work Experience
-                        <Tooltip title="Fill out this field to get 10 points" arrow>
+                        {/* <Tooltip title="Fill out this field to get 10 points" arrow>
                         <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
-                      </Tooltip>
+                      </Tooltip> */}
                       </p>
                       <div className='flex-space-between flex-align-center'>
                         {(
@@ -404,9 +454,9 @@ export default function UpdateProfile() {
                     >
                       <p className='text-bold' aria-label={'Update Profile Volunteer Experience'}>
                         Volunteer Experience
-                        <Tooltip title="Fill out this field to get 10 points" arrow>
+                        {/* <Tooltip title="Fill out this field to get 10 points" arrow>
                         <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
-                      </Tooltip>
+                      </Tooltip> */}
                       </p>
                       <div className='flex-space-between flex-align-center'>
                         {(
@@ -449,9 +499,9 @@ export default function UpdateProfile() {
                     >
                       <p className='text-bold' aria-label={'Update Profile Interests'}>
                         Interests
-                        <Tooltip title="Fill out this field to get 10 points" arrow>
+                        {/* <Tooltip title="Fill out this field to get 10 points" arrow>
                         <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
-                      </Tooltip>
+                      </Tooltip> */}
                       </p>
                     </div>
                     <div className='flex'>
@@ -540,7 +590,8 @@ export default function UpdateProfile() {
         onBackdropClick={() => setShowWorkForm(false)}
         onClose={() => setShowWorkForm(false)}
       >
-        <WorkExperienceForm onClose={() =>
+        <WorkExperienceForm
+          onClose={() =>
           setShowWorkForm(!showWorkForm)} />
       </Modal>
       <Modal
@@ -556,7 +607,8 @@ export default function UpdateProfile() {
         onBackdropClick={() => setShowVolunteerForm(false)}
         onClose={() => setShowVolunteerForm(false)}
       >
-        <VolunteerExperienceForm onClose={() =>
+        <VolunteerExperienceForm
+          onClose={() =>
           setShowVolunteerForm(!showVolunteerForm)} />
       </Modal>
       <Modal
@@ -567,7 +619,6 @@ export default function UpdateProfile() {
         <VolunteerExperienceDeleteModal onClose={() =>
           setShowDeleteVolunteerModal(!showDeleteVolunteerModal)} />
       </Modal>
-
     </Page>
   );
 }

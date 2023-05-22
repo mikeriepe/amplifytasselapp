@@ -28,6 +28,9 @@ import { PointsAddition } from '../util/PointsAddition';
 import { DataStore } from 'aws-amplify';
 import { Opportunity, Profile, Request, Role, RequestStatus, ProfileRole, OpportunityProfile, Keyword, KeywordOpportunity } from '../../models';
 import { Storage } from 'aws-amplify';
+import useAnimation from '../util/AnimationContext';
+import { calculateIfUserLeveledUp } from '../util/PointsAddition';
+import { v4 as uuidv4 } from 'uuid';
 
 
 const IconStyling = {
@@ -223,7 +226,12 @@ export default function OpportunitiesCard({
   const [oppKeywords, setOppKeywords] = useState(false);
   const [fileData, setFileData] = useState(null);
   const [fileDataURL, setFileDataURL] = useState(null);
-  const {userProfile} = useAuth();
+  const {userProfile, setUserProfile} = useAuth();
+
+  const {
+    setShowConfettiAnimation,
+    setShowStarAnimation
+  } = useAnimation();
 
   const handleReqModalClose = () => {
     setshowReqForm(false);
@@ -265,6 +273,7 @@ export default function OpportunitiesCard({
   };
 
   const downloadFile = async () => {
+    //console.log(opportunity.bannerKey);
     const img = await Storage.get(opportunity.bannerKey, {
       level: "public"
     });
@@ -312,7 +321,6 @@ export default function OpportunitiesCard({
       toevent: true,
     };
     console.log(requestData);
-    PointsAddition(25,requestData.requester);
     postRequestToOpportunity(requestData);
     setshowReqForm(false);
     setRequestMessage('');
@@ -456,12 +464,10 @@ export default function OpportunitiesCard({
       }
     })
     .then(async (res) => {
-      if(data.bannerKey != null) {
-        const image = await Storage.get(data.bannerKey, {
+      if (data.imgData == null) {
+        const image = await Storage.get(opportunity.bannerkey, {
           level: 'public'
         });
-        await Storage.remove(opportunity.bannerKey);
-        //console.log(data.bannerKey);
         DataStore.save(Opportunity.copyOf(opportunity, updated => {
           updated.eventName = data.name;
           updated.description = data.description;
@@ -472,7 +478,7 @@ export default function OpportunitiesCard({
           updated.location = data.location;
           updated.organizations = data.organizations;
           updated.subject = data.subject;
-          updated.bannerKey = data.bannerKey;
+          updated.bannerKey = opportunity.bannerKey;
           updated.eventBanner = image;
         })
         )
@@ -481,12 +487,45 @@ export default function OpportunitiesCard({
           getCreatedOpportunities();
           console.log(res);
         });
-      }
+      } 
       else {
-        const image = await Storage.get(opportunity.bannerKey, {
-          level: 'public'
-        })
-          console.log('opp');
+        if(data.imgData.name != 'sc.jpg') {
+          Storage.put(uuidv4() + "-" + data.imgData.name, data.imgData, {
+            contentType: data.imgData.type,
+          })
+          .then(async (res2) => {
+            const image = await Storage.get(res2.key, {
+              level: 'public'
+            });
+            if(opportunity.bannerKey != 'sc.jpg') {
+              await Storage.remove(opportunity.bannerKey);
+            }
+            //console.log(data.bannerKey);
+            DataStore.save(Opportunity.copyOf(opportunity, updated => {
+              updated.eventName = data.name;
+              updated.description = data.description;
+              updated.eventData = data.eventdata;
+              updated.startTime = data.startTime.toISOString();
+              updated.endTime = data.endTime.toISOString();
+              updated.locationType = data.locationType;
+              updated.location = data.location;
+              updated.organizations = data.organizations;
+              updated.subject = data.subject;
+              updated.bannerKey = res2.key;
+              updated.eventBanner = image;
+            })
+            )
+            .then((res) => {
+              handleOppModalClose();
+              getCreatedOpportunities();
+              console.log(res);
+            });
+          })
+        }
+        else {
+          const image = await Storage.get(opportunity.bannerkey, {
+            level: 'public'
+          });
           DataStore.save(Opportunity.copyOf(opportunity, updated => {
             updated.eventName = data.name;
             updated.description = data.description;
@@ -501,11 +540,12 @@ export default function OpportunitiesCard({
             updated.eventBanner = image;
           })
           )
-        .then((res) => {
-          handleOppModalClose();
-          getCreatedOpportunities();
-          console.log(res);
-        });
+          .then((res) => {
+            handleOppModalClose();
+            getCreatedOpportunities();
+            console.log(res);
+          });
+        }
       }
     });
   };
@@ -532,6 +572,30 @@ export default function OpportunitiesCard({
        ]))
        .then((json) => {
         if (json.length == 0) {
+          let toasterStr = '';
+          const oldPoints = userProfile.points;
+          const isLevelUp = calculateIfUserLeveledUp(oldPoints, 25);
+          if (isLevelUp) {
+            // Display confetti animation
+            setShowConfettiAnimation(true);
+            toasterStr = 'and you leveled up!';
+          } else {
+            // Display star animation
+            setShowStarAnimation(true);
+            toasterStr = 'and you earned 25 points!';
+          }
+          PointsAddition(25, userProfile.id, setUserProfile);
+          // toast notification
+          toast.success(`Applied to ${opportunity.eventName} ${toasterStr}`, {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+
           let rid;
           for (let i = 0; i < oppRoles.length; i++)
           {
@@ -554,7 +618,6 @@ export default function OpportunitiesCard({
             })
           )
           .then((third) => {
-            console.log(third);
             getPendingOpportunities();
             getAllOpportunities();
           })
@@ -633,7 +696,7 @@ export default function OpportunitiesCard({
     zoomLink : opportunity.zoomLink,
     organizations : opportunity.organizations,
     description : opportunity.description,
-    eventBanner : opportunity.eventBanner,
+    //eventBanner : opportunity.eventBanner,
     name : opportunity.eventName,
     startTime : opportunity.startTime,
     endTime : opportunity.endTime,
@@ -647,6 +710,7 @@ export default function OpportunitiesCard({
     Roles : oppRoles,
     keywords : oppKeywords,
     bannerKey: opportunity.bannerKey
+
   };
 
   

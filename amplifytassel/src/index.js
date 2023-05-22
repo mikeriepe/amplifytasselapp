@@ -7,7 +7,7 @@ import {BrowserRouter} from 'react-router-dom';
 import theme from './app/util/Theme';
 import {ThemeProvider} from '@mui/material/styles';
 import {AuthProvider} from './app/util/AuthContext';
-
+import {AnimationProvider} from './app/util/AnimationContext';
 import { Amplify } from 'aws-amplify';
 import awsExports from './aws-exports';
 Amplify.configure(awsExports);
@@ -18,7 +18,9 @@ root.render(
     <BrowserRouter>
       <ThemeProvider theme={theme}>
         <AuthProvider>
-          <App />
+          <AnimationProvider>
+            <App />
+          </AnimationProvider>
         </AuthProvider>
       </ThemeProvider>
     </BrowserRouter>
