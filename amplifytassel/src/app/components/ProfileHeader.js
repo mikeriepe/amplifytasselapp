@@ -191,7 +191,7 @@ const XPBar = ({ progress,pointsToNextLevel }) => (
     <div className='flex' style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
   <LinearProgressWithLabel variant="determinate" value={progress} sx={{ height: 15, width: 150 }}/>
   <div style={{ display: 'flex', justifyContent: 'center' }}>
-    <Typography variant="caption" sx={{ marginTop: '0.5em',  fontSize: '1.0rem' }}>XP to next level: {pointsToNextLevel}</Typography>
+    <Typography variant="caption" sx={{ marginTop: '0.5em',  fontSize: '0.8rem' }}>XP to next level: {pointsToNextLevel}</Typography>
   </div>
 </div>
 
