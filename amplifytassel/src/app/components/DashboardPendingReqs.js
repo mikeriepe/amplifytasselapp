@@ -80,7 +80,18 @@ export default function DashboardPendingReqs({
           o.Requests.status.eq('PENDING')
         ]))
         .then((res) => {
-          setPendingOpps(res);
+          const pendingOpps = [];
+          for (let i = 0; i < res.length; i++) {
+            const p = Promise.resolve(res[i].Requests.values);
+            p.then(value => {
+              for (let j = 0; j < value.length; j++) {
+                if (value[j].profileID === userProfile.id && value[j].status === 'PENDING') {
+                  pendingOpps.push(res[i]);
+                }
+              }
+            });
+          }
+          setPendingOpps(pendingOpps);
         })
         .catch((err) => {
           console.log(err);
