@@ -59,7 +59,7 @@ export default function DashboardHeader({data}) {
       <h2 className='text-dark ellipsis text-large' aria-label='Dashboard Header'>
          Welcome back, {data.firstName}!
       </h2>
-      <h5 className='text-bold ellipsis'>
+      <h5 className='text-bold ellipsis' aria-label='Dashboard Header Count'>
       You have
         <span className='text-bold text-blue ellipsis'> {numOpps} </span>
        upcoming event{numOpps === 1 ? '' : 's'}

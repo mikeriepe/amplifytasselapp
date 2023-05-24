@@ -101,7 +101,7 @@ export default function DashboardUpcoming({data}) {
           style={{background: 'var(--text-white)'}}
         >
           <Text>
-            <h2 className='text-dark ellipsis text-medium'>
+            <h2 className='text-dark ellipsis text-medium' aria-label='Dashboard Upcoming Section'>
               Upcoming Events
             </h2>
           </Text>

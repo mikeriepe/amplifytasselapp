@@ -116,7 +116,7 @@ export default function DashboardPendingReqs({
   return (
     <PendingSection>
       <Text>
-        <h2 className='text-dark ellipsis text-medium'>
+        <h2 className='text-dark ellipsis text-medium' aria-label='Dashboard Pending Title'>
           Pending Requests
         </h2>
       </Text>
@@ -132,6 +132,7 @@ export default function DashboardPendingReqs({
         <div
           className='flex-horizontal flex-align-center flex-flow-large'
           style={{justifyContent: 'space-between'}}
+          aria-label='Dashboard Pending Dropdown'
         >
           <Box sx={{minWidth: 120}}>
             <FormControl
@@ -170,7 +171,7 @@ export default function DashboardPendingReqs({
           />
         </div>
         <TableContainer>
-          <Table aria-labelledby='tableTitle'>
+          <Table>
             <TableBody>
               {selectedReq === 'Incoming Requests' && createdOpps
                   .slice()
