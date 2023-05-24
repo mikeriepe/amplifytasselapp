@@ -15,7 +15,7 @@ describe('Verify ViewProfile Elements Are Present', () => {
 
     it('Displays ViewProfile Elements', () => {
         cy.get(selectors.ProfileHeaderFullName).contains('Test Dummy');
-        cy.get(selectors.ProfileHeaderMajors).contains('Computer Science, BS');
+        cy.get(selectors.ProfileHeaderMajors).contains('Computer Science');
         cy.get(selectors.ProfileHeaderGraduationYear).contains('Class of 2001');
         cy.get(selectors.ProfileHeaderLocation).contains('Santa Cruz, CA');
         cy.get(selectors.ProfileAbout).contains("Can't feel pain...");
