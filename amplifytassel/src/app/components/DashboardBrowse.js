@@ -53,9 +53,11 @@ export default function DashboardBrowse() {
   };
   return (
     <Display>
-      <HeadingText>
+      <div aria-label='Dashboard Browse Button'>
+      <HeadingText >
          Look for new Opportunities
       </HeadingText>
+      </div>
       <Box sx={{
         display: 'flex',
         justifyContent: 'center',

@@ -149,10 +149,22 @@ export default function FetchWrapper() {
     console.log("Getting pending...");
     DataStore.query(Opportunity, (o) => o.and(o => [
       o.Requests.profileID.eq(userProfile.id),
-      o.Requests.status.eq('PENDING')
+      //o.Requests.status.eq('PENDING')
     ]))
     .then((res) => {
-      setPendingOpportunities(res);
+      console.log(res);
+      const pendingOpps = [];
+      for (let i = 0; i < res.length; i++) {
+        const p = Promise.resolve(res[i].Requests.values);
+        p.then(value => {
+          for (let j = 0; j < value.length; j++) {
+            if (value[j].profileID === userProfile.id && value[j].status === 'PENDING') {
+              pendingOpps.push(res[i]);
+            }
+          }
+        });
+      }
+      setPendingOpportunities(pendingOpps);
     })
     .catch((err) => {
       console.log(err);
@@ -185,7 +197,6 @@ const getAllOpportunities = () => {
         }
       }
       setAllOpportunities(timeBoxedList);
-      console.log(allOpportunities);
     })
   })
   .catch((err) => {

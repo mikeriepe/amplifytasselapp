@@ -310,9 +310,11 @@ export default function DashboardCreate({getCreatedOpportunities}) {
 
   return (
     <Display>
+      <div aria-label='Dashboard Create Button'>
       <HeadingText>
          Create new Opportunities
       </HeadingText>
+      </div>
       <Box sx={{
         display: 'flex',
         justifyContent: 'center',

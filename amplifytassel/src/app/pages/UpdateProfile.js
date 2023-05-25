@@ -139,24 +139,24 @@ export default function UpdateProfile() {
 
     // Check location
     if (userProfile.location === null && selctdVals[1].location !== null) {
-      pointsToBeAdded += 10;
+      pointsToBeAdded += 20;
     }
 
     // Check about
     if (userProfile.about === null && selctdVals[1].about !== null) {
-      pointsToBeAdded += 10;
+      pointsToBeAdded += 20;
     }
     
     const existingKeywords = await DataStore.query(KeywordProfile, kp => kp.profileId.eq(userProfile.id));
     // Check Keywords
     if (existingKeywords.length === 0 && selctdKeywords.length > 0) {
-      pointsToBeAdded += 10;
+      pointsToBeAdded += 20;
     }
 
     const existingMajors = await DataStore.query(ProfileMajor, pm => pm.profileId.eq(userProfile.id));
     // Check Majors
     if (existingMajors.length === 0 && selctdMajors.length > 0) {
-      pointsToBeAdded += 10;
+      pointsToBeAdded += 20;
     }
 
     return pointsToBeAdded;
