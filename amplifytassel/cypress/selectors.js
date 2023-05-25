@@ -26,6 +26,21 @@ export const selectors = {
     ViewOpportunityDescription: '[aria-label="View Opportunity Description"]',
     ViewOpportunityRoles: '[aria-label="View Opportunity Roles"]',
     ViewOpportunityKeywords: '[aria-label="View Opportunity Keywords"]',
-
-    
+    OpportunitiesPageHeader: '[aria-label="Page Header Title"]',
+    OpportunitiesCreateOpportunity: '[aria-label="Opportunities Create Opportunity"]',
+    OpportunitiesTabUpcoming: '[aria-label="Opportunities Tab Upcoming"]',
+    OpportunitiesTabCreated: '[aria-label="Opportunities Tab Created"]',
+    OpportunitiesTabPending: '[aria-label="Opportunities Tab Pending"]',
+    OpportunitiesTabCompleted: '[aria-label="Opportunities Tab Completed"]',
+    OpportunitiesTabBrowse: '[aria-label="Opportunities Tab Browse"]',
+    OpportunityCardTitle1: '[aria-label="Opportunity Card Title Test Dummies Become Human"]',
+    OpportunityCardHost1: '[aria-label="Opportunity Card Host Test Dummies Become Human"]',
+    OpportunityCardTitle2: '[aria-label="Opportunity Card Title Natural Living"]',
+    OpportunityCardHost2: '[aria-label="Opportunity Card Host Natural Living"]',
+    OpportunityCardTitle3: '[aria-label="Opportunity Card Title Haircut Popup"]',
+    OpportunityCardHost3: '[aria-label="Opportunity Card Host Haircut Popup"]',
+    OpportunityCardTitle4: '[aria-label="Opportunity Card Title Graduation Party"]',
+    OpportunityCardHost4: '[aria-label="Opportunity Card Host Graduation Party"]',
+    OpportunityCardTitle5: '[aria-label="Opportunity Card Title Tea Time Chat"]',
+    OpportunityCardHost5: '[aria-label="Opportunity Card Host Tea Time Chat"]',
 }

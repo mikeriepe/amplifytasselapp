@@ -52,6 +52,7 @@ export default function CompressedTabBar({data, tab, setTab, type}) {
       >
         {data.filter(Boolean).map((object) => (
           <Tab
+            aria-label={`Opportunities Tab ${object.name}`}
             key={`tab-id-${Math.random()}`}
             label={object.name}
             sx={TabStyles}

@@ -740,14 +740,14 @@ export default function OpportunitiesCard({
               to={`/Opportunity/${opportunity.id}`}
             >
               <MuiBox>
-                <h4 className='text-dark ellipsis'>
+                <h4 className='text-dark ellipsis' aria-label={`Opportunity Card Title ${opportunity.eventName}`}>
                   {opportunity.eventName}
                 </h4>
                 <div className='flex-flow-large flex-align-center'>
                   <Avatar image={profilePicture} />
                   <p className='text-bold text-disabled'>
                     Hosted by:&nbsp;
-                    <span className='text-blue'>
+                    <span className='text-blue' aria-label={`Opportunity Card Host ${opportunity.eventName}`}>
                       {`${creator.firstName} ${creator.lastName}`}
                     </span>
                   </p>

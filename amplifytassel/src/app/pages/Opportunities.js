@@ -41,6 +41,7 @@ const AddButton = (props) => (
     '
   >
     <h5
+      aria-label='Opportunities Create Opportunity'
       className='text-small text-yellow'
       style={{
         margin: 0,
