@@ -38,6 +38,7 @@ export default function CompressedTabBar({data, tab, setTab, type}) {
       }}
     >
       <Tabs
+        aria-label='Tabs'
         value={tab}
         onChange={handleTabs}
         indicatorColor='primary'
@@ -54,6 +55,7 @@ export default function CompressedTabBar({data, tab, setTab, type}) {
           <Tab
             aria-label={`Opportunities Tab ${object.name}`}
             key={`tab-id-${Math.random()}`}
+            data-test-id={object.name}
             label={object.name}
             sx={TabStyles}
             disableRipple
