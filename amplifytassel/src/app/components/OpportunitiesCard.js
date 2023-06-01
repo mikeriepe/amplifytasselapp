@@ -773,6 +773,7 @@ export default function OpportunitiesCard({
                     }
                   >
                     <CloseRoundedIcon
+                      aria-label={`Delete ${opportunity.eventName}`}
                       sx={{
                         height: '20px',
                         width: '20px',
@@ -874,7 +875,7 @@ export default function OpportunitiesCard({
               )}
               {type === 'all' && (
                 <OutlinedButton handleModalOpen={handleReqModalOpen}>
-                  <p className='text-xbold text-white'>Apply</p>
+                  <p className='text-xbold text-white' aria-label={`Apply ${opportunity.eventName}`}>Apply</p>
                 </OutlinedButton>
               )}
             </div>
