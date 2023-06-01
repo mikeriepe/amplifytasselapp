@@ -57,7 +57,7 @@ describe('Verify opportunities load', () => {
   it('Displays browse opportunities', () => {
     // Click on the Browse tab
     cy.get(selectors.OpportunitiesTabBrowse).click();
-    cy.wait(1000);
+    cy.wait(3000);
     cy.get(selectors.OpportunityCardTitle5).contains('Tea Time Chat');
     cy.get(selectors.OpportunityCardHost5).contains('Jimmy Neutron');
   });
