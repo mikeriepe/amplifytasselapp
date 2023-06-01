@@ -430,6 +430,7 @@ export default function ApprovalOpportunities() {
       <Card style={{padding: '.5rem'}}>
         <Toolbar>
           <Box
+            aria-label='Opportunity Actions'
             style={{
               marginRight: '1rem',
             }}
@@ -509,7 +510,7 @@ export default function ApprovalOpportunities() {
               backgroundColor: 'white',
             }}
           >
-            <TableHead>
+            <TableHead aria-label='Opportunities Table Head'>
               <TableRow>
                 <TableCell padding='checkbox'>
                   <Checkbox
@@ -550,7 +551,7 @@ export default function ApprovalOpportunities() {
                 ))}
               </TableRow>
             </TableHead>
-            <TableBody>
+            <TableBody aria-label='Opportunities Table Body'>
               {
                 opps.map((opp) => {
                   return (

@@ -465,6 +465,7 @@ export default function ApprovalAccounts() {
       <Card style={{padding: '.5rem'}}>
         <Toolbar>
           <Box
+            aria-label='Account Actions'
             style={{
               marginRight: '1rem',
             }}
@@ -555,7 +556,7 @@ export default function ApprovalAccounts() {
               backgroundColor: 'white',
             }}
           >
-            <TableHead>
+            <TableHead aria-label='Accounts Table Head'>
               <TableRow>
                 <TableCell padding='checkbox'>
                   <Checkbox
@@ -595,7 +596,7 @@ export default function ApprovalAccounts() {
                 ))}
               </TableRow>
             </TableHead>
-            <TableBody>
+            <TableBody aria-label='Accounts Table Body'>
               {
                 accounts.map((account) => {
                   return (
