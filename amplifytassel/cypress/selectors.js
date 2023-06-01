@@ -63,5 +63,9 @@ export const selectors = {
     OpportunityCardApplyTeaTime: '[aria-label="Apply Tea Time Chat"]',
     OpportunityCardDeleteTeaTime: '[aria-label="Delete Tea Time Chat"]',
     RequestModalSendRequest: '[aria-label="Send Request to Join"]',
-
+    OpportunityTabRequests: '[aria-label="Opportunities Tab Requests"]',
+    OpportunityRequestSamCheck: '[aria-label="Check Sam"]',
+    OpportunityRequestsApprove: '[aria-label="Approve Requests"]',
+    OpportunityRequestsDeny: '[aria-label="Deny Requests"]',
+    
 }
