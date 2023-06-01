@@ -63,6 +63,7 @@ export default function RequestModal(props) {
               color={'yellow'}
               variant={'themed'}
               onClick={handleRequestClick}
+              aria-label="Send Request to Join"
             >
               Send Request to Join
             </ThemedButton>

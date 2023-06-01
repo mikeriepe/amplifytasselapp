@@ -60,4 +60,8 @@ export const selectors = {
     OpportunityCardHost4: '[aria-label="Opportunity Card Host Graduation Party"]',
     OpportunityCardTitle5: '[aria-label="Opportunity Card Title Tea Time Chat"]',
     OpportunityCardHost5: '[aria-label="Opportunity Card Host Tea Time Chat"]',
+    OpportunityCardApplyTeaTime: '[aria-label="Apply Tea Time Chat"]',
+    OpportunityCardDeleteTeaTime: '[aria-label="Delete Tea Time Chat"]',
+    RequestModalSendRequest: '[aria-label="Send Request to Join"]',
+
 }
