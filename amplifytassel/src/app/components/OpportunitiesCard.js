@@ -28,6 +28,8 @@ import { PointsAddition } from '../util/PointsAddition';
 import { DataStore } from 'aws-amplify';
 import { Opportunity, Profile, Request, Role, RequestStatus, ProfileRole, OpportunityProfile, Keyword, KeywordOpportunity } from '../../models';
 import { Storage } from 'aws-amplify';
+import useAnimation from '../util/AnimationContext';
+import { calculateIfUserLeveledUp } from '../util/PointsAddition';
 import { v4 as uuidv4 } from 'uuid';
 
 
@@ -224,7 +226,12 @@ export default function OpportunitiesCard({
   const [oppKeywords, setOppKeywords] = useState(false);
   const [fileData, setFileData] = useState(null);
   const [fileDataURL, setFileDataURL] = useState(null);
-  const {userProfile} = useAuth();
+  const {userProfile, setUserProfile} = useAuth();
+
+  const {
+    setShowConfettiAnimation,
+    setShowStarAnimation
+  } = useAnimation();
 
   const handleReqModalClose = () => {
     setshowReqForm(false);
@@ -314,7 +321,6 @@ export default function OpportunitiesCard({
       toevent: true,
     };
     console.log(requestData);
-    PointsAddition(25,requestData.requester);
     postRequestToOpportunity(requestData);
     setshowReqForm(false);
     setRequestMessage('');
@@ -566,6 +572,30 @@ export default function OpportunitiesCard({
        ]))
        .then((json) => {
         if (json.length == 0) {
+          let toasterStr = '';
+          const oldPoints = userProfile.points;
+          const isLevelUp = calculateIfUserLeveledUp(oldPoints, 25);
+          if (isLevelUp) {
+            // Display confetti animation
+            setShowConfettiAnimation(true);
+            toasterStr = 'and you leveled up!';
+          } else {
+            // Display star animation
+            setShowStarAnimation(true);
+            toasterStr = 'and you earned 25 points!';
+          }
+          PointsAddition(25, userProfile.id, setUserProfile);
+          // toast notification
+          toast.success(`Applied to ${opportunity.eventName} ${toasterStr}`, {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+
           let rid;
           for (let i = 0; i < oppRoles.length; i++)
           {
@@ -588,7 +618,6 @@ export default function OpportunitiesCard({
             })
           )
           .then((third) => {
-            console.log(third);
             getPendingOpportunities();
             getAllOpportunities();
           })
@@ -711,14 +740,14 @@ export default function OpportunitiesCard({
               to={`/Opportunity/${opportunity.id}`}
             >
               <MuiBox>
-                <h4 className='text-dark ellipsis'>
+                <h4 className='text-dark ellipsis' aria-label={`Opportunity Card Title ${opportunity.eventName}`}>
                   {opportunity.eventName}
                 </h4>
                 <div className='flex-flow-large flex-align-center'>
                   <Avatar image={profilePicture} />
                   <p className='text-bold text-disabled'>
                     Hosted by:&nbsp;
-                    <span className='text-blue'>
+                    <span className='text-blue' aria-label={`Opportunity Card Host ${opportunity.eventName}`}>
                       {`${creator.firstName} ${creator.lastName}`}
                     </span>
                   </p>

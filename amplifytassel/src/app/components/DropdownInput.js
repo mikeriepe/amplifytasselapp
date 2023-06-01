@@ -26,11 +26,19 @@ export const DropdownInput = ({
   const generateSingleOptions = () => {
     if (options) {
       return options.map((option) => {
-        return (
-          <MenuItem key={option} value={option}>
-            {option}
-          </MenuItem>
-        );
+        if (option.value === undefined) {
+          return (
+            <MenuItem key={option} value={option}>
+              {option}
+            </MenuItem>
+          );
+        } else {
+          return (
+            <MenuItem key={option.value} value={option.value}>
+              {option.value}
+            </MenuItem>
+          );
+        }
       });
     } else {
       return [];

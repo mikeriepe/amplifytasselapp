@@ -17,7 +17,7 @@ describe('Verify myProfile Elements Are Present', () => {
         // cy.get(selectors.ProfileAlertPending).contains('Your account is pending approval');
         cy.get(selectors.ProfileHeaderFullName).contains('Test Dummy');
         // cy.scrollTo(0, 500);
-        cy.get(selectors.ProfileHeaderMajors).contains('Computer Science, BS');
+        cy.get(selectors.ProfileHeaderMajors).contains('Computer Science');
         cy.get(selectors.ProfileHeaderGraduationYear).contains('Class of 2001');
         cy.get(selectors.ProfileHeaderLocation).contains('Santa Cruz, CA');
         cy.get(selectors.ProfileAbout).contains("Can't feel pain...");

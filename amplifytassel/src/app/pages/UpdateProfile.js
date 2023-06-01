@@ -32,13 +32,15 @@ import WarningIcon from '@mui/icons-material/Warning';
 import CheckIcon from '@mui/icons-material/Check';
 
 
-
+import useAnimation from '../util/AnimationContext';
 import { DataStore } from '@aws-amplify/datastore';
 import { Keyword, KeywordProfile, Profile, Major, ProfileMajor } from '../../models';
 import MultiSelect from '../components/MultiSelect';
 import { Dataset } from '@mui/icons-material';
 import { PointsAddition } from '../util/PointsAddition';
 
+// Animations
+import { calculateIfUserLeveledUp } from '../util/PointsAddition';
 
 const Page = styled((props) => (
   <MuiBox {...props} />
@@ -91,7 +93,6 @@ export default function UpdateProfile() {
   const [showDeleteVolunteerModal, setShowDeleteVolunteerModal] = useState(false);
   const [selectedMajors, setSelectedMajors] = useState([]);
   const [totalMajors, setTotalMajors] = useState([]);
-
   const [selectedKeywords, setSelectedKeywords] = useState([]);
   const [allKeywords, setAllKeywords] = useState([]);
   const [values, setValues] = useState({
@@ -101,6 +102,12 @@ export default function UpdateProfile() {
       about: userProfile.about,
     },
   });
+
+  // animations
+  const {
+    setShowConfettiAnimation,
+    setShowStarAnimation
+  } = useAnimation();
 // add util file and util functions that adds the points when called
   const handleDeleteTag = (tagIndex) => () => {
     const tempSelectedTags = [...selectedKeywords];
@@ -132,24 +139,24 @@ export default function UpdateProfile() {
 
     // Check location
     if (userProfile.location === null && selctdVals[1].location !== null) {
-      pointsToBeAdded += 10;
+      pointsToBeAdded += 20;
     }
 
     // Check about
     if (userProfile.about === null && selctdVals[1].about !== null) {
-      pointsToBeAdded += 10;
+      pointsToBeAdded += 20;
     }
     
     const existingKeywords = await DataStore.query(KeywordProfile, kp => kp.profileId.eq(userProfile.id));
     // Check Keywords
     if (existingKeywords.length === 0 && selctdKeywords.length > 0) {
-      pointsToBeAdded += 10;
+      pointsToBeAdded += 20;
     }
 
     const existingMajors = await DataStore.query(ProfileMajor, pm => pm.profileId.eq(userProfile.id));
     // Check Majors
     if (existingMajors.length === 0 && selctdMajors.length > 0) {
-      pointsToBeAdded += 10;
+      pointsToBeAdded += 20;
     }
 
     return pointsToBeAdded;
@@ -159,7 +166,22 @@ export default function UpdateProfile() {
   const updateProfile = async () => {
     // Calculate the points and add them
     const pointsToAdd = await calculatePointsEarned(userProfile, selectedMajors, selectedKeywords, values);
-    PointsAddition(pointsToAdd, userProfile.id);
+    const oldPoints = userProfile.points;
+    PointsAddition(pointsToAdd, userProfile.id, setUserProfile);
+    // Check if they leveled up
+    let toasterStr = '';
+    if (pointsToAdd > 0) {
+      const isLevelUp = calculateIfUserLeveledUp(oldPoints, pointsToAdd);
+      if (isLevelUp) {
+        // Display confetti animation
+        setShowConfettiAnimation(true);
+        toasterStr = 'and you leveled up!';
+      } else {
+        // Display star animation
+        setShowStarAnimation(true);
+        toasterStr = `and you earned ${pointsToAdd} points!`;
+      }
+    }
 
     // console.log('selectedKeywords', selectedKeywords);
     // console.log('allKeywoards', allKeywords);
@@ -220,7 +242,7 @@ export default function UpdateProfile() {
     res = await DataStore.query(Profile, userProfile.id);
     setUserProfile(res);
     // console.log('userProfile', userProfile);
-    toast.success('Account updated', {
+    toast.success(`Account updated ${toasterStr}`, {
       position: 'top-right',
       autoClose: 5000,
       hideProgressBar: false,
@@ -568,7 +590,8 @@ export default function UpdateProfile() {
         onBackdropClick={() => setShowWorkForm(false)}
         onClose={() => setShowWorkForm(false)}
       >
-        <WorkExperienceForm onClose={() =>
+        <WorkExperienceForm
+          onClose={() =>
           setShowWorkForm(!showWorkForm)} />
       </Modal>
       <Modal
@@ -584,7 +607,8 @@ export default function UpdateProfile() {
         onBackdropClick={() => setShowVolunteerForm(false)}
         onClose={() => setShowVolunteerForm(false)}
       >
-        <VolunteerExperienceForm onClose={() =>
+        <VolunteerExperienceForm
+          onClose={() =>
           setShowVolunteerForm(!showVolunteerForm)} />
       </Modal>
       <Modal
@@ -595,7 +619,6 @@ export default function UpdateProfile() {
         <VolunteerExperienceDeleteModal onClose={() =>
           setShowDeleteVolunteerModal(!showDeleteVolunteerModal)} />
       </Modal>
-
     </Page>
   );
 }

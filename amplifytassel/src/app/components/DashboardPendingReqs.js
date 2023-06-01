@@ -80,7 +80,18 @@ export default function DashboardPendingReqs({
           o.Requests.status.eq('PENDING')
         ]))
         .then((res) => {
-          setPendingOpps(res);
+          const pendingOpps = [];
+          for (let i = 0; i < res.length; i++) {
+            const p = Promise.resolve(res[i].Requests.values);
+            p.then(value => {
+              for (let j = 0; j < value.length; j++) {
+                if (value[j].profileID === userProfile.id && value[j].status === 'PENDING') {
+                  pendingOpps.push(res[i]);
+                }
+              }
+            });
+          }
+          setPendingOpps(pendingOpps);
         })
         .catch((err) => {
           console.log(err);
@@ -105,7 +116,7 @@ export default function DashboardPendingReqs({
   return (
     <PendingSection>
       <Text>
-        <h2 className='text-dark ellipsis text-medium'>
+        <h2 className='text-dark ellipsis text-medium' aria-label='Dashboard Pending Title'>
           Pending Requests
         </h2>
       </Text>
@@ -121,6 +132,7 @@ export default function DashboardPendingReqs({
         <div
           className='flex-horizontal flex-align-center flex-flow-large'
           style={{justifyContent: 'space-between'}}
+          aria-label='Dashboard Pending Dropdown'
         >
           <Box sx={{minWidth: 120}}>
             <FormControl
@@ -159,7 +171,7 @@ export default function DashboardPendingReqs({
           />
         </div>
         <TableContainer>
-          <Table aria-labelledby='tableTitle'>
+          <Table>
             <TableBody>
               {selectedReq === 'Incoming Requests' && createdOpps
                   .slice()

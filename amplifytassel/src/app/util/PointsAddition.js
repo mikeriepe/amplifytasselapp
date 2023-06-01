@@ -1,17 +1,28 @@
 import { DataStore } from '@aws-amplify/datastore';
 import {  Profile } from '../../models';
+import useAuth from './AuthContext';
 
-export async function PointsAddition(points, profileid) {
 
+/**
+ * Updates the user's profile by adding points and updates the user's profile in the state
+ * 
+ * @param {int} points - The number of points to be added to the user's profile
+ * @param {string} profileid - The ID of the user's profile to be updated
+ * @param {function} setUserProfile - The function to update the user's profile in the state
+ * @return {boolean} - True if the profile was successfully updated; false otherwise
+ */
+
+export async function PointsAddition(points, profileid, setUserProfile) {
   try{
-  let res = await DataStore.query(Profile, profileid);
-  await DataStore.save(Profile.copyOf(res, updated => {
-      updated.points = updated.points + points;
-    }));
+    let res = await DataStore.query(Profile, profileid);
+    const updatedProfile = await DataStore.save(Profile.copyOf(res, updated => {
+        updated.points = updated.points + points;
+      }));
+    setUserProfile(updatedProfile);
   }
   catch (error) {
-      console.error("Error updating points: ", error);
-      return false;
+    console.error("Error updating points: ", error);
+    return false;
   }
   return true;
 }
@@ -84,5 +95,45 @@ export function calculateIfUserLeveledUp(oldPoints, pointsToAdd) {
     return true;
   } else {
     return false;
+  }
+}
+
+
+/**
+ * Calculates the percentage filled in the XP bar based on user's current points.
+ * 
+ * @param {int} profilePoints - The current points on the user's profile
+ * @return {float} - The percentage filled in the XP bar (ranges between 0 to 100)
+ */
+export function calculateXpBarPercentage(profilePoints) {
+  let level = calculateUserLevel(profilePoints);
+  let lowerBound = level == 1 ? 0 : levelToPointsMap[level - 1];
+  let upperBound = levelToPointsMap[level] ? levelToPointsMap[level] : Infinity;
+
+  // If the upper bound is infinity, then the user is level 10 and the XP bar should be fully filled
+  if (upperBound == Infinity) {
+    return 100;
+  } else {
+    let pointsIntoLevel = profilePoints - lowerBound;
+    let totalPointsThisLevel = upperBound - lowerBound;
+    return (pointsIntoLevel / totalPointsThisLevel) * 100;
+  }
+}
+
+/**
+ * Calculates how many more points are needed for the user to reach the next level.
+ * 
+ * @param {int} profilePoints - The current points on the user's profile
+ * @return {int} - The points needed until the user reaches the next level
+ */
+export function calculatePointsToNextLevel(profilePoints) {
+  let level = calculateUserLevel(profilePoints);
+  let upperBound = levelToPointsMap[level] ? levelToPointsMap[level] : Infinity;
+
+  // If the upper bound is infinity, then the user is level 10 and no more points are needed for the next level
+  if (upperBound == Infinity) {
+    return 0;
+  } else {
+    return upperBound - profilePoints;
   }
 }
