@@ -773,6 +773,7 @@ export default function OpportunitiesCard({
                     }
                   >
                     <CloseRoundedIcon
+                      aria-label={`Delete ${opportunity.eventName}`}
                       sx={{
                         height: '20px',
                         width: '20px',
@@ -829,6 +830,7 @@ export default function OpportunitiesCard({
                           Back
                         </ThemedButton>
                         <ThemedButton
+                          aria-label={'Delete Opp'}
                           color={'gray'}
                           variant={'cancel'}
                           onClick={() => handleDeleteOpp(opportunity)}
@@ -850,6 +852,7 @@ export default function OpportunitiesCard({
                     onClick={handleOppModalOpen}
                   >
                     <EditRoundedIcon
+                      data-test-id={`Edit Opportunity Form ${opportunity.id}`}
                       sx={{
                         height: '20px',
                         width: '20px',
@@ -859,6 +862,7 @@ export default function OpportunitiesCard({
                   </OutlinedIconButton>
                   {/* EDIT OPP FORM */}
                   <Modal
+                    aria-label={'Opportunity Form'}
                     open={showOppForm}
                     onBackdropClick={() => setShowOppForm(false)}
                     onClose={() => setShowOppForm(false)}
@@ -874,7 +878,7 @@ export default function OpportunitiesCard({
               )}
               {type === 'all' && (
                 <OutlinedButton handleModalOpen={handleReqModalOpen}>
-                  <p className='text-xbold text-white'>Apply</p>
+                  <p className='text-xbold text-white' aria-label={`Apply ${opportunity.eventName}`}>Apply</p>
                 </OutlinedButton>
               )}
             </div>
