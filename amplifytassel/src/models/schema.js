@@ -139,8 +139,7 @@ export const schema = {
                         "nonModel": "Availability"
                     },
                     "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true
+                    "attributes": []
                 },
                 "picture": {
                     "name": "picture",
@@ -311,14 +310,7 @@ export const schema = {
                     "isArray": false,
                     "type": "String",
                     "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true,
-                    "association": {
-                        "connectionType": "HAS_MANY",
-                        "associatedWith": [
-                            "profileID"
-                        ]
-                    }
+                    "attributes": []
                 },
                 "infoRequest": {
                     "name": "infoRequest",
@@ -376,7 +368,7 @@ export const schema = {
                 "points": {
                     "name": "points",
                     "isArray": false,
-                    "type": "String",
+                    "type": "Int",
                     "isRequired": false,
                     "attributes": []
                 },
