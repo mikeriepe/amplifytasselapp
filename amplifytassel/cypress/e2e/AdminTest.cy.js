@@ -44,3 +44,52 @@ describe('Verify Approvals Elements Are Present', () => {
         cy.get(selectors.ApprovalsOpportunitiesRows).contains('Test Dummy');
     });
 });
+
+describe('Account Deny', () => {
+    it('Denies account', () => {
+        cy.get('input[type="checkbox"][value="kurira@socam.me"]').click();
+
+        cy.get(selectors.ApprovalsAccountActions).contains('Deny').click({force: true});
+
+        cy.wait(2000);
+    });
+});
+
+describe('Account Approval', () => {
+    it('approves account', () => {
+        cy.get('input[type="checkbox"][value="kurira@socam.me"]').click();
+
+        cy.get(selectors.ApprovalsAccountActions).contains('Approve').click({force: true});
+
+        cy.wait(2000);
+    });
+});
+
+describe('Account Promoted to Admin', () => {
+    it('promotes account', () => {
+        cy.get('input[type="checkbox"][value="kurira@socam.me"]').click();
+
+        cy.get(selectors.ApprovalsAccountActions).contains('Promote Admin').click({force: true});
+
+        cy.wait(2000);
+    });
+});
+
+
+
+describe('Opportunity Approve', () => {
+    it('Approves opportunity', () => {
+        cy.get(selectors.ApprovalsOpportunitiesTab).click();
+
+        cy.wait(4000);
+
+        cy.get(`input[type="checkbox"][value="17199f9f-6eef-45be-ac5c-14a821d64d20"]`).click();
+
+        cy.get(selectors.ApprovalsOpportunityActions).contains('Approve').click({force: true});
+
+        cy.wait(2000);
+
+    });
+});
+
+
