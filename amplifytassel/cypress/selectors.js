@@ -103,7 +103,6 @@ export const selectors = {
     OppsCreatedTabRedDeleteTestButton: '[aria-label="Delete Test Dummies Unite!"]',
     OppsDeleteModalDeleteButton: '[aria-label="Delete Opp"]',
     ViewOpportunityRequest: '[aria-label="Request General Participant - View"]',
-    GeneralApply: '[aria-label="ApplyButton"]',
     RoleRequest: '[aria-label="Request General Participant"]',
     DeleteRequests: '[aria-label="Delete Test Dummies Become Human"]',
 }
