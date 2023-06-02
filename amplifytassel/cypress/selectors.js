@@ -60,4 +60,18 @@ export const selectors = {
     OpportunityCardHost4: '[aria-label="Opportunity Card Host Graduation Party"]',
     OpportunityCardTitle5: '[aria-label="Opportunity Card Title Tea Time Chat"]',
     OpportunityCardHost5: '[aria-label="Opportunity Card Host Tea Time Chat"]',
+    OppsCreateNewButton: '[data-testid="AddRoundedIcon"]',
+    OppsFormTitle: '[name="name"]',
+    OppsFormDescription: '[name="description"]',
+    OppsFormLocationAddress: '[name="location.address"]',
+    OppsFormLocationCity: '[name="location.city"]',
+    OppsFormLocationState: '[name="location.state"]',
+    OppsFormLocationZip: '[name="location.zip"]',
+    OppsFormSubject: '[id="mui-component-select-subject"]',
+    OppsFormSubject0: '[data-value="Agroecology"]',
+    OppsFormOtherDetail: '[name="eventdata"]',
+    OppsFormSaveButton: '[aria-label="Save button"]',
+    OppsCreatedTabRedDeleteTestButton: '[aria-label="Delete Test Dummies Unite!"]',
+    OppsDeleteModalDeleteButton: '[aria-label="Delete Opp"]',
+
 }
