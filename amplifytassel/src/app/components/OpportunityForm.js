@@ -820,7 +820,7 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
         }}
       >
         <ThemedButton
-          aria-label='Next step button'
+          aria-label='Back button'
           color={'yellow'}
           variant={'themed'}
           onClick={onClose}
@@ -828,7 +828,7 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
           Back
         </ThemedButton>
         <ThemedButton
-          aria-label='Next step button'
+          aria-label='Save button'
           color={'blue'}
           variant={'themed'}
           onClick={async () => {

@@ -67,5 +67,17 @@ export const selectors = {
     OpportunityRequestSamCheck: '[aria-label="Check Sam"]',
     OpportunityRequestsApprove: '[aria-label="Approve Requests"]',
     OpportunityRequestsDeny: '[aria-label="Deny Requests"]',
-    
+    OppsCreateNewButton: '[data-testid="AddRoundedIcon"]',
+    OppsFormTitle: '[name="name"]',
+    OppsFormDescription: '[name="description"]',
+    OppsFormLocationAddress: '[name="location.address"]',
+    OppsFormLocationCity: '[name="location.city"]',
+    OppsFormLocationState: '[name="location.state"]',
+    OppsFormLocationZip: '[name="location.zip"]',
+    OppsFormSubject: '[id="mui-component-select-subject"]',
+    OppsFormSubject0: '[data-value="Agroecology"]',
+    OppsFormOtherDetail: '[name="eventdata"]',
+    OppsFormSaveButton: '[aria-label="Save button"]',
+    OppsCreatedTabRedDeleteTestButton: '[aria-label="Delete Test Dummies Unite!"]',
+    OppsDeleteModalDeleteButton: '[aria-label="Delete Opp"]',
 }

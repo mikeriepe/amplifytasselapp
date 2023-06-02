@@ -830,6 +830,7 @@ export default function OpportunitiesCard({
                           Back
                         </ThemedButton>
                         <ThemedButton
+                          aria-label={'Delete Opp'}
                           color={'gray'}
                           variant={'cancel'}
                           onClick={() => handleDeleteOpp(opportunity)}
