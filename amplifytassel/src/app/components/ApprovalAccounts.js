@@ -561,6 +561,7 @@ export default function ApprovalAccounts() {
                 <TableCell padding='checkbox'>
                   <Checkbox
                     color='primary'
+                    data-testid="account-checkbox"
                   // indeterminate={numSelected > 0 && numSelected < rowCount}
                   // checked={rowCount > 0 && numSelected === rowCount}
                   // onChange={onSelectAllClick}
