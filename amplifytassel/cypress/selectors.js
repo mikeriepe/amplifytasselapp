@@ -60,6 +60,13 @@ export const selectors = {
     OpportunityCardHost4: '[aria-label="Opportunity Card Host Graduation Party"]',
     OpportunityCardTitle5: '[aria-label="Opportunity Card Title Tea Time Chat"]',
     OpportunityCardHost5: '[aria-label="Opportunity Card Host Tea Time Chat"]',
+    OpportunityCardApplyTeaTime: '[aria-label="Apply Tea Time Chat"]',
+    OpportunityCardDeleteTeaTime: '[aria-label="Delete Tea Time Chat"]',
+    RequestModalSendRequest: '[aria-label="Send Request to Join"]',
+    OpportunityTabRequests: '[aria-label="Opportunities Tab Requests"]',
+    OpportunityRequestSamCheck: '[aria-label="Check Sam"]',
+    OpportunityRequestsApprove: '[aria-label="Approve Requests"]',
+    OpportunityRequestsDeny: '[aria-label="Deny Requests"]',
     OppsCreateNewButton: '[data-testid="AddRoundedIcon"]',
     OppsFormTitle: '[name="name"]',
     OppsFormDescription: '[name="description"]',
@@ -73,5 +80,4 @@ export const selectors = {
     OppsFormSaveButton: '[aria-label="Save button"]',
     OppsCreatedTabRedDeleteTestButton: '[aria-label="Delete Test Dummies Unite!"]',
     OppsDeleteModalDeleteButton: '[aria-label="Delete Opp"]',
-
 }
