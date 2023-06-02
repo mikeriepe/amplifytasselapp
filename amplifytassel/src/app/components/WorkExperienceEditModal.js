@@ -248,7 +248,7 @@ export default function WorkExperienceEditModal({onClose, index}) {
               onClick={() => {
                 onClose();
               }}
-              aria-label='Next step button'
+              aria-label='Work Experience Edit Modal Cancel Button'
               color={'yellow'}
               variant={'themed'}
               sx={{

@@ -7,6 +7,8 @@ beforeEach(function () {
     cy.get(selectors.LoginPasswordInput).type("Password");
     cy.get(selectors.LoginButton).contains('Login').click();
     cy.wait(4000);
+    cy.visit('http://localhost:3000/dashboard');
+    cy.wait(4000);
     cy.visit('http://localhost:3000/opportunities');
     cy.wait(2000);
 });
@@ -62,3 +64,31 @@ describe('Verify opportunities load', () => {
     cy.get(selectors.OpportunityCardHost5).contains('Jimmy Neutron');
   });
 });
+
+describe('Edit Created Opportunity', () => {
+  it('Displays the form when edit button clicked', () => {
+    cy.get(selectors.OpportunitiesTabCreated).click();
+    cy.wait(2000);
+    cy.scrollTo('bottom');
+    cy.get(selectors.OpportunityFormCarCrashTest).click();
+    cy.wait(4000);
+    cy.get(selectors.OpportunityForm).contains('Opportunity Title');
+    cy.get(selectors.OpportunityForm).contains('Location Type');
+    cy.get(selectors.OpportunityForm).contains('Organization');
+    cy.get(selectors.OpportunityForm).contains('Enter Description');
+    cy.get(selectors.OpportunityForm).contains('Role Name');
+    cy.get(selectors.OpportunityForm).contains('Tags');
+    cy.get(selectors.OpportunityForm).contains('Add Tags');
+    cy.get(selectors.OpportunityForm).contains('Start Date');
+    cy.get(selectors.OpportunityForm).contains('End Date');
+    cy.get(selectors.OpportunityForm).contains('Start Time');
+    cy.get(selectors.OpportunityForm).contains('End Time');
+    cy.get(selectors.OpportunityForm).contains('Enter Street Address');
+    cy.get(selectors.OpportunityForm).contains('Enter City');
+    cy.get(selectors.OpportunityForm).contains('Enter State/Province');
+    cy.get(selectors.OpportunityForm).contains('Enter Zipcode');
+    cy.get(selectors.OpportunityForm).contains('Subject');
+    cy.get(selectors.OpportunityForm).contains('Other details');
+  })
+});
+

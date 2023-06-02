@@ -417,6 +417,7 @@ export default function UpdateProfile() {
                         {(
                           <OutlinedIconButton>
                             <RemoveIcon
+                              aria-label={'Remove Work Experience'}
                               sx={{
                                 height: '20px',
                                 width: '20px',
@@ -431,6 +432,7 @@ export default function UpdateProfile() {
                         {(
                           <OutlinedIconButton>
                             <AddIcon
+                              aria-label={'Add Work Experience'}
                               sx={{
                                 height: '20px',
                                 width: '20px',
@@ -462,6 +464,7 @@ export default function UpdateProfile() {
                         {(
                           <OutlinedIconButton>
                             <RemoveIcon
+                              aria-label={'Remove Volunteer Experience'}
                               sx={{
                                 height: '20px',
                                 width: '20px',
@@ -476,6 +479,7 @@ export default function UpdateProfile() {
                         {(
                           <OutlinedIconButton>
                             <AddIcon
+                              aria-label={'Add Volunteer Experience'}
                               sx={{
                                 height: '20px',
                                 width: '20px',
@@ -512,10 +516,11 @@ export default function UpdateProfile() {
                       </div>
                       <div>
                         {selectedKeywords &&
-                          <div className='border'>
+                          <div className='border' aria-label='Update Profile Interests Chips'>
                             {selectedKeywords.map((label, index) => (
                               <div key={index} className="label-box">
                                 <Chip
+                                  data-test-id={`Interests ${label.id}`}
                                   label={label.name}
                                   key={`role${index}`}
                                   id={index.toString()}
@@ -540,6 +545,7 @@ export default function UpdateProfile() {
                             <div className='border'>
                               {allKeywords.map((label, index) => (
                                 <Chip
+                                  data-test-id={`Categories ${label.id}`}
                                   label={label.name}
                                   key={`role${index}`}
                                   id={index.toString()}

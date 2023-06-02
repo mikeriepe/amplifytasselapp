@@ -248,6 +248,7 @@ export default function OpportunitiesList({
         </div>
         {displayOpps.map((opportunity, index) => (
           <OpportunitiesCard
+            // data-test-id={`opportunity-card-${opportunity.id}`}
             key={`opportunity-${index}`}
             type={type}
             opportunity={opportunity}

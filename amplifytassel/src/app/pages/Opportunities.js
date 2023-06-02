@@ -304,6 +304,7 @@ function Opportunities({
       name: 'Created',
       component:
         <OpportunitiesList
+          aria-label='Opportunities Tab Created'
           key='created'
           type='created'
           opportunities={createdOpportunities}
