@@ -117,6 +117,7 @@ export default function ViewOpportunityRequestCard({
             inputProps={{
               'aria-labelledby': labelId,
             }}
+            aria-label={`Check ${request.firstName}`}
           />
         </TableCell>
         <TableCell

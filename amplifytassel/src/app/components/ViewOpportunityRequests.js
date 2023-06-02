@@ -434,6 +434,7 @@ function EnhancedTableToolbar({
           sx={{marginRight: '5px'}}
         >
           <ThemedButton
+            aria-label="Approve Requests"
             color='yellow'
             variant='gradient'
             size='small'
@@ -444,6 +445,7 @@ function EnhancedTableToolbar({
             Approve
           </ThemedButton>
           <ThemedButton
+            aria-label="Deny Requests"
             color='gray'
             variant='themed'
             size='small'
