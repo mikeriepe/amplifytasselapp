@@ -86,6 +86,7 @@ export default function WorkExperienceCard({jobIndex}) {
             {(
               <OutlinedIconButton>
                 <EditRoundedIcon
+                  data-test-id={`Work Experience Edit ${userProfile.experience[jobIndex].title}`}
                   sx={{
                     height: '20px',
                     width: '20px',

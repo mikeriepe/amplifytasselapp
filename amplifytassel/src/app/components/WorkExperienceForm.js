@@ -309,7 +309,7 @@ export default function WorkExperienceForm({onClose}) {
           <div className='flex-flow-large'>
             <ThemedButton
               onClick={onClose}
-              aria-label='Next step button'
+              aria-label='Work Experience Form Cancel Button'
               color={'yellow'}
               variant={'themed'}
               sx={{

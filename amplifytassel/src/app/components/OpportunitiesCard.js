@@ -850,6 +850,7 @@ export default function OpportunitiesCard({
                     onClick={handleOppModalOpen}
                   >
                     <EditRoundedIcon
+                      data-test-id={`Edit Opportunity Form ${opportunity.id}`}
                       sx={{
                         height: '20px',
                         width: '20px',
@@ -859,6 +860,7 @@ export default function OpportunitiesCard({
                   </OutlinedIconButton>
                   {/* EDIT OPP FORM */}
                   <Modal
+                    aria-label={'Opportunity Form'}
                     open={showOppForm}
                     onBackdropClick={() => setShowOppForm(false)}
                     onClose={() => setShowOppForm(false)}
