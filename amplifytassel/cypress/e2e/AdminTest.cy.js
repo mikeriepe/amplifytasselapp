@@ -75,6 +75,18 @@ describe('Account Promoted to Admin', () => {
     });
 });
 
+describe('Oppurtunity Deny', () => {
+    it('Denies Oppurtunity', () => {
+        cy.get(selectors.ApprovalsOpportunitiesTab).click();
+        cy.wait(4000);
+        
+        cy.get('input[type="checkbox"][value="17199f9f-6eef-45be-ac5c-14a821d64d20"]').click();
+
+        cy.get(selectors.ApprovalsOpportunityActions).contains('Deny').click({force: true});
+
+        cy.wait(2000);
+    });
+});
 
 
 describe('Opportunity Approve', () => {
@@ -91,5 +103,6 @@ describe('Opportunity Approve', () => {
 
     });
 });
+
 
 
