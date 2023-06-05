@@ -605,6 +605,7 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
               {/* Show the selected tags here */}
               {selectedTags.map((tag, index) => (
                 <Chip
+                  data-test-id={`Selected Tags ${tag}`}
                   label={tag}
                   key={`role${index}`}
                   id={index.toString()}
@@ -642,6 +643,7 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
               {/* Show the all the tags here */}
               {allTags.map((tag, index) => (
                 <Chip
+                  data-test-id={`Unselected Tags ${tag}`}
                   label={tag}
                   key={`role${index}`}
                   id={index.toString()}

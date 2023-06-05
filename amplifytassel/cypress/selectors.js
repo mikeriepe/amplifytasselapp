@@ -102,4 +102,7 @@ export const selectors = {
     OppsFormSaveButton: '[aria-label="Save button"]',
     OppsCreatedTabRedDeleteTestButton: '[aria-label="Delete Test Dummies Unite!"]',
     OppsDeleteModalDeleteButton: '[aria-label="Delete Opp"]',
+    OpportunityFormAthleticsChipSelected: '[data-test-id="Selected Tags Athletics"]',
+    OpportunityFormAthleticsChipUnelected: '[data-test-id="Unselected Tags Athletics"]',
+
 }
