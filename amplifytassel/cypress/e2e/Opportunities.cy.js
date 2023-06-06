@@ -89,6 +89,10 @@ describe('Edit Created Opportunity', () => {
     cy.get(selectors.OpportunityForm).contains('Enter Zipcode');
     cy.get(selectors.OpportunityForm).contains('Subject');
     cy.get(selectors.OpportunityForm).contains('Other details');
+    cy.get(selectors.OpportunityFormAthleticsChipSelected).within(() => {
+      cy.get('.MuiChip-deleteIcon').click();
+    });
+    cy.get(selectors.OpportunityFormAthleticsChipUnelected).click();
   })
 });
 
