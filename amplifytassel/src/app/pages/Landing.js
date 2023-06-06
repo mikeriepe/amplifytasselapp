@@ -10,7 +10,7 @@ export default function Landing() {
   return (
     <div className='Landing'>
       <div className='title'>
-        <h1 className='ACmmTitle' id='landingTitle'>Tassel Vounteering</h1>
+        <h1 className='ACmmTitle' id='landingTitle'>Tassel Volunteering</h1>
         <h2 className='secondaryTitle'>Connect alumni with their alma mater</h2>
       </div>
     </div>
