@@ -10,8 +10,8 @@ export default function Landing() {
   return (
     <div className='Landing'>
       <div className='title'>
-        <h1 className='ACmmTitle' id='landingTitle'>AC Match Maker</h1>
-        <h2 className='secondaryTitle'>connect students with alumni</h2>
+        <h1 className='ACmmTitle' id='landingTitle'>Tassel Vounteering</h1>
+        <h2 className='secondaryTitle'>Connect alumni with their alma mater</h2>
       </div>
     </div>
   );
