@@ -25,7 +25,7 @@ export default function ProfileAbout({data}) {
   return (
     <About>
       <h4 className='text-dark'>About</h4>
-      {data ? <p>{data}</p> : <p>None</p>}
+      {data.about? <p aria-label='Profile About'>{data.about}</p> : <p>None</p>}
     </About>
   );
 }

@@ -15,6 +15,7 @@ export declare type ValidationFunction<T> = (value: T, validationResponse: Valid
 export declare type ProfileCreateFormInputValues = {
     email?: string;
     about?: string;
+    location?: string;
     picture?: string;
     firstName?: string;
     lastName?: string;
@@ -26,10 +27,13 @@ export declare type ProfileCreateFormInputValues = {
     schoolEmail?: string;
     infoRequest?: string;
     infoResponse?: string;
+    banner?: string;
+    points?: number;
 };
 export declare type ProfileCreateFormValidationValues = {
     email?: ValidationFunction<string>;
     about?: ValidationFunction<string>;
+    location?: ValidationFunction<string>;
     picture?: ValidationFunction<string>;
     firstName?: ValidationFunction<string>;
     lastName?: ValidationFunction<string>;
@@ -41,12 +45,15 @@ export declare type ProfileCreateFormValidationValues = {
     schoolEmail?: ValidationFunction<string>;
     infoRequest?: ValidationFunction<string>;
     infoResponse?: ValidationFunction<string>;
+    banner?: ValidationFunction<string>;
+    points?: ValidationFunction<number>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type ProfileCreateFormOverridesProps = {
     ProfileCreateFormGrid?: PrimitiveOverrideProps<GridProps>;
     email?: PrimitiveOverrideProps<TextFieldProps>;
     about?: PrimitiveOverrideProps<TextFieldProps>;
+    location?: PrimitiveOverrideProps<TextFieldProps>;
     picture?: PrimitiveOverrideProps<TextFieldProps>;
     firstName?: PrimitiveOverrideProps<TextFieldProps>;
     lastName?: PrimitiveOverrideProps<TextFieldProps>;
@@ -58,6 +65,8 @@ export declare type ProfileCreateFormOverridesProps = {
     schoolEmail?: PrimitiveOverrideProps<TextFieldProps>;
     infoRequest?: PrimitiveOverrideProps<TextFieldProps>;
     infoResponse?: PrimitiveOverrideProps<TextFieldProps>;
+    banner?: PrimitiveOverrideProps<TextFieldProps>;
+    points?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type ProfileCreateFormProps = React.PropsWithChildren<{
     overrides?: ProfileCreateFormOverridesProps | undefined | null;

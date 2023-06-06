@@ -1,48 +1,6 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const createTodo = /* GraphQL */ `
-  mutation CreateTodo(
-    $input: CreateTodoInput!
-    $condition: ModelTodoConditionInput
-  ) {
-    createTodo(input: $input, condition: $condition) {
-      id
-      name
-      description
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const updateTodo = /* GraphQL */ `
-  mutation UpdateTodo(
-    $input: UpdateTodoInput!
-    $condition: ModelTodoConditionInput
-  ) {
-    updateTodo(input: $input, condition: $condition) {
-      id
-      name
-      description
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const deleteTodo = /* GraphQL */ `
-  mutation DeleteTodo(
-    $input: DeleteTodoInput!
-    $condition: ModelTodoConditionInput
-  ) {
-    deleteTodo(input: $input, condition: $condition) {
-      id
-      name
-      description
-      createdAt
-      updatedAt
-    }
-  }
-`;
 export const createOrganization = /* GraphQL */ `
   mutation CreateOrganization(
     $input: CreateOrganizationInput!
@@ -57,6 +15,9 @@ export const createOrganization = /* GraphQL */ `
       instagram
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -74,6 +35,9 @@ export const updateOrganization = /* GraphQL */ `
       instagram
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -91,6 +55,9 @@ export const deleteOrganization = /* GraphQL */ `
       instagram
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -107,6 +74,9 @@ export const createComment = /* GraphQL */ `
       profileID
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -123,6 +93,9 @@ export const updateComment = /* GraphQL */ `
       profileID
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -139,6 +112,9 @@ export const deleteComment = /* GraphQL */ `
       profileID
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -160,8 +136,12 @@ export const createRole = /* GraphQL */ `
           majorId
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
       Profiles {
         items {
@@ -170,8 +150,12 @@ export const createRole = /* GraphQL */ `
           profileId
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
       opportunityID
       Requests {
@@ -187,11 +171,18 @@ export const createRole = /* GraphQL */ `
           profileID
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -213,8 +204,12 @@ export const updateRole = /* GraphQL */ `
           majorId
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
       Profiles {
         items {
@@ -223,8 +218,12 @@ export const updateRole = /* GraphQL */ `
           profileId
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
       opportunityID
       Requests {
@@ -240,11 +239,18 @@ export const updateRole = /* GraphQL */ `
           profileID
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -266,8 +272,12 @@ export const deleteRole = /* GraphQL */ `
           majorId
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
       Profiles {
         items {
@@ -276,8 +286,12 @@ export const deleteRole = /* GraphQL */ `
           profileId
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
       opportunityID
       Requests {
@@ -293,11 +307,18 @@ export const deleteRole = /* GraphQL */ `
           profileID
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -316,8 +337,12 @@ export const createMajor = /* GraphQL */ `
           profileId
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
       Roles {
         items {
@@ -326,11 +351,18 @@ export const createMajor = /* GraphQL */ `
           majorId
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -349,8 +381,12 @@ export const updateMajor = /* GraphQL */ `
           profileId
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
       Roles {
         items {
@@ -359,11 +395,18 @@ export const updateMajor = /* GraphQL */ `
           majorId
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -382,8 +425,12 @@ export const deleteMajor = /* GraphQL */ `
           profileId
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
       Roles {
         items {
@@ -392,11 +439,18 @@ export const deleteMajor = /* GraphQL */ `
           majorId
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -442,8 +496,12 @@ export const createProfile = /* GraphQL */ `
           profileId
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
       Roles {
         items {
@@ -452,8 +510,12 @@ export const createProfile = /* GraphQL */ `
           profileId
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
       Posts {
         items {
@@ -465,8 +527,12 @@ export const createProfile = /* GraphQL */ `
           opportunityID
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
       Comments {
         items {
@@ -477,34 +543,51 @@ export const createProfile = /* GraphQL */ `
           profileID
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
-      OpportunitiesOwned {
+      OpportunitiesJoined {
         items {
           id
           profileId
           opportunityId
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
-      Requests {
+      OpportunitiesOwned {
         items {
           id
-          status
-          responseMessage
-          requestTime
-          responseTime
-          requestMessage
-          opportunityID
-          roleID
+          zoomLink
+          organizations
+          description
+          isApproved
+          eventBanner
+          eventName
+          startTime
+          endTime
+          locationType
+          eventData
+          subject
+          preferences
           profileID
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
       experience {
         end
@@ -518,8 +601,31 @@ export const createProfile = /* GraphQL */ `
       schoolEmail
       infoRequest
       infoResponse
+      Requests {
+        items {
+          id
+          status
+          responseMessage
+          requestTime
+          responseTime
+          requestMessage
+          opportunityID
+          roleID
+          profileID
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+        }
+        nextToken
+        startedAt
+      }
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -565,8 +671,12 @@ export const updateProfile = /* GraphQL */ `
           profileId
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
       Roles {
         items {
@@ -575,8 +685,12 @@ export const updateProfile = /* GraphQL */ `
           profileId
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
       Posts {
         items {
@@ -588,8 +702,12 @@ export const updateProfile = /* GraphQL */ `
           opportunityID
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
       Comments {
         items {
@@ -600,34 +718,51 @@ export const updateProfile = /* GraphQL */ `
           profileID
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
-      OpportunitiesOwned {
+      OpportunitiesJoined {
         items {
           id
           profileId
           opportunityId
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
-      Requests {
+      OpportunitiesOwned {
         items {
           id
-          status
-          responseMessage
-          requestTime
-          responseTime
-          requestMessage
-          opportunityID
-          roleID
+          zoomLink
+          organizations
+          description
+          isApproved
+          eventBanner
+          eventName
+          startTime
+          endTime
+          locationType
+          eventData
+          subject
+          preferences
           profileID
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
       experience {
         end
@@ -641,8 +776,31 @@ export const updateProfile = /* GraphQL */ `
       schoolEmail
       infoRequest
       infoResponse
+      Requests {
+        items {
+          id
+          status
+          responseMessage
+          requestTime
+          responseTime
+          requestMessage
+          opportunityID
+          roleID
+          profileID
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+        }
+        nextToken
+        startedAt
+      }
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -688,8 +846,12 @@ export const deleteProfile = /* GraphQL */ `
           profileId
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
       Roles {
         items {
@@ -698,8 +860,12 @@ export const deleteProfile = /* GraphQL */ `
           profileId
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
       Posts {
         items {
@@ -711,8 +877,12 @@ export const deleteProfile = /* GraphQL */ `
           opportunityID
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
       Comments {
         items {
@@ -723,34 +893,51 @@ export const deleteProfile = /* GraphQL */ `
           profileID
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
-      OpportunitiesOwned {
+      OpportunitiesJoined {
         items {
           id
           profileId
           opportunityId
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
-      Requests {
+      OpportunitiesOwned {
         items {
           id
-          status
-          responseMessage
-          requestTime
-          responseTime
-          requestMessage
-          opportunityID
-          roleID
+          zoomLink
+          organizations
+          description
+          isApproved
+          eventBanner
+          eventName
+          startTime
+          endTime
+          locationType
+          eventData
+          subject
+          preferences
           profileID
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
       experience {
         end
@@ -764,8 +951,31 @@ export const deleteProfile = /* GraphQL */ `
       schoolEmail
       infoRequest
       infoResponse
+      Requests {
+        items {
+          id
+          status
+          responseMessage
+          requestTime
+          responseTime
+          requestMessage
+          opportunityID
+          roleID
+          profileID
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+        }
+        nextToken
+        startedAt
+      }
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -786,6 +996,9 @@ export const createRequest = /* GraphQL */ `
       profileID
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -806,6 +1019,9 @@ export const updateRequest = /* GraphQL */ `
       profileID
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -826,6 +1042,9 @@ export const deleteRequest = /* GraphQL */ `
       profileID
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -849,12 +1068,19 @@ export const createPost = /* GraphQL */ `
           profileID
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
       opportunityID
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -878,12 +1104,19 @@ export const updatePost = /* GraphQL */ `
           profileID
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
       opportunityID
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -907,12 +1140,19 @@ export const deletePost = /* GraphQL */ `
           profileID
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
       opportunityID
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -951,8 +1191,12 @@ export const createOpportunity = /* GraphQL */ `
           opportunityID
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
       Posts {
         items {
@@ -964,18 +1208,12 @@ export const createOpportunity = /* GraphQL */ `
           opportunityID
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
-      }
-      Owners {
-        items {
-          id
-          profileId
-          opportunityId
-          createdAt
-          updatedAt
-        }
-        nextToken
+        startedAt
       }
       Requests {
         items {
@@ -990,11 +1228,33 @@ export const createOpportunity = /* GraphQL */ `
           profileID
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
+      }
+      profileID
+      profilesJoined {
+        items {
+          id
+          profileId
+          opportunityId
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+        }
+        nextToken
+        startedAt
       }
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -1033,8 +1293,12 @@ export const updateOpportunity = /* GraphQL */ `
           opportunityID
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
       Posts {
         items {
@@ -1046,18 +1310,12 @@ export const updateOpportunity = /* GraphQL */ `
           opportunityID
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
-      }
-      Owners {
-        items {
-          id
-          profileId
-          opportunityId
-          createdAt
-          updatedAt
-        }
-        nextToken
+        startedAt
       }
       Requests {
         items {
@@ -1072,11 +1330,33 @@ export const updateOpportunity = /* GraphQL */ `
           profileID
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
+      }
+      profileID
+      profilesJoined {
+        items {
+          id
+          profileId
+          opportunityId
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+        }
+        nextToken
+        startedAt
       }
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -1115,8 +1395,12 @@ export const deleteOpportunity = /* GraphQL */ `
           opportunityID
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
       }
       Posts {
         items {
@@ -1128,18 +1412,12 @@ export const deleteOpportunity = /* GraphQL */ `
           opportunityID
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
-      }
-      Owners {
-        items {
-          id
-          profileId
-          opportunityId
-          createdAt
-          updatedAt
-        }
-        nextToken
+        startedAt
       }
       Requests {
         items {
@@ -1154,11 +1432,33 @@ export const deleteOpportunity = /* GraphQL */ `
           profileID
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         nextToken
+        startedAt
+      }
+      profileID
+      profilesJoined {
+        items {
+          id
+          profileId
+          opportunityId
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+        }
+        nextToken
+        startedAt
       }
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -1173,6 +1473,9 @@ export const createNote = /* GraphQL */ `
       description
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -1187,6 +1490,9 @@ export const updateNote = /* GraphQL */ `
       description
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -1201,6 +1507,9 @@ export const deleteNote = /* GraphQL */ `
       description
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -1221,31 +1530,45 @@ export const createRoleMajor = /* GraphQL */ `
         qualifications
         Majors {
           nextToken
+          startedAt
         }
         Profiles {
           nextToken
+          startedAt
         }
         opportunityID
         Requests {
           nextToken
+          startedAt
         }
         createdAt
         updatedAt
+        _version
+        _deleted
+        _lastChangedAt
       }
       major {
         id
         name
         profiles {
           nextToken
+          startedAt
         }
         Roles {
           nextToken
+          startedAt
         }
         createdAt
         updatedAt
+        _version
+        _deleted
+        _lastChangedAt
       }
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -1266,31 +1589,45 @@ export const updateRoleMajor = /* GraphQL */ `
         qualifications
         Majors {
           nextToken
+          startedAt
         }
         Profiles {
           nextToken
+          startedAt
         }
         opportunityID
         Requests {
           nextToken
+          startedAt
         }
         createdAt
         updatedAt
+        _version
+        _deleted
+        _lastChangedAt
       }
       major {
         id
         name
         profiles {
           nextToken
+          startedAt
         }
         Roles {
           nextToken
+          startedAt
         }
         createdAt
         updatedAt
+        _version
+        _deleted
+        _lastChangedAt
       }
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -1311,31 +1648,45 @@ export const deleteRoleMajor = /* GraphQL */ `
         qualifications
         Majors {
           nextToken
+          startedAt
         }
         Profiles {
           nextToken
+          startedAt
         }
         opportunityID
         Requests {
           nextToken
+          startedAt
         }
         createdAt
         updatedAt
+        _version
+        _deleted
+        _lastChangedAt
       }
       major {
         id
         name
         profiles {
           nextToken
+          startedAt
         }
         Roles {
           nextToken
+          startedAt
         }
         createdAt
         updatedAt
+        _version
+        _deleted
+        _lastChangedAt
       }
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -1356,16 +1707,22 @@ export const createProfileRole = /* GraphQL */ `
         qualifications
         Majors {
           nextToken
+          startedAt
         }
         Profiles {
           nextToken
+          startedAt
         }
         opportunityID
         Requests {
           nextToken
+          startedAt
         }
         createdAt
         updatedAt
+        _version
+        _deleted
+        _lastChangedAt
       }
       profile {
         id
@@ -1399,21 +1756,27 @@ export const createProfileRole = /* GraphQL */ `
         isApproved
         Majors {
           nextToken
+          startedAt
         }
         Roles {
           nextToken
+          startedAt
         }
         Posts {
           nextToken
+          startedAt
         }
         Comments {
           nextToken
+          startedAt
+        }
+        OpportunitiesJoined {
+          nextToken
+          startedAt
         }
         OpportunitiesOwned {
           nextToken
-        }
-        Requests {
-          nextToken
+          startedAt
         }
         experience {
           end
@@ -1427,11 +1790,21 @@ export const createProfileRole = /* GraphQL */ `
         schoolEmail
         infoRequest
         infoResponse
+        Requests {
+          nextToken
+          startedAt
+        }
         createdAt
         updatedAt
+        _version
+        _deleted
+        _lastChangedAt
       }
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -1452,16 +1825,22 @@ export const updateProfileRole = /* GraphQL */ `
         qualifications
         Majors {
           nextToken
+          startedAt
         }
         Profiles {
           nextToken
+          startedAt
         }
         opportunityID
         Requests {
           nextToken
+          startedAt
         }
         createdAt
         updatedAt
+        _version
+        _deleted
+        _lastChangedAt
       }
       profile {
         id
@@ -1495,21 +1874,27 @@ export const updateProfileRole = /* GraphQL */ `
         isApproved
         Majors {
           nextToken
+          startedAt
         }
         Roles {
           nextToken
+          startedAt
         }
         Posts {
           nextToken
+          startedAt
         }
         Comments {
           nextToken
+          startedAt
+        }
+        OpportunitiesJoined {
+          nextToken
+          startedAt
         }
         OpportunitiesOwned {
           nextToken
-        }
-        Requests {
-          nextToken
+          startedAt
         }
         experience {
           end
@@ -1523,11 +1908,21 @@ export const updateProfileRole = /* GraphQL */ `
         schoolEmail
         infoRequest
         infoResponse
+        Requests {
+          nextToken
+          startedAt
+        }
         createdAt
         updatedAt
+        _version
+        _deleted
+        _lastChangedAt
       }
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -1548,16 +1943,22 @@ export const deleteProfileRole = /* GraphQL */ `
         qualifications
         Majors {
           nextToken
+          startedAt
         }
         Profiles {
           nextToken
+          startedAt
         }
         opportunityID
         Requests {
           nextToken
+          startedAt
         }
         createdAt
         updatedAt
+        _version
+        _deleted
+        _lastChangedAt
       }
       profile {
         id
@@ -1591,21 +1992,27 @@ export const deleteProfileRole = /* GraphQL */ `
         isApproved
         Majors {
           nextToken
+          startedAt
         }
         Roles {
           nextToken
+          startedAt
         }
         Posts {
           nextToken
+          startedAt
         }
         Comments {
           nextToken
+          startedAt
+        }
+        OpportunitiesJoined {
+          nextToken
+          startedAt
         }
         OpportunitiesOwned {
           nextToken
-        }
-        Requests {
-          nextToken
+          startedAt
         }
         experience {
           end
@@ -1619,11 +2026,21 @@ export const deleteProfileRole = /* GraphQL */ `
         schoolEmail
         infoRequest
         infoResponse
+        Requests {
+          nextToken
+          startedAt
+        }
         createdAt
         updatedAt
+        _version
+        _deleted
+        _lastChangedAt
       }
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -1641,12 +2058,17 @@ export const createProfileMajor = /* GraphQL */ `
         name
         profiles {
           nextToken
+          startedAt
         }
         Roles {
           nextToken
+          startedAt
         }
         createdAt
         updatedAt
+        _version
+        _deleted
+        _lastChangedAt
       }
       profile {
         id
@@ -1680,21 +2102,27 @@ export const createProfileMajor = /* GraphQL */ `
         isApproved
         Majors {
           nextToken
+          startedAt
         }
         Roles {
           nextToken
+          startedAt
         }
         Posts {
           nextToken
+          startedAt
         }
         Comments {
           nextToken
+          startedAt
+        }
+        OpportunitiesJoined {
+          nextToken
+          startedAt
         }
         OpportunitiesOwned {
           nextToken
-        }
-        Requests {
-          nextToken
+          startedAt
         }
         experience {
           end
@@ -1708,11 +2136,21 @@ export const createProfileMajor = /* GraphQL */ `
         schoolEmail
         infoRequest
         infoResponse
+        Requests {
+          nextToken
+          startedAt
+        }
         createdAt
         updatedAt
+        _version
+        _deleted
+        _lastChangedAt
       }
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -1730,12 +2168,17 @@ export const updateProfileMajor = /* GraphQL */ `
         name
         profiles {
           nextToken
+          startedAt
         }
         Roles {
           nextToken
+          startedAt
         }
         createdAt
         updatedAt
+        _version
+        _deleted
+        _lastChangedAt
       }
       profile {
         id
@@ -1769,21 +2212,27 @@ export const updateProfileMajor = /* GraphQL */ `
         isApproved
         Majors {
           nextToken
+          startedAt
         }
         Roles {
           nextToken
+          startedAt
         }
         Posts {
           nextToken
+          startedAt
         }
         Comments {
           nextToken
+          startedAt
+        }
+        OpportunitiesJoined {
+          nextToken
+          startedAt
         }
         OpportunitiesOwned {
           nextToken
-        }
-        Requests {
-          nextToken
+          startedAt
         }
         experience {
           end
@@ -1797,11 +2246,21 @@ export const updateProfileMajor = /* GraphQL */ `
         schoolEmail
         infoRequest
         infoResponse
+        Requests {
+          nextToken
+          startedAt
+        }
         createdAt
         updatedAt
+        _version
+        _deleted
+        _lastChangedAt
       }
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -1819,12 +2278,17 @@ export const deleteProfileMajor = /* GraphQL */ `
         name
         profiles {
           nextToken
+          startedAt
         }
         Roles {
           nextToken
+          startedAt
         }
         createdAt
         updatedAt
+        _version
+        _deleted
+        _lastChangedAt
       }
       profile {
         id
@@ -1858,21 +2322,27 @@ export const deleteProfileMajor = /* GraphQL */ `
         isApproved
         Majors {
           nextToken
+          startedAt
         }
         Roles {
           nextToken
+          startedAt
         }
         Posts {
           nextToken
+          startedAt
         }
         Comments {
           nextToken
+          startedAt
+        }
+        OpportunitiesJoined {
+          nextToken
+          startedAt
         }
         OpportunitiesOwned {
           nextToken
-        }
-        Requests {
-          nextToken
+          startedAt
         }
         experience {
           end
@@ -1886,20 +2356,30 @@ export const deleteProfileMajor = /* GraphQL */ `
         schoolEmail
         infoRequest
         infoResponse
+        Requests {
+          nextToken
+          startedAt
+        }
         createdAt
         updatedAt
+        _version
+        _deleted
+        _lastChangedAt
       }
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
-export const createProfileOpportunity = /* GraphQL */ `
-  mutation CreateProfileOpportunity(
-    $input: CreateProfileOpportunityInput!
-    $condition: ModelProfileOpportunityConditionInput
+export const createOpportunityProfile = /* GraphQL */ `
+  mutation CreateOpportunityProfile(
+    $input: CreateOpportunityProfileInput!
+    $condition: ModelOpportunityProfileConditionInput
   ) {
-    createProfileOpportunity(input: $input, condition: $condition) {
+    createOpportunityProfile(input: $input, condition: $condition) {
       id
       profileId
       opportunityId
@@ -1935,21 +2415,27 @@ export const createProfileOpportunity = /* GraphQL */ `
         isApproved
         Majors {
           nextToken
+          startedAt
         }
         Roles {
           nextToken
+          startedAt
         }
         Posts {
           nextToken
+          startedAt
         }
         Comments {
           nextToken
+          startedAt
+        }
+        OpportunitiesJoined {
+          nextToken
+          startedAt
         }
         OpportunitiesOwned {
           nextToken
-        }
-        Requests {
-          nextToken
+          startedAt
         }
         experience {
           end
@@ -1963,8 +2449,15 @@ export const createProfileOpportunity = /* GraphQL */ `
         schoolEmail
         infoRequest
         infoResponse
+        Requests {
+          nextToken
+          startedAt
+        }
         createdAt
         updatedAt
+        _version
+        _deleted
+        _lastChangedAt
       }
       opportunity {
         id
@@ -1988,30 +2481,41 @@ export const createProfileOpportunity = /* GraphQL */ `
         preferences
         Roles {
           nextToken
+          startedAt
         }
         Posts {
           nextToken
-        }
-        Owners {
-          nextToken
+          startedAt
         }
         Requests {
           nextToken
+          startedAt
+        }
+        profileID
+        profilesJoined {
+          nextToken
+          startedAt
         }
         createdAt
         updatedAt
+        _version
+        _deleted
+        _lastChangedAt
       }
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
-export const updateProfileOpportunity = /* GraphQL */ `
-  mutation UpdateProfileOpportunity(
-    $input: UpdateProfileOpportunityInput!
-    $condition: ModelProfileOpportunityConditionInput
+export const updateOpportunityProfile = /* GraphQL */ `
+  mutation UpdateOpportunityProfile(
+    $input: UpdateOpportunityProfileInput!
+    $condition: ModelOpportunityProfileConditionInput
   ) {
-    updateProfileOpportunity(input: $input, condition: $condition) {
+    updateOpportunityProfile(input: $input, condition: $condition) {
       id
       profileId
       opportunityId
@@ -2047,21 +2551,27 @@ export const updateProfileOpportunity = /* GraphQL */ `
         isApproved
         Majors {
           nextToken
+          startedAt
         }
         Roles {
           nextToken
+          startedAt
         }
         Posts {
           nextToken
+          startedAt
         }
         Comments {
           nextToken
+          startedAt
+        }
+        OpportunitiesJoined {
+          nextToken
+          startedAt
         }
         OpportunitiesOwned {
           nextToken
-        }
-        Requests {
-          nextToken
+          startedAt
         }
         experience {
           end
@@ -2075,8 +2585,15 @@ export const updateProfileOpportunity = /* GraphQL */ `
         schoolEmail
         infoRequest
         infoResponse
+        Requests {
+          nextToken
+          startedAt
+        }
         createdAt
         updatedAt
+        _version
+        _deleted
+        _lastChangedAt
       }
       opportunity {
         id
@@ -2100,30 +2617,41 @@ export const updateProfileOpportunity = /* GraphQL */ `
         preferences
         Roles {
           nextToken
+          startedAt
         }
         Posts {
           nextToken
-        }
-        Owners {
-          nextToken
+          startedAt
         }
         Requests {
           nextToken
+          startedAt
+        }
+        profileID
+        profilesJoined {
+          nextToken
+          startedAt
         }
         createdAt
         updatedAt
+        _version
+        _deleted
+        _lastChangedAt
       }
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
-export const deleteProfileOpportunity = /* GraphQL */ `
-  mutation DeleteProfileOpportunity(
-    $input: DeleteProfileOpportunityInput!
-    $condition: ModelProfileOpportunityConditionInput
+export const deleteOpportunityProfile = /* GraphQL */ `
+  mutation DeleteOpportunityProfile(
+    $input: DeleteOpportunityProfileInput!
+    $condition: ModelOpportunityProfileConditionInput
   ) {
-    deleteProfileOpportunity(input: $input, condition: $condition) {
+    deleteOpportunityProfile(input: $input, condition: $condition) {
       id
       profileId
       opportunityId
@@ -2159,21 +2687,27 @@ export const deleteProfileOpportunity = /* GraphQL */ `
         isApproved
         Majors {
           nextToken
+          startedAt
         }
         Roles {
           nextToken
+          startedAt
         }
         Posts {
           nextToken
+          startedAt
         }
         Comments {
           nextToken
+          startedAt
+        }
+        OpportunitiesJoined {
+          nextToken
+          startedAt
         }
         OpportunitiesOwned {
           nextToken
-        }
-        Requests {
-          nextToken
+          startedAt
         }
         experience {
           end
@@ -2187,8 +2721,15 @@ export const deleteProfileOpportunity = /* GraphQL */ `
         schoolEmail
         infoRequest
         infoResponse
+        Requests {
+          nextToken
+          startedAt
+        }
         createdAt
         updatedAt
+        _version
+        _deleted
+        _lastChangedAt
       }
       opportunity {
         id
@@ -2212,21 +2753,32 @@ export const deleteProfileOpportunity = /* GraphQL */ `
         preferences
         Roles {
           nextToken
+          startedAt
         }
         Posts {
           nextToken
-        }
-        Owners {
-          nextToken
+          startedAt
         }
         Requests {
           nextToken
+          startedAt
+        }
+        profileID
+        profilesJoined {
+          nextToken
+          startedAt
         }
         createdAt
         updatedAt
+        _version
+        _deleted
+        _lastChangedAt
       }
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;

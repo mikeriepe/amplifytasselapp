@@ -29,7 +29,7 @@ const BootstrapInput = styled((props) => (
  * Themed dropdown
  * @return {JSX}
  */
-export default function ThemedDropdown({menuItems}) {
+export default function ThemedDropdown({menuItems, sortSelection, value}) {
   const [menuName, setMenuName] = useState('Recommended');
 
   const handleChange = (event) => {
@@ -40,14 +40,14 @@ export default function ThemedDropdown({menuItems}) {
     <div>
       <FormControl variant='standard'>
         <Select
-          value={menuName}
-          onChange={handleChange}
+          value={value}
+          onChange={(e) => sortSelection(e.target.value)}
           input={<BootstrapInput />}
         >
           {
-            menuItems.map((item) => (
+            menuItems.map((item,index) => (
               <MenuItem
-                key={`menu-${item}`}
+                key={`menu-item-${index}`}
                 value={item}
                 sx={{fontSize: '0.8rem'}}
               >

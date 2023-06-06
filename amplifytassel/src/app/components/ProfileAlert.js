@@ -11,15 +11,25 @@ import CheckIcon from '@mui/icons-material/Check';
 import WarningIcon from '@mui/icons-material/Warning';
 import InfoIcon from '@mui/icons-material/Info';
 import ErrorIcon from '@mui/icons-material/Error';
+import useAuth from '../util/AuthContext';
 import '../stylesheets/ProfileAlert.css';
+
+import { ProfileStatus } from '../../models';
+import { Profile } from '../../models';
+import { DataStore } from '@aws-amplify/datastore';
+
+
 /**
  * creates ProfileAlert
  * @return {HTML} Alert component
  */
 export default function ProfileAlert({data}) {
+  const { setUserProfile } = useAuth();
   const [open, setOpen] = React.useState(false);
   const [openView, setOpenView] = React.useState(false);
   const [response, setResponse] = React.useState('');
+  const [reRender, setReRender] = React.useState(0);
+
   const handleDialog = () => {
     setOpen(true);
   };
@@ -34,51 +44,49 @@ export default function ProfileAlert({data}) {
   };
 
   const handleSubmit = async (e) => {
-    // console.log(data.profileid);
-    // e.preventDefault();
-    // const body = {
-    //   status: 3,
-    //   response: response,
-    //   profileid: data.profileid,
-    // };
-    // console.log(body);
-    // fetch(`/api/changeProfileRequestResponse`, {
-    //   method: 'POST',
-    //   body: JSON.stringify(body),
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    // })
-    //     .then((res) => {
-    //       if (!res.ok) {
-    //         throw res;
-    //       }
-    //       console.log(res.json());
-    //       setOpen(false);
-    //       setResponse('');
-    //     })
-    //     .catch((err) => {
-    //       console.log(err);
-    //       alert('Error submitting your response, please try again');
-    //     });
+    // UPDATE profile.infoResponse
+    e.preventDefault();
+    DataStore.query(Profile, p => p.email.eq(data.profileEmail))
+      .then((profiles) => {
+        // console.log('profile', profiles);
+        DataStore.save(Profile.copyOf(profiles[0], updated => {
+          updated.infoResponse = response;
+          updated.status = ProfileStatus.UPDATED;
+        }))
+          .then(() => {
+            DataStore.query(Profile, c => c.email.eq(data.profileEmail))
+              .then((profile) => {
+                setUserProfile(profile[0]);
+              })
+            setOpen(false);
+            setResponse('');
+          });
+      })
+      .catch((err) => {
+        console.log('error retreiving/updating profile: ', err);
+      });
   };
 
   return (
     <div>
-      {data.status == 1 &&
+      {data.status === ProfileStatus.PENDING &&
         <Alert
           style={{width: '800px', marginTop: '20px'}}
           severity="warning"
           icon={<WarningIcon fontSize="inherit" className='icon' />}
         >
           <div className='alert-text' color="warning">
-            Your account is <strong>pending approval</strong>. <br />
-            In the mean time, tell us a little about yourself!
+            Your account is <strong>pending approval</strong>. <br /><br />
+            In the meantime, here’s a little bit about us: <br /><br />
+            The Tassel Alumni Micro-Volunteering platform provides an easy way for users to post volunteering opportunities, find qualified volunteers, and join opportunities. <br /><br />
+            We strive to create a close knit, genuine community for all alumni who wish to connect with their alma mater. To do this, we’ve devised a participation system that rewards you for your active involvement on the platform. <br /><br />
+            As you complete different tasks on Tassel, you will earn Tassel points. This is a great way to show your enthusiasm and engagement to your fellow alumni! <br /><br />
+            Try this out now by editing your personal info and telling us a little bit about yourself! <br /><br />
           </div>
         </Alert>
       }
 
-      {data.status == 99 &&
+      {data.status === ProfileStatus.DENIED &&
         <Alert
           style={{width: '800px', marginTop: '20px'}}
           severity="error"
@@ -102,7 +110,7 @@ export default function ProfileAlert({data}) {
         </Alert>
       } */}
 
-      {data.status == 2 &&
+      {data.status === ProfileStatus.REQUESTED &&
         <Alert
           style={{width: '800px', marginTop: '20px'}}
           severity="info"
@@ -119,7 +127,7 @@ export default function ProfileAlert({data}) {
         </Alert>
       }
 
-      {data.status == 3 &&
+      {data.status === ProfileStatus.UPDATED &&
         <Alert
           style={{width: '800px', marginTop: '20px'}}
           icon={<CheckIcon fontSize="inherit" className='icon' />}
@@ -147,10 +155,10 @@ export default function ProfileAlert({data}) {
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            <div className='dialog-text'>
+            <span className='dialog-text'>
               An admin has requested for more info:
-              <strong> {data.requestinfo}</strong>
-            </div>
+              <strong> {data.infoRequest}</strong>
+            </span>
           </DialogContentText>
           <TextField
             autoFocus
@@ -178,11 +186,11 @@ export default function ProfileAlert({data}) {
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            <div className='dialog-text'>{data.requestinfo}:</div>
+            <span className='dialog-text'>{data.infoRequest}:</span>
           </DialogContentText>
           <TextField
             disabled
-            value={data.requestresponse}
+            value={data.infoResponse}
             style={{marginTop: '10px'}}
           />
         </DialogContent>

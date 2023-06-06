@@ -92,7 +92,7 @@ export default function NotificationItem({data}) {
           <ListItemAvatar>
             <Avatar
               alt={requesterProfile.firstname + ' ' + requesterProfile.lastname}
-              src={requesterProfile.profilepicture}
+              src={requesterProfile.picture}
             />
           </ListItemAvatar>
           <ListItemText

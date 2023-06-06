@@ -7,6 +7,8 @@
 
 # testing
 /coverage
+/cypress/videos/*
+/cypress/screenshots/*
 
 # production
 /build
@@ -23,6 +25,7 @@ yarn-debug.log*
 yarn-error.log*
 
 #amplify-do-not-edit-begin
+amplify/*
 amplify/\#current-cloud-backend
 amplify/.config/local-*
 amplify/logs

@@ -1,7 +1,7 @@
-import React from 'react';
-import {useNavigate} from 'react-router-dom';
-import {toast} from 'react-toastify';
-import {styled} from '@mui/material';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { styled } from '@mui/material';
 import Button from '@mui/material/Button';
 import MuiBox from '@mui/material/Box';
 import useAuth from '../util/AuthContext';
@@ -10,9 +10,12 @@ import ProfileHeader from '../components/ProfileHeader';
 import ProfileAbout from '../components/ProfileAbout';
 import ProfileWork from '../components/ProfileWork';
 import ProfileVolunteer from '../components/ProfileVolunteer';
+import ProfileKeywords from '../components/ProfileKeywords';
 
+import { Auth } from 'aws-amplify';
 import { DataStore } from '@aws-amplify/datastore';
-import { Profile } from './models';
+import { Profile } from '../../models';
+
 
 const Page = styled((props) => (
   <MuiBox {...props} />
@@ -28,15 +31,15 @@ const Page = styled((props) => (
  * creates Proflie Page
  * @return {HTML} Profile component
  */
-export default function Profile() {
-  const {user, userProfile, setUserProfile} = useAuth();
+export default function MyProfile() {
+  const { user, setUser, setLoggedIn, userProfile, setUserProfile } = useAuth();
   const navigate = useNavigate();
 
   const handleDeactivateAccount = () => {
     console.log('deactivate acct api called here');
-    DataStore.query(Profile, entry => entry.email.eq(user.email))
+    DataStore.query(Profile, p => p.id.eq(userProfile.id))
       .then((res) => {
-        DataStore.save(Profile.copyOf(res, updated => {
+        DataStore.save(Profile.copyOf(res[0], updated => {
           updated.active = false;
         }))
       })
@@ -64,15 +67,14 @@ export default function Profile() {
               'infoResponse': userProfile.infoResponse,
             }}
           />
-          <ProfileHeader data={userProfile} />
-          <ProfileAbout data={userProfile?.about}/>
-          <ProfileWork data={userProfile?.experience} />
-          <ProfileVolunteer data={userProfile?.volunteeringexperience} />
-          {user && user.userid === userProfile.userid &&
-            <Button onClick={handleDeactivateAccount}>
-              Deactivate Account
-            </Button>
-          }
+          <ProfileHeader data={userProfile} editButton={true} />
+          <ProfileAbout data={userProfile} />
+          <ProfileWork data={userProfile} />
+          <ProfileVolunteer data={userProfile} />
+          <ProfileKeywords data={userProfile} />
+          <Button onClick={handleDeactivateAccount} aria-label='Profile Deactivate Account'>
+            Deactivate Account
+          </Button>
         </>
       )}
     </Page>

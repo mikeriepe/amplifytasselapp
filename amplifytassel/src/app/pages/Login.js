@@ -13,7 +13,7 @@ import useAuth from '../util/AuthContext';
 import '../stylesheets/LoginSignup.css';
 import { Auth } from 'aws-amplify';
 import { DataStore } from '@aws-amplify/datastore';
-import { Profile } from '../../models';
+import { Profile, WorkHistory } from '../../models';
 import { ProfileStatus } from '../../models';
 
 const PaperStyling = {
@@ -114,7 +114,7 @@ export default function Login() {
             progress: undefined,
           });
           setLoggedIn(true);
-          console.log(`user.attributes: ${user.attributes}`);
+          console.log(`user.attributes: ${JSON.stringify(user.attributes)}`);
           setUser(user.attributes);
         }
       })
@@ -140,8 +140,9 @@ export default function Login() {
     console.log(values['login'].useremail);
     const profile = await DataStore.query(Profile, c => c.email.eq(values['login'].useremail));
     console.log(JSON.stringify(profile));
+    console.log('profile:', JSON.stringify(profile));
     setUserProfile(profile[0]);
-    navigate('/settings');
+    profile[0].status === 'APPROVED' || profile[0].status === 'ADMIN' ? navigate(`/dashboard`) : navigate(`/myprofile`);
   };
 
   const handleNextPage = (step) => {
@@ -245,6 +246,7 @@ function LoginForm({active, handleNextPage, login}) {
             index={'useremail'}
             step={'login'}
             fill={'email'}
+            label={'Login Email input field'}
           />
         </div>
         <div className='grid-flow-small'>
@@ -256,6 +258,7 @@ function LoginForm({active, handleNextPage, login}) {
             type={'password'}
             index={'userpassword'}
             step={'login'}
+            label={'Login Password input field'}
           />
           <p
             className='text-blue clickable'

@@ -7,7 +7,7 @@
 /* eslint-disable */
 export const validateField = (value, validations) => {
   for (const validation of validations) {
-    if (value === undefined || value === "" || value === null) {
+    if (value === undefined || value === "") {
       if (validation.type === "Required") {
         return {
           hasError: true,
@@ -25,11 +25,6 @@ export const validateField = (value, validations) => {
     }
   }
   return { hasError: false };
-};
-export const parseDateValidator = (dateValidator) => {
-  const isTimestamp =
-    `${parseInt(dateValidator)}`.length === dateValidator.length;
-  return isTimestamp ? parseInt(dateValidator) : dateValidator;
 };
 const checkValidation = (value, validation) => {
   if (validation.numValues?.length) {
@@ -102,21 +97,23 @@ const checkValidation = (value, validation) => {
             `The value must not contain ${validation.strValues.join(", ")}`,
         };
       case "BeAfter":
+        const afterTimeValue = parseInt(validation.strValues[0]);
+        const afterTimeValidator = Number.isNaN(afterTimeValue)
+          ? validation.strValues[0]
+          : afterTimeValue;
         return {
-          hasError: !(
-            new Date(value) >
-            new Date(parseDateValidator(validation.strValues[0]))
-          ),
+          hasError: !(new Date(value) > new Date(afterTimeValidator)),
           errorMessage:
             validation.validationMessage ||
             `The value must be after ${validation.strValues[0]}`,
         };
       case "BeBefore":
+        const beforeTimeValue = parseInt(validation.strValues[0]);
+        const beforeTimevalue = Number.isNaN(beforeTimeValue)
+          ? validation.strValues[0]
+          : beforeTimeValue;
         return {
-          hasError: !(
-            new Date(value) <
-            new Date(parseDateValidator(validation.strValues[0]))
-          ),
+          hasError: !(new Date(value) < new Date(beforeTimevalue)),
           errorMessage:
             validation.validationMessage ||
             `The value must be before ${validation.strValues[0]}`,
