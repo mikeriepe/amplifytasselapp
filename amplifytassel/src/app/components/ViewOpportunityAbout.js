@@ -349,6 +349,7 @@ function RolesCard({
                 {
                   !isCreator &&
                   <ThemedButton
+                    aria-label={`Request ${role.name}`}
                     variant='themed'
                     color='yellow'
                     size='small'

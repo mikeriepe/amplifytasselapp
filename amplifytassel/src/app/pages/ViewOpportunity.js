@@ -310,6 +310,7 @@ function ViewOpportunity({opportunity}) {
               data={opportunity}
               components={
                 <ThemedButton
+                  aria-label='Request to Join Opportunity'
                   variant='gradient'
                   color='yellow'
                   size='small'

@@ -102,4 +102,9 @@ export const selectors = {
     OppsFormSaveButton: '[aria-label="Save button"]',
     OppsCreatedTabRedDeleteTestButton: '[aria-label="Delete Test Dummies Unite!"]',
     OppsDeleteModalDeleteButton: '[aria-label="Delete Opp"]',
+    ViewOpportunityRequest: '[aria-label="Request to Join Opportunity"]',
+    RoleRequest: '[aria-label="Request General Participant"]',
+    DeleteRequests: '[aria-label="Delete Banana Throwing Party"]',
+    OpportunityCardTitle6: '[aria-label="Opportunity Card Title Banana Throwing Party"]',
+    OpportunityCardHost6: '[aria-label="Opportunity Card Host Banana Throwing Party"]',
 }
