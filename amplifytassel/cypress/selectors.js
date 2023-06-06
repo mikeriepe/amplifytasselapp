@@ -104,5 +104,9 @@ export const selectors = {
     OppsDeleteModalDeleteButton: '[aria-label="Delete Opp"]',
     OpportunityFormAthleticsChipSelected: '[data-test-id="Selected Tags Athletics"]',
     OpportunityFormAthleticsChipUnelected: '[data-test-id="Unselected Tags Athletics"]',
-
+    ViewOpportunityRequest: '[aria-label="Request to Join Opportunity"]',
+    RoleRequest: '[aria-label="Request General Participant"]',
+    DeleteRequests: '[aria-label="Delete Banana Throwing Party"]',
+    OpportunityCardTitle6: '[aria-label="Opportunity Card Title Banana Throwing Party"]',
+    OpportunityCardHost6: '[aria-label="Opportunity Card Host Banana Throwing Party"]',
 }
