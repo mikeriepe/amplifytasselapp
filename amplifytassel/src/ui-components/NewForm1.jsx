@@ -20,7 +20,7 @@ import { DataStore } from "aws-amplify";
 export default function NewForm1(props) {
   const {
     id: idProp,
-    profile: profileModelProp,
+    profile,
     onSuccess,
     onError,
     onSubmit,
@@ -33,7 +33,7 @@ export default function NewForm1(props) {
     about: "",
     location: "",
     graduationYear: "",
-    Field0: "",
+    Field0: undefined,
     banner: "",
     points: "",
   };
@@ -58,16 +58,14 @@ export default function NewForm1(props) {
     setPoints(cleanValues.points);
     setErrors({});
   };
-  const [profileRecord, setProfileRecord] = React.useState(profileModelProp);
+  const [profileRecord, setProfileRecord] = React.useState(profile);
   React.useEffect(() => {
     const queryData = async () => {
-      const record = idProp
-        ? await DataStore.query(Profile, idProp)
-        : profileModelProp;
+      const record = idProp ? await DataStore.query(Profile, idProp) : profile;
       setProfileRecord(record);
     };
     queryData();
-  }, [idProp, profileModelProp]);
+  }, [idProp, profile]);
   React.useEffect(resetStateValues, [profileRecord]);
   const validations = {
     about: [],
@@ -82,10 +80,9 @@ export default function NewForm1(props) {
     currentValue,
     getDisplayValue
   ) => {
-    const value =
-      currentValue && getDisplayValue
-        ? getDisplayValue(currentValue)
-        : currentValue;
+    const value = getDisplayValue
+      ? getDisplayValue(currentValue)
+      : currentValue;
     let validationResponse = validateField(value, validations[fieldName]);
     const customValidator = fetchByPath(onValidate, fieldName);
     if (customValidator) {
@@ -134,20 +131,13 @@ export default function NewForm1(props) {
         }
         try {
           Object.entries(modelFields).forEach(([key, value]) => {
-            if (typeof value === "string" && value === "") {
-              modelFields[key] = null;
+            if (typeof value === "string" && value.trim() === "") {
+              modelFields[key] = undefined;
             }
           });
-          const modelFieldsToSave = {
-            about: modelFields.about,
-            location: modelFields.location,
-            graduationYear: modelFields.graduationYear,
-            banner: modelFields.banner,
-            points: modelFields.points,
-          };
           await DataStore.save(
             Profile.copyOf(profileRecord, (updated) => {
-              Object.assign(updated, modelFieldsToSave);
+              Object.assign(updated, modelFields);
             })
           );
           if (onSuccess) {
@@ -366,7 +356,7 @@ export default function NewForm1(props) {
             event.preventDefault();
             resetStateValues();
           }}
-          isDisabled={!(idProp || profileModelProp)}
+          isDisabled={!(idProp || profile)}
           {...getOverrideProps(overrides, "ResetButton")}
         ></Button>
         <Flex
@@ -378,7 +368,7 @@ export default function NewForm1(props) {
             type="submit"
             variation="primary"
             isDisabled={
-              !(idProp || profileModelProp) ||
+              !(idProp || profile) ||
               Object.values(errors).some((e) => e?.hasError)
             }
             {...getOverrideProps(overrides, "SubmitButton")}

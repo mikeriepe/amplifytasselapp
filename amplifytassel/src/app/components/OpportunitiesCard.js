@@ -305,7 +305,6 @@ export default function OpportunitiesCard({
         });
       }
     });
-    keywords.sort();
     setOppKeywords(keywords);
   };
 
@@ -406,7 +405,6 @@ export default function OpportunitiesCard({
     DataStore.query(Keyword)
     .then((res) => {
       allKeywords = res;
-      allKeywords.sort();
       for (let i = 0; i < res.length; i++) {
         for (let j = 0; j < Object.keys(data.keywords).length; j++) {
           if (data.keywords[`keyword${j}`] === res[i].name) {

@@ -34,7 +34,6 @@ export default function ProfileKeywords({ data }) {
         const k = await Promise.resolve(value[i].keyword);
         keywordNames.push(k.name);
       }
-      keywordNames.sort();
       setUserKeywords(keywordNames);
     } catch (error) {
       console.error(error);

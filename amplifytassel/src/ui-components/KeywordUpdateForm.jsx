@@ -14,7 +14,7 @@ import { DataStore } from "aws-amplify";
 export default function KeywordUpdateForm(props) {
   const {
     id: idProp,
-    keyword: keywordModelProp,
+    keyword,
     onSuccess,
     onError,
     onSubmit,
@@ -35,16 +35,14 @@ export default function KeywordUpdateForm(props) {
     setName(cleanValues.name);
     setErrors({});
   };
-  const [keywordRecord, setKeywordRecord] = React.useState(keywordModelProp);
+  const [keywordRecord, setKeywordRecord] = React.useState(keyword);
   React.useEffect(() => {
     const queryData = async () => {
-      const record = idProp
-        ? await DataStore.query(Keyword, idProp)
-        : keywordModelProp;
+      const record = idProp ? await DataStore.query(Keyword, idProp) : keyword;
       setKeywordRecord(record);
     };
     queryData();
-  }, [idProp, keywordModelProp]);
+  }, [idProp, keyword]);
   React.useEffect(resetStateValues, [keywordRecord]);
   const validations = {
     name: [],
@@ -54,10 +52,9 @@ export default function KeywordUpdateForm(props) {
     currentValue,
     getDisplayValue
   ) => {
-    const value =
-      currentValue && getDisplayValue
-        ? getDisplayValue(currentValue)
-        : currentValue;
+    const value = getDisplayValue
+      ? getDisplayValue(currentValue)
+      : currentValue;
     let validationResponse = validateField(value, validations[fieldName]);
     const customValidator = fetchByPath(onValidate, fieldName);
     if (customValidator) {
@@ -101,8 +98,8 @@ export default function KeywordUpdateForm(props) {
         }
         try {
           Object.entries(modelFields).forEach(([key, value]) => {
-            if (typeof value === "string" && value === "") {
-              modelFields[key] = null;
+            if (typeof value === "string" && value.trim() === "") {
+              modelFields[key] = undefined;
             }
           });
           await DataStore.save(
@@ -157,7 +154,7 @@ export default function KeywordUpdateForm(props) {
             event.preventDefault();
             resetStateValues();
           }}
-          isDisabled={!(idProp || keywordModelProp)}
+          isDisabled={!(idProp || keyword)}
           {...getOverrideProps(overrides, "ResetButton")}
         ></Button>
         <Flex
@@ -169,7 +166,7 @@ export default function KeywordUpdateForm(props) {
             type="submit"
             variation="primary"
             isDisabled={
-              !(idProp || keywordModelProp) ||
+              !(idProp || keyword) ||
               Object.values(errors).some((e) => e?.hasError)
             }
             {...getOverrideProps(overrides, "SubmitButton")}
