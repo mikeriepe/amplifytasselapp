@@ -11,6 +11,7 @@ import Tooltip from '@mui/material/Tooltip';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import EventIcon from '@mui/icons-material/Event';
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import GridViewRoundedIcon from '@mui/icons-material/GridViewRounded';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -81,6 +82,7 @@ export default function NavBarLoggedIn() {
   const pages = [
     ['Dashboard', '/dashboard', <GridViewRoundedIcon key='Dashboard' />],
     ['Opportunities', '/opportunities', <EventIcon key='Opportunities' />],
+    ['Social', '/social', <PeopleAltIcon key='Social' />],
     ['Settings', '/settings', <SettingsIcon key='Settings' />],
   ];
   // add approvals page if user is admin

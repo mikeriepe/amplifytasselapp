@@ -12,6 +12,7 @@ import Approvals from './pages/Approvals';
 import UpdateProfile from './pages/UpdateProfile';
 import NavBarLoggedIn from './components/NavBarLoggedIn';
 import Settings from './pages/Settings';
+import Socials from './pages/Social';
 import './stylesheets/App.css';
 import 'react-toastify/dist/ReactToastify.css';
 import ViewOpportunity from './pages/ViewOpportunity';
@@ -59,6 +60,7 @@ const App = () => {
           <Route path='/myprofile' element={<MyProfile />}/>
           <Route path='/landing' element={<Landing />}/>
           <Route path='/updateprofile' element={<UpdateProfile />} />
+          <Route path='/social' element={<Socials/>} />
         </Routes>
       </Box>
       {showStarAnimation &&
