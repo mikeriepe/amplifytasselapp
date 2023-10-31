@@ -28,6 +28,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import {styled} from '@mui/material/styles';
 import {toast} from 'react-toastify';
+import Fuse from 'fuse.js';
 import '../stylesheets/ApprovalTable.css';
 
 import { DataStore } from '@aws-amplify/datastore';
@@ -167,6 +168,7 @@ function Row(props) {
  */
 export default function SocialUsers() {
   const [accounts, setAccounts] = useState([]);
+  const [displayUsers, setDisplayUsers] = useState([]);
   const [selected, setSelected] = useState([]);
   const [loading, setLoading] = useState(true);
   const [sortNameOrder, setSortNameOrder] = useState('');
@@ -286,6 +288,36 @@ export default function SocialUsers() {
 
   }
 
+  const searchUsers = (query) => {
+    
+    if (!query) {
+      DataStore.query(Profile)
+      .then((res) => {
+        setDisplayUsers(res);
+      })
+      .catch((err) => {
+        alert('Error retrieving profiles, please try again');
+        console.log(err);
+      });
+      return;
+    }
+    const fuse = new Fuse(accounts, {
+      // more parameters can be added for search
+      keys: ['name', 'email'],
+      threshold: 0.3,
+    });
+    const result = fuse.search(query);
+    const finalResult = [];
+    if (result.length) {
+      result.forEach((item) => {
+        finalResult.push(item.item);
+      });
+      setDisplayUsers(finalResult);
+    } else {
+      setDisplayUsers([]);
+    }
+  };
+
   const handleSort = (rowId) => {
     setLoading(true);
     if (rowId === 'name') {
@@ -370,7 +402,7 @@ export default function SocialUsers() {
             <TextField
             placeholder='Search'
             size='small'
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => searchUsers(e.target.value)}
             InputProps={{
               style: {
                 marginTop: "0.1rem",
