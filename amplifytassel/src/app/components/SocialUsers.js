@@ -115,13 +115,6 @@ function Row(props) {
           <Checkbox value={row.email} onChange={handleSelect}/>
         </TableCell>
         <TableCell className='data-cell' padding='checkbox'>
-          <IconButton
-            aria-label='expand row'
-            size='small'
-            onClick={() => setOpen(!open)}
-          >
-            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-          </IconButton>
         </TableCell>
         {/* eslint-disable-next-line max-len */}
         <TableCell className='data-cell' component='th' scope='row'
