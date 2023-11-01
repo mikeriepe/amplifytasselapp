@@ -199,7 +199,7 @@ export default function SocialUsers() {
   };
 
   const handleAddAction = (event) => {
-
+    // TODO backend actions that adds an account to 
   }
 
 
@@ -218,6 +218,7 @@ export default function SocialUsers() {
     console.log(result);
     if (result.length) {
       result.forEach((item) => {
+        // TODO remove accounts that are already in the current users friend requests
         if(item.item.status == "ADMIN" || item.item.status == "APPROVED"){
           finalResult.push(item.item);
         }
