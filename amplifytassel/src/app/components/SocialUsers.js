@@ -171,98 +171,12 @@ export default function SocialUsers() {
   const [displayUsers, setDisplayUsers] = useState([]);
   const [selected, setSelected] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [sortNameOrder, setSortNameOrder] = useState('');
-  const [sortEmailOrder, setSortEmailOrder] = useState('');
-  const [sortYearOrder, setSortYearOrder] = useState('');
-  const [sortStatusOrder, setSortStatusOrder] = useState('');
   const [search, setSearch] = useState('');
-
-  const sortAccounts = (json, sortBy, reset) => {
-    if (reset === true) {
-      setAccounts(json.sort(function(a, b) {
-        return (a.status > b.status) ? 1 : -1;
-      }));
-      setSortStatusOrder('asc');
-      return;
-    }
-    if (sortBy === 'status') {
-      if (sortStatusOrder === '') {
-        setAccounts(json.sort(function(a, b) {
-          return (a.status > b.status) ? 1 : -1;
-        }));
-        setSortStatusOrder('asc');
-      } else if (sortStatusOrder === 'asc') {
-        setAccounts(json.sort(function(a, b) {
-          return (a.status > b.status) ? -1 : 1;
-        }));
-        setSortStatusOrder('desc');
-      } else if (sortStatusOrder === 'desc') {
-        setAccounts(json.sort(function(a, b) {
-          return (a.status > b.status) ? 1 : -1;
-        }));
-        setSortStatusOrder('asc');
-      }
-    }
-    if (sortBy === 'name') {
-      if (sortNameOrder === '') {
-        setAccounts(json.sort(function(a, b) {
-          return (a.firstName > b.firstName) ? 1 : -1;
-        }));
-        setSortNameOrder('asc');
-      } else if (sortNameOrder === 'asc') {
-        setAccounts(json.sort(function(a, b) {
-          return (a.firstName > b.firstName) ? -1 : 1;
-        }));
-        setSortNameOrder('desc');
-      } else if (sortNameOrder === 'desc') {
-        setAccounts(json.sort(function(a, b) {
-          return (a.firstName > b.firstName) ? 1 : -1;
-        }));
-        setSortNameOrder('asc');
-      }
-    }
-    if (sortBy === 'email') {
-      if (sortEmailOrder === '') {
-        setAccounts(json.sort(function(a, b) {
-          return (a.email > b.email) ? 1 : -1;
-        }));
-        setSortEmailOrder('asc');
-      } else if (sortEmailOrder === 'asc') {
-        setAccounts(json.sort(function(a, b) {
-          return (a.email > b.email) ? -1 : 1;
-        }));
-        setSortEmailOrder('desc');
-      } else if (sortEmailOrder === 'desc') {
-        setAccounts(json.sort(function(a, b) {
-          return (a.email > b.email) ? 1 : -1;
-        }));
-        setSortEmailOrder('asc');
-      }
-    }
-    if (sortBy === 'year') {
-      if (sortYearOrder === '') {
-        setAccounts(json.sort(function(a, b) {
-          return a.graduationYear - b.graduationYear;
-        }));
-        setSortYearOrder('asc');
-      } else if (sortYearOrder === 'asc') {
-        setAccounts(json.sort(function(a, b) {
-          return b.graduationYear - a.graduationYear;
-        }));
-        setSortYearOrder('desc');
-      } else if (sortYearOrder === 'desc') {
-        setAccounts(json.sort(function(a, b) {
-          return a.graduationYear - b.graduationyYear;
-        }));
-        setSortYearOrder('asc');
-      }
-    }
-  };
 
   const getAccounts = (sortBy, reset) => {
     DataStore.query(Profile)
     .then((res) => {
-      sortAccounts(res, sortBy, reset);
+      setAccounts(res);
       setLoading(false);
     })
     .catch((err) => {
@@ -288,51 +202,31 @@ export default function SocialUsers() {
 
   }
 
+
+  // Taken from Approvals, searches admin/approved accounts based on query
   const searchUsers = (query) => {
-    
     if (!query) {
-      DataStore.query(Profile)
-      .then((res) => {
-        setDisplayUsers(res);
-      })
-      .catch((err) => {
-        alert('Error retrieving profiles, please try again');
-        console.log(err);
-      });
+      setDisplayUsers([]);
       return;
     }
     const fuse = new Fuse(accounts, {
-      // more parameters can be added for search
-      keys: ['name', 'email'],
+      keys: ['firstName', 'email', 'graduationYear'],
       threshold: 0.3,
     });
     const result = fuse.search(query);
     const finalResult = [];
+    console.log(result);
     if (result.length) {
       result.forEach((item) => {
-        finalResult.push(item.item);
+        if(item.item.status == "ADMIN" || item.item.status == "APPROVED"){
+          finalResult.push(item.item);
+        }
       });
+      console.log(finalResult);
       setDisplayUsers(finalResult);
     } else {
       setDisplayUsers([]);
     }
-  };
-
-  const handleSort = (rowId) => {
-    setLoading(true);
-    if (rowId === 'name') {
-      getAccounts(rowId, false);
-    }
-    if (rowId === 'email') {
-      getAccounts(rowId, false);
-    }
-    if (rowId === 'year') {
-      getAccounts(rowId, false);
-    }
-    if (rowId === 'status') {
-      getAccounts(rowId, false);
-    }
-    setLoading(false);
   };
 
   useEffect(() => {
@@ -340,17 +234,6 @@ export default function SocialUsers() {
     // eslint-disable-next-line
   }, []);
 
-  const getArrowDirection = (row) => {
-    if (row === 'name') {
-      return sortNameOrder;
-    } else if (row === 'email') {
-      return sortEmailOrder;
-    } else if (row === 'year') {
-      return sortYearOrder;
-    } else if (row === 'status') {
-      return sortStatusOrder;
-    }
-  };
 
   // TODO: make more fancy
   // https://mui.com/material-ui/react-table/#sorting-amp-selecting
@@ -447,12 +330,6 @@ export default function SocialUsers() {
                   <Checkbox
                     color='primary'
                     data-testid="account-checkbox"
-                  // indeterminate={numSelected > 0 && numSelected < rowCount}
-                  // checked={rowCount > 0 && numSelected === rowCount}
-                  // onChange={onSelectAllClick}
-                  // inputProps={{
-                  //   'aria-label': 'select all desserts',
-                  // }}
                   />
                 </TableCell>
                 <TableCell padding='checkbox'/>
@@ -460,31 +337,16 @@ export default function SocialUsers() {
                   <TableCell
                     key={headCell.id}
                     padding={headCell.disablePadding ? 'none' : 'normal'}
-                    // sortDirection={orderBy === headCell.id ? order : false}
                     id='table-head-cell'
-                    onClick={() => handleSort(headCell.id)}
                   >
-                    <TableSortLabel
-                    // active={orderBy === headCell.id}
-                    // onClick={handleSort(headCell.id)}
-                      /* eslint-disable-next-line max-len */
-                      direction={getArrowDirection(headCell.id) !== '' ? getArrowDirection(headCell.id) : 'desc'}
-                    >
-                      {headCell.label}
-                      {/* {orderBy === headCell.id ? (
-                      <Box component='span' sx={visuallyHidden}>
-                        {order === 'desc' ?
-                        'sorted descending' : 'sorted ascending'}
-                      </Box>
-                    ) : null} */}
-                    </TableSortLabel>
+                    {headCell.label}
                   </TableCell>
                 ))}
               </TableRow>
             </TableHead>
             <TableBody aria-label='Accounts Table Body'>
               {
-                accounts.map((account) => {
+                displayUsers.map((account) => {
                   return (
                     <Row
                       key={account.id}
