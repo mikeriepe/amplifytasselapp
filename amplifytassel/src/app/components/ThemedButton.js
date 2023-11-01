@@ -79,6 +79,7 @@ export default function ThemedButton({
   const gray = theme.palette.tertiary;
   const green = theme.palette.success;
   const white = 'white';
+  const red = 'red';
 
   const themedStyling = {
     'padding': '8px 22px',

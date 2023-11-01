@@ -5,6 +5,7 @@ import PageHeader from '../components/PageHeader';
 import CompressedTabBar from '../components/CompressedTabBar';
 import SocialUsers from '../components/SocialUsers'
 import SocialFriends from '../components/SocialFriends'
+import SocialFriendRequests from '../components/SocialFriendRequests';
 
 const Page = styled((props) => (
   <MuiBox {...props} />
@@ -25,6 +26,7 @@ export default function Socials() {
   const tabs = [
     {name: 'Users', component: <SocialUsers/>},
     {name: 'Friends', component: <SocialFriends/>},
+    {name: 'Requests', component: <SocialFriendRequests/>},
   ];
   return (
     <Page>

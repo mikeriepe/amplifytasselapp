@@ -159,7 +159,7 @@ function Row(props) {
  * creates account approval content
  * @return {HTML} account approval content
  */
-export default function SocialFriends() {
+export default function SocialFriendRequests() {
   const [accounts, setAccounts] = useState([]);
   const [displayUsers, setDisplayUsers] = useState([]);
   const [selected, setSelected] = useState([]);
@@ -191,7 +191,10 @@ export default function SocialFriends() {
     setSelected(newSelected);
   };
 
-  const handleMessageAction = (event) => {
+  const handleAcceptAction = (event) => {
+    // TODO backend actions that adds an account to 
+  }
+  const handleDenyAction = (event) => {
     // TODO backend actions that adds an account to 
   }
 
@@ -210,7 +213,7 @@ export default function SocialFriends() {
     console.log(result);
     if (result.length) {
       result.forEach((item) => {
-        // TODO Filter based friends of the current account
+        // TODO Filter based on requests sent to current account
         if(item.item.status == "ADMIN" || item.item.status == "APPROVED"){
           finalResult.push(item.item);
         }
@@ -269,11 +272,23 @@ export default function SocialFriends() {
               type={'submit'}
               style={{
                 fontSize: '0.875rem',
+                marginRight: '.5rem',
+              }}
+              onClick={handleAcceptAction}
+            >
+                Accept
+            </ThemedButton>
+            <ThemedButton
+              color={'gray'}
+              variant={'themed'}
+              type={'submit'}
+              style={{
+                fontSize: '0.875rem',
                 marginRight: '2rem',
               }}
-              onClick={handleMessageAction}
+              onClick={handleDenyAction}
             >
-                Message
+                Deny
             </ThemedButton>
             <TextField
             placeholder='Search'
