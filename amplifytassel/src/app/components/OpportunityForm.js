@@ -94,6 +94,7 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
       tempKeywords.push(res[i].name);
     }
     const filteredAllTags = tempKeywords.filter((x) => !selectedTags.includes(x));
+    filteredAllTags.sort();
     setAllTags(filteredAllTags);
    })
    .catch((err) => {
@@ -386,7 +387,9 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
     // delete the tag from the selected tags array
     tempSelectedTags.splice(tagIndexToDelete, 1);
     // update the arrays
+    tempSelectedTags.sort();
     setSelectedTags(tempSelectedTags);
+    tempAllTags.sort();
     setAllTags(tempAllTags);
   };
 
@@ -399,15 +402,20 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
     // delete the to be added tag from all tags array
     tempAllTags.splice(tagIndexToAdd, 1);
     // update the arrays
+    tempSelectedTags.sort();
     setSelectedTags(tempSelectedTags);
+    tempAllTags.sort();
     setAllTags(tempAllTags);
   };
 
   const convertTagsToObject = (tags) => {
+    tags = tags.sort();
+    console.log(tags);
     const tagsObject = {};
     for (let i = 0; i < tags.length; i++) {
       tagsObject[`keyword${i}`] = tags[i];
     }
+    console.log(tagsObject);
     return tagsObject;
   };
 
