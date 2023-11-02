@@ -14,7 +14,7 @@ import { DataStore } from "aws-amplify";
 export default function ProfileUpdateForm(props) {
   const {
     id: idProp,
-    keywordProfile,
+    keywordProfile: keywordProfileModelProp,
     onSuccess,
     onError,
     onSubmit,
@@ -46,17 +46,18 @@ export default function ProfileUpdateForm(props) {
     setGraduationYear(cleanValues.graduationYear);
     setErrors({});
   };
-  const [keywordProfileRecord, setKeywordProfileRecord] =
-    React.useState(keywordProfile);
+  const [keywordProfileRecord, setKeywordProfileRecord] = React.useState(
+    keywordProfileModelProp
+  );
   React.useEffect(() => {
     const queryData = async () => {
       const record = idProp
         ? await DataStore.query(KeywordProfile, idProp)
-        : keywordProfile;
+        : keywordProfileModelProp;
       setKeywordProfileRecord(record);
     };
     queryData();
-  }, [idProp, keywordProfile]);
+  }, [idProp, keywordProfileModelProp]);
   React.useEffect(resetStateValues, [keywordProfileRecord]);
   const validations = {
     about: [],
@@ -69,9 +70,10 @@ export default function ProfileUpdateForm(props) {
     currentValue,
     getDisplayValue
   ) => {
-    const value = getDisplayValue
-      ? getDisplayValue(currentValue)
-      : currentValue;
+    const value =
+      currentValue && getDisplayValue
+        ? getDisplayValue(currentValue)
+        : currentValue;
     let validationResponse = validateField(value, validations[fieldName]);
     const customValidator = fetchByPath(onValidate, fieldName);
     if (customValidator) {
@@ -118,13 +120,14 @@ export default function ProfileUpdateForm(props) {
         }
         try {
           Object.entries(modelFields).forEach(([key, value]) => {
-            if (typeof value === "string" && value.trim() === "") {
-              modelFields[key] = undefined;
+            if (typeof value === "string" && value === "") {
+              modelFields[key] = null;
             }
           });
+          const modelFieldsToSave = {};
           await DataStore.save(
             KeywordProfile.copyOf(keywordProfileRecord, (updated) => {
-              Object.assign(updated, modelFields);
+              Object.assign(updated, modelFieldsToSave);
             })
           );
           if (onSuccess) {
@@ -252,7 +255,7 @@ export default function ProfileUpdateForm(props) {
             event.preventDefault();
             resetStateValues();
           }}
-          isDisabled={!(idProp || keywordProfile)}
+          isDisabled={!(idProp || keywordProfileModelProp)}
           {...getOverrideProps(overrides, "ResetButton")}
         ></Button>
         <Flex
@@ -264,7 +267,7 @@ export default function ProfileUpdateForm(props) {
             type="submit"
             variation="primary"
             isDisabled={
-              !(idProp || keywordProfile) ||
+              !(idProp || keywordProfileModelProp) ||
               Object.values(errors).some((e) => e?.hasError)
             }
             {...getOverrideProps(overrides, "SubmitButton")}
