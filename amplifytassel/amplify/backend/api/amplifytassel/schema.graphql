@@ -1,3 +1,15 @@
+type FriendRequest @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  profileID: ID! @index(name: "byProfile")
+  ToProfile: String
+}
+
+type Friend @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  profileID: ID! @index(name: "byProfile")
+  Friend: String
+}
+
 enum OpportunityStatus {
   PENDING
   UPDATED
@@ -79,6 +91,8 @@ type Profile @model @auth(rules: [{allow: public}]) {
   keywords: [Keyword] @manyToMany(relationName: "KeywordProfile")
   banner: String
   points: Int
+  FriendRequests: [FriendRequest] @hasMany(indexName: "byProfile", fields: ["id"])
+  Friends: [Friend] @hasMany(indexName: "byProfile", fields: ["id"])
 }
 
 type Request @model @auth(rules: [{allow: public}]) {

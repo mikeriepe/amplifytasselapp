@@ -7,9 +7,8 @@
 /* eslint-disable */
 import * as React from "react";
 import { Autocomplete, Button, Flex, Grid } from "@aws-amplify/ui-react";
-import { getOverrideProps } from "@aws-amplify/ui-react/internal";
 import { Major } from "../models";
-import { fetchByPath, validateField } from "./utils";
+import { fetchByPath, getOverrideProps, validateField } from "./utils";
 import { DataStore } from "aws-amplify";
 export default function NewForm3(props) {
   const {

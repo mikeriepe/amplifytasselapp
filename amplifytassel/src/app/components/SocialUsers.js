@@ -13,6 +13,7 @@ import TableSortLabel from '@mui/material/TableSortLabel';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TableBody from '@mui/material/TableBody';
+import useAuth from '../util/AuthContext';
 // import TableFooter from '@mui/material/TableFooter';
 // import TablePagination from '@mui/material/TablePagination';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -160,6 +161,7 @@ function Row(props) {
  * @return {HTML} account approval content
  */
 export default function SocialUsers() {
+  const {userProfile} = useAuth();
   const [accounts, setAccounts] = useState([]);
   const [displayUsers, setDisplayUsers] = useState([]);
   const [selected, setSelected] = useState([]);
@@ -198,6 +200,7 @@ export default function SocialUsers() {
 
   // Taken from Approvals, searches admin/approved accounts based on query
   const searchUsers = (query) => {
+    console.log(userProfile.id);
     if (!query) {
       setDisplayUsers([]);
       return;
@@ -213,7 +216,9 @@ export default function SocialUsers() {
       result.forEach((item) => {
         // TODO remove accounts that are already in the current users friend requests
         if(item.item.status == "ADMIN" || item.item.status == "APPROVED"){
-          finalResult.push(item.item);
+          if (item.item.id !== userProfile.id) {
+            finalResult.push(item.item);
+          }
         }
       });
       console.log(finalResult);

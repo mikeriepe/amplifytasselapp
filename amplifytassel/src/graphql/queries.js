@@ -1,6 +1,82 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const getKeyword = /* GraphQL */ `
+  query GetKeyword($id: ID!) {
+    getKeyword(id: $id) {
+      id
+      name
+      Profiles {
+        nextToken
+        startedAt
+        __typename
+      }
+      Opportunities {
+        nextToken
+        startedAt
+        __typename
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const listKeywords = /* GraphQL */ `
+  query ListKeywords(
+    $filter: ModelKeywordFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listKeywords(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        name
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const syncKeywords = /* GraphQL */ `
+  query SyncKeywords(
+    $filter: ModelKeywordFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncKeywords(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
+      items {
+        id
+        name
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
 export const getOrganization = /* GraphQL */ `
   query GetOrganization($id: ID!) {
     getOrganization(id: $id) {
@@ -15,6 +91,7 @@ export const getOrganization = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -37,9 +114,11 @@ export const listOrganizations = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -68,9 +147,11 @@ export const syncOrganizations = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -87,6 +168,7 @@ export const getComment = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -108,9 +190,11 @@ export const listComments = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -138,9 +222,11 @@ export const syncComments = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -170,9 +256,11 @@ export const commentsByPostID = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -202,9 +290,11 @@ export const commentsByProfileID = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -217,59 +307,28 @@ export const getRole = /* GraphQL */ `
       isFilled
       qualifications
       Majors {
-        items {
-          id
-          roleId
-          majorId
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
         nextToken
         startedAt
+        __typename
       }
       Profiles {
-        items {
-          id
-          roleId
-          profileId
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
         nextToken
         startedAt
+        __typename
       }
       opportunityID
       Requests {
-        items {
-          id
-          status
-          responseMessage
-          requestTime
-          responseTime
-          requestMessage
-          opportunityID
-          roleID
-          profileID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
         nextToken
         startedAt
+        __typename
       }
+      capacity
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -286,27 +345,18 @@ export const listRoles = /* GraphQL */ `
         description
         isFilled
         qualifications
-        Majors {
-          nextToken
-          startedAt
-        }
-        Profiles {
-          nextToken
-          startedAt
-        }
         opportunityID
-        Requests {
-          nextToken
-          startedAt
-        }
+        capacity
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -329,27 +379,18 @@ export const syncRoles = /* GraphQL */ `
         description
         isFilled
         qualifications
-        Majors {
-          nextToken
-          startedAt
-        }
-        Profiles {
-          nextToken
-          startedAt
-        }
         opportunityID
-        Requests {
-          nextToken
-          startedAt
-        }
+        capacity
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -374,27 +415,18 @@ export const rolesByOpportunityID = /* GraphQL */ `
         description
         isFilled
         qualifications
-        Majors {
-          nextToken
-          startedAt
-        }
-        Profiles {
-          nextToken
-          startedAt
-        }
         opportunityID
-        Requests {
-          nextToken
-          startedAt
-        }
+        capacity
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -404,38 +436,21 @@ export const getMajor = /* GraphQL */ `
       id
       name
       profiles {
-        items {
-          id
-          majorId
-          profileId
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
         nextToken
         startedAt
+        __typename
       }
       Roles {
-        items {
-          id
-          roleId
-          majorId
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
         nextToken
         startedAt
+        __typename
       }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -449,22 +464,16 @@ export const listMajors = /* GraphQL */ `
       items {
         id
         name
-        profiles {
-          nextToken
-          startedAt
-        }
-        Roles {
-          nextToken
-          startedAt
-        }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -484,22 +493,16 @@ export const syncMajors = /* GraphQL */ `
       items {
         id
         name
-        profiles {
-          nextToken
-          startedAt
-        }
-        Roles {
-          nextToken
-          startedAt
-        }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -516,16 +519,13 @@ export const getProfile = /* GraphQL */ `
         location
         description
         currentPosition
+        __typename
       }
       about
-      location {
-        zip
-        city
-        state
-        address
-      }
+      location
       availability {
         year
+        __typename
       }
       picture
       firstName
@@ -536,104 +536,34 @@ export const getProfile = /* GraphQL */ `
       isAdmin
       isApproved
       Majors {
-        items {
-          id
-          majorId
-          profileId
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
         nextToken
         startedAt
+        __typename
       }
       Roles {
-        items {
-          id
-          roleId
-          profileId
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
         nextToken
         startedAt
+        __typename
       }
       Posts {
-        items {
-          id
-          title
-          content
-          createdTimestamp
-          profileID
-          opportunityID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
         nextToken
         startedAt
+        __typename
       }
       Comments {
-        items {
-          id
-          content
-          createdTimestamp
-          postID
-          profileID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
         nextToken
         startedAt
+        __typename
       }
       OpportunitiesJoined {
-        items {
-          id
-          profileId
-          opportunityId
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
         nextToken
         startedAt
+        __typename
       }
       OpportunitiesOwned {
-        items {
-          id
-          zoomLink
-          organizations
-          description
-          isApproved
-          eventBanner
-          eventName
-          startTime
-          endTime
-          locationType
-          eventData
-          subject
-          preferences
-          profileID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
         nextToken
         startedAt
+        __typename
       }
       experience {
         end
@@ -643,35 +573,29 @@ export const getProfile = /* GraphQL */ `
         location
         description
         currentPosition
+        __typename
       }
       schoolEmail
       infoRequest
       infoResponse
       Requests {
-        items {
-          id
-          status
-          responseMessage
-          requestTime
-          responseTime
-          requestMessage
-          opportunityID
-          roleID
-          profileID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
         nextToken
         startedAt
+        __typename
       }
+      keywords {
+        nextToken
+        startedAt
+        __typename
+      }
+      banner
+      points
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -685,25 +609,8 @@ export const listProfiles = /* GraphQL */ `
       items {
         id
         email
-        volunteerExperience {
-          end
-          start
-          title
-          company
-          location
-          description
-          currentPosition
-        }
         about
-        location {
-          zip
-          city
-          state
-          address
-        }
-        availability {
-          year
-        }
+        location
         picture
         firstName
         lastName
@@ -712,54 +619,21 @@ export const listProfiles = /* GraphQL */ `
         active
         isAdmin
         isApproved
-        Majors {
-          nextToken
-          startedAt
-        }
-        Roles {
-          nextToken
-          startedAt
-        }
-        Posts {
-          nextToken
-          startedAt
-        }
-        Comments {
-          nextToken
-          startedAt
-        }
-        OpportunitiesJoined {
-          nextToken
-          startedAt
-        }
-        OpportunitiesOwned {
-          nextToken
-          startedAt
-        }
-        experience {
-          end
-          start
-          title
-          company
-          location
-          description
-          currentPosition
-        }
         schoolEmail
         infoRequest
         infoResponse
-        Requests {
-          nextToken
-          startedAt
-        }
+        banner
+        points
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -779,25 +653,8 @@ export const syncProfiles = /* GraphQL */ `
       items {
         id
         email
-        volunteerExperience {
-          end
-          start
-          title
-          company
-          location
-          description
-          currentPosition
-        }
         about
-        location {
-          zip
-          city
-          state
-          address
-        }
-        availability {
-          year
-        }
+        location
         picture
         firstName
         lastName
@@ -806,54 +663,21 @@ export const syncProfiles = /* GraphQL */ `
         active
         isAdmin
         isApproved
-        Majors {
-          nextToken
-          startedAt
-        }
-        Roles {
-          nextToken
-          startedAt
-        }
-        Posts {
-          nextToken
-          startedAt
-        }
-        Comments {
-          nextToken
-          startedAt
-        }
-        OpportunitiesJoined {
-          nextToken
-          startedAt
-        }
-        OpportunitiesOwned {
-          nextToken
-          startedAt
-        }
-        experience {
-          end
-          start
-          title
-          company
-          location
-          description
-          currentPosition
-        }
         schoolEmail
         infoRequest
         infoResponse
-        Requests {
-          nextToken
-          startedAt
-        }
+        banner
+        points
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -874,6 +698,7 @@ export const getRequest = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -899,9 +724,11 @@ export const listRequests = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -933,9 +760,11 @@ export const syncRequests = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -969,9 +798,11 @@ export const requestsByOpportunityID = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -1005,9 +836,11 @@ export const requestsByRoleID = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -1041,9 +874,11 @@ export const requestsByProfileID = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -1056,20 +891,9 @@ export const getPost = /* GraphQL */ `
       createdTimestamp
       profileID
       Comments {
-        items {
-          id
-          content
-          createdTimestamp
-          postID
-          profileID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
         nextToken
         startedAt
+        __typename
       }
       opportunityID
       createdAt
@@ -1077,6 +901,7 @@ export const getPost = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -1093,19 +918,17 @@ export const listPosts = /* GraphQL */ `
         content
         createdTimestamp
         profileID
-        Comments {
-          nextToken
-          startedAt
-        }
         opportunityID
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -1128,19 +951,17 @@ export const syncPosts = /* GraphQL */ `
         content
         createdTimestamp
         profileID
-        Comments {
-          nextToken
-          startedAt
-        }
         opportunityID
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -1165,19 +986,17 @@ export const postsByProfileID = /* GraphQL */ `
         content
         createdTimestamp
         profileID
-        Comments {
-          nextToken
-          startedAt
-        }
         opportunityID
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -1202,19 +1021,17 @@ export const postsByOpportunityID = /* GraphQL */ `
         content
         createdTimestamp
         profileID
-        Comments {
-          nextToken
-          startedAt
-        }
         opportunityID
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -1225,7 +1042,6 @@ export const getOpportunity = /* GraphQL */ `
       zoomLink
       organizations
       description
-      isApproved
       eventBanner
       eventName
       startTime
@@ -1236,84 +1052,45 @@ export const getOpportunity = /* GraphQL */ `
         city
         state
         address
+        __typename
       }
       eventData
       subject
       preferences
       Roles {
-        items {
-          id
-          name
-          description
-          isFilled
-          qualifications
-          opportunityID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
         nextToken
         startedAt
+        __typename
       }
       Posts {
-        items {
-          id
-          title
-          content
-          createdTimestamp
-          profileID
-          opportunityID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
         nextToken
         startedAt
+        __typename
       }
       Requests {
-        items {
-          id
-          status
-          responseMessage
-          requestTime
-          responseTime
-          requestMessage
-          opportunityID
-          roleID
-          profileID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
         nextToken
         startedAt
+        __typename
       }
       profileID
       profilesJoined {
-        items {
-          id
-          profileId
-          opportunityId
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
         nextToken
         startedAt
+        __typename
       }
+      keywords {
+        nextToken
+        startedAt
+        __typename
+      }
+      status
+      bannerKey
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -1329,46 +1106,27 @@ export const listOpportunities = /* GraphQL */ `
         zoomLink
         organizations
         description
-        isApproved
         eventBanner
         eventName
         startTime
         endTime
         locationType
-        location {
-          zip
-          city
-          state
-          address
-        }
         eventData
         subject
         preferences
-        Roles {
-          nextToken
-          startedAt
-        }
-        Posts {
-          nextToken
-          startedAt
-        }
-        Requests {
-          nextToken
-          startedAt
-        }
         profileID
-        profilesJoined {
-          nextToken
-          startedAt
-        }
+        status
+        bannerKey
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -1390,46 +1148,27 @@ export const syncOpportunities = /* GraphQL */ `
         zoomLink
         organizations
         description
-        isApproved
         eventBanner
         eventName
         startTime
         endTime
         locationType
-        location {
-          zip
-          city
-          state
-          address
-        }
         eventData
         subject
         preferences
-        Roles {
-          nextToken
-          startedAt
-        }
-        Posts {
-          nextToken
-          startedAt
-        }
-        Requests {
-          nextToken
-          startedAt
-        }
         profileID
-        profilesJoined {
-          nextToken
-          startedAt
-        }
+        status
+        bannerKey
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -1453,46 +1192,27 @@ export const opportunitiesByProfileID = /* GraphQL */ `
         zoomLink
         organizations
         description
-        isApproved
         eventBanner
         eventName
         startTime
         endTime
         locationType
-        location {
-          zip
-          city
-          state
-          address
-        }
         eventData
         subject
         preferences
-        Roles {
-          nextToken
-          startedAt
-        }
-        Posts {
-          nextToken
-          startedAt
-        }
-        Requests {
-          nextToken
-          startedAt
-        }
         profileID
-        profilesJoined {
-          nextToken
-          startedAt
-        }
+        status
+        bannerKey
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -1507,6 +1227,7 @@ export const getNote = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -1526,9 +1247,11 @@ export const listNotes = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -1554,9 +1277,349 @@ export const syncNotes = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
+    }
+  }
+`;
+export const getKeywordProfile = /* GraphQL */ `
+  query GetKeywordProfile($id: ID!) {
+    getKeywordProfile(id: $id) {
+      id
+      keywordId
+      profileId
+      keyword {
+        id
+        name
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      profile {
+        id
+        email
+        about
+        location
+        picture
+        firstName
+        lastName
+        status
+        graduationYear
+        active
+        isAdmin
+        isApproved
+        schoolEmail
+        infoRequest
+        infoResponse
+        banner
+        points
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const listKeywordProfiles = /* GraphQL */ `
+  query ListKeywordProfiles(
+    $filter: ModelKeywordProfileFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listKeywordProfiles(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        keywordId
+        profileId
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const syncKeywordProfiles = /* GraphQL */ `
+  query SyncKeywordProfiles(
+    $filter: ModelKeywordProfileFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncKeywordProfiles(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
+      items {
+        id
+        keywordId
+        profileId
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const keywordProfilesByKeywordId = /* GraphQL */ `
+  query KeywordProfilesByKeywordId(
+    $keywordId: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelKeywordProfileFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    keywordProfilesByKeywordId(
+      keywordId: $keywordId
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        keywordId
+        profileId
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const keywordProfilesByProfileId = /* GraphQL */ `
+  query KeywordProfilesByProfileId(
+    $profileId: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelKeywordProfileFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    keywordProfilesByProfileId(
+      profileId: $profileId
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        keywordId
+        profileId
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const getKeywordOpportunity = /* GraphQL */ `
+  query GetKeywordOpportunity($id: ID!) {
+    getKeywordOpportunity(id: $id) {
+      id
+      keywordId
+      opportunityId
+      keyword {
+        id
+        name
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      opportunity {
+        id
+        zoomLink
+        organizations
+        description
+        eventBanner
+        eventName
+        startTime
+        endTime
+        locationType
+        eventData
+        subject
+        preferences
+        profileID
+        status
+        bannerKey
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const listKeywordOpportunities = /* GraphQL */ `
+  query ListKeywordOpportunities(
+    $filter: ModelKeywordOpportunityFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listKeywordOpportunities(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        keywordId
+        opportunityId
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const syncKeywordOpportunities = /* GraphQL */ `
+  query SyncKeywordOpportunities(
+    $filter: ModelKeywordOpportunityFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncKeywordOpportunities(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
+      items {
+        id
+        keywordId
+        opportunityId
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const keywordOpportunitiesByKeywordId = /* GraphQL */ `
+  query KeywordOpportunitiesByKeywordId(
+    $keywordId: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelKeywordOpportunityFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    keywordOpportunitiesByKeywordId(
+      keywordId: $keywordId
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        keywordId
+        opportunityId
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const keywordOpportunitiesByOpportunityId = /* GraphQL */ `
+  query KeywordOpportunitiesByOpportunityId(
+    $opportunityId: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelKeywordOpportunityFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    keywordOpportunitiesByOpportunityId(
+      opportunityId: $opportunityId
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        keywordId
+        opportunityId
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
     }
   }
 `;
@@ -1572,47 +1635,31 @@ export const getRoleMajor = /* GraphQL */ `
         description
         isFilled
         qualifications
-        Majors {
-          nextToken
-          startedAt
-        }
-        Profiles {
-          nextToken
-          startedAt
-        }
         opportunityID
-        Requests {
-          nextToken
-          startedAt
-        }
+        capacity
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       major {
         id
         name
-        profiles {
-          nextToken
-          startedAt
-        }
-        Roles {
-          nextToken
-          startedAt
-        }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -1627,36 +1674,16 @@ export const listRoleMajors = /* GraphQL */ `
         id
         roleId
         majorId
-        role {
-          id
-          name
-          description
-          isFilled
-          qualifications
-          opportunityID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        major {
-          id
-          name
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -1677,36 +1704,16 @@ export const syncRoleMajors = /* GraphQL */ `
         id
         roleId
         majorId
-        role {
-          id
-          name
-          description
-          isFilled
-          qualifications
-          opportunityID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        major {
-          id
-          name
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -1729,36 +1736,16 @@ export const roleMajorsByRoleId = /* GraphQL */ `
         id
         roleId
         majorId
-        role {
-          id
-          name
-          description
-          isFilled
-          qualifications
-          opportunityID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        major {
-          id
-          name
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -1781,36 +1768,16 @@ export const roleMajorsByMajorId = /* GraphQL */ `
         id
         roleId
         majorId
-        role {
-          id
-          name
-          description
-          isFilled
-          qualifications
-          opportunityID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        major {
-          id
-          name
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -1826,47 +1793,20 @@ export const getProfileRole = /* GraphQL */ `
         description
         isFilled
         qualifications
-        Majors {
-          nextToken
-          startedAt
-        }
-        Profiles {
-          nextToken
-          startedAt
-        }
         opportunityID
-        Requests {
-          nextToken
-          startedAt
-        }
+        capacity
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       profile {
         id
         email
-        volunteerExperience {
-          end
-          start
-          title
-          company
-          location
-          description
-          currentPosition
-        }
         about
-        location {
-          zip
-          city
-          state
-          address
-        }
-        availability {
-          year
-        }
+        location
         picture
         firstName
         lastName
@@ -1875,57 +1815,24 @@ export const getProfileRole = /* GraphQL */ `
         active
         isAdmin
         isApproved
-        Majors {
-          nextToken
-          startedAt
-        }
-        Roles {
-          nextToken
-          startedAt
-        }
-        Posts {
-          nextToken
-          startedAt
-        }
-        Comments {
-          nextToken
-          startedAt
-        }
-        OpportunitiesJoined {
-          nextToken
-          startedAt
-        }
-        OpportunitiesOwned {
-          nextToken
-          startedAt
-        }
-        experience {
-          end
-          start
-          title
-          company
-          location
-          description
-          currentPosition
-        }
         schoolEmail
         infoRequest
         infoResponse
-        Requests {
-          nextToken
-          startedAt
-        }
+        banner
+        points
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -1940,48 +1847,16 @@ export const listProfileRoles = /* GraphQL */ `
         id
         roleId
         profileId
-        role {
-          id
-          name
-          description
-          isFilled
-          qualifications
-          opportunityID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        profile {
-          id
-          email
-          about
-          picture
-          firstName
-          lastName
-          status
-          graduationYear
-          active
-          isAdmin
-          isApproved
-          schoolEmail
-          infoRequest
-          infoResponse
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -2002,48 +1877,16 @@ export const syncProfileRoles = /* GraphQL */ `
         id
         roleId
         profileId
-        role {
-          id
-          name
-          description
-          isFilled
-          qualifications
-          opportunityID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        profile {
-          id
-          email
-          about
-          picture
-          firstName
-          lastName
-          status
-          graduationYear
-          active
-          isAdmin
-          isApproved
-          schoolEmail
-          infoRequest
-          infoResponse
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -2066,48 +1909,16 @@ export const profileRolesByRoleId = /* GraphQL */ `
         id
         roleId
         profileId
-        role {
-          id
-          name
-          description
-          isFilled
-          qualifications
-          opportunityID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        profile {
-          id
-          email
-          about
-          picture
-          firstName
-          lastName
-          status
-          graduationYear
-          active
-          isAdmin
-          isApproved
-          schoolEmail
-          infoRequest
-          infoResponse
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -2130,48 +1941,16 @@ export const profileRolesByProfileId = /* GraphQL */ `
         id
         roleId
         profileId
-        role {
-          id
-          name
-          description
-          isFilled
-          qualifications
-          opportunityID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        profile {
-          id
-          email
-          about
-          picture
-          firstName
-          lastName
-          status
-          graduationYear
-          active
-          isAdmin
-          isApproved
-          schoolEmail
-          infoRequest
-          infoResponse
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -2184,42 +1963,18 @@ export const getProfileMajor = /* GraphQL */ `
       major {
         id
         name
-        profiles {
-          nextToken
-          startedAt
-        }
-        Roles {
-          nextToken
-          startedAt
-        }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       profile {
         id
         email
-        volunteerExperience {
-          end
-          start
-          title
-          company
-          location
-          description
-          currentPosition
-        }
         about
-        location {
-          zip
-          city
-          state
-          address
-        }
-        availability {
-          year
-        }
+        location
         picture
         firstName
         lastName
@@ -2228,57 +1983,24 @@ export const getProfileMajor = /* GraphQL */ `
         active
         isAdmin
         isApproved
-        Majors {
-          nextToken
-          startedAt
-        }
-        Roles {
-          nextToken
-          startedAt
-        }
-        Posts {
-          nextToken
-          startedAt
-        }
-        Comments {
-          nextToken
-          startedAt
-        }
-        OpportunitiesJoined {
-          nextToken
-          startedAt
-        }
-        OpportunitiesOwned {
-          nextToken
-          startedAt
-        }
-        experience {
-          end
-          start
-          title
-          company
-          location
-          description
-          currentPosition
-        }
         schoolEmail
         infoRequest
         infoResponse
-        Requests {
-          nextToken
-          startedAt
-        }
+        banner
+        points
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -2293,44 +2015,16 @@ export const listProfileMajors = /* GraphQL */ `
         id
         majorId
         profileId
-        major {
-          id
-          name
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        profile {
-          id
-          email
-          about
-          picture
-          firstName
-          lastName
-          status
-          graduationYear
-          active
-          isAdmin
-          isApproved
-          schoolEmail
-          infoRequest
-          infoResponse
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -2351,44 +2045,16 @@ export const syncProfileMajors = /* GraphQL */ `
         id
         majorId
         profileId
-        major {
-          id
-          name
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        profile {
-          id
-          email
-          about
-          picture
-          firstName
-          lastName
-          status
-          graduationYear
-          active
-          isAdmin
-          isApproved
-          schoolEmail
-          infoRequest
-          infoResponse
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -2411,44 +2077,16 @@ export const profileMajorsByMajorId = /* GraphQL */ `
         id
         majorId
         profileId
-        major {
-          id
-          name
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        profile {
-          id
-          email
-          about
-          picture
-          firstName
-          lastName
-          status
-          graduationYear
-          active
-          isAdmin
-          isApproved
-          schoolEmail
-          infoRequest
-          infoResponse
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -2471,44 +2109,16 @@ export const profileMajorsByProfileId = /* GraphQL */ `
         id
         majorId
         profileId
-        major {
-          id
-          name
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        profile {
-          id
-          email
-          about
-          picture
-          firstName
-          lastName
-          status
-          graduationYear
-          active
-          isAdmin
-          isApproved
-          schoolEmail
-          infoRequest
-          infoResponse
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -2521,25 +2131,8 @@ export const getOpportunityProfile = /* GraphQL */ `
       profile {
         id
         email
-        volunteerExperience {
-          end
-          start
-          title
-          company
-          location
-          description
-          currentPosition
-        }
         about
-        location {
-          zip
-          city
-          state
-          address
-        }
-        availability {
-          year
-        }
+        location
         picture
         firstName
         lastName
@@ -2548,100 +2141,47 @@ export const getOpportunityProfile = /* GraphQL */ `
         active
         isAdmin
         isApproved
-        Majors {
-          nextToken
-          startedAt
-        }
-        Roles {
-          nextToken
-          startedAt
-        }
-        Posts {
-          nextToken
-          startedAt
-        }
-        Comments {
-          nextToken
-          startedAt
-        }
-        OpportunitiesJoined {
-          nextToken
-          startedAt
-        }
-        OpportunitiesOwned {
-          nextToken
-          startedAt
-        }
-        experience {
-          end
-          start
-          title
-          company
-          location
-          description
-          currentPosition
-        }
         schoolEmail
         infoRequest
         infoResponse
-        Requests {
-          nextToken
-          startedAt
-        }
+        banner
+        points
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       opportunity {
         id
         zoomLink
         organizations
         description
-        isApproved
         eventBanner
         eventName
         startTime
         endTime
         locationType
-        location {
-          zip
-          city
-          state
-          address
-        }
         eventData
         subject
         preferences
-        Roles {
-          nextToken
-          startedAt
-        }
-        Posts {
-          nextToken
-          startedAt
-        }
-        Requests {
-          nextToken
-          startedAt
-        }
         profileID
-        profilesJoined {
-          nextToken
-          startedAt
-        }
+        status
+        bannerKey
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -2660,56 +2200,16 @@ export const listOpportunityProfiles = /* GraphQL */ `
         id
         profileId
         opportunityId
-        profile {
-          id
-          email
-          about
-          picture
-          firstName
-          lastName
-          status
-          graduationYear
-          active
-          isAdmin
-          isApproved
-          schoolEmail
-          infoRequest
-          infoResponse
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        opportunity {
-          id
-          zoomLink
-          organizations
-          description
-          isApproved
-          eventBanner
-          eventName
-          startTime
-          endTime
-          locationType
-          eventData
-          subject
-          preferences
-          profileID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -2730,56 +2230,16 @@ export const syncOpportunityProfiles = /* GraphQL */ `
         id
         profileId
         opportunityId
-        profile {
-          id
-          email
-          about
-          picture
-          firstName
-          lastName
-          status
-          graduationYear
-          active
-          isAdmin
-          isApproved
-          schoolEmail
-          infoRequest
-          infoResponse
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        opportunity {
-          id
-          zoomLink
-          organizations
-          description
-          isApproved
-          eventBanner
-          eventName
-          startTime
-          endTime
-          locationType
-          eventData
-          subject
-          preferences
-          profileID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -2802,56 +2262,16 @@ export const opportunityProfilesByProfileId = /* GraphQL */ `
         id
         profileId
         opportunityId
-        profile {
-          id
-          email
-          about
-          picture
-          firstName
-          lastName
-          status
-          graduationYear
-          active
-          isAdmin
-          isApproved
-          schoolEmail
-          infoRequest
-          infoResponse
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        opportunity {
-          id
-          zoomLink
-          organizations
-          description
-          isApproved
-          eventBanner
-          eventName
-          startTime
-          endTime
-          locationType
-          eventData
-          subject
-          preferences
-          profileID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -2874,56 +2294,16 @@ export const opportunityProfilesByOpportunityId = /* GraphQL */ `
         id
         profileId
         opportunityId
-        profile {
-          id
-          email
-          about
-          picture
-          firstName
-          lastName
-          status
-          graduationYear
-          active
-          isAdmin
-          isApproved
-          schoolEmail
-          infoRequest
-          infoResponse
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        opportunity {
-          id
-          zoomLink
-          organizations
-          description
-          isApproved
-          eventBanner
-          eventName
-          startTime
-          endTime
-          locationType
-          eventData
-          subject
-          preferences
-          profileID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;

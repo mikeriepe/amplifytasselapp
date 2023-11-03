@@ -2,5 +2,5 @@
   "AppSyncApiName": "amplifytassel",
   "DynamoDBBillingMode": "PAY_PER_REQUEST",
   "DynamoDBEnableServerSideEncryption": false,
-  "AuthModeLastUpdated": "2023-04-11T17:47:32.241Z"
+  "AuthModeLastUpdated": "2023-11-03T18:55:53.955Z"
 }

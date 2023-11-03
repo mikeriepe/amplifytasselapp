@@ -120,6 +120,66 @@ export declare type WorkHistory = LazyLoading extends LazyLoadingDisabled ? Eage
 
 export declare const WorkHistory: (new (init: ModelInit<WorkHistory>) => WorkHistory)
 
+type EagerFriendRequest = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<FriendRequest, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly profileID: string;
+  readonly ToProfile?: string | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyFriendRequest = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<FriendRequest, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly profileID: string;
+  readonly ToProfile?: string | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type FriendRequest = LazyLoading extends LazyLoadingDisabled ? EagerFriendRequest : LazyFriendRequest
+
+export declare const FriendRequest: (new (init: ModelInit<FriendRequest>) => FriendRequest) & {
+  copyOf(source: FriendRequest, mutator: (draft: MutableModel<FriendRequest>) => MutableModel<FriendRequest> | void): FriendRequest;
+}
+
+type EagerFriend = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Friend, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly profileID: string;
+  readonly Friend?: string | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyFriend = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Friend, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly profileID: string;
+  readonly Friend?: string | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type Friend = LazyLoading extends LazyLoadingDisabled ? EagerFriend : LazyFriend
+
+export declare const Friend: (new (init: ModelInit<Friend>) => Friend) & {
+  copyOf(source: Friend, mutator: (draft: MutableModel<Friend>) => MutableModel<Friend> | void): Friend;
+}
+
 type EagerKeyword = {
   readonly [__modelMeta__]: {
     identifier: ManagedIdentifier<Keyword, 'id'>;
@@ -331,6 +391,8 @@ type EagerProfile = {
   readonly keywords?: (KeywordProfile | null)[] | null;
   readonly banner?: string | null;
   readonly points?: number | null;
+  readonly FriendRequests?: (FriendRequest | null)[] | null;
+  readonly Friends?: (Friend | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -368,6 +430,8 @@ type LazyProfile = {
   readonly keywords: AsyncCollection<KeywordProfile>;
   readonly banner?: string | null;
   readonly points?: number | null;
+  readonly FriendRequests: AsyncCollection<FriendRequest>;
+  readonly Friends: AsyncCollection<Friend>;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
