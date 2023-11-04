@@ -249,7 +249,6 @@ export default function SocialUsers() {
     console.log(result);
     if (result.length) {
       result.forEach((item) => {
-        // TODO remove accounts that are already in the current users friend requests
         if(item.item.status == "ADMIN" || item.item.status == "APPROVED"){
           if (item.item.id !== userProfile.id) {
             tempResult.push(item.item);
@@ -277,11 +276,10 @@ export default function SocialUsers() {
       // Remove the marked items from tempResult
       console.log("items to remove", itemsToRemove);
       console.log("tempResult", tempResult);
-      tempResult = tempResult.filter(item => !itemsToRemove.includes(item.id));
+      const filteredResult = tempResult.filter((item) => !itemsToRemove.includes(item.id));
       
-      // Now, tempResult will only contain items where no matching FriendRequest was found
-      
-      setDisplayUsers(tempResult);
+      console.log("filteredResults",filteredResult);
+      setDisplayUsers(filteredResult);
     } else {
       setDisplayUsers([]);
     }
