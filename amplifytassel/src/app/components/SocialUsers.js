@@ -268,18 +268,19 @@ export default function SocialUsers() {
           if (friendRequests.length > 0) {
             itemsToRemove.push(item.id);
           }
+          console.log("items to remove", itemsToRemove);
+          console.log("tempResult", tempResult);
+          console.log(tempResult);
+          console.log(itemsToRemove.length);
+          const filteredResult = tempResult.filter((item) => !itemsToRemove.includes(item.id));
+          console.log("filteredResults",filteredResult);
+          setDisplayUsers(filteredResult);
         } catch (error) {
           console.error('Error querying FriendRequests:', error);
         }
       });
 
       // Remove the marked items from tempResult
-      console.log("items to remove", itemsToRemove);
-      console.log("tempResult", tempResult);
-      const filteredResult = tempResult.filter((item) => !itemsToRemove.includes(item.id));
-      
-      console.log("filteredResults",filteredResult);
-      setDisplayUsers(filteredResult);
     } else {
       setDisplayUsers([]);
     }
