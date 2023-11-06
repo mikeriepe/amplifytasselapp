@@ -217,14 +217,15 @@ export default function SocialUsers() {
             })
           );
           console.log("Friend Request sent successfully");
+          // Clear the selected users after sending requests
+          setSelected([]);
+          setTimeout(() => {
+            window.location.reload();
+          }, 500);
         }catch(error){
           console.log("error on adding friendreq");
         }
       }
-  
-      // Clear the selected users after sending requests
-      setSelected([]);
-      // window.location.reload(); // to fast for the save
     } catch (error) {
       console.error('Error sending friend requests:', error);
       toast.error('An error occurred while sending friend requests.');
@@ -272,6 +273,8 @@ export default function SocialUsers() {
           console.log("tempResult", tempResult);
           console.log(tempResult);
           console.log(itemsToRemove.length);
+          
+          // filtering out matching results from query
           const filteredResult = tempResult.filter((item) => !itemsToRemove.includes(item.id));
           console.log("filteredResults",filteredResult);
           setDisplayUsers(filteredResult);
