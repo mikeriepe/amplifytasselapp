@@ -31,9 +31,8 @@ import {toast} from 'react-toastify';
 import Fuse from 'fuse.js';
 import useAuth from '../util/AuthContext';
 import '../stylesheets/ApprovalTable.css';
-
 import { DataStore } from '@aws-amplify/datastore';
-import { FriendRequest, Profile } from './../../models';
+import { FriendRequest, Profile, Friend } from './../../models';
 import { Storage } from 'aws-amplify';
 
 const Page = styled((props) => (
@@ -207,6 +206,30 @@ export default function SocialFriendRequests() {
         }
       }
       console.log(toProfileIDs);
+      for (const toProfileID of toProfileIDs){
+        try{
+          // fetches incoming friend requests
+          const friendRequestToDelete = await DataStore.query(FriendRequest, (c) => c.and(c => [
+            c.profileID.eq(toProfileID),
+            c.ToProfile.eq(userProfile.id)
+          ]));
+          // Saves new Friend
+          await DataStore.save(
+            new Friend({
+              "profileID": toProfileID,
+              "Friend": userProfile.id
+            })
+          );
+          
+          // Deletes Friend Request
+          DataStore.delete(friendRequestToDelete[0]);
+        } catch (error){
+          console.error("Error finding friend request:", error);
+        }
+      }
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
     } catch (error) {
       console.error("Error denying friend request:", error);
     } 
