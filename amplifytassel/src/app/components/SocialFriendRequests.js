@@ -298,6 +298,8 @@ export default function SocialFriendRequests() {
         keys: ['firstName', 'email', 'graduationYear'],
         threshold: 0.3,
       });
+      
+      // Need to push items again since fuse added refIndex
       const result = fuse.search(query);
       result.forEach((item) => {
         finalResult.push(item.item);
