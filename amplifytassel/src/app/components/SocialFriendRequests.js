@@ -193,11 +193,58 @@ export default function SocialFriendRequests() {
     setSelected(newSelected);
   };
 
-  const handleAcceptAction = (event) => {
-    // TODO backend actions that adds an account to 
+  const handleAcceptAction = async (event) => {
+    if (selected.length === 0) {
+      toast.error('Select at least one user to send friend requests.');
+      return;
+    }
+    try {
+      const toProfileIDs = [];
+      for (const email of selected) {
+        const matchingProfile = accounts.find((profile) => profile.email === email);
+        if (matchingProfile) {
+          toProfileIDs.push(matchingProfile.id);
+        }
+      }
+      console.log(toProfileIDs);
+    } catch (error) {
+      console.error("Error denying friend request:", error);
+    } 
   }
-  const handleDenyAction = (event) => {
-    // TODO backend actions that adds an account to 
+  const handleDenyAction = async (event) => {
+    if (selected.length === 0) {
+      toast.error('Select at least one user to send friend requests.');
+      return;
+    }
+    try {
+      const toProfileIDs = [];
+      for (const email of selected) {
+        // finds all accounts that match with the email profile
+        const matchingProfile = accounts.find((profile) => profile.email === email);
+        if (matchingProfile) {
+          toProfileIDs.push(matchingProfile.id);
+        }
+      }
+      console.log(toProfileIDs);
+      for (const toProfileID of toProfileIDs){
+        try{
+          // fetches incoming friend requests
+          const friendRequestToDelete = await DataStore.query(FriendRequest, (c) => c.and(c => [
+            c.profileID.eq(toProfileID),
+            c.ToProfile.eq(userProfile.id)
+          ]));
+          console.log(friendRequestToDelete);
+          DataStore.delete(friendRequestToDelete[0]);
+        } catch (error){
+          console.error("Error finding friend request:", error);
+        }
+      }
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
+    } catch (error) {
+      console.error("Error denying friend request:", error);
+    }
   }
 
   // Taken from Approvals, searches admin/approved accounts based on query
