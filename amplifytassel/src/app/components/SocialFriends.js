@@ -29,10 +29,11 @@ import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import {styled} from '@mui/material/styles';
 import {toast} from 'react-toastify';
 import Fuse from 'fuse.js';
+import useAuth from '../util/AuthContext';
 import '../stylesheets/ApprovalTable.css';
 
 import { DataStore } from '@aws-amplify/datastore';
-import { Profile } from './../../models';
+import { Profile, Friend } from './../../models';
 import { Storage } from 'aws-amplify';
 
 const Page = styled((props) => (
@@ -160,8 +161,9 @@ function Row(props) {
  * @return {HTML} account approval content
  */
 export default function SocialFriends() {
+  const {userProfile} = useAuth();
   const [accounts, setAccounts] = useState([]);
-  const [displayUsers, setDisplayUsers] = useState([]);
+  const [displayFriends, setDisplayFriends] = useState([]);
   const [selected, setSelected] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -196,31 +198,57 @@ export default function SocialFriends() {
   }
 
   // Taken from Approvals, searches admin/approved accounts based on query
-  const searchUsers = (query) => {
+  const searchFriends = async (query) => {
     if (!query) {
-      setDisplayUsers([]);
+      setDisplayFriends([]);
       return;
     }
-    const fuse = new Fuse(accounts, {
-      keys: ['firstName', 'email', 'graduationYear'],
-      threshold: 0.3,
-    });
-    const result = fuse.search(query);
-    const finalResult = [];
-    console.log(result);
-    if (result.length) {
-      result.forEach((item) => {
-        // TODO Filter based friends of the current account
-        if(item.item.status == "ADMIN" || item.item.status == "APPROVED"){
-          finalResult.push(item.item);
-        }
+  
+    try {
+      const friendIDs = [];
+      const profileResults = [];
+  
+      // Fetch all friends with friend and profileID equal to the user's id
+      const friends1 = await DataStore.query(Friend, f => f.Friend.eq(userProfile.id));
+      const friends2 = await DataStore.query(Friend, f => f.profileID.eq(userProfile.id));
+      
+      // push matching ids
+      friends1.forEach((item) => {
+        friendIDs.push(item.profileID);
       });
-      console.log(finalResult);
-      setDisplayUsers(finalResult);
-    } else {
-      setDisplayUsers([]);
+  
+      friends2.forEach((item) => {
+        friendIDs.push(item.Friend);
+      });
+      
+      // fetch profiles of friendIDs
+      const profilePromises = friendIDs.map(async (item) => {
+        const profile = await DataStore.query(Profile, p => p.id.eq(item));
+        if (profile.length > 0) {
+          return profile[0];
+        }
+        return null;
+      });
+  
+      const profiles = await Promise.all(profilePromises);
+      console.log("profiles",profiles);
+      const fuse = new Fuse(profiles, {
+        keys: ['firstName', 'email', 'graduationYear'],
+        threshold: 0.3,
+      });
+      
+      // Need to push items again since fuse added refIndex
+      const result = fuse.search(query);
+      result.forEach((item) => {
+        profileResults.push(item.item);
+      });
+      setDisplayFriends(profileResults);
+    } catch (error) {
+      console.error("Error displaying friends", error);
     }
   };
+  
+
 
   useEffect(() => {
     getAccounts('status', true);
@@ -278,7 +306,7 @@ export default function SocialFriends() {
             <TextField
             placeholder='Search'
             size='small'
-            onChange={(e) => searchUsers(e.target.value)}
+            onChange={(e) => searchFriends(e.target.value)}
             InputProps={{
               style: {
                 marginTop: "0.1rem",
@@ -339,7 +367,7 @@ export default function SocialFriends() {
             </TableHead>
             <TableBody aria-label='Accounts Table Body'>
               {
-                displayUsers.map((account) => {
+                displayFriends.map((account) => {
                   return (
                     <Row
                       key={account.id}

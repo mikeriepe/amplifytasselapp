@@ -29,10 +29,10 @@ import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import {styled} from '@mui/material/styles';
 import {toast} from 'react-toastify';
 import Fuse from 'fuse.js';
+import useAuth from '../util/AuthContext';
 import '../stylesheets/ApprovalTable.css';
-
 import { DataStore } from '@aws-amplify/datastore';
-import { Profile } from './../../models';
+import { FriendRequest, Profile, Friend } from './../../models';
 import { Storage } from 'aws-amplify';
 
 const Page = styled((props) => (
@@ -160,8 +160,9 @@ function Row(props) {
  * @return {HTML} account approval content
  */
 export default function SocialFriendRequests() {
+  const {userProfile} = useAuth();
   const [accounts, setAccounts] = useState([]);
-  const [displayUsers, setDisplayUsers] = useState([]);
+  const [displayFriendRequests, setDisplayFriendRequests] = useState([]);
   const [selected, setSelected] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -191,40 +192,126 @@ export default function SocialFriendRequests() {
     setSelected(newSelected);
   };
 
-  const handleAcceptAction = (event) => {
-    // TODO backend actions that adds an account to 
+  const handleAcceptAction = async (event) => {
+    if (selected.length === 0) {
+      toast.error('Select at least one user to send friend requests.');
+      return;
+    }
+    try {
+      const toProfileIDs = [];
+      for (const email of selected) {
+        const matchingProfile = accounts.find((profile) => profile.email === email);
+        if (matchingProfile) {
+          toProfileIDs.push(matchingProfile.id);
+        }
+      }
+      console.log(toProfileIDs);
+      for (const toProfileID of toProfileIDs){
+        try{
+          // fetches incoming friend requests
+          const friendRequestToDelete = await DataStore.query(FriendRequest, (c) => c.and(c => [
+            c.profileID.eq(toProfileID),
+            c.ToProfile.eq(userProfile.id)
+          ]));
+          // Saves new Friend
+          await DataStore.save(
+            new Friend({
+              "profileID": toProfileID,
+              "Friend": userProfile.id
+            })
+          );
+          
+          // Deletes Friend Request
+          DataStore.delete(friendRequestToDelete[0]);
+        } catch (error){
+          console.error("Error finding friend request:", error);
+        }
+      }
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
+    } catch (error) {
+      console.error("Error denying friend request:", error);
+    } 
   }
-  const handleDenyAction = (event) => {
-    // TODO backend actions that adds an account to 
+  const handleDenyAction = async (event) => {
+    if (selected.length === 0) {
+      toast.error('Select at least one user to send friend requests.');
+      return;
+    }
+    try {
+      const toProfileIDs = [];
+      for (const email of selected) {
+        // finds all accounts that match with the email profile
+        const matchingProfile = accounts.find((profile) => profile.email === email);
+        if (matchingProfile) {
+          toProfileIDs.push(matchingProfile.id);
+        }
+      }
+      console.log(toProfileIDs);
+      for (const toProfileID of toProfileIDs){
+        try{
+          // fetches incoming friend requests
+          const friendRequestToDelete = await DataStore.query(FriendRequest, (c) => c.and(c => [
+            c.profileID.eq(toProfileID),
+            c.ToProfile.eq(userProfile.id)
+          ]));
+          console.log(friendRequestToDelete);
+          DataStore.delete(friendRequestToDelete[0]);
+        } catch (error){
+          console.error("Error finding friend request:", error);
+        }
+      }
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
+    } catch (error) {
+      console.error("Error denying friend request:", error);
+    }
   }
 
   // Taken from Approvals, searches admin/approved accounts based on query
-  const searchUsers = (query) => {
+  const searchFriendRequests = async (query) => {
+    console.log(userProfile.id);
     if (!query) {
-      setDisplayUsers([]);
+      setDisplayFriendRequests([]);
       return;
     }
-    const fuse = new Fuse(accounts, {
-      keys: ['firstName', 'email', 'graduationYear'],
-      threshold: 0.3,
-    });
-    const result = fuse.search(query);
-    const finalResult = [];
-    console.log(result);
-    if (result.length) {
-      result.forEach((item) => {
-        // TODO Filter based on requests sent to current account
-        if(item.item.status == "ADMIN" || item.item.status == "APPROVED"){
-          finalResult.push(item.item);
+    var finalResult = [];
+    try {
+      // Fetches all friend Requests that are going to the current user
+      const friendRequests = await DataStore.query(FriendRequest, f => f.ToProfile.eq(userProfile.id));
+      const profilePromises = friendRequests.map(async (item) => {
+        try {
+          // Fetches all profiles of users who have sent a friend request to the current user
+          const profile = await DataStore.query(Profile, p => p.id.eq(item.profileID));
+          console.log("profile", profile);
+          return profile[0];
+        } catch (error) {
+          console.log("Error trying to fetch profile", error);
         }
       });
-      console.log(finalResult);
-      setDisplayUsers(finalResult);
-    } else {
-      setDisplayUsers([]);
+      const friendRequestProfiles = await Promise.all(profilePromises);
+      const filteredProfiles = friendRequestProfiles.filter(profile => profile !== null);
+      console.log("filtered Profiles", filteredProfiles);
+      const fuse = new Fuse(filteredProfiles, {
+        keys: ['firstName', 'email', 'graduationYear'],
+        threshold: 0.3,
+      });
+      
+      // Need to push items again since fuse added refIndex
+      const result = fuse.search(query);
+      result.forEach((item) => {
+        finalResult.push(item.item);
+      });
+      console.log("finalResult", finalResult);
+      setDisplayFriendRequests(finalResult);
+    } catch (error) {
+      console.error("Error while fetching friend requests", error);
+      setDisplayFriendRequests([]);
     }
   };
-
+  
   useEffect(() => {
     getAccounts('status', true);
     // eslint-disable-next-line
@@ -293,7 +380,7 @@ export default function SocialFriendRequests() {
             <TextField
             placeholder='Search'
             size='small'
-            onChange={(e) => searchUsers(e.target.value)}
+            onChange={(e) => searchFriendRequests(e.target.value)}
             InputProps={{
               style: {
                 marginTop: "0.1rem",
@@ -354,7 +441,7 @@ export default function SocialFriendRequests() {
             </TableHead>
             <TableBody aria-label='Accounts Table Body'>
               {
-                displayUsers.map((account) => {
+                displayFriendRequests.map((account) => {
                   return (
                     <Row
                       key={account.id}

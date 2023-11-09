@@ -13,6 +13,7 @@ import TableSortLabel from '@mui/material/TableSortLabel';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TableBody from '@mui/material/TableBody';
+import useAuth from '../util/AuthContext';
 // import TableFooter from '@mui/material/TableFooter';
 // import TablePagination from '@mui/material/TablePagination';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -32,7 +33,7 @@ import Fuse from 'fuse.js';
 import '../stylesheets/ApprovalTable.css';
 
 import { DataStore } from '@aws-amplify/datastore';
-import { Profile } from './../../models';
+import { FriendRequest, Profile, Friend } from './../../models';
 import { Storage } from 'aws-amplify';
 
 const Page = styled((props) => (
@@ -160,6 +161,7 @@ function Row(props) {
  * @return {HTML} account approval content
  */
 export default function SocialUsers() {
+  const {userProfile} = useAuth();
   const [accounts, setAccounts] = useState([]);
   const [displayUsers, setDisplayUsers] = useState([]);
   const [selected, setSelected] = useState([]);
@@ -188,12 +190,48 @@ export default function SocialUsers() {
     } else {
       newSelected.splice(currentIndex, 1);
     }
+    console.log(newSelected);
     setSelected(newSelected);
   };
 
-  const handleAddAction = (event) => {
-    // TODO backend actions that adds an account to 
-  }
+  const handleFriendRequestAction = async (event) => {
+    if (selected.length === 0) {
+      toast.error('Select at least one user to send friend requests.');
+      return;
+    }
+    try {
+      const toProfileIDs = [];
+      for (const email of selected) {
+        const matchingProfile = accounts.find((profile) => profile.email === email);
+        if (matchingProfile) {
+          toProfileIDs.push(matchingProfile.id);
+        }
+      }      
+      for (const toProfileID of toProfileIDs) {
+        try{
+          console.log("toProfileID", toProfileID);
+          await DataStore.save(
+            new FriendRequest({
+              profileID: userProfile.id, // user's profile
+              ToProfile: toProfileID // The ID of the recipient's profile
+            })
+          );
+          console.log("Friend Request sent successfully");
+          // Clear the selected users after sending requests
+          setSelected([]);
+          setTimeout(() => {
+            window.location.reload();
+          }, 500);
+        }catch(error){
+          console.log("error on adding friendreq");
+        }
+      }
+    } catch (error) {
+      console.error('Error sending friend requests:', error);
+      toast.error('An error occurred while sending friend requests.');
+    }
+  };
+  
 
 
   // Taken from Approvals, searches admin/approved accounts based on query
@@ -207,17 +245,45 @@ export default function SocialUsers() {
       threshold: 0.3,
     });
     const result = fuse.search(query);
-    const finalResult = [];
+    // const finalResult = [];
+    var tempResult = [];
     console.log(result);
     if (result.length) {
       result.forEach((item) => {
-        // TODO remove accounts that are already in the current users friend requests
         if(item.item.status == "ADMIN" || item.item.status == "APPROVED"){
-          finalResult.push(item.item);
+          if (item.item.id !== userProfile.id) {
+            tempResult.push(item.item);
+          }
         }
       });
-      console.log(finalResult);
-      setDisplayUsers(finalResult);
+      console.log("tempresult", tempResult);
+      const itemsToRemove = [];
+      tempResult.forEach(async (item) => {
+        try {
+          const friendRequests = await DataStore.query(FriendRequest, (c) => c.and(c => [
+            c.profileID.eq(userProfile.id),
+            c.ToProfile.eq(item.id)
+          ]));
+
+          // If there are matching FriendRequests, mark the item for removal
+          if (friendRequests.length > 0) {
+            itemsToRemove.push(item.id);
+          }
+          console.log("items to remove", itemsToRemove);
+          console.log("tempResult", tempResult);
+          console.log(tempResult);
+          console.log(itemsToRemove.length);
+          
+          // filtering out matching results from query
+          const filteredResult = tempResult.filter((item) => !itemsToRemove.includes(item.id));
+          console.log("filteredResults",filteredResult);
+          setDisplayUsers(filteredResult);
+        } catch (error) {
+          console.error('Error querying FriendRequests:', error);
+        }
+      });
+
+      // Remove the marked items from tempResult
     } else {
       setDisplayUsers([]);
     }
@@ -272,7 +338,7 @@ export default function SocialUsers() {
                 fontSize: '0.875rem',
                 marginRight: '2rem',
               }}
-              onClick={handleAddAction}
+              onClick={handleFriendRequestAction}
             >
                 Add
             </ThemedButton>
