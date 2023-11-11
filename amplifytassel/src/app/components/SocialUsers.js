@@ -264,7 +264,17 @@ export default function SocialUsers() {
             c.profileID.eq(userProfile.id),
             c.ToProfile.eq(item.id)
           ]));
-
+          const friends1 = await DataStore.query(Friend, f => f.Friend.eq(userProfile.id));
+          const friends2 = await DataStore.query(Friend, f => f.profileID.eq(userProfile.id));
+          
+          // // If there are matching Friends, mark the item for removals
+          friends1.forEach((item) => {
+            itemsToRemove.push(item.profileID);
+          });
+      
+          friends2.forEach((item) => {
+            itemsToRemove.push(item.Friend);
+          });
           // If there are matching FriendRequests, mark the item for removal
           if (friendRequests.length > 0) {
             itemsToRemove.push(item.id);
