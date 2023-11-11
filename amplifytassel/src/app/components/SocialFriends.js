@@ -193,6 +193,53 @@ export default function SocialFriends() {
     setSelected(newSelected);
   };
 
+  const handleDeleteAction = async (event) => {
+    if (selected.length === 0) {
+      toast.error('Select at least one user to send friend requests.');
+      return;
+    }
+    console.log(selected);
+    try {
+      const toProfileIDs = [];
+      for (const email of selected) {
+        // finds all accounts that match with the email profile
+        const matchingProfile = accounts.find((profile) => profile.email === email);
+        if (matchingProfile) {
+          toProfileIDs.push(matchingProfile.id);
+        }
+      }
+      console.log(toProfileIDs);
+      // fetches Friend model that matches
+      for (const toProfileID of toProfileIDs){
+        try{
+          const friendToDelete1 = await DataStore.query(Friend, (c) => c.and(c => [
+            c.profileID.eq(toProfileID),
+            c.Friend.eq(userProfile.id)
+          ]));
+
+          if(friendToDelete1.length){
+            DataStore.delete(friendToDelete1[0]);
+          }
+          else{
+            const friendToDelete2 = await DataStore.query(Friend, (c) => c.and(c => [
+              c.profileID.eq(userProfile.id),
+              c.Friend.eq(toProfileID)
+            ]));
+            DataStore.delete(friendToDelete2[0]);
+          }
+        } catch (error){
+          console.error("Error finding Friend", error);
+        }
+      }
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
+    } catch (error) {
+      console.error("Error deleting friend", error);
+    }
+  }
+  
+
   const handleMessageAction = (event) => {
     // TODO backend actions that adds an account to 
   }
@@ -310,6 +357,7 @@ export default function SocialFriends() {
             InputProps={{
               style: {
                 marginTop: "0.1rem",
+                marginRight: "5rem",
                 fontSize: '0.9rem',
                 backgroundColor: 'white',
                 borderRadius: '10px',
@@ -330,6 +378,18 @@ export default function SocialFriends() {
               },
             }}
           />
+          <ThemedButton
+              color={'gray'}
+              variant={'themed'}
+              type={'submit'}
+              style={{
+                fontSize: '0.875rem',
+                marginLeft: '54rem', // Move the Delete button to the very right
+              }}
+              onClick={handleDeleteAction}
+            >
+                Delete
+            </ThemedButton>
           </Box>
           {/* <Typography variant='h4'>Search Bar</Typography> */}
         </Toolbar>
