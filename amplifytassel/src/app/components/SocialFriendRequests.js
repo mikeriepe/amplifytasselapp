@@ -210,8 +210,8 @@ export default function SocialFriendRequests() {
         try{
           // fetches incoming friend requests
           const friendRequestToDelete = await DataStore.query(FriendRequest, (c) => c.and(c => [
-            c.profileID.eq(toProfileID),
-            c.ToProfile.eq(userProfile.id)
+            c.Sender.eq(toProfileID),
+            c.Receiver.eq(userProfile.id)
           ]));
           // Saves new Friend
           await DataStore.save(
@@ -253,8 +253,8 @@ export default function SocialFriendRequests() {
         try{
           // fetches incoming friend requests
           const friendRequestToDelete = await DataStore.query(FriendRequest, (c) => c.and(c => [
-            c.profileID.eq(toProfileID),
-            c.ToProfile.eq(userProfile.id)
+            c.Sender.eq(toProfileID),
+            c.Reciever.eq(userProfile.id)
           ]));
           console.log(friendRequestToDelete);
           DataStore.delete(friendRequestToDelete[0]);
@@ -280,11 +280,11 @@ export default function SocialFriendRequests() {
     var finalResult = [];
     try {
       // Fetches all friend Requests that are going to the current user
-      const friendRequests = await DataStore.query(FriendRequest, f => f.ToProfile.eq(userProfile.id));
+      const friendRequests = await DataStore.query(FriendRequest, f => f.Receiver.eq(userProfile.id));
       const profilePromises = friendRequests.map(async (item) => {
         try {
           // Fetches all profiles of users who have sent a friend request to the current user
-          const profile = await DataStore.query(Profile, p => p.id.eq(item.profileID));
+          const profile = await DataStore.query(Profile, p => p.id.eq(item.Sender));
           console.log("profile", profile);
           return profile[0];
         } catch (error) {
