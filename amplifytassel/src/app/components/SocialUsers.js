@@ -212,8 +212,8 @@ export default function SocialUsers() {
           console.log("toProfileID", toProfileID);
           await DataStore.save(
             new FriendRequest({
-              profileID: userProfile.id, // user's profile
-              ToProfile: toProfileID // The ID of the recipient's profile
+              Sender: userProfile.id, // user's profile
+              Receiver: toProfileID // The ID of the recipient's profile
             })
           );
           console.log("Friend Request sent successfully");
@@ -261,8 +261,8 @@ export default function SocialUsers() {
       tempResult.forEach(async (item) => {
         try {
           const friendRequests = await DataStore.query(FriendRequest, (c) => c.and(c => [
-            c.profileID.eq(userProfile.id),
-            c.ToProfile.eq(item.id)
+            c.Sender.eq(userProfile.id),
+            c.Receiver.eq(item.id)
           ]));
           const friends1 = await DataStore.query(Friend, f => f.Friend.eq(userProfile.id));
           const friends2 = await DataStore.query(Friend, f => f.profileID.eq(userProfile.id));

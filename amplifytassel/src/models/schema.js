@@ -1,5 +1,194 @@
 export const schema = {
     "models": {
+        "Message": {
+            "name": "Message",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "ChatRoomID": {
+                    "name": "ChatRoomID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "Sender": {
+                    "name": "Sender",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "Time": {
+                    "name": "Time",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "Content": {
+                    "name": "Content",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                }
+            },
+            "syncable": true,
+            "pluralName": "Messages",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byChatRoom",
+                        "fields": [
+                            "ChatRoomID"
+                        ]
+                    }
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byProfile",
+                        "fields": [
+                            "Sender"
+                        ]
+                    }
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "allow": "public",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "ChatRoom": {
+            "name": "ChatRoom",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "ChatName": {
+                    "name": "ChatName",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "Messages": {
+                    "name": "Messages",
+                    "isArray": true,
+                    "type": {
+                        "model": "Message"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "ChatRoomID"
+                        ]
+                    }
+                },
+                "Profiles": {
+                    "name": "Profiles",
+                    "isArray": true,
+                    "type": {
+                        "model": "ProfileChatRoom"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "chatRoom"
+                        ]
+                    }
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                }
+            },
+            "syncable": true,
+            "pluralName": "ChatRooms",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "allow": "public",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
         "FriendRequest": {
             "name": "FriendRequest",
             "fields": {
@@ -10,15 +199,15 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "profileID": {
-                    "name": "profileID",
+                "Sender": {
+                    "name": "Sender",
                     "isArray": false,
                     "type": "ID",
                     "isRequired": true,
                     "attributes": []
                 },
-                "ToProfile": {
-                    "name": "ToProfile",
+                "Receiver": {
+                    "name": "Receiver",
                     "isArray": false,
                     "type": "String",
                     "isRequired": false,
@@ -53,7 +242,7 @@ export const schema = {
                     "properties": {
                         "name": "byProfile",
                         "fields": [
-                            "profileID"
+                            "Sender"
                         ]
                     }
                 },
@@ -962,7 +1151,7 @@ export const schema = {
                     "association": {
                         "connectionType": "HAS_MANY",
                         "associatedWith": [
-                            "profileID"
+                            "Sender"
                         ]
                     }
                 },
@@ -979,6 +1168,38 @@ export const schema = {
                         "connectionType": "HAS_MANY",
                         "associatedWith": [
                             "profileID"
+                        ]
+                    }
+                },
+                "Chatrooms": {
+                    "name": "Chatrooms",
+                    "isArray": true,
+                    "type": {
+                        "model": "ProfileChatRoom"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "profile"
+                        ]
+                    }
+                },
+                "Messages": {
+                    "name": "Messages",
+                    "isArray": true,
+                    "type": {
+                        "model": "Message"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "Sender"
                         ]
                     }
                 },
@@ -1595,6 +1816,104 @@ export const schema = {
                                     "read"
                                 ]
                             }
+                        ]
+                    }
+                }
+            ]
+        },
+        "ProfileChatRoom": {
+            "name": "ProfileChatRoom",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "chatRoomId": {
+                    "name": "chatRoomId",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "profileId": {
+                    "name": "profileId",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "chatRoom": {
+                    "name": "chatRoom",
+                    "isArray": false,
+                    "type": {
+                        "model": "ChatRoom"
+                    },
+                    "isRequired": true,
+                    "attributes": [],
+                    "association": {
+                        "connectionType": "BELONGS_TO",
+                        "targetNames": [
+                            "chatRoomId"
+                        ]
+                    }
+                },
+                "profile": {
+                    "name": "profile",
+                    "isArray": false,
+                    "type": {
+                        "model": "Profile"
+                    },
+                    "isRequired": true,
+                    "attributes": [],
+                    "association": {
+                        "connectionType": "BELONGS_TO",
+                        "targetNames": [
+                            "profileId"
+                        ]
+                    }
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                }
+            },
+            "syncable": true,
+            "pluralName": "ProfileChatRooms",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byChatRoom",
+                        "fields": [
+                            "chatRoomId"
+                        ]
+                    }
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byProfile",
+                        "fields": [
+                            "profileId"
                         ]
                     }
                 }
@@ -2419,5 +2738,5 @@ export const schema = {
         }
     },
     "codegenVersion": "3.4.4",
-    "version": "3fb43e24c3ff9d12d8774efc31d2bb80"
+    "version": "71b8b29fce7dee2939e0954fc85d5c39"
 };

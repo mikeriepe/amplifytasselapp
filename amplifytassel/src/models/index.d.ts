@@ -120,14 +120,80 @@ export declare type WorkHistory = LazyLoading extends LazyLoadingDisabled ? Eage
 
 export declare const WorkHistory: (new (init: ModelInit<WorkHistory>) => WorkHistory)
 
+type EagerMessage = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Message, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly ChatRoomID: string;
+  readonly Sender: string;
+  readonly Time: string;
+  readonly Content: string;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyMessage = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Message, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly ChatRoomID: string;
+  readonly Sender: string;
+  readonly Time: string;
+  readonly Content: string;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type Message = LazyLoading extends LazyLoadingDisabled ? EagerMessage : LazyMessage
+
+export declare const Message: (new (init: ModelInit<Message>) => Message) & {
+  copyOf(source: Message, mutator: (draft: MutableModel<Message>) => MutableModel<Message> | void): Message;
+}
+
+type EagerChatRoom = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<ChatRoom, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly ChatName?: string | null;
+  readonly Messages?: (Message | null)[] | null;
+  readonly Profiles?: (ProfileChatRoom | null)[] | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyChatRoom = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<ChatRoom, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly ChatName?: string | null;
+  readonly Messages: AsyncCollection<Message>;
+  readonly Profiles: AsyncCollection<ProfileChatRoom>;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type ChatRoom = LazyLoading extends LazyLoadingDisabled ? EagerChatRoom : LazyChatRoom
+
+export declare const ChatRoom: (new (init: ModelInit<ChatRoom>) => ChatRoom) & {
+  copyOf(source: ChatRoom, mutator: (draft: MutableModel<ChatRoom>) => MutableModel<ChatRoom> | void): ChatRoom;
+}
+
 type EagerFriendRequest = {
   readonly [__modelMeta__]: {
     identifier: ManagedIdentifier<FriendRequest, 'id'>;
     readOnlyFields: 'createdAt' | 'updatedAt';
   };
   readonly id: string;
-  readonly profileID: string;
-  readonly ToProfile?: string | null;
+  readonly Sender: string;
+  readonly Receiver?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -138,8 +204,8 @@ type LazyFriendRequest = {
     readOnlyFields: 'createdAt' | 'updatedAt';
   };
   readonly id: string;
-  readonly profileID: string;
-  readonly ToProfile?: string | null;
+  readonly Sender: string;
+  readonly Receiver?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -393,6 +459,8 @@ type EagerProfile = {
   readonly points?: number | null;
   readonly FriendRequests?: (FriendRequest | null)[] | null;
   readonly Friends?: (Friend | null)[] | null;
+  readonly Chatrooms?: (ProfileChatRoom | null)[] | null;
+  readonly Messages?: (Message | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -432,6 +500,8 @@ type LazyProfile = {
   readonly points?: number | null;
   readonly FriendRequests: AsyncCollection<FriendRequest>;
   readonly Friends: AsyncCollection<Friend>;
+  readonly Chatrooms: AsyncCollection<ProfileChatRoom>;
+  readonly Messages: AsyncCollection<Message>;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -616,6 +686,40 @@ export declare type Note = LazyLoading extends LazyLoadingDisabled ? EagerNote :
 
 export declare const Note: (new (init: ModelInit<Note>) => Note) & {
   copyOf(source: Note, mutator: (draft: MutableModel<Note>) => MutableModel<Note> | void): Note;
+}
+
+type EagerProfileChatRoom = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<ProfileChatRoom, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly chatRoomId?: string | null;
+  readonly profileId?: string | null;
+  readonly chatRoom: ChatRoom;
+  readonly profile: Profile;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyProfileChatRoom = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<ProfileChatRoom, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly chatRoomId?: string | null;
+  readonly profileId?: string | null;
+  readonly chatRoom: AsyncItem<ChatRoom>;
+  readonly profile: AsyncItem<Profile>;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type ProfileChatRoom = LazyLoading extends LazyLoadingDisabled ? EagerProfileChatRoom : LazyProfileChatRoom
+
+export declare const ProfileChatRoom: (new (init: ModelInit<ProfileChatRoom>) => ProfileChatRoom) & {
+  copyOf(source: ProfileChatRoom, mutator: (draft: MutableModel<ProfileChatRoom>) => MutableModel<ProfileChatRoom> | void): ProfileChatRoom;
 }
 
 type EagerKeywordProfile = {
