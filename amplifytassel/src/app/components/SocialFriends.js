@@ -85,7 +85,7 @@ const Avatar = ({ image, handleAvatarClick, profileid }, props) => (
  * @return {*} row object
  */
 function Row(props) {
-  const {row, handleSelect} = props;
+  const {row, handleSelect, selectAllChecked, selected} = props;
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const [profilePicture, setProfilePicture] = useState(null);
@@ -113,7 +113,7 @@ function Row(props) {
     <React.Fragment>
       <TableRow>
         <TableCell className='data-cell' padding='checkbox'>
-          <Checkbox value={row.email} onChange={handleSelect}/>
+          <Checkbox checked={selectAllChecked || selected.includes(row.email)} value={row.email} onChange={(event) => handleSelect(event, row)}/>
         </TableCell>
         <TableCell className='data-cell' padding='checkbox'>
         </TableCell>
@@ -167,6 +167,7 @@ export default function SocialFriends() {
   const [selected, setSelected] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [selectAllChecked, setSelectAllChecked] = useState(false);
 
   const getAccounts = (sortBy, reset) => {
     DataStore.query(Profile)
@@ -180,17 +181,33 @@ export default function SocialFriends() {
     });
   };
 
-  const handleSelect = (event) => {
-    const email = event.target.value;
-    const currentIndex = selected.indexOf(email);
-    const newSelected = [...selected];
-
-    if (currentIndex === -1) {
-      newSelected.push(email);
+  const handleSelectAll = () => {
+    setSelectAllChecked(!selectAllChecked);
+    if (!selectAllChecked) {
+      const newSelected = displayUsers.map((user) => user.email);
+      console.log(newSelected);
+      setSelected(newSelected);
     } else {
-      newSelected.splice(currentIndex, 1);
+      setSelected([]);
     }
-    setSelected(newSelected);
+  };
+
+  const handleSelect = (event, row) => {
+    if (selectAllChecked) {
+      setSelected([]);
+    } else {
+      const email = event.target.value;
+      const currentIndex = selected.indexOf(email);
+      const newSelected = [...selected];
+  
+      if (currentIndex === -1) {
+        newSelected.push(email);
+      } else {
+        newSelected.splice(currentIndex, 1);
+      }
+      console.log(newSelected);
+      setSelected(newSelected);
+    }
   };
 
   const handleDeleteAction = async (event) => {
@@ -409,9 +426,9 @@ export default function SocialFriends() {
               <TableRow>
                 <TableCell padding='checkbox'>
                   <Checkbox
-                    color='primary'
-                    data-testid="account-checkbox"
-                  />
+                      checked={selectAllChecked}
+                      onChange={handleSelectAll}
+                    />
                 </TableCell>
                 <TableCell padding='checkbox'/>
                 {headCells.map((headCell) => (
@@ -433,6 +450,8 @@ export default function SocialFriends() {
                       key={account.id}
                       row={account}
                       handleSelect={handleSelect}
+                      selectAllChecked={selectAllChecked}
+                      selected={selected}
                     />
                   );
                 })

@@ -417,7 +417,6 @@ export default function SocialUsers() {
                   <Checkbox
                       checked={selectAllChecked}
                       onChange={handleSelectAll}
-                      // other props as needed
                     />
                 </TableCell>
                 <TableCell padding='checkbox'/>
