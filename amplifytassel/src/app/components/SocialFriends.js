@@ -184,7 +184,7 @@ export default function SocialFriends() {
   const handleSelectAll = () => {
     setSelectAllChecked(!selectAllChecked);
     if (!selectAllChecked) {
-      const newSelected = displayUsers.map((user) => user.email);
+      const newSelected = displayFriends.map((user) => user.email);
       console.log(newSelected);
       setSelected(newSelected);
     } else {
