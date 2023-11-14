@@ -183,7 +183,7 @@ export default function SocialIncomingRequests() {
   const handleSelectAll = () => {
     setSelectAllChecked(!selectAllChecked);
     if (!selectAllChecked) {
-      const newSelected = displayUsers.map((user) => user.email);
+      const newSelected = displayFriendRequests.map((user) => user.email);
       console.log(newSelected);
       setSelected(newSelected);
     } else {
