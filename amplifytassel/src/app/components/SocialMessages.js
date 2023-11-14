@@ -69,12 +69,14 @@ const Card = styled((props) => (
  * @return {*} row object
  */
 function Row(props) {
-  const {row, profiles} = props;
-  return (
-    <React.Fragment>
-      <TableRow>
-        <TableCell className='data-cell' padding='checkbox'>
-        <ThemedButton
+    const { row, profiles } = props;
+    const formattedProfiles = profiles.join(', ');
+  
+    return (
+      <React.Fragment>
+        <TableRow>
+          <TableCell className='data-cell' padding='checkbox'>
+            <ThemedButton
               color={'green'}
               variant={'gradient'}
               type={'submit'}
@@ -82,29 +84,33 @@ function Row(props) {
                 fontSize: '0.875rem',
                 marginRight: '2rem',
               }}
-              
             >
-                Chat
+              Chat
             </ThemedButton>
-        </TableCell>
-        <TableCell className='data-cell' padding='checkbox'>
-        </TableCell>
-        {/* eslint-disable-next-line max-len */}
-        <TableCell className='data-cell' component='th' scope='row'
-          sx={{display: 'flex',
-            flexDirection: 'row'}}>
-          {/* eslint-disable-next-line max-len */}
-          <div className='text-center-vert'>{`${row.ChatName}`}</div>
-        </TableCell>
-        <TableCell className='data-cell'>{profiles}</TableCell>
-        <TableCell className='data-cell'>{}</TableCell>
-        <TableCell className='data-cell'>{}</TableCell>
-      </TableRow>
-      <TableRow>
-      </TableRow>
-    </React.Fragment>
-  );
-}
+          </TableCell>
+          <TableCell className='data-cell' padding='checkbox'></TableCell>
+          <TableCell
+            className='data-cell'
+            component='th'
+            scope='row'
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+            }}
+          >
+            <div className='text-center-vert'>{`${row.ChatName}`}</div>
+          </TableCell>
+          <TableCell className='data-cell' style={{ whiteSpace: 'normal' }}>
+            {formattedProfiles}
+          </TableCell>
+          <TableCell className='data-cell'>{/* Add content for this cell */}</TableCell>
+          <TableCell className='data-cell'>{/* Add content for this cell */}</TableCell>
+        </TableRow>
+        <TableRow></TableRow>
+      </React.Fragment>
+    );
+  }
+  
 
 /**
  * creates account approval content
