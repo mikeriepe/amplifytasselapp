@@ -159,7 +159,7 @@ function Row(props) {
  * creates account approval content
  * @return {HTML} account approval content
  */
-export default function SocialFriendRequests() {
+export default function SocialOutgoingRequests() {
   const {userProfile} = useAuth();
   const [accounts, setAccounts] = useState([]);
   const [displayFriendRequests, setDisplayFriendRequests] = useState([]);
@@ -192,49 +192,7 @@ export default function SocialFriendRequests() {
     setSelected(newSelected);
   };
 
-  const handleAcceptAction = async (event) => {
-    if (selected.length === 0) {
-      toast.error('Select at least one user to send friend requests.');
-      return;
-    }
-    try {
-      const toProfileIDs = [];
-      for (const email of selected) {
-        const matchingProfile = accounts.find((profile) => profile.email === email);
-        if (matchingProfile) {
-          toProfileIDs.push(matchingProfile.id);
-        }
-      }
-      console.log(toProfileIDs);
-      for (const toProfileID of toProfileIDs){
-        try{
-          // fetches incoming friend requests
-          const friendRequestToDelete = await DataStore.query(FriendRequest, (c) => c.and(c => [
-            c.Sender.eq(toProfileID),
-            c.Receiver.eq(userProfile.id)
-          ]));
-          // Saves new Friend
-          await DataStore.save(
-            new Friend({
-              "profileID": toProfileID,
-              "Friend": userProfile.id
-            })
-          );
-          
-          // Deletes Friend Request
-          DataStore.delete(friendRequestToDelete[0]);
-        } catch (error){
-          console.error("Error finding friend request:", error);
-        }
-      }
-      setTimeout(() => {
-        window.location.reload();
-      }, 500);
-    } catch (error) {
-      console.error("Error denying friend request:", error);
-    } 
-  }
-  const handleDenyAction = async (event) => {
+  const handleDeleteAction = async (event) => {
     if (selected.length === 0) {
       toast.error('Select at least one user to send friend requests.');
       return;
@@ -253,8 +211,8 @@ export default function SocialFriendRequests() {
         try{
           // fetches incoming friend requests
           const friendRequestToDelete = await DataStore.query(FriendRequest, (c) => c.and(c => [
-            c.Sender.eq(toProfileID),
-            c.Reciever.eq(userProfile.id)
+            c.Sender.eq(userProfile.id),
+            c.Receiver.eq(toProfileID)
           ]));
           console.log(friendRequestToDelete);
           DataStore.delete(friendRequestToDelete[0]);
@@ -279,12 +237,12 @@ export default function SocialFriendRequests() {
     }
     var finalResult = [];
     try {
-      // Fetches all friend Requests that are going to the current user
-      const friendRequests = await DataStore.query(FriendRequest, f => f.Receiver.eq(userProfile.id));
+      // Fetches all friend Requests that the current user sent
+      const friendRequests = await DataStore.query(FriendRequest, f => f.Sender.eq(userProfile.id));
       const profilePromises = friendRequests.map(async (item) => {
         try {
-          // Fetches all profiles of users who have sent a friend request to the current user
-          const profile = await DataStore.query(Profile, p => p.id.eq(item.Sender));
+          // Fetches all profiles of users the current user has sent a friend request to
+          const profile = await DataStore.query(Profile, p => p.id.eq(item.Receiver));
           console.log("profile", profile);
           return profile[0];
         } catch (error) {
@@ -354,18 +312,6 @@ export default function SocialFriendRequests() {
             }}
           >
             <ThemedButton
-              color={'green'}
-              variant={'gradient'}
-              type={'submit'}
-              style={{
-                fontSize: '0.875rem',
-                marginRight: '.5rem',
-              }}
-              onClick={handleAcceptAction}
-            >
-                Accept
-            </ThemedButton>
-            <ThemedButton
               color={'gray'}
               variant={'themed'}
               type={'submit'}
@@ -373,9 +319,9 @@ export default function SocialFriendRequests() {
                 fontSize: '0.875rem',
                 marginRight: '2rem',
               }}
-              onClick={handleDenyAction}
+              onClick={handleDeleteAction}
             >
-                Deny
+                Delete
             </ThemedButton>
             <TextField
             placeholder='Search'

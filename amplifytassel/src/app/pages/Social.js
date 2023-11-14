@@ -5,7 +5,8 @@ import PageHeader from '../components/PageHeader';
 import CompressedTabBar from '../components/CompressedTabBar';
 import SocialUsers from '../components/SocialUsers'
 import SocialFriends from '../components/SocialFriends'
-import SocialFriendRequests from '../components/SocialFriendRequests';
+import SocialIncomingRequests from '../components/SocialIncomingRequests';
+import SocialOutgoingRequests from '../components/SocialOutgoingRequests';
 import SocialMessages from '../components/SocialMessages';
 
 const Page = styled((props) => (
@@ -27,7 +28,8 @@ export default function Socials() {
   const tabs = [
     {name: 'Users', component: <SocialUsers/>},
     {name: 'Friends', component: <SocialFriends/>},
-    {name: 'Requests', component: <SocialFriendRequests/>},
+    {name: 'Incoming', component: <SocialIncomingRequests/>},
+    {name: 'Outgoing', component: <SocialOutgoingRequests/>},
     {name: 'Messages', component: <SocialMessages/>}
   ];
   return (
