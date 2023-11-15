@@ -84,7 +84,7 @@ const Avatar = ({ image, handleAvatarClick, profileid }, props) => (
  * @return {*} row object
  */
 function Row(props) {
-  const {row, handleSelect} = props;
+  const {row, handleSelect, selectAllChecked, selected} = props;
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const [profilePicture, setProfilePicture] = useState(null);
@@ -112,7 +112,7 @@ function Row(props) {
     <React.Fragment>
       <TableRow>
         <TableCell className='data-cell' padding='checkbox'>
-          <Checkbox value={row.email} onChange={handleSelect}/>
+          <Checkbox checked={selectAllChecked || selected.includes(row.email)} value={row.email} onChange={(event) => handleSelect(event, row)}/>
         </TableCell>
         <TableCell className='data-cell' padding='checkbox'>
         </TableCell>
@@ -166,6 +166,7 @@ export default function SocialOutgoingRequests() {
   const [selected, setSelected] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [selectAllChecked, setSelectAllChecked] = useState(false);
 
   const getAccounts = (sortBy, reset) => {
     DataStore.query(Profile)
@@ -179,19 +180,36 @@ export default function SocialOutgoingRequests() {
     });
   };
 
-  const handleSelect = (event) => {
-    const email = event.target.value;
-    const currentIndex = selected.indexOf(email);
-    const newSelected = [...selected];
-
-    if (currentIndex === -1) {
-      newSelected.push(email);
+  const handleSelectAll = () => {
+    setSelectAllChecked(!selectAllChecked);
+    if (!selectAllChecked) {
+      const newSelected = displayFriendRequests.map((user) => user.email);
+      console.log(newSelected);
+      setSelected(newSelected);
     } else {
-      newSelected.splice(currentIndex, 1);
+      setSelected([]);
     }
-    setSelected(newSelected);
   };
 
+
+  const handleSelect = (event, row) => {
+    if (selectAllChecked) {
+      setSelected([]);
+    } else {
+      const email = event.target.value;
+      const currentIndex = selected.indexOf(email);
+      const newSelected = [...selected];
+  
+      if (currentIndex === -1) {
+        newSelected.push(email);
+      } else {
+        newSelected.splice(currentIndex, 1);
+      }
+      console.log(newSelected);
+      setSelected(newSelected);
+    }
+  };
+  
   const handleDeleteAction = async (event) => {
     if (selected.length === 0) {
       toast.error('Select at least one user to send friend requests.');
@@ -237,11 +255,11 @@ export default function SocialOutgoingRequests() {
     }
     var finalResult = [];
     try {
-      // Fetches all friend Requests that the current user sent
+      // Fetches all friend Requests that are going to the current user
       const friendRequests = await DataStore.query(FriendRequest, f => f.Sender.eq(userProfile.id));
       const profilePromises = friendRequests.map(async (item) => {
         try {
-          // Fetches all profiles of users the current user has sent a friend request to
+          // Fetches all profiles of users who have sent a friend request to the current user
           const profile = await DataStore.query(Profile, p => p.id.eq(item.Receiver));
           console.log("profile", profile);
           return profile[0];
@@ -369,8 +387,8 @@ export default function SocialOutgoingRequests() {
               <TableRow>
                 <TableCell padding='checkbox'>
                   <Checkbox
-                    color='primary'
-                    data-testid="account-checkbox"
+                      checked={selectAllChecked}
+                      onChange={handleSelectAll}
                   />
                 </TableCell>
                 <TableCell padding='checkbox'/>
@@ -393,6 +411,8 @@ export default function SocialOutgoingRequests() {
                       key={account.id}
                       row={account}
                       handleSelect={handleSelect}
+                      selectAllChecked={selectAllChecked}
+                      selected={selected}
                     />
                   );
                 })
