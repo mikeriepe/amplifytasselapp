@@ -203,7 +203,7 @@ export const schema = {
                     "name": "Sender",
                     "isArray": false,
                     "type": "ID",
-                    "isRequired": true,
+                    "isRequired": false,
                     "attributes": []
                 },
                 "Receiver": {
@@ -2738,5 +2738,5 @@ export const schema = {
         }
     },
     "codegenVersion": "3.4.4",
-    "version": "71b8b29fce7dee2939e0954fc85d5c39"
+    "version": "d9f5ca5c9e59bdcdf753a029d23e5e05"
 };

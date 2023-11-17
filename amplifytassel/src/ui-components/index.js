@@ -6,6 +6,8 @@
 
 export { default as ChatRoomCreateForm } from "./ChatRoomCreateForm";
 export { default as ChatRoomUpdateForm } from "./ChatRoomUpdateForm";
+export { default as FriendRequestCreateForm } from "./FriendRequestCreateForm";
+export { default as FriendRequestUpdateForm } from "./FriendRequestUpdateForm";
 export { default as KeywordCreateForm } from "./KeywordCreateForm";
 export { default as KeywordUpdateForm } from "./KeywordUpdateForm";
 export { default as MajorCreateForm } from "./MajorCreateForm";

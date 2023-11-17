@@ -15,7 +15,7 @@ type ChatRoom @model @auth(rules: [{allow: public}]) {
 
 type FriendRequest @model @auth(rules: [{allow: public}]) {
   id: ID!
-  Sender: ID! @index(name: "byProfile")
+  Sender: ID @index(name: "byProfile")
   Receiver: String
 }
 

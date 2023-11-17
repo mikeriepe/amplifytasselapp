@@ -192,7 +192,7 @@ type EagerFriendRequest = {
     readOnlyFields: 'createdAt' | 'updatedAt';
   };
   readonly id: string;
-  readonly Sender: string;
+  readonly Sender?: string | null;
   readonly Receiver?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
@@ -204,7 +204,7 @@ type LazyFriendRequest = {
     readOnlyFields: 'createdAt' | 'updatedAt';
   };
   readonly id: string;
-  readonly Sender: string;
+  readonly Sender?: string | null;
   readonly Receiver?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
