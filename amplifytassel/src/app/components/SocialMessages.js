@@ -2,6 +2,7 @@ import * as React from 'react';
 import {useState, useEffect} from 'react';
 import {useNavigate} from 'react-router-dom';
 import Box from '@mui/material/Box';
+import SocialChatBox from './SocialChatBox'; // Import the SocialChatBox component
 import MuiPaper from '@mui/material/Paper';
 import MuiAvatar from '@mui/material/Avatar';
 import Toolbar from '@mui/material/Toolbar';
@@ -69,7 +70,7 @@ const Card = styled((props) => (
  * @return {*} row object
  */
 function Row(props) {
-  const { row, profiles, handleMessageAction } = props;
+  const { row, profiles, handleMessageAction, onChatButtonClick} = props;
   const formattedProfiles = profiles.join(', ');
 
   const handleChatButtonClick = () => {
@@ -83,17 +84,14 @@ function Row(props) {
         <TableCell className='data-cell' padding='checkbox'>
           {/* Pass the handleChatButtonClick function to the ThemedButton */}
           <ThemedButton
-            color={'green'}
-            variant={'gradient'}
-            type={'submit'}
-            style={{
-              fontSize: '0.875rem',
-              marginRight: '2rem',
-            }}
-            onClick={handleChatButtonClick} // Call the function when the button is clicked
-          >
-            Chat
-          </ThemedButton>
+          color={'green'}
+          variant={'gradient'}
+          type={'submit'}
+          style={{ fontSize: '0.875rem', marginRight: '2rem' }}
+          onClick={() => onChatButtonClick(row.ChatName)} // Pass the chatroom name here
+        >
+          Chat
+        </ThemedButton>
           </TableCell>
           <TableCell className='data-cell' padding='checkbox'></TableCell>
           <TableCell
@@ -127,6 +125,8 @@ export default function SocialMessages() {
   const {userProfile} = useAuth();
   const [displayChats, setDisplayChats] = useState([]);
   const [profilesOfJoined, setProfilesOfJoined] = useState([]);
+  const [isChatModalOpen, setChatModalOpen] = useState(false);
+  const [selectedChatroomName, setSelectedChatroomName] = useState('');
   const navigate = useNavigate();
 
   const handleMessageAction = async (chatRoomObject) => { 
@@ -135,9 +135,12 @@ export default function SocialMessages() {
     const messages = await messageAsyncCollection.values;
     const sortedMessages = messages.sort((a, b) => new Date(a.Time) - new Date(b.Time));
     console.log(sortedMessages);
-    navigate(`/social/${chatRoomObject.id}`);
+   // navigate(`/social/${chatRoomObject.id}`);
   };
-
+  const handleOpenChatModal = (chatroomName) => {
+    setSelectedChatroomName(chatroomName);
+    setChatModalOpen(true);
+  };
   // Taken from Approvals, searches admin/approved accounts based on query
   const searchChats = async (query) => {
     // Clear the display if there is no query
@@ -283,17 +286,16 @@ export default function SocialMessages() {
               </TableRow>
             </TableHead>
             <TableBody aria-label='Accounts Table Body'>
-                {displayChats.map((chatroom, index) => {
-                    const profileOfJoined = profilesOfJoined[index];
-
-                    return (
-                      <Row
-                      key={chatroom.id}
-                      row={chatroom}
-                      profiles={profileOfJoined}
-                      handleMessageAction={handleMessageAction}
-                    />
-                    );
+                  {displayChats.map((chatroom, index) => {
+                  const profileOfJoined = profilesOfJoined[index];
+                  return (
+                    <Row
+                    key={chatroom.id}
+                    row={chatroom}
+                    profiles={profileOfJoined}
+                    onChatButtonClick={() => handleOpenChatModal(chatroom.ChatName)} // Pass a function here
+                  />
+                  );
                 })}
             </TableBody>
             {/* TODO: footer with pagination and number selected */}
@@ -330,6 +332,12 @@ export default function SocialMessages() {
           </Table>
         }
       </Card>
+      {isChatModalOpen && (
+  <SocialChatBox
+    open={isChatModalOpen}
+    handleClose={() => setChatModalOpen(false)}
+    chatroom={selectedChatroomName} // Pass the chatroom name here
+  />)} 
     </Page>
   );
 }
