@@ -127,13 +127,15 @@ export default function SocialMessages() {
   const {userProfile} = useAuth();
   const [displayChats, setDisplayChats] = useState([]);
   const [profilesOfJoined, setProfilesOfJoined] = useState([]);
+  const navigate = useNavigate();
 
-  const handleMessageAction = async (chatRoomObject) => {
+  const handleMessageAction = async (chatRoomObject) => { 
     console.log('Opening chat for:', chatRoomObject);
     const messageAsyncCollection = chatRoomObject.Messages;
     const messages = await messageAsyncCollection.values;
     const sortedMessages = messages.sort((a, b) => new Date(a.Time) - new Date(b.Time));
     console.log(sortedMessages);
+    navigate(`/social/${chatRoomObject.id}`);
   };
 
   // Taken from Approvals, searches admin/approved accounts based on query
