@@ -69,24 +69,31 @@ const Card = styled((props) => (
  * @return {*} row object
  */
 function Row(props) {
-    const { row, profiles } = props;
-    const formattedProfiles = profiles.join(', ');
-  
-    return (
-      <React.Fragment>
-        <TableRow>
-          <TableCell className='data-cell' padding='checkbox'>
-            <ThemedButton
-              color={'green'}
-              variant={'gradient'}
-              type={'submit'}
-              style={{
-                fontSize: '0.875rem',
-                marginRight: '2rem',
-              }}
-            >
-              Chat
-            </ThemedButton>
+  const { row, profiles, handleMessageAction } = props;
+  const formattedProfiles = profiles.join(', ');
+
+  const handleChatButtonClick = () => {
+    // Call handleMessageAction with the chat room information
+    handleMessageAction(row);
+  };
+
+  return (
+    <React.Fragment>
+      <TableRow>
+        <TableCell className='data-cell' padding='checkbox'>
+          {/* Pass the handleChatButtonClick function to the ThemedButton */}
+          <ThemedButton
+            color={'green'}
+            variant={'gradient'}
+            type={'submit'}
+            style={{
+              fontSize: '0.875rem',
+              marginRight: '2rem',
+            }}
+            onClick={handleChatButtonClick} // Call the function when the button is clicked
+          >
+            Chat
+          </ThemedButton>
           </TableCell>
           <TableCell className='data-cell' padding='checkbox'></TableCell>
           <TableCell
@@ -121,10 +128,13 @@ export default function SocialMessages() {
   const [displayChats, setDisplayChats] = useState([]);
   const [profilesOfJoined, setProfilesOfJoined] = useState([]);
 
-  const handleMessageAction = async (event) => {
-    
+  const handleMessageAction = async (chatRoomObject) => {
+    console.log('Opening chat for:', chatRoomObject);
+    const messageAsyncCollection = chatRoomObject.Messages;
+    const messages = await messageAsyncCollection.values;
+    const sortedMessages = messages.sort((a, b) => new Date(a.Time) - new Date(b.Time));
+    console.log(sortedMessages);
   };
-  
 
   // Taken from Approvals, searches admin/approved accounts based on query
   const searchChats = async (query) => {
@@ -275,10 +285,11 @@ export default function SocialMessages() {
                     const profileOfJoined = profilesOfJoined[index];
 
                     return (
-                    <Row
-                        key={chatroom.id}
-                        row={chatroom}
-                        profiles={profileOfJoined}
+                      <Row
+                      key={chatroom.id}
+                      row={chatroom}
+                      profiles={profileOfJoined}
+                      handleMessageAction={handleMessageAction}
                     />
                     );
                 })}
