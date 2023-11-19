@@ -1,6 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Modal, Box, TextField, Button, IconButton, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import {styled} from '@mui/material/styles';
+
+const Bubble = styled((props) => (
+  <Box {...props} />
+))(({ theme }) => ({
+  padding: '0.75em',
+  borderRadius: '10px',
+  background: theme.palette.tertiary.bright,
+}));
 
 const ChatModal = ({ open, handleClose, chatroom }) => {
   const [message, setMessage] = useState('');
@@ -8,7 +17,6 @@ const ChatModal = ({ open, handleClose, chatroom }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const chatboxRef = useRef(null);
-
 
   const simulatedDatabaseMessages = [
     { id: 1, text: 'Dear god, how do I fork the backend database!', userId: 1, username: 'UserA', timestamp: '10:00 AM' },
@@ -18,7 +26,6 @@ const ChatModal = ({ open, handleClose, chatroom }) => {
   ];
 
   useEffect(() => {
-
     setMessages(simulatedDatabaseMessages);
   }, []);
 
@@ -27,7 +34,7 @@ const ChatModal = ({ open, handleClose, chatroom }) => {
     const newMessage = {
       id: messages.length + 1,
       text: message,
-      userId: 1, 
+      userId: 1,
       username: 'UserA',
       timestamp: currentTime,
     };
@@ -70,7 +77,7 @@ const ChatModal = ({ open, handleClose, chatroom }) => {
           flexDirection: 'column',
           gap: 2,
           cursor: isDragging ? 'grabbing' : 'grab',
-          borderRadius: '10px', 
+          borderRadius: '10px',
         }}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
@@ -102,42 +109,33 @@ const ChatModal = ({ open, handleClose, chatroom }) => {
           style={{
             flex: 1,
             overflowY: 'auto',
-            marginBottom: '16px', 
+            marginBottom: '16px',
           }}
         >
           <div
             style={{
-              height: '400px', 
-              overflowY: 'scroll', 
+              height: '400px',
+              overflowY: 'scroll',
             }}
           >
             {messages.map((msg) => (
-              <div
-                key={msg.id}
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: msg.userId === 1 ? 'flex-end' : 'flex-start',
-                  marginBottom: '8px',
-                }}
-              >
-                <Typography variant="caption" gutterBottom>
-                  {msg.username} - {msg.timestamp}
-                </Typography>
-                <div
-                  style={{
-                    background: msg.userId === 1 ? '#e0e0e0' : '#f5f5f5',
-                    padding: '8px',
-                    borderRadius: '4px',
-                    maxWidth: '80%',
-                  }}
-                >
-                  <Typography variant="body1">
-                    {msg.text}
-                  </Typography>
-                </div>
-              </div>
-            ))}
+          <div
+            key={msg.id}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: msg.userId === 1 ? 'flex-end' : 'flex-start',
+              marginBottom: '8px',
+            }}
+          >
+            <Typography variant="caption" gutterBottom>
+              {msg.username} - {msg.timestamp}
+            </Typography>
+            <Bubble>
+              <Typography variant="body1">{msg.text}</Typography>
+            </Bubble>
+          </div>
+        ))}
           </div>
         </div>
         <TextField
