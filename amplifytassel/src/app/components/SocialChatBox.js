@@ -2,6 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Modal, Box, TextField, Button, IconButton, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import {styled} from '@mui/material/styles';
+import Grid from '@mui/material/Grid';
+import ThemedButton from './ThemedButton';
+import SendRoundedIcon from '@mui/icons-material/SendRounded';
 
 const Bubble = styled((props) => (
   <Box {...props} />
@@ -146,17 +149,32 @@ const ChatModal = ({ open, handleClose, chatroom }) => {
         ))}
           </div>
         </div>
-        <TextField
-          label="Type your message"
-          variant="outlined"
-          fullWidth
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          onKeyDown={handleKeyPress}
-        />
-        <Button variant="contained" color="primary" onClick={handleSendMessage}>
-          Send
-        </Button>
+        <Grid container spacing={1} alignItems="center">
+          <Grid item xs>
+            <TextField
+              label="Type your message"
+              variant="outlined"
+              fullWidth
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyDown={handleKeyPress}
+            />
+          </Grid>
+          <Grid item>
+            <IconButton
+              onClick={(e) => handleSendMessage(e)}
+              color="primary"
+              sx={{
+                display: 'flex',
+                height: '48px', // Adjust the height as needed
+                width: '48px',  // Adjust the width as needed
+                padding: '8px', // Adjust the padding as needed
+              }}
+            >
+              <SendRoundedIcon fontSize="large" />
+            </IconButton>
+          </Grid>
+        </Grid>
       </Box>
     </Modal>
   );

@@ -137,10 +137,12 @@ export default function SocialMessages() {
     console.log(sortedMessages);
    // navigate(`/social/${chatRoomObject.id}`);
   };
+  
   const handleOpenChatModal = (chatroomName) => {
     setSelectedChatroomName(chatroomName);
     setChatModalOpen(true);
   };
+  
   // Taken from Approvals, searches admin/approved accounts based on query
   const searchChats = async (query) => {
     // Clear the display if there is no query
