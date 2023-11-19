@@ -14,7 +14,7 @@ const Bubble = styled((props) => (
   background: theme.palette.tertiary.bright,
 }));
 
-const ChatModal = ({ open, handleClose, chatroomName, chatroomMessages }) => {
+const ChatModal = ({ open, handleClose, chatroomName, chatroomID, chatroomMessages }) => {
   const {userProfile} = useAuth();
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
@@ -132,7 +132,7 @@ const ChatModal = ({ open, handleClose, chatroomName, chatroomMessages }) => {
             }}
           >
             <Typography variant="caption" gutterBottom>
-              {msg.Sender} - {msg.Time}
+              {msg.senderName} - {msg.Time}
             </Typography>
             <Bubble>
               <Typography variant="body1">{msg.Content}</Typography>

@@ -116,6 +116,10 @@ function Row(props) {
     );
   }
   
+  const formatTimestamp = (timestamp) => {
+    const options = { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
+    return new Date(timestamp).toLocaleString(undefined, options);
+  }; 
 
 /**
  * creates account approval content
@@ -127,6 +131,7 @@ export default function SocialMessages() {
   const [profilesOfJoined, setProfilesOfJoined] = useState([]);
   const [isChatModalOpen, setChatModalOpen] = useState(false);
   const [selectedChatroomid, setSelectedChatroomid] = useState('');
+  const [selectedChatroomName, setselectedChatroomName] = useState('');
   const [chatroomMessages, setChatroomMessages] = useState([]);
   const navigate = useNavigate();
   
@@ -134,9 +139,25 @@ export default function SocialMessages() {
     const messageAsyncCollection = chatroom.Messages;
     const messages = await messageAsyncCollection.values;
     const sortedMessages = messages.sort((a, b) => new Date(a.Time) - new Date(b.Time));
-    console.log(sortedMessages);
+
+    // updates the objects with a sender name
+    const updatedMessages = await Promise.all(
+      sortedMessages.map(async (msg) => {
+        const senderProfile = await DataStore.query(Profile, (p) => p.id.eq(msg.Sender));
+        const senderName = `${senderProfile[0].firstName} ${senderProfile[0].lastName}`;
+        return { ...msg, senderName: senderName };
+      })
+    );
+
+    // Format timestamps
+    const formattedMessages = updatedMessages.map((msg) => ({
+      ...msg,
+      Time: formatTimestamp(msg.Time),
+    }));
+      
+    setselectedChatroomName(chatroom.ChatName);
     setSelectedChatroomid(chatroom.id);
-    setChatroomMessages(sortedMessages);
+    setChatroomMessages(formattedMessages);
     setChatModalOpen(true);
   };
   
@@ -335,7 +356,8 @@ export default function SocialMessages() {
   <SocialChatBox
     open={isChatModalOpen}
     handleClose={() => setChatModalOpen(false)}
-    chatroom={selectedChatroomid} // Pass the chatroom name here
+    chatroomName={selectedChatroomName}
+    chatroomID={selectedChatroomid} // Pass the chatroom name here
     chatroomMessages={chatroomMessages}
   />)} 
     </Page>
