@@ -124,7 +124,7 @@ const ChatModal = ({ open, handleClose, chatroomName, chatroomID, chatroomMessag
             {chatroomName}
           </Typography>
           <IconButton
-            onClick={handleClose}
+            onClick={handleCloseModal}
             sx={{
               color: (theme) => theme.palette.grey[500],
             }}

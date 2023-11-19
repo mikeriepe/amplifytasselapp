@@ -133,7 +133,6 @@ export default function SocialMessages() {
   const [selectedChatroomid, setSelectedChatroomid] = useState('');
   const [selectedChatroomName, setselectedChatroomName] = useState('');
   const [chatroomMessages, setChatroomMessages] = useState([]);
-  const navigate = useNavigate();
   
   const handleOpenChatModal = async (chatroom) => {
     const messageAsyncCollection = chatroom.Messages;

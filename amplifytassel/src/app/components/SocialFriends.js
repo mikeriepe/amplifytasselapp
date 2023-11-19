@@ -33,7 +33,7 @@ import useAuth from '../util/AuthContext';
 import '../stylesheets/ApprovalTable.css';
 
 import { DataStore } from '@aws-amplify/datastore';
-import { Profile, Friend } from './../../models';
+import { Profile, Friend, ChatRoom, ProfileChatRoom } from './../../models';
 import { Storage } from 'aws-amplify';
 
 const Page = styled((props) => (
@@ -256,10 +256,80 @@ export default function SocialFriends() {
     }
   }
   
+  // Finds interersection of all chatroomids between profiles
+  // Used to see if theres a chatroom that exists between profiles
+  const findChatroomIntersection = async (userProfile, selected) => {
+    const profiles = [userProfile];
+  
+    // Fetch profiles asynchronously
+    const profilePromises = selected.map(async (email) => {
+      const profile = await DataStore.query(Profile, p => p.email.eq(email));
+      return profile[0];
+    });
+  
+    // Wait for all profile queries to complete
+    const resolvedProfiles = await Promise.all(profilePromises);
+    profiles.push(...resolvedProfiles);
+    console.log("profiles", profiles);
+  
+    // Fetch chatrooms for each profile asynchronously
+    const chatroomPromises = profiles.map(async (profile) => {
+      const chatRoomAsyncCollection = profile.Chatrooms;
+      const chatrooms = await chatRoomAsyncCollection.values;
+      return chatrooms;
+    });
+  
+    // Wait for all chatroom queries to complete
+    const resolvedChatroomsArrays = await Promise.all(chatroomPromises);
+    console.log("chatroomsArrays", resolvedChatroomsArrays);
+  
+    // Find the intersection of chatrooms between profiles
+    const intersection = resolvedChatroomsArrays.reduce((acc, chatrooms, index) => {
+      if (index === 0) {
+        // If it's the first array, initialize acc with its contents
+        return chatrooms;
+      }
+      // Find the intersection between acc and the current chatrooms array
+      return acc.filter(chatroom => chatrooms.some(c => c.chatRoomId === chatroom.chatRoomId));
+    }, []);
+  
+    return intersection;
+  };
+  
+  // Example usage in handleMessageAction
+  const handleMessageAction = async (event) => {
+    const intersection = await findChatroomIntersection(userProfile, selected);
+    if (intersection.length > 0) {
+      console.log("Intersection of chatrooms:", intersection);
+      // Do something with the non-empty intersection
+    } else {
+      const profiles = [userProfile];
+      selected.forEach( async (email) => {
+        const profile = await DataStore.query(Profile, p => p.email.eq(email));
+        profiles.push(profile[0]);
+      });
+      console.log("profiles",profiles);
+      const newChatRoom = await DataStore.save(
+        new ChatRoom({
+          "ChatName": "Chat Name",
+          "Profiles": [],
+          "Messages": []
+        })
+      );
+      profiles.forEach( async (profile) => {
+        const profileChatRoomRelation = await DataStore.save(
+          new ProfileChatRoom({
+            "profile": profile,
+            "chatRoom": newChatRoom
+          })
+        );
+      });
 
-  const handleMessageAction = (event) => {
-    // TODO backend actions that adds an account to 
-  }
+      console.log("after",newChatRoom);
+    }
+  };
+  
+  
 
   // Taken from Approvals, searches admin/approved accounts based on query
   const searchFriends = async (query) => {
