@@ -29,6 +29,14 @@ const ChatModal = ({ open, handleClose, chatroom }) => {
     setMessages(simulatedDatabaseMessages);
   }, []);
 
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      // Prevent the default behavior of the Enter key (e.g., newline in the textarea)
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
+
   const handleSendMessage = () => {
     const currentTime = new Date().toLocaleTimeString();
     const newMessage = {
@@ -144,6 +152,7 @@ const ChatModal = ({ open, handleClose, chatroom }) => {
           fullWidth
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          onKeyDown={handleKeyPress}
         />
         <Button variant="contained" color="primary" onClick={handleSendMessage}>
           Send
