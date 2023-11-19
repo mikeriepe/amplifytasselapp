@@ -248,9 +248,7 @@ export default function SocialFriends() {
           console.error("Error finding Friend", error);
         }
       }
-      setTimeout(() => {
-        window.location.reload();
-      }, 500);
+      reloadPageAfterDelay();
     } catch (error) {
       console.error("Error deleting friend", error);
     }
@@ -270,7 +268,6 @@ export default function SocialFriends() {
     // Wait for all profile queries to complete
     const resolvedProfiles = await Promise.all(profilePromises);
     profiles.push(...resolvedProfiles);
-    console.log("profiles", profiles);
   
     // Fetch chatrooms for each profile asynchronously
     const chatroomPromises = profiles.map(async (profile) => {
@@ -281,7 +278,6 @@ export default function SocialFriends() {
   
     // Wait for all chatroom queries to complete
     const resolvedChatroomsArrays = await Promise.all(chatroomPromises);
-    console.log("chatroomsArrays", resolvedChatroomsArrays);
   
     // Find the intersection of chatrooms between profiles
     const intersection = resolvedChatroomsArrays.reduce((acc, chatrooms, index) => {
@@ -296,38 +292,83 @@ export default function SocialFriends() {
     return intersection;
   };
   
-  // Example usage in handleMessageAction
-  const handleMessageAction = async (event) => {
-    const intersection = await findChatroomIntersection(userProfile, selected);
-    if (intersection.length > 0) {
-      console.log("Intersection of chatrooms:", intersection);
-      // Do something with the non-empty intersection
-    } else {
-      const profiles = [userProfile];
-      selected.forEach( async (email) => {
-        const profile = await DataStore.query(Profile, p => p.email.eq(email));
-        profiles.push(profile[0]);
-      });
-      const newChatRoom = await DataStore.save(
-        new ChatRoom({
-          "ChatName": "Chat Name",
-          "Profiles": [],
-          "Messages": []
+  // creates a new chatroom for the 
+  const createNewChatRoom = async (selected) => {
+    const profiles = [userProfile];
+  
+    selected.forEach(async (email) => {
+      const profile = await DataStore.query(Profile, (p) => p.email.eq(email));
+      profiles.push(profile[0]);
+    });
+  
+    const newChatRoom = await DataStore.save(
+      new ChatRoom({
+        ChatName: "Chat Name",
+        Profiles: [],
+        Messages: [],
+      })
+    );
+  
+    profiles.forEach(async (profile) => {
+      const profileChatRoomRelation = await DataStore.save(
+        new ProfileChatRoom({
+          "profile": profile,
+          "chatRoom": newChatRoom
         })
       );
-      profiles.forEach( async (profile) => {
-        const profileChatRoomRelation = await DataStore.save(
-          new ProfileChatRoom({
-            "profile": profile,
-            "chatRoom": newChatRoom
-          })
-        );
+    });
+  
+    return newChatRoom;
+  };
+  
+  const reloadPageAfterDelay = () => {
+    setTimeout(() => {
+      window.location.reload();
+    }, 500);
+  };
+  
+  const handleMessageAction = async (event) => {
+    const intersection = await findChatroomIntersection(userProfile, selected);
+    const profilesInIntersection = [];
+  
+    if (intersection.length > 0) {
+      // Use map to create an array of promises
+      const profilePromises = intersection.map(async (chat) => {
+        const chatroom = await DataStore.query(ChatRoom, (c) => c.id.eq(chat.chatRoomId));
+        const ProfilesAsyncCollection = chatroom[0].Profiles;
+        const profiles = await ProfilesAsyncCollection.values;
+        return profiles.map((profile) => profile.profileId);
       });
-      setTimeout(() => {
-        window.location.reload();
-      }, 500);
+  
+      // Use Promise.all to wait for all promises to resolve
+      const profilesInIntersection = await Promise.all(profilePromises);
+  
+      const profilePromisesSelected = selected.map(async (email) => {
+        const profile = await DataStore.query(Profile, (p) => p.email.eq(email));
+        return profile[0].id;
+      });
+  
+      const profiles = [userProfile.id, ...await Promise.all(profilePromisesSelected)];
+  
+      profilesInIntersection.forEach(async (p, index) => {
+        const sortedProfiles = p.sort();
+        if (profiles.sort().join(',') === sortedProfiles.join(',')) {
+          const existingChatRoom = intersection[index].chatRoomId;
+          console.log("existing", existingChatRoom);
+        }
+        else{
+          const newChatRoom = await createNewChatRoom(selected);
+          console.log("new", newChatRoom.id);
+          reloadPageAfterDelay();
+        }
+      });
+      } else {
+      const newChatRoom = await createNewChatRoom(selected);
+      console.log("new", newChatRoom.id);
+      reloadPageAfterDelay();
     }
   };
+  
   
   
 
