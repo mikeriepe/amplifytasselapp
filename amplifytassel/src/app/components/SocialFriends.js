@@ -308,7 +308,6 @@ export default function SocialFriends() {
         const profile = await DataStore.query(Profile, p => p.email.eq(email));
         profiles.push(profile[0]);
       });
-      console.log("profiles",profiles);
       const newChatRoom = await DataStore.save(
         new ChatRoom({
           "ChatName": "Chat Name",
@@ -324,8 +323,9 @@ export default function SocialFriends() {
           })
         );
       });
-
-      console.log("after",newChatRoom);
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
     }
   };
   
