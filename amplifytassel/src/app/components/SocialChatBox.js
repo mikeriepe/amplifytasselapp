@@ -5,6 +5,8 @@ import {styled} from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import useAuth from '../util/AuthContext';
+import { DataStore } from 'aws-amplify';
+import { Message } from './../../models';
 
 const Bubble = styled((props) => (
   <Box {...props} />
@@ -14,13 +16,25 @@ const Bubble = styled((props) => (
   background: theme.palette.tertiary.bright,
 }));
 
+const formatTimestamp = (timestamp) => {
+  const options = { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
+  return new Date(timestamp).toLocaleString(undefined, options);
+}; 
+
 const ChatModal = ({ open, handleClose, chatroomName, chatroomID, chatroomMessages }) => {
   const {userProfile} = useAuth();
   const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const chatboxRef = useRef(null);
+
+  const handleCloseModal = () => {
+    // Close the modal
+    handleClose();
+
+    // Refresh here to refresh chatroomMessages from the frontend
+    window.location.reload();
+  };
 
   const handleEnterKeyPress = (e) => {
     if ((e.key === 'Enter' && !e.shiftKey) && (!message.trim())) {
@@ -30,18 +44,28 @@ const ChatModal = ({ open, handleClose, chatroomName, chatroomID, chatroomMessag
       handleSendMessage();
     }
   };
+  
+  const handleSendMessage = async () => {
+    console.log(message);
+    const currentDate = new Date();
+    const formattedTimestamp = currentDate.toISOString();
+    const newMessage = await DataStore.save(
+      new Message({
+        "ChatRoomID": chatroomID,
+        "Content": message,
+        "Sender": userProfile.id,
+        "Time": formattedTimestamp
+      })
+    );
 
-  const handleSendMessage = () => {
-    console.log(chatroomMessages);
-    const currentTime = new Date().toLocaleTimeString();
-    const newMessage = {
-      id: messages.length + 1,
-      text: message,
-      userId: 1,
-      username: 'UserA',
-      timestamp: currentTime,
-    };
-    setMessages([...messages, newMessage]);
+    // Clone the original message to avoid modifying the saved instance
+    const chatMessage = { ...newMessage };
+    // Update the Sender property with the concatenated first and last names
+    chatMessage.senderName  = `${userProfile.firstName} ${userProfile.lastName}`;
+    // Update the Time property with the formatted timestamp
+    chatMessage.Time = formatTimestamp(formattedTimestamp);
+    
+    chatroomMessages.push(chatMessage);
     setMessage('');
   };
 
@@ -67,7 +91,7 @@ const ChatModal = ({ open, handleClose, chatroomName, chatroomID, chatroomMessag
   };
 
   return (
-    <Modal open={open} onClose={handleClose}>
+    <Modal open={open} onClose={handleCloseModal}>
       <Box
         ref={chatboxRef}
         sx={{
