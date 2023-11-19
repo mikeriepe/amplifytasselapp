@@ -3,8 +3,8 @@ import { Modal, Box, TextField, Button, IconButton, Typography } from '@mui/mate
 import CloseIcon from '@mui/icons-material/Close';
 import {styled} from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
-import ThemedButton from './ThemedButton';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
+import useAuth from '../util/AuthContext';
 
 const Bubble = styled((props) => (
   <Box {...props} />
@@ -14,33 +14,25 @@ const Bubble = styled((props) => (
   background: theme.palette.tertiary.bright,
 }));
 
-const ChatModal = ({ open, handleClose, chatroom }) => {
+const ChatModal = ({ open, handleClose, chatroomName, chatroomMessages }) => {
+  const {userProfile} = useAuth();
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const chatboxRef = useRef(null);
 
-  const simulatedDatabaseMessages = [
-    { id: 1, text: 'Dear god, how do I fork the backend database!', userId: 1, username: 'UserA', timestamp: '10:00 AM' },
-    { id: 2, text: 'I still haven\'t been able to search query...', userId: 1, username: 'UserA', timestamp: '10:05 AM' },
-    { id: 3, text: 'But hey, Atleast i got this cool chat window', userId: 2, username: 'UserB', timestamp: '10:10 AM' },
-    { id: 4, text: 'It has userID, username, timestamp, and a scrollbar WOW!', userId: 1, username: 'UserA', timestamp: '10:15 AM' },
-  ];
-
-  useEffect(() => {
-    setMessages(simulatedDatabaseMessages);
-  }, []);
-
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      // Prevent the default behavior of the Enter key (e.g., newline in the textarea)
+  const handleEnterKeyPress = (e) => {
+    if ((e.key === 'Enter' && !e.shiftKey) && (!message.trim())) {
+      // Prevent the default behavior of the Enter key if message is empty or only contains spaces
       e.preventDefault();
+    } else if (e.key === 'Enter' && !e.shiftKey) {
       handleSendMessage();
     }
   };
 
   const handleSendMessage = () => {
+    console.log(chatroomMessages);
     const currentTime = new Date().toLocaleTimeString();
     const newMessage = {
       id: messages.length + 1,
@@ -105,7 +97,7 @@ const ChatModal = ({ open, handleClose, chatroom }) => {
           }}
         >
           <Typography variant="h6" gutterBottom>
-            {chatroom}
+            {chatroomName}
           </Typography>
           <IconButton
             onClick={handleClose}
@@ -129,21 +121,21 @@ const ChatModal = ({ open, handleClose, chatroom }) => {
               overflowY: 'scroll',
             }}
           >
-            {messages.map((msg) => (
+            {chatroomMessages.map((msg) => (
           <div
             key={msg.id}
             style={{
               display: 'flex',
               flexDirection: 'column',
-              alignItems: msg.userId === 1 ? 'flex-end' : 'flex-start',
+              alignItems: msg.Sender === userProfile.id ? 'flex-end' : 'flex-start',
               marginBottom: '8px',
             }}
           >
             <Typography variant="caption" gutterBottom>
-              {msg.username} - {msg.timestamp}
+              {msg.Sender} - {msg.Time}
             </Typography>
             <Bubble>
-              <Typography variant="body1">{msg.text}</Typography>
+              <Typography variant="body1">{msg.Content}</Typography>
             </Bubble>
           </div>
         ))}
@@ -157,18 +149,19 @@ const ChatModal = ({ open, handleClose, chatroom }) => {
               fullWidth
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              onKeyDown={handleKeyPress}
+              onKeyDown={handleEnterKeyPress}
             />
           </Grid>
           <Grid item>
             <IconButton
               onClick={(e) => handleSendMessage(e)}
               color="primary"
+              disabled={!message.trim()} // Disable the button if message is empty or only contains spaces
               sx={{
                 display: 'flex',
-                height: '48px', // Adjust the height as needed
-                width: '48px',  // Adjust the width as needed
-                padding: '8px', // Adjust the padding as needed
+                height: '48px',
+                width: '48px',
+                padding: '8px',
               }}
             >
               <SendRoundedIcon fontSize="large" />

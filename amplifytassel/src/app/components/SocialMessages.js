@@ -126,20 +126,17 @@ export default function SocialMessages() {
   const [displayChats, setDisplayChats] = useState([]);
   const [profilesOfJoined, setProfilesOfJoined] = useState([]);
   const [isChatModalOpen, setChatModalOpen] = useState(false);
-  const [selectedChatroomName, setSelectedChatroomName] = useState('');
+  const [selectedChatroomid, setSelectedChatroomid] = useState('');
+  const [chatroomMessages, setChatroomMessages] = useState([]);
   const navigate = useNavigate();
-
-  const handleMessageAction = async (chatRoomObject) => { 
-    console.log('Opening chat for:', chatRoomObject);
-    const messageAsyncCollection = chatRoomObject.Messages;
+  
+  const handleOpenChatModal = async (chatroom) => {
+    const messageAsyncCollection = chatroom.Messages;
     const messages = await messageAsyncCollection.values;
     const sortedMessages = messages.sort((a, b) => new Date(a.Time) - new Date(b.Time));
     console.log(sortedMessages);
-   // navigate(`/social/${chatRoomObject.id}`);
-  };
-  
-  const handleOpenChatModal = (chatroomName) => {
-    setSelectedChatroomName(chatroomName);
+    setSelectedChatroomid(chatroom.id);
+    setChatroomMessages(sortedMessages);
     setChatModalOpen(true);
   };
   
@@ -295,7 +292,7 @@ export default function SocialMessages() {
                     key={chatroom.id}
                     row={chatroom}
                     profiles={profileOfJoined}
-                    onChatButtonClick={() => handleOpenChatModal(chatroom.ChatName)} // Pass a function here
+                    onChatButtonClick={() => handleOpenChatModal(chatroom)} // Pass a function here
                   />
                   );
                 })}
@@ -338,7 +335,8 @@ export default function SocialMessages() {
   <SocialChatBox
     open={isChatModalOpen}
     handleClose={() => setChatModalOpen(false)}
-    chatroom={selectedChatroomName} // Pass the chatroom name here
+    chatroom={selectedChatroomid} // Pass the chatroom name here
+    chatroomMessages={chatroomMessages}
   />)} 
     </Page>
   );
