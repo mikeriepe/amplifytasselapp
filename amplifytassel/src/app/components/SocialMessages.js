@@ -25,6 +25,7 @@ import IconButton from '@mui/material/IconButton';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import SettingsIcon from '@mui/icons-material/Settings';
 import {profileStatusToColor} from '../util/ProfileStatus';
 import CircularProgress from '@mui/material/CircularProgress';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
@@ -229,14 +230,14 @@ export default function SocialMessages() {
       label: 'Members',
     },
     {
-      id: 'tbd1',
+      id: 'placeholder',
       disablePadding: false,
-      label: 'TBD',
+      label: '',
     },
     {
-      id: 'tbd2',
+      id: 'settings',
       disablePadding: false,
-      label: 'TBD',
+      label: 'Settings',
     },
   ];
 
