@@ -31,10 +31,14 @@ import {toast} from 'react-toastify';
 import Fuse from 'fuse.js';
 import useAuth from '../util/AuthContext';
 import '../stylesheets/ApprovalTable.css';
+import SocialChatBox from './SocialChatBox'; // Import the SocialChatBox component
+
+
 
 import { DataStore } from '@aws-amplify/datastore';
-import { Profile, Friend } from './../../models';
+import { Profile, Friend, ChatRoom, ProfileChatRoom } from './../../models';
 import { Storage } from 'aws-amplify';
+import { Chat, Dataset } from '@mui/icons-material';
 
 const Page = styled((props) => (
   <Box {...props} />
@@ -156,6 +160,11 @@ function Row(props) {
   );
 }
 
+const formatTimestamp = (timestamp) => {
+  const options = { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
+  return new Date(timestamp).toLocaleString(undefined, options);
+}; 
+
 /**
  * creates account approval content
  * @return {HTML} account approval content
@@ -168,6 +177,37 @@ export default function SocialFriends() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [selectAllChecked, setSelectAllChecked] = useState(false);
+  const [isChatModalOpen, setChatModalOpen] = useState(false);
+  const [selectedChatroomid, setSelectedChatroomid] = useState('');
+  const [selectedChatroomName, setselectedChatroomName] = useState('');
+  const [chatroomMessages, setChatroomMessages] = useState([]);
+
+  const handleOpenChatModal = async (chatroom) => {
+    chatroom = await Promise.resolve(chatroom);
+    const messageAsyncCollection = chatroom.Messages;
+    const messages = await messageAsyncCollection.values;
+    const sortedMessages = messages.sort((a, b) => new Date(a.Time) - new Date(b.Time));
+
+    // updates the objects with a sender name
+    const updatedMessages = await Promise.all(
+      sortedMessages.map(async (msg) => {
+        const senderProfile = await DataStore.query(Profile, (p) => p.id.eq(msg.Sender));
+        const senderName = `${senderProfile[0].firstName} ${senderProfile[0].lastName}`;
+        return { ...msg, senderName: senderName };
+      })
+    );
+
+    // Format timestamps
+    const formattedMessages = updatedMessages.map((msg) => ({
+      ...msg,
+      Time: formatTimestamp(msg.Time),
+    }));
+      
+    setselectedChatroomName(chatroom.ChatName);
+    setSelectedChatroomid(chatroom.id);
+    setChatroomMessages(formattedMessages);
+    setChatModalOpen(true);
+  };
 
   const getAccounts = (sortBy, reset) => {
     DataStore.query(Profile)
@@ -185,7 +225,6 @@ export default function SocialFriends() {
     setSelectAllChecked(!selectAllChecked);
     if (!selectAllChecked) {
       const newSelected = displayFriends.map((user) => user.email);
-      console.log(newSelected);
       setSelected(newSelected);
     } else {
       setSelected([]);
@@ -205,7 +244,6 @@ export default function SocialFriends() {
       } else {
         newSelected.splice(currentIndex, 1);
       }
-      console.log(newSelected);
       setSelected(newSelected);
     }
   };
@@ -215,7 +253,6 @@ export default function SocialFriends() {
       toast.error('Select at least one user to send friend requests.');
       return;
     }
-    console.log(selected);
     try {
       const toProfileIDs = [];
       for (const email of selected) {
@@ -225,7 +262,6 @@ export default function SocialFriends() {
           toProfileIDs.push(matchingProfile.id);
         }
       }
-      console.log(toProfileIDs);
       // fetches Friend model that matches
       for (const toProfileID of toProfileIDs){
         try{
@@ -248,18 +284,76 @@ export default function SocialFriends() {
           console.error("Error finding Friend", error);
         }
       }
-      setTimeout(() => {
-        window.location.reload();
-      }, 500);
+      reloadPageAfterDelay();
     } catch (error) {
       console.error("Error deleting friend", error);
     }
   }
   
+  // creates a new chatroom for the 
+  const createNewChatRoom = async (selected) => {
+    const profiles = [userProfile];
+  
+    selected.forEach(async (email) => {
+      const profile = await DataStore.query(Profile, (p) => p.email.eq(email));
+      profiles.push(profile[0]);
+    });
+  
+    const newChatRoom = await DataStore.save(
+      new ChatRoom({
+        ChatName: "Chat Name",
+        Profiles: [],
+        Messages: [],
+      })
+    );
+  
+    profiles.forEach(async (profile) => {
+      const profileChatRoomRelation = await DataStore.save(
+        new ProfileChatRoom({
+          "profile": profile,
+          "chatRoom": newChatRoom
+        })
+      );
+    });
+    
+    return newChatRoom;
+  };
+  
+  const reloadPageAfterDelay = () => {
+    setTimeout(() => {
+      window.location.reload();
+    }, 500);
+  };
 
-  const handleMessageAction = (event) => {
-    // TODO backend actions that adds an account to 
-  }
+  const findExistingChatRoom = async (allChatRooms, profileIDs) => {
+    for (const chat of allChatRooms) {
+        const ProfilesAsyncCollection = chat.Profiles;
+        const profiles = await ProfilesAsyncCollection.values;
+        const profileIds = profiles.map(profile => profile.profileId);
+
+        if (profileIds.sort().join(',') === profileIDs.sort().join(',')) {
+            return chat;
+        }
+    }
+    return null;
+  };
+
+  const handleMessageAction = async (event) => {
+    const profileIDs = [userProfile.id];
+    selected.forEach(async(email) => {
+      const profile = await DataStore.query(Profile, p => p.email.eq(email));
+      profileIDs.push(profile[0].id);
+    });
+    const allChatRooms = await DataStore.query(ChatRoom);
+    const existingChatRoom = await findExistingChatRoom(allChatRooms, profileIDs);
+    if(existingChatRoom == null){
+      const newChatroom = createNewChatRoom(selected);
+      handleOpenChatModal(newChatroom);
+    }
+    else{
+      handleOpenChatModal(existingChatRoom);
+    }
+  };
 
   // Taken from Approvals, searches admin/approved accounts based on query
   const searchFriends = async (query) => {
@@ -491,6 +585,14 @@ export default function SocialFriends() {
           </Table>
         }
       </Card>
+      {isChatModalOpen && (
+      <SocialChatBox
+        open={isChatModalOpen}
+        handleClose={() => setChatModalOpen(false)}
+        chatroomName={selectedChatroomName}
+        chatroomID={selectedChatroomid} // Pass the chatroom name here
+        chatroomMessages={chatroomMessages}
+      />)}
     </Page>
   );
 }

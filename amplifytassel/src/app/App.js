@@ -13,6 +13,7 @@ import UpdateProfile from './pages/UpdateProfile';
 import NavBarLoggedIn from './components/NavBarLoggedIn';
 import Settings from './pages/Settings';
 import Socials from './pages/Social';
+import ViewMessages from './pages/ViewMessages';
 import './stylesheets/App.css';
 import 'react-toastify/dist/ReactToastify.css';
 import ViewOpportunity from './pages/ViewOpportunity';
@@ -93,6 +94,7 @@ const App = () => {
           <Route path='/landing' element={<Landing />}/>
           <Route path='/updateprofile' element={<UpdateProfile />} />
           <Route path='/social' element={<Socials/>} />
+          <Route path='/social/:chatroomid' element={<ViewMessages/>}/>
         </Routes>
       </Box>
       {showStarAnimation &&
