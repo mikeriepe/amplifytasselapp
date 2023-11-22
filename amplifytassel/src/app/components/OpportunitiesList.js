@@ -128,7 +128,7 @@ export default function OpportunitiesList({
         .localeCompare(b.subject ? b.subject : 'zzz'));
     } else if (dropdownSelect === 'Recommended') {
         const oppFields = {events:[]};
-        const userFields = {};
+        const userFields = {user:[]};
         for await(const [index, opp] of opps.entries()){
           let num = index
           //oppFields[num] = {};
@@ -152,27 +152,36 @@ export default function OpportunitiesList({
             oppFields.events[num]["preference"] = prefs ? prefs : "";
             oppFields.events[num]["subject"] = sub ? sub : "";
 
-            //Fetch user profile data
-            const profileAbout = await userProfile?.about;
-            //const profileMajor = await userProfile?.Keywords;
-            const profileVolunteerExp = await userProfile?.volunteerExperience;
-            const workExp = await userProfile?.experience;
-            userFields["description"] = profileAbout;
-            userFields["volunteerExp"] = profileVolunteerExp.map(exp => exp.description);
-            userFields["workExp"] = workExp.map(exp => exp.description);
-            //userFields["major"] = profileMajor;
-
           }catch(error){
             console.error("Error fetching keywords:", error);
             return 0;
           }
         }
 
+        //Fetch user profile data
+        const profileAbout = await userProfile?.about;
+        //const profileMajor = await userProfile?.Keywords;
+        const profileVolunteerExp = await userProfile?.volunteerExperience;
+        const workExp = await userProfile?.experience;
+        userFields.user[0] = {}
+        userFields.user[0]["description"] = profileAbout;
+        userFields.user[0]["volunteerExp"] = profileVolunteerExp.map(exp => exp.description);
+        userFields.user[0]["workExp"] = workExp.map(exp => exp.description);
+        //userFields["major"] = profileMajor;
+
         console.log(oppFields);
         //console.log(JSON.stringify(oppFields));
 
         console.log(userFields);
         //console.log(JSON.stringify(userFields));
+
+        // Merge JSON objects
+        // send this JSON to flask endpoint
+        const mergedJSON = Object.assign({}, userFields, oppFields);
+
+        console.log(mergedJSON);
+
+
   
         /*
         const oppsWithCommonKeywords = [];
