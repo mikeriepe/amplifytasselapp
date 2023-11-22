@@ -108,7 +108,7 @@ export default function OpportunitiesList({
       return 0;
     }
   };
-  
+
   const asyncSort = async (array, compareFn) => {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -127,15 +127,64 @@ export default function OpportunitiesList({
       sortedOpps = opps.sort((a, b) => (a.subject ? a.subject : 'zzz')
         .localeCompare(b.subject ? b.subject : 'zzz'));
     } else if (dropdownSelect === 'Recommended') {
-      const oppsWithCommonKeywords = [];
+        const oppFields = {events:[]};
+        const userFields = {};
+        for await(const [index, opp] of opps.entries()){
+          let num = index
+          //oppFields[num] = {};
+          oppFields.events[num] = {}
+          try{
+            const eventID = await opp?.id;
+            const eventName = await opp?.eventName;
+            const descEvent = await opp?.description;
+            const eventData = await opp?.eventData;
+            const prefs = await opp?.preferences?.values;
+            const sub = await opp?.subject;
+            if (descEvent === null && eventData == null 
+              && prefs == null && sub == null) {
+              delete oppFields[num];  
+              continue;
+            }
+            oppFields.events[num]["eventID"] = eventID ? eventID : "";
+            oppFields.events[num]["eventName"] = eventName ? eventName : "";
+            oppFields.events[num]["description"] = descEvent ? descEvent : "";
+            oppFields.events[num]["eventData"] = eventData ? eventData : "";
+            oppFields.events[num]["preference"] = prefs ? prefs : "";
+            oppFields.events[num]["subject"] = sub ? sub : "";
+
+            //Fetch user profile data
+            const profileAbout = await userProfile?.about;
+            //const profileMajor = await userProfile?.Keywords;
+            const profileVolunteerExp = await userProfile?.volunteerExperience;
+            const workExp = await userProfile?.experience;
+            userFields["description"] = profileAbout;
+            userFields["volunteerExp"] = profileVolunteerExp.map(exp => exp.description);
+            userFields["workExp"] = workExp.map(exp => exp.description);
+            //userFields["major"] = profileMajor;
+
+          }catch(error){
+            console.error("Error fetching keywords:", error);
+            return 0;
+          }
+        }
+
+        console.log(oppFields);
+        //console.log(JSON.stringify(oppFields));
+
+        console.log(userFields);
+        //console.log(JSON.stringify(userFields));
   
-      for await (const opp of opps) {
-        const commonKeywords = await calcNumMatchKeywords(opp);
-        oppsWithCommonKeywords.push({ opp, commonKeywords });
-      }
-  
-      sortedOpps = oppsWithCommonKeywords.sort((a, b) => b.commonKeywords - a.commonKeywords)
+        /*
+        const oppsWithCommonKeywords = [];
+        for await (const opp of opps) {
+          const commonKeywords = await calcNumMatchKeywords(opp);
+          oppsWithCommonKeywords.push({ opp, commonKeywords });
+        }
+
+        sortedOpps = oppsWithCommonKeywords.sort((a, b) => b.commonKeywords - a.commonKeywords)
         .map(({ opp }) => opp);
+        */
+      
     }
   
     return sortedOpps;
