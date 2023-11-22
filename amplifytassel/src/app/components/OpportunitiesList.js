@@ -42,7 +42,7 @@ export default function OpportunitiesList({
 }) {
   const [displayOpps, setDisplayOpps] = useState([]);
   const [search, setSearch] = useState('');
-  const [dropdownSelect, setDropdownSelect] = useState('Recommended');
+  const [dropdownSelect, setDropdownSelect] = useState('Major');
   const {userProfile} = useAuth();
   
 
