@@ -7,6 +7,9 @@ import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import useAuth from '../util/AuthContext';
 import { DataStore } from 'aws-amplify';
 import { Message } from './../../models';
+import Filter from 'bad-words';
+
+const filter = new Filter();
 
 const Bubble = styled((props) => (
   <Box {...props} />
@@ -26,6 +29,9 @@ const ChatModal = ({ open, handleClose, chatroomName, chatroomID, chatroomMessag
   const [message, setMessage] = useState('');
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+
+  const [showProfanityWarning, setShowProfanityWarning] = useState(false);
+  
   const chatboxRef = useRef(null);
 
   const handleCloseModal = () => {
@@ -46,7 +52,14 @@ const ChatModal = ({ open, handleClose, chatroomName, chatroomID, chatroomMessag
   };
   
   const handleSendMessage = async () => {
+
     console.log(message);
+
+    if (filter.isProfane(message)) {
+      setShowProfanityWarning(true);
+      return;
+    }
+
     const currentDate = new Date();
     const formattedTimestamp = currentDate.toISOString();
     const newMessage = await DataStore.save(
@@ -165,16 +178,31 @@ const ChatModal = ({ open, handleClose, chatroomName, chatroomID, chatroomMessag
         ))}
           </div>
         </div>
+ 
         <Grid container spacing={1} alignItems="center">
+          {showProfanityWarning && (
+            <Grid item xs={12}>
+              <Typography color="error" style={{ textAlign: 'center' }}>
+                Message cannot be sent due to profanity.
+              </Typography>
+            </Grid>
+          )}
+
           <Grid item xs>
             <TextField
-              label="Type your message"
-              variant="outlined"
-              fullWidth
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              onKeyDown={handleEnterKeyPress}
-            />
+            label="Type your message"
+            variant="outlined"
+            fullWidth
+            value={message}
+            onChange={(e) => {
+              setMessage(e.target.value);
+              if (showProfanityWarning) {
+                setShowProfanityWarning(false);
+              }
+            }}
+            onKeyDown={handleEnterKeyPress}
+          />
+
           </Grid>
           <Grid item>
             <IconButton
