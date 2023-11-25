@@ -5,7 +5,7 @@ import {styled} from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import useAuth from '../util/AuthContext';
-import { DataStore } from 'aws-amplify';
+import { DataStore, Predicates } from 'aws-amplify';
 import { Message } from './../../models';
 
 const Bubble = styled((props) => (
@@ -21,12 +21,37 @@ const formatTimestamp = (timestamp) => {
   return new Date(timestamp).toLocaleString(undefined, options);
 }; 
 
-const ChatModal = ({ open, handleClose, chatroomName, chatroomID, chatroomMessages }) => {
+const ChatModal = ({ open, handleClose, chatroomName, chatroomID, chatroomMessages: initialChatroomMessages }) => {
   const {userProfile} = useAuth();
   const [message, setMessage] = useState('');
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const chatboxRef = useRef(null);
+  const [chatroomMessages, setChatroomMessages] = useState(initialChatroomMessages);
+
+  useEffect(() => {
+    // const subscription = DataStore.observe(Message, Predicates.ALL).subscribe({
+    //   next: (msg) => {
+    //     // Update the state when a new message is received
+    //     setChatroomMessages((prevMessages) => [...prevMessages, msg]);
+    //     console.log("New message received:", msg);
+        
+    //   },
+    // });
+
+    const fetchMessages = async () => {
+      const messages = await DataStore.query(Message, Predicates.ALL);
+      setChatroomMessages(messages);
+    };
+
+    const subscription = DataStore.observe(Message,  Predicates.ALL).subscribe(() => {
+      fetchMessages();
+    });
+
+    fetchMessages();
+
+    return () => subscription.unsubscribe(); // Cleanup subscription on component unmount
+  }, []);
 
   const handleCloseModal = () => {
     // Close the modal
@@ -46,9 +71,10 @@ const ChatModal = ({ open, handleClose, chatroomName, chatroomID, chatroomMessag
   };
   
   const handleSendMessage = async () => {
-    console.log(message);
+    console.log("New msg sent", message);
     const currentDate = new Date();
     const formattedTimestamp = currentDate.toISOString();
+    
     const newMessage = await DataStore.save(
       new Message({
         "ChatRoomID": chatroomID,
@@ -65,7 +91,9 @@ const ChatModal = ({ open, handleClose, chatroomName, chatroomID, chatroomMessag
     // Update the Time property with the formatted timestamp
     chatMessage.Time = formatTimestamp(formattedTimestamp);
     
-    chatroomMessages.push(chatMessage);
+    console.log("chatMsg", chatMessage);
+
+    setChatroomMessages((prevMessages) => [...prevMessages, chatMessage]);
     setMessage('');
   };
 
