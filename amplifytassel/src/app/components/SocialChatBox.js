@@ -6,7 +6,7 @@ import Grid from '@mui/material/Grid';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import useAuth from '../util/AuthContext';
 import { DataStore, Predicates } from 'aws-amplify';
-import { Message } from './../../models';
+import { Message, Profile } from './../../models';
 
 const Bubble = styled((props) => (
   <Box {...props} />
@@ -29,48 +29,87 @@ const ChatModal = ({ open, handleClose, chatroomName, chatroomID, chatroomMessag
   const chatboxRef = useRef(null);
   const [chatroomMessages, setChatroomMessages] = useState(initialChatroomMessages);
 
-  useEffect(() => {
-      // const subscription = DataStore.observe(Message, Predicates.ALL).subscribe({
-      //   next: (msg) => {
-      //     // Update the state when a new message is received
-      //     setChatroomMessages((prevMessages) => [...prevMessages, msg]);
-      //     console.log("New message received:", msg);
+  // useEffect(() => {
+  //     // const subscription = DataStore.observe(Message, Predicates.ALL).subscribe({
+  //     //   next: (msg) => {
+  //     //     // Update the state when a new message is received
+  //     //     setChatroomMessages((prevMessages) => [...prevMessages, msg]);
+  //     //     console.log("New message received:", msg);
           
-      //   },  
-      // });  
+  //     //   },  
+  //     // });  
 
 
-      // useEffect(() => {
-      //   const subscription = DataStore.observe(Message, Predicates.ALL).subscribe({
-      //     next: (msg) => {
-      //       const messages = DataStore.query(Message, Predicates.ALL);
-      //       const filteredMessages = messages.filter((msg) => msg.ChatRoomID === chatroomID);
-      //       setChatroomMessages(filteredMessages);
+  //     // useEffect(() => {
+  //     //   const subscription = DataStore.observe(Message, Predicates.ALL).subscribe({
+  //     //     next: (msg) => {
+  //     //       const messages = DataStore.query(Message, Predicates.ALL);
+  //     //       const filteredMessages = messages.filter((msg) => msg.ChatRoomID === chatroomID);
+  //     //       setChatroomMessages(filteredMessages);
             
-      //     },
-      //   });
+  //     //     },
+  //     //   });
+  // useEffect(() => {
+  //   const fetchMessages = async () => {
+  //     const messages = await DataStore.query(Message, Predicates.ALL);
+  //        console.log("messages", messages);
+  //     const filteredMessages = messages.filter((msg) => msg.ChatRoomID === chatroomID);
+  //     setChatroomMessages(filteredMessages);
+  //   };
 
+  //   const subscription = DataStore.observe(Message).subscribe(() => {
+  //     fetchMessages();
+  //   });
+
+  //   fetchMessages();
+
+  //   return () => subscription.unsubscribe(); 
+  // }, []);
+
+
+  useEffect(() => {
     const fetchMessages = async () => {
-      const messages = await DataStore.query(Message, Predicates.ALL);
-      const filteredMessages = messages.filter((msg) => msg.ChatRoomID === chatroomID);
-      setChatroomMessages(filteredMessages);
+      try {
+        const messages = await DataStore.query(Message, Predicates.ALL);
+  
+        const enrichedMessages = await Promise.all(
+          messages.map(async (msg) => {
+            // Fetch the sender's profile using msg.Sender
+            const senderProfile = await DataStore.query(Profile, msg.Sender);
+  
+            return {
+              ...msg,
+              senderName: `${senderProfile?.firstName || 'Unknown User'} ${senderProfile?.lastName || ''}`,
+              Time: new Date(msg.Time).toLocaleString(), // Format the timestamp
+            };
+          })
+        );
+  
+        const filteredMessages = enrichedMessages.filter((msg) => msg.ChatRoomID === chatroomID);
+        setChatroomMessages(filteredMessages);
+      } catch (error) {
+        console.error('Error fetching messages:', error);
+      }
     };
-
+  
     const subscription = DataStore.observe(Message).subscribe(() => {
       fetchMessages();
     });
-
+  
     fetchMessages();
+  
+    return () => subscription.unsubscribe();
+  }, [chatroomID]);
 
-    return () => subscription.unsubscribe(); // Cleanup subscription on component unmount
-  }, []);
+
+
 
   const handleCloseModal = () => {
     // Close the modal
     handleClose();
 
     // Refresh here to refresh chatroomMessages from the frontend
-    window.location.reload();
+    //window.location.reload();
   };
 
   const handleEnterKeyPress = (e) => {
@@ -92,7 +131,7 @@ const ChatModal = ({ open, handleClose, chatroomName, chatroomID, chatroomMessag
         "ChatRoomID": chatroomID,
         "Content": message,
         "Sender": userProfile.id,
-        "Time": formattedTimestamp
+        "Time": formattedTimestamp,
       })
     );
 
