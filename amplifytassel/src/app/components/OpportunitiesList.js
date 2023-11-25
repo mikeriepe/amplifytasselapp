@@ -117,10 +117,45 @@ export default function OpportunitiesList({
       }, 0);
     });
   };
+  // Function to sort the opportunities based on the custom order
+  function sortOpportunitiesByCustomOrder(opportunities, order) {
+    const opportunityMap = new Map();
+    
+    // Create a map of opportunities keyed by their ID for quick access
+    opportunities.forEach(opportunity => {
+      opportunityMap.set(opportunity.id, opportunity);
+    });
+    let sortedOpportunities = [];
+    console.log("hello");
+    order.forEach(id => {
+       let opp = opportunityMap.get(id);
+       sortedOpportunities.push(opp);
+    })
+    // Create a new sorted array based on the custom order
+    //const sortedOpportunities = order.map(id => opportunityMap.get(id)).filter(Boolean);
+    return sortedOpportunities;
+  }
+
+  // Call flask service to get matching recommendations
+  const fetchOpportunities = async (mergedJSON) => {
+    try {
+      const response = await fetch("http://ec2-52-53-237-11.us-west-1.compute.amazonaws.com/recommendations_endpoint", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json', // Specify the content type as JSON
+      },
+      body: JSON.stringify(mergedJSON),
+    });
+
+      const data = await response.json();
+      return data["order"];
+    } catch (error) {
+      console.error("Could not fetch opportunities: ", error);
+    }
+  }
 
   const handleSort = async (opps) => {
     let sortedOpps;
-  
     if (dropdownSelect === 'Alphabet') {
       sortedOpps = opps.sort((a, b) => a.eventName.localeCompare(b.eventName));
     } else if (dropdownSelect === 'Major') {
@@ -128,10 +163,9 @@ export default function OpportunitiesList({
         .localeCompare(b.subject ? b.subject : 'zzz'));
     } else if (dropdownSelect === 'Recommended') {
         const oppFields = {events:[]};
-        const userFields = {user:[]};
+        const userFields = {users:[]};
         for await(const [index, opp] of opps.entries()){
-          let num = index
-          //oppFields[num] = {};
+          let num = index;
           oppFields.events[num] = {}
           try{
             const eventID = await opp?.id;
@@ -149,7 +183,6 @@ export default function OpportunitiesList({
             oppFields.events[num]["eventName"] = eventName ? eventName : "";
             oppFields.events[num]["description"] = descEvent ? descEvent : "";
             oppFields.events[num]["eventData"] = eventData ? eventData : "";
-            oppFields.events[num]["preference"] = prefs ? prefs : "";
             oppFields.events[num]["subject"] = sub ? sub : "";
 
           }catch(error){
@@ -160,29 +193,22 @@ export default function OpportunitiesList({
 
         //Fetch user profile data
         const profileAbout = await userProfile?.about;
-        //const profileMajor = await userProfile?.Keywords;
         const profileVolunteerExp = await userProfile?.volunteerExperience;
         const workExp = await userProfile?.experience;
-        userFields.user[0] = {}
-        userFields.user[0]["description"] = profileAbout;
-        userFields.user[0]["volunteerExp"] = profileVolunteerExp.map(exp => exp.description);
-        userFields.user[0]["workExp"] = workExp.map(exp => exp.description);
-        //userFields["major"] = profileMajor;
-
-        console.log(oppFields);
-        //console.log(JSON.stringify(oppFields));
-
-        console.log(userFields);
-        //console.log(JSON.stringify(userFields));
+        userFields.users[0] = {}
+        userFields.users[0]["description"] = profileAbout;
+        userFields.users[0]["volunteerExp"] = profileVolunteerExp.map(exp => exp.description)[0];
+        userFields.users[0]["workExp"] = workExp.map(exp => exp.description)[0];
 
         // Merge JSON objects
         // send this JSON to flask endpoint
         const mergedJSON = Object.assign({}, userFields, oppFields);
 
-        console.log(mergedJSON);
+        //console.log(mergedJSON);
+        const orderOfOpps = await fetchOpportunities(mergedJSON);
+        console.log("orderOfOpps", orderOfOpps);
+        sortedOpps = sortOpportunitiesByCustomOrder(opps, orderOfOpps);
 
-
-  
         /*
         const oppsWithCommonKeywords = [];
         for await (const opp of opps) {
