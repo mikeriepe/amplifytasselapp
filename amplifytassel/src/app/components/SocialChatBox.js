@@ -30,21 +30,33 @@ const ChatModal = ({ open, handleClose, chatroomName, chatroomID, chatroomMessag
   const [chatroomMessages, setChatroomMessages] = useState(initialChatroomMessages);
 
   useEffect(() => {
-    // const subscription = DataStore.observe(Message, Predicates.ALL).subscribe({
-    //   next: (msg) => {
-    //     // Update the state when a new message is received
-    //     setChatroomMessages((prevMessages) => [...prevMessages, msg]);
-    //     console.log("New message received:", msg);
-        
-    //   },
-    // });
+      // const subscription = DataStore.observe(Message, Predicates.ALL).subscribe({
+      //   next: (msg) => {
+      //     // Update the state when a new message is received
+      //     setChatroomMessages((prevMessages) => [...prevMessages, msg]);
+      //     console.log("New message received:", msg);
+          
+      //   },  
+      // });  
+
+
+      // useEffect(() => {
+      //   const subscription = DataStore.observe(Message, Predicates.ALL).subscribe({
+      //     next: (msg) => {
+      //       const messages = DataStore.query(Message, Predicates.ALL);
+      //       const filteredMessages = messages.filter((msg) => msg.ChatRoomID === chatroomID);
+      //       setChatroomMessages(filteredMessages);
+            
+      //     },
+      //   });
 
     const fetchMessages = async () => {
       const messages = await DataStore.query(Message, Predicates.ALL);
-      setChatroomMessages(messages);
+      const filteredMessages = messages.filter((msg) => msg.ChatRoomID === chatroomID);
+      setChatroomMessages(filteredMessages);
     };
 
-    const subscription = DataStore.observe(Message,  Predicates.ALL).subscribe(() => {
+    const subscription = DataStore.observe(Message).subscribe(() => {
       fetchMessages();
     });
 
