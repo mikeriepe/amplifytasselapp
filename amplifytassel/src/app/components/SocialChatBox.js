@@ -28,7 +28,8 @@ const ChatModal = ({ open, handleClose, chatroomName, chatroomID, chatroomMessag
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const chatboxRef = useRef(null);
   const [chatroomMessages, setChatroomMessages] = useState(initialChatroomMessages);
-
+  const messagesContainerRef = useRef(null);
+  
   // useEffect(() => {
   //     // const subscription = DataStore.observe(Message, Predicates.ALL).subscribe({
   //     //   next: (msg) => {
@@ -150,10 +151,13 @@ const ChatModal = ({ open, handleClose, chatroomName, chatroomID, chatroomMessag
 
   const handleMouseDown = (e) => {
     setIsDragging(true);
-    const rect = chatboxRef.current.getBoundingClientRect();
-    const offsetX = e.clientX - rect.left;
-    const offsetY = e.clientY - rect.top;
-    setDragOffset({ x: offsetX, y: offsetY });
+
+    if (chatboxRef.current) {
+      const rect = chatboxRef.current.getBoundingClientRect();
+      const offsetX = e.clientX - rect.left - rect.width / 2; // Calculate offset from the center
+      const offsetY = e.clientY - rect.top - rect.height / 2;
+      setDragOffset({ x: offsetX, y: offsetY });
+    }
   };
 
   const handleMouseUp = () => {
@@ -161,7 +165,7 @@ const ChatModal = ({ open, handleClose, chatroomName, chatroomID, chatroomMessag
   };
 
   const handleMouseMove = (e) => {
-    if (isDragging) {
+    if (isDragging && chatboxRef.current) {
       const left = e.clientX - dragOffset.x;
       const top = e.clientY - dragOffset.y;
       chatboxRef.current.style.left = left + 'px';
@@ -169,12 +173,24 @@ const ChatModal = ({ open, handleClose, chatroomName, chatroomID, chatroomMessag
     }
   };
 
+
+  useEffect(() => {
+    // Scroll to the bottom when messages are updated
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
+  }, [chatroomMessages]);
+
+
   return (
     <Modal open={open} onClose={handleCloseModal}>
       <Box
         ref={chatboxRef}
         sx={{
-          position: 'absolute',
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
           width: 800,
           bgcolor: 'background.paper',
           boxShadow: 24,
@@ -219,6 +235,7 @@ const ChatModal = ({ open, handleClose, chatroomName, chatroomID, chatroomMessag
           }}
         >
           <div
+            ref={messagesContainerRef}
             style={{
               height: '400px',
               overflowY: 'scroll',
