@@ -168,7 +168,9 @@ export default function SocialMessages() {
     setChatroomMessages(formattedMessages);
     setChatModalOpen(true);
   };
-  const handleSettingsClick = (chatroom) => {
+  const handleSettingsClick = async (chatroom) => {
+    setselectedChatroomName(chatroom.ChatName);
+    setSelectedChatroomid(chatroom.id);
     setIsSettingsOpen(true);
   };
   // Taken from Approvals, searches admin/approved accounts based on query
@@ -371,6 +373,8 @@ export default function SocialMessages() {
       <SocialMessageSetting
         open={isSettingsOpen}
         handleClose={() => setIsSettingsOpen(false)}
+        chatroomID={selectedChatroomid}
+        chatroomName={selectedChatroomName}
       />
     )}
       {isChatModalOpen && (
