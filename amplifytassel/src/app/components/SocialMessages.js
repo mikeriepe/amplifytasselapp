@@ -82,7 +82,7 @@ function Row(props) {
 
   console.log("this is chat", allChats);
   const recentMessage = allChats
-  ? allChats.find((msg) => msg.ChatRoom.id === row.id)
+  ? allChats.find((msg) => msg.ChatRoomID === row.id)
   : null;
 
   return (
