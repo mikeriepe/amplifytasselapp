@@ -1,5 +1,4 @@
-// SocialMessageSetting.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -7,18 +6,45 @@ import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
+import { DataStore } from '@aws-amplify/datastore';
+import { ChatRoom } from './../../models';
 
-function SocialMessageSetting({ open, handleClose, currentChatName, updateChatName }) {
-  const [chatName, setChatName] = useState(currentChatName);
+function SocialMessageSetting({ open, handleClose, chatroomID }) {
+  const [chatName, setChatName] = useState('');
+
+  useEffect(() => {
+    // Observe the chat room model to keep state updated
+    const subscription = DataStore.observe(ChatRoom, chatroomID).subscribe((model) => {
+      if (model) {
+        setChatName(model.ChatName);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [chatroomID]);
 
   const handleChatNameChange = (event) => {
     setChatName(event.target.value);
   };
 
-  const handleSubmit = () => {
-    // Call the updateChatName function with the new chat name
-    updateChatName(chatName);
-    handleClose();
+  const handleSubmit = async () => {
+    try {
+      // Fetch the chat room data by ID (optional since we observe the model)
+      const chatRoom = await DataStore.query(ChatRoom, chatroomID);
+      // Create a copy of the chat room with the updated name
+      const updatedChatRoom = ChatRoom.copyOf(chatRoom, (updated) => {
+        updated.ChatName = chatName;
+      });
+
+      // Save the updated chat room
+      await DataStore.save(updatedChatRoom);
+
+      // Close the dialog
+      handleClose();
+    } catch (error) {
+      console.error('Error updating chat room name:', error);
+      // Handle the error if needed
+    }
   };
 
   return (

@@ -171,8 +171,9 @@ export default function SocialMessages() {
     setChatModalOpen(true);
   };
 
-
-  const handleSettingsClick = (chatroom) => {
+  const handleSettingsClick = async (chatroom) => {
+    setselectedChatroomName(chatroom.ChatName);
+    setSelectedChatroomid(chatroom.id);
     setIsSettingsOpen(true);
   };
 
@@ -376,6 +377,8 @@ export default function SocialMessages() {
       <SocialMessageSetting
         open={isSettingsOpen}
         handleClose={() => setIsSettingsOpen(false)}
+        chatroomID={selectedChatroomid}
+        chatroomName={selectedChatroomName}
       />
     )}
       {isChatModalOpen && (
