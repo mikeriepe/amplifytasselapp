@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useRef } from 'react';
 import {useNavigate} from 'react-router-dom';
 import Box from '@mui/material/Box';
 import SocialChatBox from './SocialChatBox'; // Import the SocialChatBox component
@@ -142,6 +142,8 @@ export default function SocialMessages() {
   const [selectedChatroomName, setselectedChatroomName] = useState('');
   const [chatroomMessages, setChatroomMessages] = useState([]);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+
   const handleOpenChatModal = async (chatroom) => {
     const messageAsyncCollection = chatroom.Messages;
     const messages = await messageAsyncCollection.values;
@@ -155,22 +157,26 @@ export default function SocialMessages() {
         return { ...msg, senderName: senderName };
       })
     );
-    
+
     
     // Format timestamps
     const formattedMessages = updatedMessages.map((msg) => ({
       ...msg,
       Time: formatTimestamp(msg.Time),
     }));
-      
+
     setselectedChatroomName(chatroom.ChatName);
     setSelectedChatroomid(chatroom.id);
     setChatroomMessages(formattedMessages);
     setChatModalOpen(true);
   };
-  const handleSettingsClick = (chatroom) => {
+
+  const handleSettingsClick = async (chatroom) => {
+    setselectedChatroomName(chatroom.ChatName);
+    setSelectedChatroomid(chatroom.id);
     setIsSettingsOpen(true);
   };
+
   // Taken from Approvals, searches admin/approved accounts based on query
   const searchChats = async (query) => {
     try {
@@ -371,6 +377,8 @@ export default function SocialMessages() {
       <SocialMessageSetting
         open={isSettingsOpen}
         handleClose={() => setIsSettingsOpen(false)}
+        chatroomID={selectedChatroomid}
+        chatroomName={selectedChatroomName}
       />
     )}
       {isChatModalOpen && (
