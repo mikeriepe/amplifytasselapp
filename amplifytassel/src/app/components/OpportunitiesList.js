@@ -42,7 +42,7 @@ export default function OpportunitiesList({
 }) {
   const [displayOpps, setDisplayOpps] = useState([]);
   const [search, setSearch] = useState('');
-  const [dropdownSelect, setDropdownSelect] = useState('Recommended');
+  const [dropdownSelect, setDropdownSelect] = useState('Major');
   const {userProfile} = useAuth();
   
 
@@ -108,7 +108,7 @@ export default function OpportunitiesList({
       return 0;
     }
   };
-  
+
   const asyncSort = async (array, compareFn) => {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -117,25 +117,109 @@ export default function OpportunitiesList({
       }, 0);
     });
   };
+  // Function to sort the opportunities based on the custom order
+  function sortOpportunitiesByCustomOrder(opportunities, order) {
+    const opportunityMap = new Map();
+    
+    // Create a map of opportunities keyed by their ID for quick access
+    opportunities.forEach(opportunity => {
+      opportunityMap.set(opportunity.id, opportunity);
+    });
+    let sortedOpportunities = [];
+    console.log("hello");
+    order.forEach(id => {
+       let opp = opportunityMap.get(id);
+       sortedOpportunities.push(opp);
+    })
+    // Create a new sorted array based on the custom order
+    //const sortedOpportunities = order.map(id => opportunityMap.get(id)).filter(Boolean);
+    return sortedOpportunities;
+  }
+
+  // Call flask service to get matching recommendations
+  const fetchOpportunities = async (mergedJSON) => {
+    try {
+      const response = await fetch("http://ec2-52-53-237-11.us-west-1.compute.amazonaws.com/recommendations_endpoint", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json', // Specify the content type as JSON
+      },
+      body: JSON.stringify(mergedJSON),
+    });
+
+      const data = await response.json();
+      return data["order"];
+    } catch (error) {
+      console.error("Could not fetch opportunities: ", error);
+    }
+  }
 
   const handleSort = async (opps) => {
     let sortedOpps;
-  
     if (dropdownSelect === 'Alphabet') {
       sortedOpps = opps.sort((a, b) => a.eventName.localeCompare(b.eventName));
     } else if (dropdownSelect === 'Major') {
       sortedOpps = opps.sort((a, b) => (a.subject ? a.subject : 'zzz')
         .localeCompare(b.subject ? b.subject : 'zzz'));
     } else if (dropdownSelect === 'Recommended') {
-      const oppsWithCommonKeywords = [];
-  
-      for await (const opp of opps) {
-        const commonKeywords = await calcNumMatchKeywords(opp);
-        oppsWithCommonKeywords.push({ opp, commonKeywords });
-      }
-  
-      sortedOpps = oppsWithCommonKeywords.sort((a, b) => b.commonKeywords - a.commonKeywords)
+        const oppFields = {events:[]};
+        const userFields = {users:[]};
+        for await(const [index, opp] of opps.entries()){
+          let num = index;
+          oppFields.events[num] = {}
+          try{
+            const eventID = await opp?.id;
+            const eventName = await opp?.eventName;
+            const descEvent = await opp?.description;
+            const eventData = await opp?.eventData;
+            const prefs = await opp?.preferences?.values;
+            const sub = await opp?.subject;
+            if (descEvent === null && eventData == null 
+              && prefs == null && sub == null) {
+              delete oppFields[num];  
+              continue;
+            }
+            oppFields.events[num]["eventID"] = eventID ? eventID : "";
+            oppFields.events[num]["eventName"] = eventName ? eventName : "";
+            oppFields.events[num]["description"] = descEvent ? descEvent : "";
+            oppFields.events[num]["eventData"] = eventData ? eventData : "";
+            oppFields.events[num]["subject"] = sub ? sub : "";
+
+          }catch(error){
+            console.error("Error fetching keywords:", error);
+            return 0;
+          }
+        }
+
+        //Fetch user profile data
+        const profileAbout = await userProfile?.about;
+        const profileVolunteerExp = await userProfile?.volunteerExperience;
+        const workExp = await userProfile?.experience;
+        userFields.users[0] = {}
+        userFields.users[0]["description"] = profileAbout;
+        userFields.users[0]["volunteerExp"] = profileVolunteerExp.map(exp => exp.description)[0];
+        userFields.users[0]["workExp"] = workExp.map(exp => exp.description)[0];
+
+        // Merge JSON objects
+        // send this JSON to flask endpoint
+        const mergedJSON = Object.assign({}, userFields, oppFields);
+
+        //console.log(mergedJSON);
+        const orderOfOpps = await fetchOpportunities(mergedJSON);
+        console.log("orderOfOpps", orderOfOpps);
+        sortedOpps = sortOpportunitiesByCustomOrder(opps, orderOfOpps);
+
+        /*
+        const oppsWithCommonKeywords = [];
+        for await (const opp of opps) {
+          const commonKeywords = await calcNumMatchKeywords(opp);
+          oppsWithCommonKeywords.push({ opp, commonKeywords });
+        }
+
+        sortedOpps = oppsWithCommonKeywords.sort((a, b) => b.commonKeywords - a.commonKeywords)
         .map(({ opp }) => opp);
+        */
+      
     }
   
     return sortedOpps;
