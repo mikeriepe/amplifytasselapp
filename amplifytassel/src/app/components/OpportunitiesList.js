@@ -126,7 +126,7 @@ export default function OpportunitiesList({
       opportunityMap.set(opportunity.id, opportunity);
     });
     let sortedOpportunities = [];
-    console.log("hello");
+    //console.log("hello");
     order.forEach(id => {
        let opp = opportunityMap.get(id);
        sortedOpportunities.push(opp);
