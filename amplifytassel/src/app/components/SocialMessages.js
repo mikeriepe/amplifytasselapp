@@ -80,19 +80,15 @@ function Row(props) {
     handleMessageAction(row);
   };
 
-  console.log("this is chat", allChats);
-  console.log("row.id", row.id);
   const recentMessage = allChats
   ? allChats
       .filter((msg) => msg.ChatRoomID === row.id)
       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0]?.Content
   : null;
 
-  console.log("recentMessage", recentMessage);
-
   const truncatedMessage =
-    recentMessage && recentMessage.length > 30
-      ? recentMessage.substring(0, 30) + '...'
+    recentMessage && recentMessage.length > 20
+      ? recentMessage.substring(0, 20) + '...'
       : recentMessage;
 
   return (
@@ -105,7 +101,7 @@ function Row(props) {
           variant={'gradient'}
           type={'submit'}
           style={{ fontSize: '0.875rem', marginRight: '2rem' }}
-          onClick={() => onChatButtonClick(row.ChatName)} // Pass the chatroom name here
+          onClick={() => onChatButtonClick(row.ChatName)} 
         >
           Chat
         </ThemedButton>
@@ -128,7 +124,6 @@ function Row(props) {
             {formattedProfiles}
           </TableCell>
           <TableCell className='data-cell'>
-            {/* {recentMessage ? recentMessage.content : 'No recent messages'} */}
             {truncatedMessage}
           </TableCell>
           <TableCell className='data-cell'>
