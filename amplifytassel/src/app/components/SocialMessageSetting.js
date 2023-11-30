@@ -41,6 +41,8 @@ function SocialMessageSetting({ open, handleClose, chatroomID }) {
 
       // Close the dialog
       handleClose();
+
+      window.location.reload();
     } catch (error) {
       console.error('Error updating chat room name:', error);
       // Handle the error if needed
