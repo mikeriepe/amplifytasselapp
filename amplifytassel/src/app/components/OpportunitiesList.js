@@ -126,7 +126,7 @@ export default function OpportunitiesList({
       opportunityMap.set(opportunity.id, opportunity);
     });
     let sortedOpportunities = [];
-    console.log("hello");
+    //console.log("hello");
     order.forEach(id => {
        let opp = opportunityMap.get(id);
        sortedOpportunities.push(opp);
@@ -154,6 +154,42 @@ export default function OpportunitiesList({
     }
   }
 
+
+  const extractUserKeywords = async () => {
+    try {
+      const value = await Promise.resolve(userProfile?.keywords?.values);
+      const keywordNames = [];
+      for (let i = 0; i < value.length; i++) {
+        const k = await Promise.resolve(value[i].keyword);
+        keywordNames.push(k.name);
+      }
+      keywordNames.sort();
+      //setUserKeywords(keywordNames);
+      return keywordNames
+
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const extractOppKeywords = async (opp) => {
+    try {
+      const value = await Promise.resolve(opp?.keywords?.values);
+      const keywordNames = [];
+      for (let i = 0; i < value.length; i++) {
+        const k = await Promise.resolve(value[i].keyword);
+        keywordNames.push(k.name);
+      }
+      keywordNames.sort();
+      //setUserKeywords(keywordNames);
+      return keywordNames
+
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+
   const handleSort = async (opps) => {
     let sortedOpps;
     if (dropdownSelect === 'Alphabet') {
@@ -174,6 +210,9 @@ export default function OpportunitiesList({
             const eventData = await opp?.eventData;
             const prefs = await opp?.preferences?.values;
             const sub = await opp?.subject;
+            const tags = await extractOppKeywords(await opp);
+            
+            console.log(tags)
             if (descEvent === null && eventData == null 
               && prefs == null && sub == null) {
               delete oppFields[num];  
@@ -184,6 +223,8 @@ export default function OpportunitiesList({
             oppFields.events[num]["description"] = descEvent ? descEvent : "";
             oppFields.events[num]["eventData"] = eventData ? eventData : "";
             oppFields.events[num]["subject"] = sub ? sub : "";
+            oppFields.events[num]["tags"] = tags ? tags : "";
+
 
           }catch(error){
             console.error("Error fetching keywords:", error);
@@ -192,13 +233,23 @@ export default function OpportunitiesList({
         }
 
         //Fetch user profile data
-        const profileAbout = await userProfile?.about;
-        const profileVolunteerExp = await userProfile?.volunteerExperience;
-        const workExp = await userProfile?.experience;
+        console.log(userProfile)
+        const profileAbout = userProfile?.about ? userProfile?.about : "";
+        const profileVolunteerExp = userProfile?.volunteerExperience ? userProfile?.volunteerExperience : "";
+        const workExp = userProfile?.experience ? userProfile?.experience : "";
+
+        console.log("User Tags:" + await extractUserKeywords())
+
         userFields.users[0] = {}
         userFields.users[0]["description"] = profileAbout;
-        userFields.users[0]["volunteerExp"] = profileVolunteerExp.map(exp => exp.description)[0];
-        userFields.users[0]["workExp"] = workExp.map(exp => exp.description)[0];
+        userFields.users[0]["volunteerExp"] = userProfile?.volunteerExperience ? (profileVolunteerExp.map(exp => exp.description)).toString() : "";
+        userFields.users[0]["workExp"] = (workExp.map(exp => exp.description)).toString();
+
+        userFields.users[0]["tags"] = await extractUserKeywords();
+        
+        console.log(userFields);
+
+        console.log(oppFields);
 
         // Merge JSON objects
         // send this JSON to flask endpoint

@@ -30,8 +30,8 @@ def recommendationsEngine():
     user_df['all_text'] = user_df['description'] + ' ' + user_df['volunteerExp'] + ' ' + user_df["workExp"]
     event_df['all_text'] = event_df['description'] + ' ' + ' ' + event_df['subject'] + ' ' + event_df['eventData'] + ' ' + event_df['eventName']
     
-    user_embeddings = model.encode(user_df.loc[0]['all_text'], convert_to_tensor=True)
-    event_embeddings = model.encode(event_df['all_text'], convert_to_tensor=True)
+    user_embeddings = weight_Tags(user_df['all_text'], user_df['tags'])
+    event_embeddings = weight_Tags(event_df['all_text'], event_df['tags'])
 
     similarity_scores = util.pytorch_cos_sim(user_embeddings, event_embeddings)
     ret = []
@@ -44,6 +44,18 @@ def recommendationsEngine():
         eventIDs["order"].append(eID)
     
     return json.dumps(eventIDs)
+
+def weight_Tags(text, tags, tag_weight=2.0,text_weight=1.0,):
+    combined_embeddings = []
+    for text, tags in zip(text, tags):
+        text_embedding = model.encode(text) * text_weight
+        if tags:
+            tag_embeddings = np.mean([model.encode(tag) for tag in tags], axis=0) * tag_weight
+            combined_embedding = (text_embedding + tag_embeddings) / (tag_weight + text_weight)
+        else:
+            combined_embedding = text_embedding
+        combined_embeddings.append(combined_embedding)
+    return np.array(combined_embeddings)
 
 if __name__ == "__main__":
 	app.run()
