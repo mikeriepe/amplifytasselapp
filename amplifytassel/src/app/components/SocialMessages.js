@@ -36,7 +36,7 @@ import Fuse from 'fuse.js';
 import '../stylesheets/ApprovalTable.css';
 
 import { DataStore } from '@aws-amplify/datastore';
-import { FriendRequest, Profile, Friend, ChatRoom } from './../../models';
+import { FriendRequest, Profile, Friend, ChatRoom, Message } from './../../models';
 import { Storage } from 'aws-amplify';
 
 const Page = styled((props) => (
@@ -72,13 +72,24 @@ const Card = styled((props) => (
  * @return {*} row object
  */
 function Row(props) {
-  const { row, profiles, handleMessageAction, onChatButtonClick, handleSettingsClick} = props;
+  const { row, profiles, handleMessageAction, onChatButtonClick, handleSettingsClick, allChats} = props;
   const formattedProfiles = profiles.join(', ');
 
   const handleChatButtonClick = () => {
     // Call handleMessageAction with the chat room information
     handleMessageAction(row);
   };
+
+  const recentMessage = allChats
+  ? allChats
+      .filter((msg) => msg.ChatRoomID === row.id)
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0]?.Content
+  : null;
+
+  const truncatedMessage =
+    recentMessage && recentMessage.length > 20
+      ? recentMessage.substring(0, 20) + '...'
+      : recentMessage;
 
   return (
     <React.Fragment>
@@ -90,7 +101,7 @@ function Row(props) {
           variant={'gradient'}
           type={'submit'}
           style={{ fontSize: '0.875rem', marginRight: '2rem' }}
-          onClick={() => onChatButtonClick(row.ChatName)} // Pass the chatroom name here
+          onClick={() => onChatButtonClick(row.ChatName)} 
         >
           Chat
         </ThemedButton>
@@ -112,7 +123,9 @@ function Row(props) {
           <TableCell className='data-cell' style={{ whiteSpace: 'normal' }}>
             {formattedProfiles}
           </TableCell>
-          <TableCell className='data-cell'>{/* Add content for this cell */}</TableCell>
+          <TableCell className='data-cell'>
+            {truncatedMessage}
+          </TableCell>
           <TableCell className='data-cell'>
           <IconButton aria-label="settings" onClick={() => handleSettingsClick()}>
             <SettingsIcon />
@@ -142,7 +155,53 @@ export default function SocialMessages() {
   const [selectedChatroomName, setselectedChatroomName] = useState('');
   const [chatroomMessages, setChatroomMessages] = useState([]);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [allChats, setAllChats] = useState([]);
 
+  useEffect(() => {
+    const fetchAllChats = async () => {
+      try {
+        const allChatsResponse = await DataStore.query(Message);
+        setAllChats(allChatsResponse);
+
+        // Call the new function to get all chat messages
+        getAllChatMessages(allChatsResponse);
+      } catch (error) {
+        console.error("Error fetching all chat messages", error);
+      }
+    };
+
+    fetchAllChats();
+  }, []);
+
+
+  // New function to get all chat messages
+  const getAllChatMessages = async (allChatsResponse) => {
+    try {
+      const messagesPromises = allChatsResponse.map(async (chat) => {
+        const messageAsyncCollection = chat.Messages;
+        const messages = await messageAsyncCollection.values;
+
+        // Assuming you want to include chatroom information in each message
+        const chatroomMessages = messages.map((msg) => ({
+          chatroomId: chat.id,
+          chatroomName: chat.ChatName,
+          ...msg,
+        }));
+
+        return chatroomMessages;
+      });
+
+      const allMessages = await Promise.all(messagesPromises);
+
+      // Flatten the array of arrays into a single array of messages
+      const flattenedMessages = allMessages.flat();
+
+      // You can use flattenedMessages as needed
+      console.log("All chat messages:", flattenedMessages);
+    } catch (error) {
+      console.error("Error getting all chat messages", error);
+    }
+  };
 
   const handleOpenChatModal = async (chatroom) => {
     const messageAsyncCollection = chatroom.Messages;
@@ -250,9 +309,9 @@ export default function SocialMessages() {
       label: 'Members',
     },
     {
-      id: 'placeholder',
+      id: 'recentmsg',
       disablePadding: false,
-      label: '',
+      label: 'Recent Msg',
     },
     {
       id: 'settings',
@@ -335,6 +394,7 @@ export default function SocialMessages() {
                     profiles={profileOfJoined}
                     onChatButtonClick={() => handleOpenChatModal(chatroom)} // Pass a function here
                     handleSettingsClick={() => handleSettingsClick(chatroom)}
+                    allChats={allChats}
                     />
                 )})}
                 
