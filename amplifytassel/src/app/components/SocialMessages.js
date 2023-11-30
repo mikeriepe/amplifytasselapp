@@ -1,8 +1,9 @@
 import * as React from 'react';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useRef } from 'react';
 import {useNavigate} from 'react-router-dom';
 import Box from '@mui/material/Box';
 import SocialChatBox from './SocialChatBox'; // Import the SocialChatBox component
+import SocialMessageSetting from './SocialMessageSetting';
 import MuiPaper from '@mui/material/Paper';
 import MuiAvatar from '@mui/material/Avatar';
 import Toolbar from '@mui/material/Toolbar';
@@ -71,7 +72,7 @@ const Card = styled((props) => (
  * @return {*} row object
  */
 function Row(props) {
-  const { row, profiles, handleMessageAction, onChatButtonClick} = props;
+  const { row, profiles, handleMessageAction, onChatButtonClick, handleSettingsClick} = props;
   const formattedProfiles = profiles.join(', ');
 
   const handleChatButtonClick = () => {
@@ -96,21 +97,27 @@ function Row(props) {
           </TableCell>
           <TableCell className='data-cell' padding='checkbox'></TableCell>
           <TableCell
-            className='data-cell'
-            component='th'
-            scope='row'
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-            }}
-          >
-            <div className='text-center-vert'>{`${row.ChatName}`}</div>
-          </TableCell>
+          className='data-cell'
+          component='th'
+          scope='row'
+          style={{
+            display: 'flex',
+            alignItems: 'center', // Vertically align the content
+            justifyContent: 'flex-start', // Align content to the left
+            height: '56px', // Ensuring consistent height; adjust as needed
+          }}
+        >
+          <div className='text-center-vert'>{row.ChatName}</div>
+        </TableCell>
           <TableCell className='data-cell' style={{ whiteSpace: 'normal' }}>
             {formattedProfiles}
           </TableCell>
           <TableCell className='data-cell'>{/* Add content for this cell */}</TableCell>
-          <TableCell className='data-cell'>{/* Add content for this cell */}</TableCell>
+          <TableCell className='data-cell'>
+          <IconButton aria-label="settings" onClick={() => handleSettingsClick()}>
+            <SettingsIcon />
+          </IconButton>
+        </TableCell>
         </TableRow>
         <TableRow></TableRow>
       </React.Fragment>
@@ -134,7 +141,9 @@ export default function SocialMessages() {
   const [selectedChatroomid, setSelectedChatroomid] = useState('');
   const [selectedChatroomName, setselectedChatroomName] = useState('');
   const [chatroomMessages, setChatroomMessages] = useState([]);
-  
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+
   const handleOpenChatModal = async (chatroom) => {
     const messageAsyncCollection = chatroom.Messages;
     const messages = await messageAsyncCollection.values;
@@ -149,46 +158,42 @@ export default function SocialMessages() {
       })
     );
 
+    
     // Format timestamps
     const formattedMessages = updatedMessages.map((msg) => ({
       ...msg,
       Time: formatTimestamp(msg.Time),
     }));
-      
+
     setselectedChatroomName(chatroom.ChatName);
     setSelectedChatroomid(chatroom.id);
     setChatroomMessages(formattedMessages);
     setChatModalOpen(true);
   };
-  
+
+  const handleSettingsClick = async (chatroom) => {
+    setselectedChatroomName(chatroom.ChatName);
+    setSelectedChatroomid(chatroom.id);
+    setIsSettingsOpen(true);
+  };
+
   // Taken from Approvals, searches admin/approved accounts based on query
   const searchChats = async (query) => {
-    // Clear the display if there is no query
-    if (!query) {
-      setDisplayChats([]);
-      return;
-    }
-  
     try {
-      // Query user profile
       const profile = await DataStore.query(Profile, (p) => p.id.eq(userProfile.id));
       const chatRoomAsyncCollection = profile[0].Chatrooms;
       const chatroom = await chatRoomAsyncCollection.values;
   
-      // Use Promise.all to wait for all async operations to complete
       const results = await Promise.all(
         chatroom.map(async (chat) => {
-          // Query chat room details
           const chats = await DataStore.query(ChatRoom, (c) => c.id.eq(chat.chatRoomId));
           const ProfilesAsyncCollection = chats[0].Profiles;
           const profiles = await ProfilesAsyncCollection.values;
   
-          // Get profile IDs of other people in the chat
           const profileIdsArray = profiles
             .filter((profile) => profile.profileId !== userProfile.id)
             .map((profile) => profile.profileId);
   
-          // Get full names of other people in the chat
           const fullNameArray = await Promise.all(
             profileIdsArray.map(async (id) => {
               const profile = await DataStore.query(Profile, (p) => p.id.eq(id));
@@ -203,13 +208,28 @@ export default function SocialMessages() {
         })
       );
   
-      // Extract chatrooms and profiles from the results
-      const chatrooms = results.map((result) => result.chatroom);
-      const ProfilesOfJoinedChats = results.map((result) => result.fullNameArray);
+      if (!query) {
+        setDisplayChats(results.map((result) => result.chatroom));
+        setProfilesOfJoined(results.map((result) => result.fullNameArray));
+      } else {
+        const searchableData = results.map(({ chatroom, fullNameArray }) => ({
+          chatName: chatroom.ChatName,
+          profiles: fullNameArray.join(', '),
+          originalData: chatroom,
+        }));
   
-      // Update state with the obtained data
-      setDisplayChats(chatrooms);
-      setProfilesOfJoined(ProfilesOfJoinedChats);
+        const fuse = new Fuse(searchableData, {
+          keys: ['chatName', 'profiles'], 
+          threshold: 0.3,
+        });
+  
+        const fuseResults = fuse.search(query).map(result => result.item);
+        const chatroomsResults = fuseResults.map(result => result.originalData);
+        const profilesResults = fuseResults.map(result => result.profiles.split(', '));
+  
+        setDisplayChats(chatroomsResults);
+        setProfilesOfJoined(profilesResults);
+      }
     } catch (error) {
       console.error("Error searching chats", error);
     }
@@ -314,9 +334,10 @@ export default function SocialMessages() {
                     row={chatroom}
                     profiles={profileOfJoined}
                     onChatButtonClick={() => handleOpenChatModal(chatroom)} // Pass a function here
-                  />
-                  );
-                })}
+                    handleSettingsClick={() => handleSettingsClick(chatroom)}
+                    />
+                )})}
+                
             </TableBody>
             {/* TODO: footer with pagination and number selected */}
             {/* <TableFooter>
@@ -352,6 +373,14 @@ export default function SocialMessages() {
           </Table>
         }
       </Card>
+          {isSettingsOpen && (
+      <SocialMessageSetting
+        open={isSettingsOpen}
+        handleClose={() => setIsSettingsOpen(false)}
+        chatroomID={selectedChatroomid}
+        chatroomName={selectedChatroomName}
+      />
+    )}
       {isChatModalOpen && (
   <SocialChatBox
     open={isChatModalOpen}
