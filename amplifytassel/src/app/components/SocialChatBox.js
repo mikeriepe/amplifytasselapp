@@ -5,8 +5,11 @@ import {styled} from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import useAuth from '../util/AuthContext';
-import { DataStore } from 'aws-amplify';
-import { Message } from './../../models';
+import { DataStore, Predicates } from 'aws-amplify';
+import { Message, Profile } from './../../models';
+import Filter from 'bad-words';
+
+const filter = new Filter();
 
 const Bubble = styled((props) => (
   <Box {...props} />
@@ -21,19 +24,99 @@ const formatTimestamp = (timestamp) => {
   return new Date(timestamp).toLocaleString(undefined, options);
 }; 
 
-const ChatModal = ({ open, handleClose, chatroomName, chatroomID, chatroomMessages }) => {
+const ChatModal = ({ open, handleClose, chatroomName, chatroomID, chatroomMessages: initialChatroomMessages }) => {
   const {userProfile} = useAuth();
   const [message, setMessage] = useState('');
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+
+  const [showProfanityWarning, setShowProfanityWarning] = useState(false);
+  
   const chatboxRef = useRef(null);
+  const [chatroomMessages, setChatroomMessages] = useState(initialChatroomMessages);
+  const messagesContainerRef = useRef(null);
+  
+  // useEffect(() => {
+  //     // const subscription = DataStore.observe(Message, Predicates.ALL).subscribe({
+  //     //   next: (msg) => {
+  //     //     // Update the state when a new message is received
+  //     //     setChatroomMessages((prevMessages) => [...prevMessages, msg]);
+  //     //     console.log("New message received:", msg);
+          
+  //     //   },  
+  //     // });  
+
+
+  //     // useEffect(() => {
+  //     //   const subscription = DataStore.observe(Message, Predicates.ALL).subscribe({
+  //     //     next: (msg) => {
+  //     //       const messages = DataStore.query(Message, Predicates.ALL);
+  //     //       const filteredMessages = messages.filter((msg) => msg.ChatRoomID === chatroomID);
+  //     //       setChatroomMessages(filteredMessages);
+            
+  //     //     },
+  //     //   });
+  // useEffect(() => {
+  //   const fetchMessages = async () => {
+  //     const messages = await DataStore.query(Message, Predicates.ALL);
+  //        console.log("messages", messages);
+  //     const filteredMessages = messages.filter((msg) => msg.ChatRoomID === chatroomID);
+  //     setChatroomMessages(filteredMessages);
+  //   };
+
+  //   const subscription = DataStore.observe(Message).subscribe(() => {
+  //     fetchMessages();
+  //   });
+
+  //   fetchMessages();
+
+  //   return () => subscription.unsubscribe(); 
+  // }, []);
+
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const messages = await DataStore.query(Message, Predicates.ALL);
+  
+        const enrichedMessages = await Promise.all(
+          messages.map(async (msg) => {
+            // Fetch the sender's profile using msg.Sender
+            const senderProfile = await DataStore.query(Profile, msg.Sender);
+  
+            return {
+              ...msg,
+              senderName: `${senderProfile?.firstName || 'Unknown User'} ${senderProfile?.lastName || ''}`,
+              Time: new Date(msg.Time).toLocaleString(), // Format the timestamp
+            };
+          })
+        );
+  
+        const filteredMessages = enrichedMessages.filter((msg) => msg.ChatRoomID === chatroomID);
+        setChatroomMessages(filteredMessages);
+      } catch (error) {
+        console.error('Error fetching messages:', error);
+      }
+    };
+  
+    const subscription = DataStore.observe(Message).subscribe(() => {
+      fetchMessages();
+    });
+  
+    fetchMessages();
+  
+    return () => subscription.unsubscribe();
+  }, [chatroomID]);
+
+
+
 
   const handleCloseModal = () => {
     // Close the modal
     handleClose();
 
     // Refresh here to refresh chatroomMessages from the frontend
-    window.location.reload();
+    //window.location.reload();
   };
 
   const handleEnterKeyPress = (e) => {
@@ -46,15 +129,21 @@ const ChatModal = ({ open, handleClose, chatroomName, chatroomID, chatroomMessag
   };
   
   const handleSendMessage = async () => {
-    console.log(message);
+    console.log("New msg sent", message);
+
+    if (filter.isProfane(message)) {
+      setShowProfanityWarning(true);
+      return;
+    }
     const currentDate = new Date();
     const formattedTimestamp = currentDate.toISOString();
+    
     const newMessage = await DataStore.save(
       new Message({
         "ChatRoomID": chatroomID,
         "Content": message,
         "Sender": userProfile.id,
-        "Time": formattedTimestamp
+        "Time": formattedTimestamp,
       })
     );
 
@@ -65,16 +154,21 @@ const ChatModal = ({ open, handleClose, chatroomName, chatroomID, chatroomMessag
     // Update the Time property with the formatted timestamp
     chatMessage.Time = formatTimestamp(formattedTimestamp);
     
-    chatroomMessages.push(chatMessage);
+    console.log("chatMsg", chatMessage);
+
+    setChatroomMessages((prevMessages) => [...prevMessages, chatMessage]);
     setMessage('');
   };
 
   const handleMouseDown = (e) => {
     setIsDragging(true);
-    const rect = chatboxRef.current.getBoundingClientRect();
-    const offsetX = e.clientX - rect.left;
-    const offsetY = e.clientY - rect.top;
-    setDragOffset({ x: offsetX, y: offsetY });
+
+    if (chatboxRef.current) {
+      const rect = chatboxRef.current.getBoundingClientRect();
+      const offsetX = e.clientX - rect.left - rect.width / 2; // Calculate offset from the center
+      const offsetY = e.clientY - rect.top - rect.height / 2;
+      setDragOffset({ x: offsetX, y: offsetY });
+    }
   };
 
   const handleMouseUp = () => {
@@ -82,7 +176,7 @@ const ChatModal = ({ open, handleClose, chatroomName, chatroomID, chatroomMessag
   };
 
   const handleMouseMove = (e) => {
-    if (isDragging) {
+    if (isDragging && chatboxRef.current) {
       const left = e.clientX - dragOffset.x;
       const top = e.clientY - dragOffset.y;
       chatboxRef.current.style.left = left + 'px';
@@ -90,12 +184,24 @@ const ChatModal = ({ open, handleClose, chatroomName, chatroomID, chatroomMessag
     }
   };
 
+
+  useEffect(() => {
+    // Scroll to the bottom when messages are updated
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
+  }, [chatroomMessages]);
+
+
   return (
     <Modal open={open} onClose={handleCloseModal}>
       <Box
         ref={chatboxRef}
         sx={{
-          position: 'absolute',
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
           width: 800,
           bgcolor: 'background.paper',
           boxShadow: 24,
@@ -140,6 +246,7 @@ const ChatModal = ({ open, handleClose, chatroomName, chatroomID, chatroomMessag
           }}
         >
           <div
+            ref={messagesContainerRef}
             style={{
               height: '400px',
               overflowY: 'scroll',
@@ -165,16 +272,31 @@ const ChatModal = ({ open, handleClose, chatroomName, chatroomID, chatroomMessag
         ))}
           </div>
         </div>
+ 
         <Grid container spacing={1} alignItems="center">
+          {showProfanityWarning && (
+            <Grid item xs={12}>
+              <Typography color="error" style={{ textAlign: 'center' }}>
+                Message cannot be sent due to profanity.
+              </Typography>
+            </Grid>
+          )}
+
           <Grid item xs>
             <TextField
-              label="Type your message"
-              variant="outlined"
-              fullWidth
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              onKeyDown={handleEnterKeyPress}
-            />
+            label="Type your message"
+            variant="outlined"
+            fullWidth
+            value={message}
+            onChange={(e) => {
+              setMessage(e.target.value);
+              if (showProfanityWarning) {
+                setShowProfanityWarning(false);
+              }
+            }}
+            onKeyDown={handleEnterKeyPress}
+          />
+
           </Grid>
           <Grid item>
             <IconButton
