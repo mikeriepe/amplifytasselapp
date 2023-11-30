@@ -81,9 +81,19 @@ function Row(props) {
   };
 
   console.log("this is chat", allChats);
+  console.log("row.id", row.id);
   const recentMessage = allChats
-  ? allChats.find((msg) => msg.ChatRoomID === row.id)
+  ? allChats
+      .filter((msg) => msg.ChatRoomID === row.id)
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0]?.Content
   : null;
+
+  console.log("recentMessage", recentMessage);
+
+  const truncatedMessage =
+    recentMessage && recentMessage.length > 30
+      ? recentMessage.substring(0, 30) + '...'
+      : recentMessage;
 
   return (
     <React.Fragment>
@@ -118,7 +128,8 @@ function Row(props) {
             {formattedProfiles}
           </TableCell>
           <TableCell className='data-cell'>
-            {recentMessage ? recentMessage.content : 'No recent messages'}
+            {/* {recentMessage ? recentMessage.content : 'No recent messages'} */}
+            {truncatedMessage}
           </TableCell>
           <TableCell className='data-cell'>
           <IconButton aria-label="settings" onClick={() => handleSettingsClick()}>
