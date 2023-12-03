@@ -51,6 +51,7 @@ export default function FetchWrapper() {
     cpyOpp.profilesJoined = [...temp1];
     cpyOpp.roles = [...temp2];
     cpyOpp.keywords = [...temp3];
+    cpyOpp.keywords.sort((a, b) => a.name.localeCompare(b.name));
     setFetchedData(cpyOpp);
   };
 

@@ -40,6 +40,9 @@ const InputLabelStyling = {
  * @return {HTML} login page
  */
 export default function Login() {
+
+
+
   const navigate = useNavigate();
   const {user, setUser, setLoggedIn, setUserProfile} = useAuth();
 
@@ -71,6 +74,8 @@ export default function Login() {
   }, [user]);
 
   const login = () => {
+    //const keepLoggedIn = document.getElementById('keepLoggedIn').checked;
+    
     Auth.signIn(values['login'].useremail, values['login'].userpassword)
       .then((user) => {
         if (user.challengeName === 'NEW_PASSWORD_REQUIRED') {
@@ -102,6 +107,10 @@ export default function Login() {
             console.log(e);
           });
         } else {
+          // if (keepLoggedIn) {
+          //   // Store a token or session to remember the user
+          //   localStorage.setItem('accessToken', user.accessToken);
+          // }
           console.log('login worked!');
           console.log(JSON.stringify(user));
           toast.success('Login Success', {
@@ -215,7 +224,22 @@ export default function Login() {
  * @return {JSX}
  */
 function LoginForm({active, handleNextPage, login}) {
+
+  const [keepLoggedIn, setKeepLoggedIn] = useState(
+    () => localStorage.getItem('rememberUser') === 'true'
+  );
+
+  const { user, setUser, setLoggedIn, userProfile, setUserProfile } = useAuth();
   const navigate = useNavigate();
+
+  const handleLogin = () => {
+    // Store the user's preference in local storage
+    localStorage.setItem('rememberUser', keepLoggedIn);
+
+    // Perform the login
+    login();
+  };
+  
 
   const handleNavigate = () => {
     navigate('/signup');
@@ -277,15 +301,27 @@ function LoginForm({active, handleNextPage, login}) {
             type={'submit'}
             onClick={(e) => {
               e.preventDefault();
-              login();
+              handleLogin();
+              // login();
             }}
           >
             Login
           </ThemedButton>
           <FormControlLabel
             label='Keep me logged in'
-            control={<Checkbox disableRipple />}
+            control={
+              <Checkbox
+                disableRipple
+                checked={keepLoggedIn}
+                onChange={(e) => {
+                  setKeepLoggedIn(e.target.checked); 
+                  localStorage.setItem('keepLoggedIn', e.target.checked ? 'true' : 'false'); 
+                }}
+              />
+            }
+     
             sx={InputLabelStyling}
+
           />
         </div>
         <p className='text-light'>

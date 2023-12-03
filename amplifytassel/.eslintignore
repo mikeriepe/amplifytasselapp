@@ -1,2 +1,8 @@
 src/models
 src\models
+
+src/models/models
+
+amplify-codegen-temp/models/models
+
+src\models\models

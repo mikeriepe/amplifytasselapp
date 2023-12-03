@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { InputContext, useInputContext } from '../components/ThemedInput';
@@ -23,6 +23,7 @@ const PaperStyling = {
   filter: 'drop-shadow(0px 15px 40px rgba(192, 225, 255, 0.1))',
   color: '#3C4047',
 };
+
 
 /**
  * Creates signup page
@@ -49,6 +50,7 @@ export default function Signup() {
       verifycode: '',
     }
   });
+
 
   const createUser = () => {
     // create user in aws
@@ -112,9 +114,11 @@ export default function Signup() {
             active: 'false',
           },
         }));
+        handleNextStep(3);
       })
       .catch((err) => {
-        console.log(`error: ${err}`);
+        //console.log(`error: ${err}`);
+        alert('Email: '+ values[2].useremail+ ' already exists.');
       });
   };
 
@@ -166,7 +170,6 @@ export default function Signup() {
 
     if (isFormValid()) {
       createUser();
-      handleNextStep(3);
     } else {
       alert('Required fields need to be filled or invalid inputs');
     }
@@ -180,6 +183,9 @@ export default function Signup() {
   const handleNextStep = (step) => {
     setStepNumber(step);
   };
+
+
+  
 
   return (
     <InputContext.Provider value={[values, setValues]}>
@@ -568,6 +574,7 @@ function SignupStepFour({ active, step, handleResend }) {
         navigate('/login');
       })
       .catch((err) => {
+        console.log(err.code);
         console.log(err);
         alert('code incorrect');
       });

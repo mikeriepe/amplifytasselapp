@@ -30,6 +30,7 @@ import {opportunityStatusToText, opportunityStatusToColor} from '../util/Opportu
 import CircularProgress from '@mui/material/CircularProgress';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import {styled} from '@mui/material/styles';
+import {toast} from 'react-toastify';
 import '../stylesheets/ApprovalTable.css';
 
 import { DataStore, Storage } from 'aws-amplify';
@@ -81,7 +82,7 @@ const Avatar = ({image}, props) => (
  * @return {*} row object
  */
 function Row(props) {
-  const {row, handleSelect, profile} = props;
+  const {row, handleSelect, profile, selectAllChecked, selected} = props;
   const [open, setOpen] = useState(false);
 
   const [banner, setBanner] = useState(null);
@@ -101,7 +102,7 @@ function Row(props) {
     <React.Fragment>
       <TableRow>
         <TableCell className='data-cell' padding='checkbox'>
-          <Checkbox value={row.id} onChange={handleSelect}/>
+          <Checkbox checked={selectAllChecked || selected.includes(row.id)} value={row.id} onChange={(event) => handleSelect(event, row)}/>
         </TableCell>
         <TableCell className='data-cell' padding='checkbox'>
           <IconButton
@@ -170,6 +171,7 @@ export default function ApprovalOpportunities() {
   const [sortDescriptionOrder, setSortDescriptionOrder] = useState('');
   const [sortCreatorOrder, setSortCreatorOrder] = useState('');
   const [sortStatusOrder, setSortStatusOrder] = useState('');
+  const [selectAllChecked, setSelectAllChecked] = useState(false);
 
   const handleDialogOpen = () => {
     setDialogOpen(true);
@@ -311,20 +313,44 @@ export default function ApprovalOpportunities() {
     });
   };
 
-  const handleSelect = (event) => {
-    const eventname = event.target.value;
-    const currentIndex = selected.indexOf(eventname);
-    const newSelected = [...selected];
-
-    if (currentIndex === -1) {
-      newSelected.push(eventname);
+  const handleSelectAll = () => {
+    setSelectAllChecked(!selectAllChecked);
+    if (!selectAllChecked) {
+      const newSelected = opps.map((opps) => opps.id);
+      console.log(newSelected);
+      setSelected(newSelected);
     } else {
-      newSelected.splice(currentIndex, 1);
+      setSelected([]);
+      console.log(selected);
     }
-    setSelected(newSelected);
   };
 
+  const handleSelect = (event) => {
+    if (selectAllChecked) {
+      setSelected([]);
+    } else {
+      const eventname = event.target.value;
+      const currentIndex = selected.indexOf(eventname);
+      const newSelected = [...selected];
+  
+      if (currentIndex === -1) {
+        newSelected.push(eventname);
+      } else {
+        newSelected.splice(currentIndex, 1);
+      }
+      console.log(newSelected);
+      setSelected(newSelected);
+    }
+  };
+
+
+
   const handleStatusAction = (event) => {
+    if (selected.length === 0) {
+      toast.error('Select at least one user to approve or deny.');
+      return;
+    }
+
     let status = 1;
     switch (event.target.textContent) {
       case 'Approve':
@@ -514,7 +540,8 @@ export default function ApprovalOpportunities() {
               <TableRow>
                 <TableCell padding='checkbox'>
                   <Checkbox
-                    color='primary'
+                    checked={selectAllChecked}
+                    onChange={handleSelectAll}
                   // indeterminate={numSelected > 0 && numSelected < rowCount}
                   // checked={rowCount > 0 && numSelected === rowCount}
                   // onChange={onSelectAllClick}
@@ -561,6 +588,8 @@ export default function ApprovalOpportunities() {
                       profile={profiles.find((profile) =>
                         profile.id === opp.profileID)}
                       handleSelect={handleSelect}
+                      selectAllChecked={selectAllChecked}
+                      selected={selected}
                     />
                   );
                 })

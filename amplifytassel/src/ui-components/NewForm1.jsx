@@ -13,14 +13,13 @@ import {
   SelectField,
   TextField,
 } from "@aws-amplify/ui-react";
-import { getOverrideProps } from "@aws-amplify/ui-react/internal";
 import { Profile } from "../models";
-import { fetchByPath, validateField } from "./utils";
+import { fetchByPath, getOverrideProps, validateField } from "./utils";
 import { DataStore } from "aws-amplify";
 export default function NewForm1(props) {
   const {
     id: idProp,
-    profile,
+    profile: profileModelProp,
     onSuccess,
     onError,
     onSubmit,
@@ -33,7 +32,7 @@ export default function NewForm1(props) {
     about: "",
     location: "",
     graduationYear: "",
-    Field0: undefined,
+    Field0: "",
     banner: "",
     points: "",
   };
@@ -58,14 +57,16 @@ export default function NewForm1(props) {
     setPoints(cleanValues.points);
     setErrors({});
   };
-  const [profileRecord, setProfileRecord] = React.useState(profile);
+  const [profileRecord, setProfileRecord] = React.useState(profileModelProp);
   React.useEffect(() => {
     const queryData = async () => {
-      const record = idProp ? await DataStore.query(Profile, idProp) : profile;
+      const record = idProp
+        ? await DataStore.query(Profile, idProp)
+        : profileModelProp;
       setProfileRecord(record);
     };
     queryData();
-  }, [idProp, profile]);
+  }, [idProp, profileModelProp]);
   React.useEffect(resetStateValues, [profileRecord]);
   const validations = {
     about: [],
@@ -80,9 +81,10 @@ export default function NewForm1(props) {
     currentValue,
     getDisplayValue
   ) => {
-    const value = getDisplayValue
-      ? getDisplayValue(currentValue)
-      : currentValue;
+    const value =
+      currentValue && getDisplayValue
+        ? getDisplayValue(currentValue)
+        : currentValue;
     let validationResponse = validateField(value, validations[fieldName]);
     const customValidator = fetchByPath(onValidate, fieldName);
     if (customValidator) {
@@ -131,13 +133,20 @@ export default function NewForm1(props) {
         }
         try {
           Object.entries(modelFields).forEach(([key, value]) => {
-            if (typeof value === "string" && value.trim() === "") {
-              modelFields[key] = undefined;
+            if (typeof value === "string" && value === "") {
+              modelFields[key] = null;
             }
           });
+          const modelFieldsToSave = {
+            about: modelFields.about,
+            location: modelFields.location,
+            graduationYear: modelFields.graduationYear,
+            banner: modelFields.banner,
+            points: modelFields.points,
+          };
           await DataStore.save(
             Profile.copyOf(profileRecord, (updated) => {
-              Object.assign(updated, modelFields);
+              Object.assign(updated, modelFieldsToSave);
             })
           );
           if (onSuccess) {
@@ -356,7 +365,7 @@ export default function NewForm1(props) {
             event.preventDefault();
             resetStateValues();
           }}
-          isDisabled={!(idProp || profile)}
+          isDisabled={!(idProp || profileModelProp)}
           {...getOverrideProps(overrides, "ResetButton")}
         ></Button>
         <Flex
@@ -368,7 +377,7 @@ export default function NewForm1(props) {
             type="submit"
             variation="primary"
             isDisabled={
-              !(idProp || profile) ||
+              !(idProp || profileModelProp) ||
               Object.values(errors).some((e) => e?.hasError)
             }
             {...getOverrideProps(overrides, "SubmitButton")}

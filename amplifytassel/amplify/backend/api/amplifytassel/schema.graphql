@@ -1,3 +1,30 @@
+type Message @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  ChatRoomID: ID! @index(name: "byChatRoom")
+  Sender: ID! @index(name: "byProfile")
+  Time: AWSDateTime!
+  Content: String!
+}
+
+type ChatRoom @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  ChatName: String
+  Messages: [Message] @hasMany(indexName: "byChatRoom", fields: ["id"])
+  Profiles: [Profile] @manyToMany(relationName: "ProfileChatRoom")
+}
+
+type FriendRequest @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  Sender: ID @index(name: "byProfile")
+  Receiver: String
+}
+
+type Friend @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  profileID: ID! @index(name: "byProfile")
+  Friend: String
+}
+
 enum OpportunityStatus {
   PENDING
   UPDATED
@@ -79,6 +106,10 @@ type Profile @model @auth(rules: [{allow: public}]) {
   keywords: [Keyword] @manyToMany(relationName: "KeywordProfile")
   banner: String
   points: Int
+  FriendRequests: [FriendRequest] @hasMany(indexName: "byProfile", fields: ["id"])
+  Friends: [Friend] @hasMany(indexName: "byProfile", fields: ["id"])
+  Chatrooms: [ChatRoom] @manyToMany(relationName: "ProfileChatRoom")
+  Messages: [Message] @hasMany(indexName: "byProfile", fields: ["id"])
 }
 
 type Request @model @auth(rules: [{allow: public}]) {

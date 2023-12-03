@@ -1,12 +1,18 @@
-import * as React from 'react';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import useAuth from '../util/AuthContext';
 import '../stylesheets/Landing.css';
 
-// import useAuth from '../util/AuthContext';
-/**
- * creates landing page
- * @return {HTML} Landing page
- */
 export default function Landing() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (user != null) {
+      navigate('/dashboard');
+    }
+  }, [user, navigate]);
+
   return (
     <div className='Landing'>
       <div className='title'>
@@ -16,3 +22,4 @@ export default function Landing() {
     </div>
   );
 }
+//Landing.js changes: hook up useAuth to redirect you to myprofile if it detects you're already logged in

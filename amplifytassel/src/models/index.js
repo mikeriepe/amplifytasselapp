@@ -26,31 +26,36 @@ const RequestStatus = {
   "REJECTED": "REJECTED"
 };
 
-const { Keyword, Profile, Major, Role, Request, Post, Comment, Opportunity, Organization, Note, KeywordProfile, KeywordOpportunity, ProfileMajor, ProfileRole, OpportunityProfile, RoleMajor, WorkHistory, Availability, DaysOfWeek, TimeSpan, Location } = initSchema(schema);
+const { Message, ChatRoom, FriendRequest, Friend, Keyword, Organization, Comment, Role, Major, Profile, Request, Post, Opportunity, Note, ProfileChatRoom, KeywordProfile, KeywordOpportunity, RoleMajor, ProfileRole, ProfileMajor, OpportunityProfile, DaysOfWeek, Location, Availability, TimeSpan, WorkHistory } = initSchema(schema);
 
 export {
+  Message,
+  ChatRoom,
+  FriendRequest,
+  Friend,
   Keyword,
-  Profile,
-  Major,
+  Organization,
+  Comment,
   Role,
+  Major,
+  Profile,
   Request,
   Post,
-  Comment,
   Opportunity,
-  Organization,
   Note,
+  ProfileChatRoom,
   KeywordProfile,
   KeywordOpportunity,
-  ProfileMajor,
-  ProfileRole,
-  OpportunityProfile,
   RoleMajor,
+  ProfileRole,
+  ProfileMajor,
+  OpportunityProfile,
   OpportunityStatus,
   ProfileStatus,
   RequestStatus,
-  WorkHistory,
-  Availability,
   DaysOfWeek,
+  Location,
+  Availability,
   TimeSpan,
-  Location
+  WorkHistory
 };
