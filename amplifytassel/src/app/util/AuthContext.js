@@ -1,6 +1,4 @@
-import React, {useContext, createContext, useState, useEffect} from 'react';
-import CircularProgress from '@mui/material/CircularProgress';
-import MuiBox from '@mui/material/Box';
+import React, {useContext, createContext, useState, useEffect, useRef} from 'react';
 import {useNavigate} from 'react-router-dom';
 
 import { Auth } from 'aws-amplify';
@@ -10,82 +8,90 @@ import { Profile } from '../../models';
 // initializes context
 const AuthContext = createContext();
 
-const Progress = () => (
-  <MuiBox
-    sx={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '100vh',
-      width: '100vw',
-    }}
-  >
-    <CircularProgress />
-  </MuiBox>
-);
-
 /**
  * component that provides authcontext
  * @param {*} props things passed in
  * @return {JSX} auth provider for auth context
  */
 export function AuthProvider(props) {
+  
+  // What is user?
   const [user, setUser] = useState(null);
+
+  // This should be removed.
+  // The way to check if the user is logged in
+  // is checking if user is null or not.
   const [loggedIn, setLoggedIn] = useState(false);
+
+  // What is userProfile?
   const [userProfile, setUserProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
+
+  // loadingAuth loads the user and userProfile,
+  // or nullifies them if the user is logged out.
+  const [loadingAuth, setLoadingAuth] = useState(true);
 
   const navigate = useNavigate();
 
-  useEffect(()=>{
-    setLoading(true);
+  /**
+   * This useEffect syncs the authentication status.
+   * 
+   * 1. isAuthLoading ensures this useEffect is only running once at any time.
+   */
+  const isAuthLoading = useRef(false);
+  useEffect(() => {
+    if (!loadingAuth) return;
+    if (isAuthLoading.current) return;
+    isAuthLoading.current = true;
     Auth.currentAuthenticatedUser()
-      .then((user) => {
-        // console.log(JSON.stringify(user));
-        console.log('got user');
-        setUser(user.attributes);
-        DataStore.query(Profile, c => c.email.eq(user.attributes.email))
+      .then((authUser) => {
+        DataStore.query(Profile, c => c.email.eq(authUser.attributes.email))
           .then((profile) => {
+            if (
+              userProfile &&
+              JSON.stringify(userProfile) === JSON.stringify(profile[0]) &&
+              user &&
+              JSON.stringify(user) === JSON.stringify(authUser.attributes)
+            ) {
+              return;
+            }
+            setUser(authUser.attributes);
             setUserProfile(profile[0]);
-            setLoggedIn(true);
-            setLoading(false);
+            navigate('/dashboard');
           })
           .catch((err) => {
+            if (!user && !userProfile) return;
             setUser(null);
-            setLoggedIn(false);
             setUserProfile(null);
-            navigate('/');
-            setLoading(false);
-            console.log('error retreiving profile: ', err);
+            navigate('/login');
+            console.error('AuthContext: Error retreiving profile: ', err);
           });
       })
-      .catch((err) => {
+      .catch(() => {
+        if (!user && !userProfile) return;
         setUser(null);
-        setLoggedIn(false);
         setUserProfile(null);
-        navigate('/');
-        setLoading(false);
-        console.log('user login verification failed: ', err);
+        navigate('/login');
+      })
+      .finally(() => {
+        isAuthLoading.current = false;
+        setLoadingAuth(false);
       });
-  }, []);
+  }, [user, userProfile, loadingAuth, navigate]);
 
   return (
-    <>
-      {loading ? <Progress /> : (
-        <AuthContext.Provider
-          value={{
-            user,
-            setUser,
-            loggedIn,
-            setLoggedIn,
-            userProfile,
-            setUserProfile,
-          }}
-        >
-          {props.children}
-        </AuthContext.Provider>
-      )}
-    </>
+    <AuthContext.Provider
+      value={{
+        user,
+        setUser, // This should be removed.
+        loggedIn, // This should be removed.
+        setLoggedIn, // This should be removed.
+        userProfile,
+        setUserProfile, // This should be removed.
+        setLoadingAuth
+      }}
+    >
+      {props.children}
+    </AuthContext.Provider>
   );
 }
 

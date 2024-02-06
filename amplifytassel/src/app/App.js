@@ -34,7 +34,7 @@ Amplify.configure(awsExports);
 const initialState = { name: '', description: '' }
 
 const App = () => {
-  const {userProfile} = useAuth();
+  const { user } = useAuth();
   const {
     showStarAnimation,
     showConfettiAnimation,
@@ -75,7 +75,7 @@ const App = () => {
   return (
     <Box sx={{display: 'flex'}}>
       <ToastContainer />
-      {userProfile !== null ? <NavBarLoggedIn /> : <NavBarLoggedOut />}
+      {user ? <NavBarLoggedIn /> : <NavBarLoggedOut />}
       <Box component='main' sx={{flexGrow: 1, marginTop: '70px'}}>
         <Routes>
           <Route path='/' element={<Landing />}/>
