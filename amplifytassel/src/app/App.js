@@ -22,6 +22,7 @@ import MyProfile from './pages/MyProfile';
 import ViewProfile from './pages/ViewProfile';
 import AnimationStarFlying from './components/AnimationStarFlying';
 import AnimationConfetti from './components/AnimationConfetti';
+import Progress from './components/Progress';
 import { Auth } from 'aws-amplify';
 
 
@@ -29,12 +30,28 @@ import useAuth from './util/AuthContext';
 import { Amplify} from 'aws-amplify'
 import awsExports from "../aws-exports";
 import useAnimation from './util/AnimationContext';
+
+import { Navigate, Outlet } from 'react-router-dom';
+
 Amplify.configure(awsExports);
 
-const initialState = { name: '', description: '' }
+/**
+ * Admin Routes - Only accessible by Admin accounts.
+ *  1) If the user auth is loading, return a loading icon.
+ *  2) If the user is not logged in, redirect to the login page.
+ *  3) If the user is an admin, permit them to access the route.
+ *  4) Otherwise, redirect to the profile page.
+ */
+const AdminLayout = (props) => {
+  const { loadingAuth, user, userProfile } = props;
+  if (loadingAuth) return <Progress />;
+  if (!user) return <Navigate to="/login" replace />;
+  if (!loadingAuth && user && userProfile?.status === 'ADMIN') return <Outlet />;
+  return <Navigate to="/myprofile" replace />;
+};
 
 const App = () => {
-  const { user } = useAuth();
+  const { loadingAuth, user, userProfile } = useAuth();
   const {
     showStarAnimation,
     showConfettiAnimation,
@@ -75,7 +92,7 @@ const App = () => {
   return (
     <Box sx={{display: 'flex'}}>
       <ToastContainer />
-      {user ? <NavBarLoggedIn /> : <NavBarLoggedOut />}
+      {(!loadingAuth && user && userProfile) ? <NavBarLoggedIn /> : <NavBarLoggedOut />}
       <Box component='main' sx={{flexGrow: 1, marginTop: '70px'}}>
         <Routes>
           <Route path='/' element={<Landing />}/>
@@ -88,7 +105,9 @@ const App = () => {
           />
           <Route path='/profile/:profileid' element={<ViewProfile />} />
           <Route path='/dashboard' element={<Dashboard />}/>
-          <Route path='/approvals' element={<Approvals/>}/>
+          <Route element={<AdminLayout loadingAuth={loadingAuth} user={user} userProfile={userProfile} />}>
+            <Route path='/approvals' element={<Approvals/>}/>
+          </Route>
           <Route path='/opportunities' element={<Opportunities />}/>
           <Route path='/myprofile' element={<MyProfile />}/>
           <Route path='/landing' element={<Landing />}/>

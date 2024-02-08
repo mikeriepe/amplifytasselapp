@@ -1,6 +1,5 @@
 import React, {useContext, createContext, useState, useEffect, useRef} from 'react';
-import CircularProgress from '@mui/material/CircularProgress';
-import MuiBox from '@mui/material/Box';
+import Progress from '../components/Progress';
 import {useNavigate} from 'react-router-dom';
 
 import { Auth } from 'aws-amplify';
@@ -9,20 +8,6 @@ import { Profile } from '../../models';
 
 // initializes context
 const AuthContext = createContext();
-
-const Progress = () => (
-  <MuiBox
-    sx={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '100vh',
-      width: '100vw',
-    }}
-  >
-    <CircularProgress />
-  </MuiBox>
-);
 
 /**
  * component that provides authcontext
@@ -73,7 +58,7 @@ export function AuthProvider(props) {
               return;
             }
             setUser(authUser.attributes);
-            setUserProfile(profile[0]);
+            setUserProfile(profile[0] ?? {});
             console.log('Logged in, set user and userProfile');
           })
           .catch((err) => {
