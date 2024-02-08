@@ -1,4 +1,6 @@
 import React, {useContext, createContext, useState, useEffect, useRef} from 'react';
+import CircularProgress from '@mui/material/CircularProgress';
+import MuiBox from '@mui/material/Box';
 import {useNavigate} from 'react-router-dom';
 
 import { Auth } from 'aws-amplify';
@@ -7,6 +9,20 @@ import { Profile } from '../../models';
 
 // initializes context
 const AuthContext = createContext();
+
+const Progress = () => (
+  <MuiBox
+    sx={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100vh',
+      width: '100vw',
+    }}
+  >
+    <CircularProgress />
+  </MuiBox>
+);
 
 /**
  * component that provides authcontext
@@ -46,6 +62,8 @@ export function AuthProvider(props) {
       .then((authUser) => {
         DataStore.query(Profile, c => c.email.eq(authUser.attributes.email))
           .then((profile) => {
+            setLoadingAuth(false);
+            isAuthLoading.current = false;
             if (
               userProfile &&
               JSON.stringify(userProfile) === JSON.stringify(profile[0]) &&
@@ -56,9 +74,11 @@ export function AuthProvider(props) {
             }
             setUser(authUser.attributes);
             setUserProfile(profile[0]);
-            navigate('/dashboard');
+            console.log('Logged in, set user and userProfile');
           })
           .catch((err) => {
+            setLoadingAuth(false);
+            isAuthLoading.current = false;
             if (!user && !userProfile) return;
             setUser(null);
             setUserProfile(null);
@@ -67,31 +87,34 @@ export function AuthProvider(props) {
           });
       })
       .catch(() => {
+        setLoadingAuth(false);
+        isAuthLoading.current = false;
         if (!user && !userProfile) return;
         setUser(null);
         setUserProfile(null);
         navigate('/login');
       })
-      .finally(() => {
-        isAuthLoading.current = false;
-        setLoadingAuth(false);
-      });
   }, [user, userProfile, loadingAuth, navigate]);
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        setUser, // This should be removed.
-        loggedIn, // This should be removed.
-        setLoggedIn, // This should be removed.
-        userProfile,
-        setUserProfile, // This should be removed.
-        setLoadingAuth
-      }}
-    >
-      {props.children}
-    </AuthContext.Provider>
+    <>
+      {(loadingAuth || isAuthLoading.current) ? <Progress /> : (
+        <AuthContext.Provider
+          value={{
+            user,
+            setUser, // This should be removed.
+            loggedIn, // This should be removed.
+            setLoggedIn, // This should be removed.
+            userProfile,
+            setUserProfile, // This should be removed.
+            loadingAuth,
+            setLoadingAuth
+          }}
+        >
+          {props.children}
+        </AuthContext.Provider>
+      )}
+    </>
   );
 }
 

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {styled} from '@mui/material';
 import MuiBox from '@mui/material/Box';
 import {Grid} from '@mui/material';
@@ -8,6 +8,7 @@ import DashboardUpcoming from '../components/DashboardUpcoming';
 import DashboardBrowse from '../components/DashboardBrowse';
 import DashboardCreate from '../components/DashboardCreate';
 import DashboardPendingReqs from '../components/DashboardPendingReqs';
+import { useNavigate } from 'react-router-dom';
 
 import { DataStore } from '@aws-amplify/datastore';
 import { Opportunity } from './../../models';
@@ -27,7 +28,14 @@ const Page = styled((props) => (
  * @return {HTML} dashboard page
  */
 export default function Dashboard() {
-  const {userProfile} = useAuth();
+  const { loadingAuth, user, userProfile } = useAuth();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!loadingAuth && !user) {
+      navigate('/login');
+    }
+  }, [loadingAuth, user, navigate]);
+
   const [createdOpps, setCreatedOpps] = useState([]);
 
   const getCreatedOpportunities = () => {

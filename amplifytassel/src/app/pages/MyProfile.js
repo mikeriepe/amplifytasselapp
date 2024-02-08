@@ -32,8 +32,13 @@ const Page = styled((props) => (
  * @return {HTML} Profile component
  */
 export default function MyProfile() {
-  const { user, setUser, setLoggedIn, userProfile, setUserProfile } = useAuth();
+  const { loadingAuth, user, setUser, setLoggedIn, userProfile, setUserProfile } = useAuth();
   const navigate = useNavigate();
+  useEffect(() => {
+    if (!loadingAuth && !user) {
+      navigate('/login');
+    }
+  }, [loadingAuth, user, navigate]);
 
   const handleDeactivateAccount = () => {
     console.log('deactivate acct api called here');

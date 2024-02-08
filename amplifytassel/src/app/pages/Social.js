@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import MuiBox from '@mui/material/Box';
 import {styled} from '@mui/material/styles';
 import PageHeader from '../components/PageHeader';
@@ -8,6 +8,8 @@ import SocialFriends from '../components/SocialFriends'
 import SocialIncomingRequests from '../components/SocialIncomingRequests';
 import SocialOutgoingRequests from '../components/SocialOutgoingRequests';
 import SocialMessages from '../components/SocialMessages';
+import { useNavigate } from 'react-router-dom';
+import useAuth from '../util/AuthContext';
 
 const Page = styled((props) => (
   <MuiBox {...props} />
@@ -24,7 +26,15 @@ const Page = styled((props) => (
  * @return {HTML} socials page
  */
 export default function Socials() {
-  const [tab, setTab] = React.useState(0);
+  const { loadingAuth, user } = useAuth();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!loadingAuth && !user) {
+      navigate('/login');
+    }
+  }, [loadingAuth, user, navigate]);
+
+  const [tab, setTab] = useState(0);
   const tabs = [
     {name: 'Users', component: <SocialUsers/>},
     {name: 'Friends', component: <SocialFriends/>},
@@ -40,7 +50,7 @@ export default function Socials() {
           subtitle='Add or delete friends and message them!'
           tabs={<CompressedTabBar data={tabs} tab={tab} setTab={setTab}/>}
         />
-        {tabs[tab].component}
+        {user && tabs[tab].component}
       </MuiBox>
     </Page>
   );

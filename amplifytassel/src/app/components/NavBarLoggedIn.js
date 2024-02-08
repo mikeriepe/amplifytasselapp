@@ -70,18 +70,11 @@ const ListTextStyling = {
  * @return {JSX} NavBar Component
  */
 export default function NavBarLoggedIn() {
-  const { user, userProfile, setLoadingAuth } = useAuth();
+  const { userProfile, setLoadingAuth } = useAuth();
   const theme = useTheme();
-  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [tabIndex, setTabIndex] = useState(window.location.pathname);
   const [profilePicture, setProfilePicture] = useState(null);
-
-  useEffect(() => {
-    if (!user) {
-      navigate('/login');
-    }
-  }, [user, navigate]);
 
   // Pages ---------------------------------------------------------------------
 
