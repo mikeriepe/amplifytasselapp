@@ -8,7 +8,6 @@ import SocialFriends from '../components/SocialFriends'
 import SocialIncomingRequests from '../components/SocialIncomingRequests';
 import SocialOutgoingRequests from '../components/SocialOutgoingRequests';
 import SocialMessages from '../components/SocialMessages';
-import { useNavigate } from 'react-router-dom';
 import useAuth from '../util/AuthContext';
 
 const Page = styled((props) => (
@@ -26,14 +25,7 @@ const Page = styled((props) => (
  * @return {HTML} socials page
  */
 export default function Socials() {
-  const { loadingAuth, user } = useAuth();
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (!loadingAuth && !user) {
-      navigate('/login');
-    }
-  }, [loadingAuth, user, navigate]);
-
+  const { user } = useAuth();
   const [tab, setTab] = useState(0);
   const tabs = [
     {name: 'Users', component: <SocialUsers/>},

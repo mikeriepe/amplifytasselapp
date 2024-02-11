@@ -82,14 +82,7 @@ const AddButton = (props) => (
  * @return {JSX}
  */
 export default function FetchWrapper() {
-  const { loadingAuth, user, userProfile } = useAuth();
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (!loadingAuth && !user) {
-      navigate('/login');
-    }
-  }, [loadingAuth, user, navigate]);
-
+  const { user, userProfile } = useAuth();
   const [joinedOpportunities, setJoinedOpportunities] = useState([]);
   const [createdOpportunities, setCreatedOpportunities] = useState([]);
   const [pastOpportunities, setPastOpportunities] = useState([]);

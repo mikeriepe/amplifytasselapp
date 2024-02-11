@@ -1,6 +1,5 @@
 import React, {useContext, createContext, useState, useEffect, useRef} from 'react';
 import Progress from '../components/Progress';
-import {useNavigate} from 'react-router-dom';
 
 import { Auth } from 'aws-amplify';
 import { DataStore } from '@aws-amplify/datastore';
@@ -30,8 +29,6 @@ export function AuthProvider(props) {
   // loadingAuth loads the user and userProfile,
   // or nullifies them if the user is logged out.
   const [loadingAuth, setLoadingAuth] = useState(true);
-
-  const navigate = useNavigate();
 
   /**
    * This useEffect syncs the authentication status.
@@ -67,7 +64,6 @@ export function AuthProvider(props) {
             if (!user && !userProfile) return;
             setUser(null);
             setUserProfile(null);
-            navigate('/login');
             console.error('AuthContext: Error retreiving profile: ', err);
           });
       })
@@ -77,9 +73,8 @@ export function AuthProvider(props) {
         if (!user && !userProfile) return;
         setUser(null);
         setUserProfile(null);
-        navigate('/login');
       })
-  }, [user, userProfile, loadingAuth, navigate]);
+  }, [user, userProfile, loadingAuth]);
 
   return (
     <>
