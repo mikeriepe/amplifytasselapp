@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { styled } from '@mui/material';
 import Button from '@mui/material/Button';
@@ -32,13 +31,7 @@ const Page = styled((props) => (
  * @return {HTML} Profile component
  */
 export default function MyProfile() {
-  const { loadingAuth, user, setUser, setLoggedIn, userProfile, setUserProfile } = useAuth();
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (!loadingAuth && !user) {
-      navigate('/login');
-    }
-  }, [loadingAuth, user, navigate]);
+  const { setLoadingAuth, userProfile } = useAuth();
 
   const handleDeactivateAccount = () => {
     console.log('deactivate acct api called here');
@@ -49,11 +42,10 @@ export default function MyProfile() {
         }))
       })
       .then(() => {
-        setUser(null);
-        setLoggedIn(false);
-        setUserProfile(null);
-        navigate('/');
         Auth.signOut();
+      })
+      .then(() => {
+        setLoadingAuth(true);
       })
       .catch((err) => {
         console.log(err);

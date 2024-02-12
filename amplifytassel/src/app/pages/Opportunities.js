@@ -18,7 +18,6 @@ import { PointsAddition } from '../util/PointsAddition';
 import useAnimation from '../util/AnimationContext';
 import { calculateIfUserLeveledUp } from '../util/PointsAddition';
 import { v4 as uuidv4 } from 'uuid';
-import { useNavigate } from 'react-router-dom';
 
 
 const Page = styled((props) => (
@@ -82,7 +81,7 @@ const AddButton = (props) => (
  * @return {JSX}
  */
 export default function FetchWrapper() {
-  const { user, userProfile } = useAuth();
+  const {userProfile} = useAuth();
   const [joinedOpportunities, setJoinedOpportunities] = useState([]);
   const [createdOpportunities, setCreatedOpportunities] = useState([]);
   const [pastOpportunities, setPastOpportunities] = useState([]);
@@ -207,19 +206,17 @@ const getAllOpportunities = () => {
 };
 
   useEffect(() => {
-    if (!user) return;
     getJoinedOpportunities();
     getCreatedOpportunities();
     getPastOpportunities();
     getPendingOpportunities();
     getAllOpportunities();
     getAllKeywords();
-  }, [user]);
+  }, []);
 
   return (
     <>
       {
-        user &&
         joinedOpportunities &&
         createdOpportunities &&
         pastOpportunities &&

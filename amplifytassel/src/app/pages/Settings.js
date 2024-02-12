@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { DataStore } from '@aws-amplify/datastore';
 import { KeywordProfile } from '../../models';
@@ -6,22 +6,11 @@ import { KeywordProfile } from '../../models';
 // Animation Libraries
 import AnimationStarFlying from '../components/AnimationStarFlying';
 import AnimationConfetti from '../components/AnimationConfetti';
-
-import useAuth from '../util/AuthContext';
-import { useNavigate } from 'react-router-dom';
 /**
  * creates settings page
  * @return {HTML} settings page
  */
 export default function Settings() {
-  const { loadingAuth, user } = useAuth();
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (!loadingAuth && !user) {
-      navigate('/login');
-    }
-  }, [loadingAuth, user, navigate]);
-
   const [showConfetti, setShowConfetti] = useState(false);
   const [showStar, setShowStar] = useState(false)
   

@@ -8,7 +8,6 @@ import SocialFriends from '../components/SocialFriends'
 import SocialIncomingRequests from '../components/SocialIncomingRequests';
 import SocialOutgoingRequests from '../components/SocialOutgoingRequests';
 import SocialMessages from '../components/SocialMessages';
-import useAuth from '../util/AuthContext';
 
 const Page = styled((props) => (
   <MuiBox {...props} />
@@ -25,7 +24,6 @@ const Page = styled((props) => (
  * @return {HTML} socials page
  */
 export default function Socials() {
-  const { user } = useAuth();
   const [tab, setTab] = useState(0);
   const tabs = [
     {name: 'Users', component: <SocialUsers/>},
@@ -42,7 +40,7 @@ export default function Socials() {
           subtitle='Add or delete friends and message them!'
           tabs={<CompressedTabBar data={tabs} tab={tab} setTab={setTab}/>}
         />
-        {user && tabs[tab].component}
+        {tabs[tab].component}
       </MuiBox>
     </Page>
   );

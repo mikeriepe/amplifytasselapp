@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {styled} from '@mui/material';
 import MuiBox from '@mui/material/Box';
 import {Grid} from '@mui/material';
@@ -27,8 +27,7 @@ const Page = styled((props) => (
  * @return {HTML} dashboard page
  */
 export default function Dashboard() {
-  const { userProfile } = useAuth();
-
+  const {userProfile} = useAuth();
   const [createdOpps, setCreatedOpps] = useState([]);
 
   const getCreatedOpportunities = () => {

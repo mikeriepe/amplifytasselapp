@@ -46,7 +46,7 @@ const AdminLayout = (props) => {
   const { loadingAuth, user, userProfile } = props;
   if (loadingAuth) return <Progress />;
   if (!user) return <Navigate to="/login" replace />;
-  if (!loadingAuth && user && userProfile?.status === 'ADMIN') return <Outlet />;
+  if (userProfile?.status === 'ADMIN') return <Outlet />;
   return <Navigate to="/myprofile" replace />;
 };
 
@@ -61,7 +61,7 @@ const ApprovedLayout = (props) => {
   const { loadingAuth, user, userProfile } = props;
   if (loadingAuth) return <Progress />;
   if (!user) return <Navigate to="/login" replace />;
-  if (!loadingAuth && user && (userProfile?.status === 'ADMIN' || userProfile?.status === 'APPROVED')) return <Outlet />;
+  if (userProfile?.status === 'ADMIN' || userProfile?.status === 'APPROVED') return <Outlet />;
   return <Navigate to="/myprofile" replace />;
 }
 
@@ -131,7 +131,7 @@ const App = () => {
   return (
     <Box sx={{display: 'flex'}}>
       <ToastContainer />
-      {(!loadingAuth && user && userProfile) ? <NavBarLoggedIn /> : <NavBarLoggedOut />}
+      {(!loadingAuth && user) ? <NavBarLoggedIn /> : <NavBarLoggedOut />}
       <Box component='main' sx={{flexGrow: 1, marginTop: '70px'}}>
         <Routes>
           {/* Routes only accessible if you are logged out */}

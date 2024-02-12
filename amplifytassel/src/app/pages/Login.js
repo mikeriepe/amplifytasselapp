@@ -12,9 +12,6 @@ import LoginBanner from '../assets/LoginBanner.png';
 import useAuth from '../util/AuthContext';
 import '../stylesheets/LoginSignup.css';
 import { Auth } from 'aws-amplify';
-// import { DataStore } from '@aws-amplify/datastore';
-// import { Profile, WorkHistory } from '../../models';
-// import { ProfileStatus } from '../../models';
 
 const PaperStyling = {
   display: 'flex',
@@ -40,11 +37,7 @@ const InputLabelStyling = {
  * @return {HTML} login page
  */
 export default function Login() {
-
-
-
-  const navigate = useNavigate();
-  const {user, setLoadingAuth} = useAuth();
+  const {setLoadingAuth} = useAuth();
 
   const [stepPage, setStepPage] = useState('login');
   const [values, setValues] = useState({
@@ -66,13 +59,6 @@ export default function Login() {
       completesignup: '',
     },
   });
-
-  // We never want to render the login page if the user is already logged in.
-  useEffect(() => {
-    if (user) {
-      navigate('/dashboard');
-    }
-  }, [user, navigate]);
 
   const login = () => {
     //const keepLoggedIn = document.getElementById('keepLoggedIn').checked;
@@ -123,7 +109,6 @@ export default function Login() {
             progress: undefined,
           });
           // console.log(`user.attributes: ${JSON.stringify(user.attributes)}`);
-          // setUser(user.attributes);
         }
         setLoadingAuth(true);
       })
