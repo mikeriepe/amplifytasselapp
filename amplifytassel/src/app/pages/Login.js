@@ -12,9 +12,6 @@ import LoginBanner from '../assets/LoginBanner.png';
 import useAuth from '../util/AuthContext';
 import '../stylesheets/LoginSignup.css';
 import { Auth } from 'aws-amplify';
-import { DataStore } from '@aws-amplify/datastore';
-import { Profile, WorkHistory } from '../../models';
-import { ProfileStatus } from '../../models';
 
 const PaperStyling = {
   display: 'flex',
@@ -40,11 +37,7 @@ const InputLabelStyling = {
  * @return {HTML} login page
  */
 export default function Login() {
-
-
-
-  const navigate = useNavigate();
-  const {user, setUser, setLoggedIn, setUserProfile} = useAuth();
+  const {setLoadingAuth} = useAuth();
 
   const [stepPage, setStepPage] = useState('login');
   const [values, setValues] = useState({
@@ -66,12 +59,6 @@ export default function Login() {
       completesignup: '',
     },
   });
-
-  useEffect(() => {
-    if (user != null) {
-      getProfile();
-    }
-  }, [user]);
 
   const login = () => {
     //const keepLoggedIn = document.getElementById('keepLoggedIn').checked;
@@ -99,9 +86,8 @@ export default function Login() {
               draggable: true,
               progress: undefined,
             });
-            setLoggedIn(true);
             // console.log(JSON.stringify(user));
-            setUser(user.challengeParam.userAttributes);
+            // setUser(user.challengeParam.userAttributes);
           })
           .catch((e) => {
             console.log(e);
@@ -122,10 +108,9 @@ export default function Login() {
             draggable: true,
             progress: undefined,
           });
-          setLoggedIn(true);
-          console.log(`user.attributes: ${JSON.stringify(user.attributes)}`);
-          setUser(user.attributes);
+          // console.log(`user.attributes: ${JSON.stringify(user.attributes)}`);
         }
+        setLoadingAuth(true);
       })
       .catch((error) => {
         if (error.name === 'UserNotConfirmedException') {
@@ -145,15 +130,6 @@ export default function Login() {
       })
   }
 
-  const getProfile = async () => {
-    console.log(values['login'].useremail);
-    const profile = await DataStore.query(Profile, c => c.email.eq(values['login'].useremail));
-    console.log(JSON.stringify(profile));
-    console.log('profile:', JSON.stringify(profile));
-    setUserProfile(profile[0]);
-    profile[0].status === 'APPROVED' || profile[0].status === 'ADMIN' ? navigate(`/dashboard`) : navigate(`/myprofile`);
-  };
-
   const handleNextPage = (step) => {
     setStepPage(step);
   };
@@ -166,7 +142,7 @@ export default function Login() {
             <p className='text-bold text-italic text-white'>Logo.</p>
             <h3 className='text-xbold text-white'>Welcome back!</h3>
             <div className='flow-tiny'>
-              <img src={LoginBanner} />
+              <img src={LoginBanner} alt='login banner' />
               <p
                 className='text-bold text-white text-tiny'
                 style={{position: 'absolute', bottom: '8.5em'}}
@@ -229,7 +205,6 @@ function LoginForm({active, handleNextPage, login}) {
     () => localStorage.getItem('rememberUser') === 'true'
   );
 
-  const { user, setUser, setLoggedIn, userProfile, setUserProfile } = useAuth();
   const navigate = useNavigate();
 
   const handleLogin = () => {
@@ -517,7 +492,6 @@ function ForgotPasswordThree({active, handleNextPage, values}) {
  * @return {JSX}
  */
 function ForgotPasswordFour({active, handleNextPage}) {
-  const navigate = useNavigate();
 
   return (
     <div className='flow-large' style={{display: active ? null : 'none'}}>

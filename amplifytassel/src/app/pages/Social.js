@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import MuiBox from '@mui/material/Box';
 import {styled} from '@mui/material/styles';
 import PageHeader from '../components/PageHeader';
@@ -24,7 +24,7 @@ const Page = styled((props) => (
  * @return {HTML} socials page
  */
 export default function Socials() {
-  const [tab, setTab] = React.useState(0);
+  const [tab, setTab] = useState(0);
   const tabs = [
     {name: 'Users', component: <SocialUsers/>},
     {name: 'Friends', component: <SocialFriends/>},
