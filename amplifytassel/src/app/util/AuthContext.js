@@ -44,6 +44,9 @@ export function AuthProvider(props) {
       .then((authUser) => {
         DataStore.query(Profile, c => c.email.eq(authUser.attributes.email))
           .then((profile) => {
+            if (!profile[0].active) {
+              throw new Error('Account was deactivated');
+            }
             setLoadingAuth(false);
             isAuthLoading.current = false;
             if (

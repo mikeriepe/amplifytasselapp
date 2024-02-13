@@ -34,7 +34,7 @@ export default function MyProfile() {
   const { setLoadingAuth, userProfile } = useAuth();
 
   const handleDeactivateAccount = () => {
-    console.log('deactivate acct api called here');
+    // console.log('deactivate acct api called here');
     DataStore.query(Profile, p => p.id.eq(userProfile.id))
       .then((res) => {
         DataStore.save(Profile.copyOf(res[0], updated => {
