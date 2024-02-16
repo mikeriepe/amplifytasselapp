@@ -51,6 +51,10 @@ export default function Signup() {
     }
   });
 
+  // Tracks if the user should be shown the error 'Email is already in use'
+  const [isUserEmailTaken, setIsUserEmailTaken] = useState(false);
+  useEffect(() => setIsUserEmailTaken(false), [values[2].useremail]);
+
   /*
     When the user clicks 'Create Account',
     this array will be filled with all bad inputs.
@@ -64,10 +68,18 @@ export default function Signup() {
       if (formErrors.includes(e)) err.push(e);
     });
     setErrors(err);
-  }, [values]);
+  }, [values, isUserEmailTaken]);
+
+  // Tracks if the user clicks 'Create Account', and the backend is
+  // checking if the user's account can be created or not.
+  const [isCreatingAccount, setIsCreatingAccount] = useState(false);
+  useEffect(() => {
+    if (errors.includes('useremailtaken')) setIsCreatingAccount(false);
+    if (createdProfileData) setIsCreatingAccount(false);
+  }, [errors, createdProfileData]);
 
 
-  const createUser = () => {
+  const createUser = async () => {
     // create user in aws
     let username = values[2].useremail;
     let password = values[2].userpassword;
@@ -132,8 +144,9 @@ export default function Signup() {
         handleNextStep(3);
       })
       .catch((err) => {
-        //console.log(`error: ${err}`);
-        alert('Email: '+ values[2].useremail+ ' already exists.');
+        console.error('Email: '+ values[2].useremail+ ' already exists.');
+        setIsUserEmailTaken(true);
+        setErrors([...errors, 'useremailtaken']);
       });
   };
 
@@ -183,6 +196,8 @@ export default function Signup() {
       err.push('useremail');
     if (!isInputValid(values[2].userpassword, 'userpassword'))
       err.push('userpassword');
+    if (isUserEmailTaken)
+      err.push('useremailtaken');
     return err;
   };
 
@@ -191,6 +206,7 @@ export default function Signup() {
 
     const formErrors = getErrors();
     if (formErrors.length === 0) {
+      setIsCreatingAccount(true);
       createUser();
     } else {
       console.error('Form errors:', formErrors);
@@ -252,6 +268,7 @@ export default function Signup() {
               handleNextStep={(e) => handleNextStep(e)}
               handleSubmit={handleSubmit}
               isInputValid={(input, type) => isInputValid(input, type)}
+              isCreateAccountDisabled={isCreatingAccount}
             />
             <SignupStepFour
               active={stepNumber === 3}
@@ -466,11 +483,13 @@ function SignupStepThree({
   handleNextStep,
   handleSubmit,
   isInputValid,
+  isCreateAccountDisabled
 }) {
   const navigate = useNavigate();
   const value = useInputContext();
   const [values] = value;
   const errors = useInputContext()[2] ?? [];
+  const isUserEmailTaken = errors.includes('useremailtaken');
   const isUserEmailBad = errors.includes('useremail') ||
       (values[2].useremail.length > 0 &&
       !isInputValid(values[2].useremail, 'useremail'));
@@ -503,9 +522,9 @@ function SignupStepThree({
             </p>
             <p
               className='text-warning'
-              style={{opacity: isUserEmailBad ? 1 : 0}}
+              style={{opacity: isUserEmailTaken || isUserEmailBad ? 1 : 0}}
             >
-              Invalid email
+              {isUserEmailTaken ? 'Email already in use' : 'Invalid email'}
             </p>
           </div>
           <ThemedInput
@@ -514,7 +533,7 @@ function SignupStepThree({
             index={'useremail'}
             step={step}
             fill={'email'}
-            error={isUserEmailBad}
+            error={isUserEmailTaken || isUserEmailBad}
           />
         </div>
         <div className='grid-flow-small'>
@@ -555,6 +574,7 @@ function SignupStepThree({
             variant={'themed'}
             type={'submit'}
             onClick={(e) => { handleSubmit(e) }}
+            disabled={isCreateAccountDisabled}
           >
             Create account
           </ThemedButton>
