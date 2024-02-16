@@ -51,6 +51,21 @@ export default function Signup() {
     }
   });
 
+  /*
+    When the user clicks 'Create Account',
+    this array will be filled with all bad inputs.
+    Ex: errors = ['firstname', 'schoolemail', 'userpassword']
+  */
+  const [errors, setErrors] = useState([]);
+  useEffect(() => {
+    const formErrors = getErrors();
+    let err = [];
+    errors.forEach((e) => {
+      if (formErrors.includes(e)) err.push(e);
+    });
+    setErrors(err);
+  }, [values]);
+
 
   const createUser = () => {
     // create user in aws
@@ -151,27 +166,42 @@ export default function Signup() {
     }
   };
 
-  const isFormValid = () => {
-    const checkStep1 = checkValues(values[0]);
-    const checkStep2 =
-      checkValues(values[1]) &&
-      isInputValid(values[1].schoolemail, 'schoolemail') &&
-      isInputValid(values[1].graduationyear, 'graduationyear');
-    const checkStep3 =
-      checkValues(values[2]) &&
-      isInputValid(values[2].useremail, 'useremail') &&
-      isInputValid(values[2].userpassword, 'userpassword');
-
-    return checkStep1 && checkStep2 && checkStep3;
+  const getErrors = () => {
+    let err = [];
+    if (values[0].firstname.length === 0)
+      err.push('firstname');
+    if (values[0].lastname.length === 0)
+      err.push('lastname');
+    if (
+      values[1].schoolemail.length > 0 &&
+      !isInputValid(values[1].schoolemail, 'schoolemail')
+    )
+      err.push('schoolemail');
+    if (!isInputValid(values[1].graduationyear, 'graduationyear'))
+      err.push('graduationyear');
+    if (!isInputValid(values[2].useremail, 'useremail'))
+      err.push('useremail');
+    if (!isInputValid(values[2].userpassword, 'userpassword'))
+      err.push('userpassword');
+    return err;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (isFormValid()) {
+    const formErrors = getErrors();
+    if (formErrors.length === 0) {
       createUser();
     } else {
-      alert('Required fields need to be filled or invalid inputs');
+      console.error('Form errors:', formErrors);
+      setErrors(formErrors);
+      for (const [stepNum, formFields] of Object.entries(values)) {
+        if (Object.keys(formFields).some(formField => formErrors.includes(formField))) {
+          setStepNumber(Number(stepNum));
+          // console.error('Going to step', stepNum);
+          break;
+        }
+      }
     }
   };
 
@@ -188,7 +218,7 @@ export default function Signup() {
   
 
   return (
-    <InputContext.Provider value={[values, setValues]}>
+    <InputContext.Provider value={[values, setValues, errors]}>
       <Box className='page' aria-label='Signup form'>
         <Paper className='card' elevation={0} sx={PaperStyling}>
           <div className='card-banner flow-small padding-64'>
@@ -254,6 +284,7 @@ export default function Signup() {
  */
 function SignupStepOne({ active, step, handleNextStep }) {
   const navigate = useNavigate();
+  const errors = useInputContext()[2] ?? [];
 
   const handleNavigate = () => {
     navigate('/login');
@@ -278,6 +309,7 @@ function SignupStepOne({ active, step, handleNextStep }) {
             index={'firstname'}
             step={step}
             fill={'given-name'}
+            error={errors.includes('firstname')}
           />
         </div>
         <div className='grid-flow-small'>
@@ -290,6 +322,7 @@ function SignupStepOne({ active, step, handleNextStep }) {
             index={'lastname'}
             step={step}
             fill={'family-name'}
+            error={errors.includes('lastname')}
           />
         </div>
       </div>
@@ -327,6 +360,13 @@ function SignupStepTwo({ active, step, handleNextStep, isInputValid }) {
   const navigate = useNavigate();
   const value = useInputContext();
   const [values] = value;
+  const errors = useInputContext()[2] ?? [];
+  const isSchoolEmailBad = errors.includes('schoolemail') ||
+      (values[1].schoolemail.length > 0 &&
+      !isInputValid(values[1].schoolemail, 'schoolemail'));
+  const isGraduationYearBad = errors.includes('graduationyear') ||
+      (values[1].graduationyear.length > 0 &&
+      !isInputValid(values[1].graduationyear, 'graduationyear'));
 
   const handleNavigate = () => {
     navigate('/login');
@@ -346,12 +386,7 @@ function SignupStepTwo({ active, step, handleNextStep, isInputValid }) {
             <p>School Email</p>
             <p
               className='text-warning'
-              style={{
-                opacity:
-                  values[1].schoolemail.length > 0 &&
-                    !isInputValid(values[1].schoolemail, 'schoolemail') ?
-                    1 : 0,
-              }}
+              style={{opacity: isSchoolEmailBad ? 1 : 0}}
             >
               Invalid UCSC email
             </p>
@@ -362,10 +397,7 @@ function SignupStepTwo({ active, step, handleNextStep, isInputValid }) {
             index={'schoolemail'}
             step={step}
             fill={'email'}
-            error={
-              values[1].schoolemail.length > 0 &&
-              !isInputValid(values[1].schoolemail, 'schoolemail')
-            }
+            error={isSchoolEmailBad}
           />
         </div>
         <div className='grid-flow-small'>
@@ -375,12 +407,7 @@ function SignupStepTwo({ active, step, handleNextStep, isInputValid }) {
             </p>
             <p
               className='text-warning'
-              style={{
-                opacity:
-                  values[1].graduationyear.length > 0 &&
-                    !isInputValid(values[1].graduationyear, 'graduationyear') ?
-                    1 : 0,
-              }}
+              style={{opacity: isGraduationYearBad ? 1 : 0}}
             >
               Invalid graduation year
             </p>
@@ -390,10 +417,7 @@ function SignupStepTwo({ active, step, handleNextStep, isInputValid }) {
             type={'text'}
             index={'graduationyear'}
             step={step}
-            error={
-              values[1].graduationyear.length > 0 &&
-              !isInputValid(values[1].graduationyear, 'graduationyear')
-            }
+            error={isGraduationYearBad}
           />
         </div>
       </div>
@@ -446,6 +470,13 @@ function SignupStepThree({
   const navigate = useNavigate();
   const value = useInputContext();
   const [values] = value;
+  const errors = useInputContext()[2] ?? [];
+  const isUserEmailBad = errors.includes('useremail') ||
+      (values[2].useremail.length > 0 &&
+      !isInputValid(values[2].useremail, 'useremail'));
+  const isUserPasswordBad = errors.includes('userpassword') ||
+      (values[2].userpassword.length > 0 &&
+      !isInputValid(values[2].userpassword, 'userpassword'));
 
   const handleNavigate = () => {
     navigate('/login');
@@ -472,12 +503,7 @@ function SignupStepThree({
             </p>
             <p
               className='text-warning'
-              style={{
-                opacity:
-                  values[2].useremail.length > 0 &&
-                    !isInputValid(values[2].useremail, 'useremail') ?
-                    1 : 0,
-              }}
+              style={{opacity: isUserEmailBad ? 1 : 0}}
             >
               Invalid email
             </p>
@@ -488,10 +514,7 @@ function SignupStepThree({
             index={'useremail'}
             step={step}
             fill={'email'}
-            error={
-              values[2].useremail.length > 0 &&
-              !isInputValid(values[2].useremail, 'useremail')
-            }
+            error={isUserEmailBad}
           />
         </div>
         <div className='grid-flow-small'>
@@ -501,12 +524,7 @@ function SignupStepThree({
             </p>
             <p
               className='text-warning'
-              style={{
-                opacity:
-                  values[2].userpassword.length > 0 &&
-                    !isInputValid(values[2].userpassword, 'userpassword') ?
-                    1 : 0,
-              }}
+              style={{opacity: isUserPasswordBad ? 1 : 0}}
             >
               8+ Characters, 1 Capital Letter
             </p>
@@ -516,10 +534,7 @@ function SignupStepThree({
             type={'password'}
             index={'userpassword'}
             step={step}
-            error={
-              values[2].userpassword.length > 0 &&
-              !isInputValid(values[2].userpassword, 'userpassword')
-            }
+            error={isUserPasswordBad}
           />
         </div>
       </div>
