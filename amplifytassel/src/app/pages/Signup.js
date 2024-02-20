@@ -67,8 +67,8 @@ export default function Signup() {
     errors.forEach((e) => {
       if (formErrors.includes(e)) err.push(e);
     });
-    setErrors(err);
-  }, [values, isUserEmailTaken]);
+    if (JSON.stringify(err) !== JSON.stringify(errors)) setErrors(err);
+  }, [values, isUserEmailTaken, errors]);
 
   // Tracks if the user clicks 'Create Account', and the backend is
   // checking if the user's account can be created or not.
@@ -78,6 +78,9 @@ export default function Signup() {
     if (createdProfileData) setIsCreatingAccount(false);
   }, [errors, createdProfileData]);
 
+  // Tracks if the user clicks 'Resend Email', and the backend is
+  // sending the user another verification email.
+  const [isResendingVerification, setIsResendingVerification] = useState(false);
 
   const createUser = async () => {
     // create user in aws
@@ -99,6 +102,9 @@ export default function Signup() {
       .then((res) => {
         const { user } = res;
         console.log("Auth.signup Success! ", user);
+
+        // This DataStore.save returns Error 400 (Bad Request)
+        // if a profile with the email already exists on Amplify
         DataStore.save(
           new Profile({
             "email": email,
@@ -221,9 +227,32 @@ export default function Signup() {
     }
   };
 
-  const handleResend = () => {
-    console.log(createdProfileData);
-    // verifyEmail(createdProfileData);
+  // NOTE: Be sure to check your spam folder for
+  // these resent verification emails.
+  const handleResend = async () => {
+    setIsResendingVerification(true);
+    const { email } = createdProfileData;
+    console.log('Resending verification for ' + email);
+    Auth.resendSignUp(email)
+    .then(() => {
+      toast.success('Email verification sent', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      // Must wait 5 seconds before you can resend
+      // another verification email.
+      new Promise(r => setTimeout(r, 5000)).then(() => {
+        setIsResendingVerification(false);
+      });
+    })
+    .catch((err) => {
+      console.error('Error resending email verification', err);
+    });
   };
 
   const handleNextStep = (step) => {
@@ -276,6 +305,7 @@ export default function Signup() {
               handleNextStep={(e) => handleNextStep(e)}
               handleResend={handleResend}
               isInputValid={(input, type) => isInputValid(input, type)}
+              isResendingVerification={isResendingVerification}
             />
           </Box>
         </Paper>
@@ -597,7 +627,7 @@ function SignupStepThree({
  * Step four of signup
  * @return {JSX}
  */
-function SignupStepFour({ active, step, handleResend }) {
+function SignupStepFour({ active, step, handleResend, isResendingVerification }) {
   
   const navigate = useNavigate();
   const value = useInputContext();
@@ -642,17 +672,18 @@ function SignupStepFour({ active, step, handleResend }) {
           </ThemedButton>
         </div>
       </div>
-      {/* <p className='text-gray text-center text-lineheight-24'>
+      <p className='text-gray text-center text-lineheight-24'>
         If you did not receive the email, please click the button below
         to resend another email.
       </p>
       <div className='grid-flow-small grid-center text-center'>
         <div className='flex-flow-small'>
           <ThemedButton
-            color={'yellow'}
+            color={isResendingVerification ? 'gray' : 'yellow'}
             variant={'cancel'}
             value={step}
             onClick={handleResend}
+            disabled={isResendingVerification}
           >
             Resend Email
           </ThemedButton>
@@ -661,7 +692,7 @@ function SignupStepFour({ active, step, handleResend }) {
           Need help? Contact us at
           <span className='text-bold text-blue'> tasselsupport@gmail.com</span>
         </p>
-      </div> */}
+      </div>
     </div>
   );
 }

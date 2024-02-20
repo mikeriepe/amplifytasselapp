@@ -60,6 +60,10 @@ export default function Login() {
     },
   });
 
+  // Tracks if the user clicks 'Resend Email', and the backend is
+  // sending the user another verification email.
+  const [isResendingVerification, setIsResendingVerification] = useState(false);
+
   const login = () => {
     //const keepLoggedIn = document.getElementById('keepLoggedIn').checked;
     
@@ -115,7 +119,7 @@ export default function Login() {
       .catch((error) => {
         if (error.name === 'UserNotConfirmedException') {
           handleNextPage('verification');
-          resend();
+          handleResend();
         } else {
           console.log('error logging in:', error);
           alert('Invalid Username or Password. Please Try Again.');
@@ -123,12 +127,33 @@ export default function Login() {
       });
   };
 
-  const resend = async () => {	
-    Auth.resendSignUp(values['login'].useremail)
-      .catch((err) => {
-        console.log('error resending code: ', err);
-      })
-  }
+  // NOTE: Be sure to check your spam folder for
+  // these resent verification emails.
+  const handleResend = async () => {
+    setIsResendingVerification(true);
+    const email = values['login'].useremail;
+    console.log('Resending verification for ' + email);
+    Auth.resendSignUp(email)
+    .then(() => {
+      toast.success('Email verification sent', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      // Must wait 5 seconds before you can resend
+      // another verification email.
+      new Promise(r => setTimeout(r, 5000)).then(() => {
+        setIsResendingVerification(false);
+      });
+    })
+    .catch((err) => {
+      console.error('Error resending email verification', err);
+    });
+  };
 
   const handleNextPage = (step) => {
     setStepPage(step);
@@ -187,6 +212,8 @@ export default function Login() {
               active={stepPage === 'verification'}
               handleNextPage={(e) => handleNextPage(e)}
               values={values}
+              handleResend={handleResend}
+              isResendingVerification={isResendingVerification}
             />
           </Box>
         </Paper>
@@ -522,7 +549,7 @@ function ForgotPasswordFour({active, handleNextPage}) {
   );
 }
 
-function Verification({active, handleNextPage, values}) {
+function Verification({active, handleNextPage, values, handleResend, isResendingVerification}) {
 
   const confirmSignUp = async () => {
     await Auth.confirmSignUp(values['login'].useremail, values['verification'].completesignup);
@@ -564,14 +591,15 @@ function Verification({active, handleNextPage, values}) {
         If you did not receive the email, please click the button below
         to resend another email.
       </p>
-      {/*
+      
       <div className='grid-flow-small grid-center text-center'>
         <div className='flex-flow-small'>
           <ThemedButton
-            color={'yellow'}
+            color={isResendingVerification ? 'gray' : 'yellow'}
             variant={'cancel'}
-            value={step}
+            value={'resend'}
             onClick={handleResend}
+            disabled={isResendingVerification}
           >
             Resend Email
           </ThemedButton>
@@ -581,7 +609,7 @@ function Verification({active, handleNextPage, values}) {
           <span className='text-bold text-blue'> tasselsupport@gmail.com</span>
         </p>
       </div>
-          */}
+         
     </div>
   );
 }
