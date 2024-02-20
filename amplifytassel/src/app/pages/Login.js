@@ -597,7 +597,6 @@ function Verification({active, handleNextPage, values, handleResend, isResending
           <ThemedButton
             color={isResendingVerification ? 'gray' : 'yellow'}
             variant={'cancel'}
-            value={'resend'}
             onClick={handleResend}
             disabled={isResendingVerification}
           >

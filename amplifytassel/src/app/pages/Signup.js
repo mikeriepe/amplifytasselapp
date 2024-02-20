@@ -82,6 +82,13 @@ export default function Signup() {
   // sending the user another verification email.
   const [isResendingVerification, setIsResendingVerification] = useState(false);
 
+  // Tracks if the user clicks 'Verify', and the backend is
+  // verifying the user's verification code.
+  const [isVerifying, setIsVerifying] = useState(false);
+
+  const [isVerificationCodeWrong, setIsVerificationCodeWrong] = useState(false);
+  useEffect(() => setIsVerificationCodeWrong(false), [values[3].verifycode]);
+
   const createUser = async () => {
     // create user in aws
     let username = values[2].useremail;
@@ -215,7 +222,15 @@ export default function Signup() {
       setIsCreatingAccount(true);
       createUser();
     } else {
-      console.error('Form errors:', formErrors);
+      toast.error('Please fix the following fields: ' + formErrors.join(', '), {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
       setErrors(formErrors);
       for (const [stepNum, formFields] of Object.entries(values)) {
         if (Object.keys(formFields).some(formField => formErrors.includes(formField))) {
@@ -254,6 +269,30 @@ export default function Signup() {
       console.error('Error resending email verification', err);
     });
   };
+
+  const navigate = useNavigate();
+  const handleVerify = async () => {
+    setIsVerifying(true);
+    Auth.confirmSignUp(values[2].useremail, values[3].verifycode)
+      .then(() => {
+        setIsVerifying(false);
+        navigate('/login');
+      })
+      .catch((err) => {
+        console.error('Verification code incorrect' + err);
+        toast.error(err.log ?? err.code ?? err.message ?? err.name, {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        setIsVerifying(false);
+        setIsVerificationCodeWrong(true);
+      });
+  }
 
   const handleNextStep = (step) => {
     setStepNumber(step);
@@ -304,8 +343,11 @@ export default function Signup() {
               step={3}
               handleNextStep={(e) => handleNextStep(e)}
               handleResend={handleResend}
+              handleVerify={handleVerify}
               isInputValid={(input, type) => isInputValid(input, type)}
               isResendingVerification={isResendingVerification}
+              isVerifying={isVerifying}
+              isVerificationCodeWrong={isVerificationCodeWrong}
             />
           </Box>
         </Paper>
@@ -627,23 +669,7 @@ function SignupStepThree({
  * Step four of signup
  * @return {JSX}
  */
-function SignupStepFour({ active, step, handleResend, isResendingVerification }) {
-  
-  const navigate = useNavigate();
-  const value = useInputContext();
-  const [values] = value;
-  const confirmSignUp = async () => {
-    Auth.confirmSignUp(values[2].useremail, values[3].verifycode)
-      .then(() => {
-        console.log("Passed");
-        navigate('/login');
-      })
-      .catch((err) => {
-        console.log(err.code);
-        console.log(err);
-        alert('code incorrect');
-      });
-  }
+function SignupStepFour({ active, step, handleResend, handleVerify, isResendingVerification, isVerifying, isVerificationCodeWrong }) {
   
   return (
     <div className='flow-large' style={{ display: active ? null : 'none' }}>
@@ -658,6 +684,7 @@ function SignupStepFour({ active, step, handleResend, isResendingVerification })
           type={'text'}
           index={'verifycode'}
           step={step}
+          error={isVerificationCodeWrong}
         />
       </div>
       <div className='grid-flow-small grid-center text-center'>
@@ -666,7 +693,8 @@ function SignupStepFour({ active, step, handleResend, isResendingVerification })
             color={'yellow'}
             variant={'themed'}
             value={step}
-            onClick={(e) => {confirmSignUp()}}
+            onClick={handleVerify}
+            disabled={isVerifying}
           >
             Verify
           </ThemedButton>
