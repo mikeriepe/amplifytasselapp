@@ -487,7 +487,6 @@ export default function ProfileHeader({ data, editButton }) {
                 alignItems: "center",
                 flexDirection: "column",
                 justifyContent: "center",
-                marginLeft: "auto",
               }}
             >
               {editButton && (
@@ -506,15 +505,15 @@ export default function ProfileHeader({ data, editButton }) {
                 </p>
               )}
             </Box>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                flex: 1,
-              }}
-            >
-              {editButton && (
-                <>
+            {editButton && (
+              <>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    flex: 1,
+                  }}
+                >
                   <MoreIcon
                     anchorEl={anchorEl}
                     open={open}
@@ -542,9 +541,9 @@ export default function ProfileHeader({ data, editButton }) {
                     }
                     hidden
                   />
-                </>
-              )}
-            </Box>
+                </Box>
+              </>
+            )}
           </Box>
         </div>
       </Content>
