@@ -160,7 +160,7 @@ export default function SocialMessages() {
   useEffect(() => {
     const fetchAllChats = async () => {
       try {
-        const allChatsResponse = await DataStore.query(Message);
+        const allChatsResponse = await DataStore.query(ChatRoom); // Fetches all messages in Database..
         setAllChats(allChatsResponse);
 
         // Call the new function to get all chat messages

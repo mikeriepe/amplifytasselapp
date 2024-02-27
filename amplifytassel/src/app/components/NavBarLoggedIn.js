@@ -295,7 +295,7 @@ export default function NavBarLoggedIn() {
             }
           </IconButton>
         </Nav.DrawerHeader>
-        {userProfile?.status === 'PENDING' || userProfile?.status === 'REQUESTED' ||  userProfile?.status === 'UPDATED' || userProfile?.status === 'DENIED' ? pagesToButtons([pages[2]]) : pagesToButtons(pages)}
+        {userProfile?.status === 'PENDING' || userProfile?.status === 'REQUESTED' ||  userProfile?.status === 'UPDATED' || userProfile?.status === 'DENIED' ? pagesToButtons([['Social', '/social', <PeopleAltIcon key='Social' />]]) : pagesToButtons(pages)}
         <Box sx={LogoutStyling}>
           <List>
             <Tooltip title='Logout' placement='right'>
