@@ -196,7 +196,6 @@ export default function SocialUsers() {
   };
 
   const initializeSocial = (accounts) => {
-    console.log("test: ", accounts);
     var tempResult = [];
     accounts.forEach((account) => {
       if (account.status == "ADMIN" || account.status == "APPROVED") {
@@ -205,42 +204,7 @@ export default function SocialUsers() {
         }
       }
     });
-    const itemsToRemove = [];
-    tempResult.forEach(async (item) => {
-      try {
-        const friendRequests = await DataStore.query(FriendRequest, (c) =>
-          c.and((c) => [c.Sender.eq(userProfile.id), c.Receiver.eq(item.id)])
-        );
-        const friends1 = await DataStore.query(Friend, (f) =>
-          f.Friend.eq(userProfile.id)
-        );
-        const friends2 = await DataStore.query(Friend, (f) =>
-          f.profileID.eq(userProfile.id)
-        );
-
-        // // If there are matching Friends, mark the item for removals
-        friends1.forEach((item) => {
-          itemsToRemove.push(item.profileID);
-        });
-
-        friends2.forEach((item) => {
-          itemsToRemove.push(item.Friend);
-        });
-        // If there are matching FriendRequests, mark the item for removal
-        if (friendRequests.length > 0) {
-          itemsToRemove.push(item.id);
-        }
-
-        // filtering out matching results from query
-        const filteredResult = tempResult.filter(
-          (item) => !itemsToRemove.includes(item.id)
-        );
-        console.log("filtered: ", filteredResult);
-        setDisplayUsers(filteredResult);
-      } catch (error) {
-        console.error("Error querying FriendRequests:", error);
-      }
-    });
+    itemsToRemove(tempResult);
   };
 
   // Top of page master check box select all
@@ -313,6 +277,49 @@ export default function SocialUsers() {
     }
   };
 
+  const itemsToRemove = (tempResult) => {
+    const itemsToRemove = [];
+    tempResult.forEach(async (item) => {
+      try {
+        const friendRequests = await DataStore.query(FriendRequest, (c) =>
+          c.and((c) => [c.Sender.eq(userProfile.id), c.Receiver.eq(item.id)])
+        );
+        const friends1 = await DataStore.query(Friend, (f) =>
+          f.Friend.eq(userProfile.id)
+        );
+        const friends2 = await DataStore.query(Friend, (f) =>
+          f.profileID.eq(userProfile.id)
+        );
+
+        // // If there are matching Friends, mark the item for removals
+        friends1.forEach((item) => {
+          itemsToRemove.push(item.profileID);
+        });
+
+        friends2.forEach((item) => {
+          itemsToRemove.push(item.Friend);
+        });
+        // If there are matching FriendRequests, mark the item for removal
+        if (friendRequests.length > 0) {
+          itemsToRemove.push(item.id);
+        }
+        console.log("items to remove", itemsToRemove);
+        console.log("tempResult", tempResult);
+        console.log(tempResult);
+        console.log(itemsToRemove.length);
+
+        // filtering out matching results from query
+        const filteredResult = tempResult.filter(
+          (item) => !itemsToRemove.includes(item.id)
+        );
+        console.log("filteredResults", filteredResult);
+        setDisplayUsers(filteredResult);
+      } catch (error) {
+        console.error("Error querying FriendRequests:", error);
+      }
+    });
+  };
+
   // Taken from Approvals, searches admin/approved accounts based on query
   const searchUsers = (query) => {
     if (!query) {
@@ -336,46 +343,7 @@ export default function SocialUsers() {
         }
       });
       console.log("tempresult", tempResult);
-      const itemsToRemove = [];
-      tempResult.forEach(async (item) => {
-        try {
-          const friendRequests = await DataStore.query(FriendRequest, (c) =>
-            c.and((c) => [c.Sender.eq(userProfile.id), c.Receiver.eq(item.id)])
-          );
-          const friends1 = await DataStore.query(Friend, (f) =>
-            f.Friend.eq(userProfile.id)
-          );
-          const friends2 = await DataStore.query(Friend, (f) =>
-            f.profileID.eq(userProfile.id)
-          );
-
-          // // If there are matching Friends, mark the item for removals
-          friends1.forEach((item) => {
-            itemsToRemove.push(item.profileID);
-          });
-
-          friends2.forEach((item) => {
-            itemsToRemove.push(item.Friend);
-          });
-          // If there are matching FriendRequests, mark the item for removal
-          if (friendRequests.length > 0) {
-            itemsToRemove.push(item.id);
-          }
-          console.log("items to remove", itemsToRemove);
-          console.log("tempResult", tempResult);
-          console.log(tempResult);
-          console.log(itemsToRemove.length);
-
-          // filtering out matching results from query
-          const filteredResult = tempResult.filter(
-            (item) => !itemsToRemove.includes(item.id)
-          );
-          console.log("filteredResults", filteredResult);
-          setDisplayUsers(filteredResult);
-        } catch (error) {
-          console.error("Error querying FriendRequests:", error);
-        }
-      });
+      itemsToRemove(tempResult);
 
       // Remove the marked items from tempResult
     } else {
