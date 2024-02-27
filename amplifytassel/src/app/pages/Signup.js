@@ -259,14 +259,15 @@ export default function Signup() {
         draggable: true,
         progress: undefined,
       });
-      // Must wait 5 seconds before you can resend
+      // Must wait 3 seconds before you can resend
       // another verification email.
-      new Promise(r => setTimeout(r, 5000)).then(() => {
+      new Promise(r => setTimeout(r, 3000)).then(() => {
         setIsResendingVerification(false);
       });
     })
     .catch((err) => {
       console.error('Error resending email verification', err);
+      setIsResendingVerification(false);
     });
   };
 
@@ -279,8 +280,11 @@ export default function Signup() {
         navigate('/login');
       })
       .catch((err) => {
-        console.error('Verification code incorrect' + err);
-        toast.error(err.log ?? err.code ?? err.message ?? err.name, {
+        let errMsg = err.log ?? err.code ?? err.name;
+        if(errMsg.includes('CodeMismatchException')) {
+          errMsg = 'Incorrect verification code';
+        }
+        toast.error(errMsg, {
           position: 'top-right',
           autoClose: 5000,
           hideProgressBar: false,
