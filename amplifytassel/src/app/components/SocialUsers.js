@@ -253,7 +253,7 @@ export default function SocialUsers() {
 
   // Taken from Approvals, searches admin/approved accounts based on query
   const searchUsers = (query) => {
-    if (!query) {
+    if (!query || (userProfile.status !== "ADMIN" && userProfile.status !== "APPROVED")) {
       setDisplayUsers([]);
       return;
     }
@@ -267,7 +267,7 @@ export default function SocialUsers() {
     console.log(result);
     if (result.length) {
       result.forEach((item) => {
-        if(item.item.status == "ADMIN" || item.item.status == "APPROVED"){
+        if(item.item.status === "ADMIN" || item.item.status === "APPROVED"){
           if (item.item.id !== userProfile.id) {
             tempResult.push(item.item);
           }
