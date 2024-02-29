@@ -63,7 +63,9 @@ export default function Login() {
   // Tracks if the user's page contains input fields that were invalid when
   // the form was submitted. The input boxes are highlighted in red.
   const [isInputBad, setIsInputBad] = useState(false);
-  useEffect(() => setIsInputBad(false), [values, stepPage]);
+  useEffect(() => {
+    if (stepPage !== 'forgot2') setIsInputBad(false);
+  }, [values, stepPage]);
 
   // Tracks if Amplify is running user authentication. Causes certain
   // buttons to be disabled, like 'Login' or 'Verify'
@@ -74,7 +76,11 @@ export default function Login() {
   // sending the user another verification email.
   const [isResendingVerification, setIsResendingVerification] = useState(false);
 
-  const login = () => {
+  // Tracks if the user's new password on the 'Forgot Password' page is valid.
+  const [isPasswordBad, setIsPasswordBad] = useState(null);
+  useEffect(() => setIsPasswordBad(null), [values, stepPage]);
+
+  const login = async () => {
     //const keepLoggedIn = document.getElementById('keepLoggedIn').checked;
     setIsBackendLoading(true);
     Auth.signIn(values['login'].useremail, values['login'].userpassword)
@@ -220,10 +226,57 @@ export default function Login() {
         setIsBackendLoading(false);
         setIsInputBad(true);
       });
-  }
+  };
+
+  const handleConfirmChangePassword = async () => {
+    const { newpassword, confirmpassword } = values.forgot3;
+    const regex = /[A-Z]/;
+    if (!regex.test(newpassword) || newpassword.length < 8) {
+      setIsPasswordBad('8+ Characters, 1 Capital Letter');
+      handleNextPage('forgot3');
+      return;
+    }
+    if (newpassword !== confirmpassword) {
+      setIsPasswordBad('Passwords do not match');
+      handleNextPage('forgot3');
+      return;
+    }
+    setIsBackendLoading(true);
+    Auth.forgotPasswordSubmit(values.forgot1.useremail, values.forgot2.verifycode, newpassword)
+    .then(() => {
+      setIsBackendLoading(false);
+      toast.success('Password reset successfully!', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      handleNextPage('forgot4');
+    })
+    .catch((err) => {
+      setIsBackendLoading(false);
+      setIsInputBad(true);
+      handleNextPage('forgot2');
+      let errMsg = err.log ?? err.code ?? err.name;
+      if (err.name === 'CodeMismatchException') {
+        errMsg = 'Verification code is wrong';
+      }
+      toast.error(errMsg, {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    });
+  };
 
   const handleNextPage = (step) => {
-    setIsInputBad(false);
     setStepPage(step);
   };
 
@@ -263,16 +316,22 @@ export default function Login() {
               active={stepPage === 'forgot1'}
               handleNextPage={(e) => handleNextPage(e)}
               values={values}
+              isInputBad={isInputBad}
+              setIsInputBad={setIsInputBad}
+              isBackendLoading={isBackendLoading}
+              setIsBackendLoading={setIsBackendLoading}
             />
             <ForgotPasswordTwo
               active={stepPage === 'forgot2'}
               handleNextPage={(e) => handleNextPage(e)}
-              values={values}
+              isInputBad={isInputBad}
             />
              <ForgotPasswordThree
               active={stepPage === 'forgot3'}
               handleNextPage={(e) => handleNextPage(e)}
-              values={values}
+              handleConfirmChangePassword={handleConfirmChangePassword}
+              isPasswordBad={isPasswordBad}
+              isBackendLoading={isBackendLoading}
             />
             <ForgotPasswordFour 
               active={stepPage === 'forgot4'}
@@ -418,19 +477,33 @@ function LoginForm({active, handleNextPage, login, isInputBad, isLoginDisabled})
  * Part one of changing password
  * @return {JSX}
  */
-function ForgotPasswordOne({active, handleNextPage, values}) {
+function ForgotPasswordOne({active, handleNextPage, values, isInputBad, setIsInputBad, isBackendLoading, setIsBackendLoading}) {
   
   const handleForgotPW1 = (e) => {
-    Auth.forgotPassword(values['forgot1'].useremail)
+    setIsBackendLoading(true);
+    Auth.forgotPassword(values.forgot1.useremail)
       .then((data) => {
-        console.log(data);
-        handleNextPage(e.target.value)
+        // console.log(data);
+        handleNextPage(e.target.value);
+        setIsBackendLoading(false);
       })
       .catch((err) => {
+        setIsBackendLoading(false);
+        setIsInputBad(true);
+        let errMsg = err.log ?? err.code ?? err.name;
         if (err.name === 'UserNotFoundException') {
-          alert('Account with this email does not exist.')
+          errMsg = 'Account with this email does not exist.';
         }
-        console.log(err)
+        errMsg = errMsg.replace('Username', 'Email');
+        toast.error(errMsg, {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       });
   }
   
@@ -453,6 +526,7 @@ function ForgotPasswordOne({active, handleNextPage, values}) {
           index={'useremail'}
           step={'forgot1'}
           fill={'email'}
+          error={isInputBad}
         />
       </div>
       <div className='grid-flow-small'>
@@ -470,6 +544,7 @@ function ForgotPasswordOne({active, handleNextPage, values}) {
             variant={'themed'}
             value={'forgot2'}
             onClick={(e) => {handleForgotPW1(e)}}
+            disabled={isBackendLoading}
           >
             Request password change
           </ThemedButton>
@@ -487,7 +562,7 @@ function ForgotPasswordOne({active, handleNextPage, values}) {
  * Part two of changing password
  * @return {JSX}
  */
-function ForgotPasswordTwo({active, handleNextPage, values}) {
+function ForgotPasswordTwo({active, handleNextPage, isInputBad}) {
   return (
     <div className='flow-large' style={{display: active ? null : 'none'}}>
       <div className='grid-flow-large text-center'>
@@ -501,6 +576,7 @@ function ForgotPasswordTwo({active, handleNextPage, values}) {
           type={'text'}
           index={'verifycode'}
           step={'forgot2'}
+          error={isInputBad}
         />
       </div>
       <div className='grid-flow-small grid-center text-center'>
@@ -511,7 +587,7 @@ function ForgotPasswordTwo({active, handleNextPage, values}) {
             value={'forgot3'}
             onClick={(e) => handleNextPage(e.target.value)}
           >
-            Verify
+            Next
           </ThemedButton>
         </div>
       </div>
@@ -523,13 +599,7 @@ function ForgotPasswordTwo({active, handleNextPage, values}) {
  * Part three of changing password
  * @return {JSX}
  */
-function ForgotPasswordThree({active, handleNextPage, values}) {
-  
-  const handleForgotPW3 = () => {
-    Auth.forgotPasswordSubmit(values['forgot1'].useremail, values['forgot2'].verifycode, values['forgot3'].newpassword)
-      .then((data) => console.log(data))
-      .catch((err) => console.log(err));
-  }
+function ForgotPasswordThree({active, handleNextPage, handleConfirmChangePassword, isPasswordBad, isBackendLoading}) {
   
   return (
     <div className='flow-large' style={{display: active ? null : 'none'}}>
@@ -542,21 +612,39 @@ function ForgotPasswordThree({active, handleNextPage, values}) {
       </div>
       <div className='grid-flow-large'>
         <div className='grid-flow-small'>
-          <p className='text-bold'>New Password</p>
+          <div className='flex-space-between text-bold'>
+            <p className='text-bold'>New Password</p>
+            <p
+              className='text-warning'
+              style={{opacity: isPasswordBad && isPasswordBad.includes('8+') ? 1 : 0}}
+            >
+              {isPasswordBad}
+            </p>
+          </div>
           <ThemedInput
             placeholder={'8+ Characters, 1 Capital Letter'}
             type={'password'}
             index={'newpassword'}
             step={'forgot3'}
+            error={isPasswordBad && isPasswordBad.includes('8+')}
           />
         </div>
         <div className='grid-flow-small'>
-          <p className='text-bold'>Confirm Password</p>
+          <div className='flex-space-between text-bold'>
+            <p className='text-bold'>Confirm Password</p>
+            <p
+              className='text-warning'
+              style={{opacity: isPasswordBad && isPasswordBad.includes('do not match') ? 1 : 0}}
+            >
+              {isPasswordBad}
+            </p>
+          </div>
           <ThemedInput
             placeholder={'8+ Characters, 1 Capital Letter'}
             type={'password'}
             index={'confirmpassword'}
             step={'forgot3'}
+            error={isPasswordBad && isPasswordBad.includes('do not match')}
           />
         </div>
       </div>
@@ -574,7 +662,8 @@ function ForgotPasswordThree({active, handleNextPage, values}) {
             color={'yellow'}
             variant={'themed'}
             value={'forgot4'}
-            onClick={(e) => {handleNextPage(e.target.value); handleForgotPW3()}}
+            onClick={handleConfirmChangePassword}
+            disabled={isBackendLoading}
           >
             Change password
           </ThemedButton>
