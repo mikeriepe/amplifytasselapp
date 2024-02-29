@@ -1,35 +1,41 @@
 .Landing {
-    padding-top: 75px;
-    height: 60vh;
-    background: url("../assets/UCSC_mascot.jpeg") no-repeat center center fixed; 
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  background: url("../assets/UCSC_mascot.jpeg") no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
 }
 
 .title {
-    width: 600px;
-    height: 220px;
-    position: absolute;
-    top: 50vh;
-    border-radius: 8px;
-    background-color: rgba(255, 255, 255, 0.39);
+  width: 40vw;
+  height: 100vh;
+  position: absolute;
+  border: "0.5px solid rgba(0, 0, 0, 0.15)";
+  top: 0;
+  border-radius: 8px;
+  background-color: white;
+}
+
+.elements {
+  margin-top: 40vh;
 }
 
 .ACmmTitle {
-    color: #F1B521;
-    width: 500px;
-    padding-left: 20px;
-    margin: 15px;
-    font-weight:500;
-    font-size: 45px;
-
+  color: #f1b521;
+  width: 500px;
+  padding-left: 20px;
+  margin: 15px;
+  font-weight: 500;
+  font-size: 45px;
 }
 
 .secondaryTitle {
-    margin: 5px;
-    color: rgba(108, 110, 114, 0.8);
-    padding-left: 30px;
-    font-weight:500;
+  margin: 5px;
+  color: rgba(108, 110, 114, 0.8);
+  padding-left: 30px;
+  font-weight: 500;
 }
