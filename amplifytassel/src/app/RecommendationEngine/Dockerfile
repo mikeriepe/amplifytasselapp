@@ -8,4 +8,6 @@ RUN pip install --no-cache-dir sentence_transformers
 
 COPY Model.py ./
 
+ENV HF_HOME="/tmp/"
+
 CMD ["Model.recommendation_engine"]

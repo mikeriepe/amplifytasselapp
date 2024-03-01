@@ -2,9 +2,12 @@ import numpy as np
 import json
 from sentence_transformers import SentenceTransformer, util
 from time import time as time
+import logging
+
+print("Beginning Model Initialization")
 
 pre_init = time()
-model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
+model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2', cache_folder = "/tmp/")
 post_init = time()
 
 print("Took:", post_init - pre_init, "s to load Model.")
@@ -52,30 +55,3 @@ def weight_tags(texts, entities_tags, tag_weight=2.0,text_weight=1.0):
     tags_embeddings = np.concatenate(tags_embeddings)
 
     return (text_embeddings + tags_embeddings)/(tag_weight + text_weight)
-
-# if __name__ == "__main__":
-
-#     recommendation_engine(
-#         {
-#     "users": [
-#         {
-#             "description": "test", 
-#             "volunteerExp": "test", 
-#             "workExp": "test", 
-#             "tags": ["test", "test1", "test2"]
-#         }
-#     ],
-#     "events": [
-#         {
-#             "description": "event", 
-#             "subject": "test", 
-#             "eventData": "test", 
-#             "eventName": "test", 
-#             "eventID": "1", 
-#             "tags": ["event", "Event1"]
-#         }
-#     ]
-
-# },
-#         None
-#     )
