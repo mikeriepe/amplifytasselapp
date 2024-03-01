@@ -1,1 +1,1 @@
-aws lambda update-function-code --function-name recommendation-engine --image-uri 436713900294.dkr.ecr.us-west-1.amazonaws.com/recommendation-engine:latest --region us-west-1
+aws lambda update-function-code --function-name recommendation-engine --image-uri $args[0].dkr.ecr.us-west-1.amazonaws.com/recommendation-engine:latest --region us-west-1
