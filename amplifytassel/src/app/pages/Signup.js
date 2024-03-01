@@ -8,7 +8,6 @@ import ThemedButton from '../components/ThemedButton';
 import ThemedInput from '../components/ThemedInput';
 import ThemedStepper from '../components/ThemedStepper';
 import SignupBanner from '../assets/SignupBanner.png';
-// import verifyEmail from '../util/EmailVerification';
 import '../stylesheets/LoginSignup.css';
 import { Auth } from 'aws-amplify';
 import { DataStore } from '@aws-amplify/datastore';
@@ -22,6 +21,16 @@ const PaperStyling = {
   borderRadius: '10px',
   filter: 'drop-shadow(0px 15px 40px rgba(192, 225, 255, 0.1))',
   color: '#3C4047',
+};
+
+const toastOptions = {
+  position: 'top-right',
+  autoClose: 5000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
 };
 
 
@@ -51,7 +60,7 @@ export default function Signup() {
     }
   });
 
-  // Tracks if the user should be shown the error 'Email is already in use'
+  // Tracks if the user should be shown the error 'Email already in use'
   const [isUserEmailTaken, setIsUserEmailTaken] = useState(false);
   useEffect(() => setIsUserEmailTaken(false), [values[2].useremail]);
 
@@ -86,9 +95,11 @@ export default function Signup() {
   // verifying the user's verification code.
   const [isVerifying, setIsVerifying] = useState(false);
 
+  // Tracks if the user should be shown the error 'Incorrect verification code'
   const [isVerificationCodeWrong, setIsVerificationCodeWrong] = useState(false);
   useEffect(() => setIsVerificationCodeWrong(false), [values[3].verifycode]);
 
+  // Called when the user clicks 'Create Account', and the form is filled out properly.
   const createUser = async () => {
     // create user in aws
     let username = values[2].useremail;
@@ -127,15 +138,7 @@ export default function Signup() {
         );
       })
       .then(() => {
-        toast.success('Account created', {
-          position: 'top-right',
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        toast.success('Account created', toastOptions);
         setCreatedProfileData({
           "email": email,
           "schoolEmail": values[1].schoolemail,
@@ -144,7 +147,6 @@ export default function Signup() {
           "status": ProfileStatus.PENDING,
           "graduationYear": values[1].graduationyear,
         });
-        // verifyEmail(json);
         setValues((prevValues) => ({
           ...prevValues,
           [2]: {
@@ -192,6 +194,8 @@ export default function Signup() {
     }
   };
 
+  // Called when the user clicks 'Create Account'.
+  // Check if the form has any bad inputs, such as an invalid or empty email
   const getErrors = () => {
     let err = [];
     if (values[0].firstname.length === 0)
@@ -214,6 +218,9 @@ export default function Signup() {
     return err;
   };
 
+  // Called when the user clicks 'Create Account'
+  // 1) If the form has errors, then handle errors accordingly
+  // 2) Otherwise, call createUser()
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -222,15 +229,7 @@ export default function Signup() {
       setIsCreatingAccount(true);
       createUser();
     } else {
-      toast.error('Please fix the following fields: ' + formErrors.join(', '), {
-        position: 'top-right',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      toast.error('Please fix the following fields: ' + formErrors.join(', '), toastOptions);
       setErrors(formErrors);
       for (const [stepNum, formFields] of Object.entries(values)) {
         if (Object.keys(formFields).some(formField => formErrors.includes(formField))) {
@@ -242,6 +241,7 @@ export default function Signup() {
     }
   };
 
+  // Called when the user clicks 'Resend Email'
   // NOTE: Be sure to check your spam folder for
   // these resent verification emails.
   const handleResend = async () => {
@@ -250,15 +250,7 @@ export default function Signup() {
     console.log('Resending verification for ' + email);
     Auth.resendSignUp(email)
     .then(() => {
-      toast.success('Email verification sent', {
-        position: 'top-right',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      toast.success('Email verification sent', toastOptions);
       // Must wait 3 seconds before you can resend
       // another verification email.
       new Promise(r => setTimeout(r, 3000)).then(() => {
@@ -267,10 +259,13 @@ export default function Signup() {
     })
     .catch((err) => {
       console.error('Error resending email verification', err);
+      let errMsg = err.log ?? err.code ?? err.name;
+      toast.error(errMsg, toastOptions);
       setIsResendingVerification(false);
     });
   };
 
+  // Called when the user clicks 'Verify'
   const navigate = useNavigate();
   const handleVerify = async () => {
     setIsVerifying(true);
@@ -284,15 +279,7 @@ export default function Signup() {
         if(errMsg.includes('CodeMismatchException')) {
           errMsg = 'Incorrect verification code';
         }
-        toast.error(errMsg, {
-          position: 'top-right',
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        toast.error(errMsg, toastOptions);
         setIsVerifying(false);
         setIsVerificationCodeWrong(true);
       });

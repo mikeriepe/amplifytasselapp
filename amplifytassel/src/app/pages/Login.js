@@ -32,6 +32,16 @@ const InputLabelStyling = {
   'marginLeft': '1em',
 };
 
+const toastOptions = {
+  position: 'top-right',
+  autoClose: 5000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+};
+
 /**
  * Creates login page
  * @return {HTML} login page
@@ -79,7 +89,11 @@ export default function Login() {
   // Tracks if the user's new password on the 'Forgot Password' page is valid.
   const [isPasswordBad, setIsPasswordBad] = useState(null);
   useEffect(() => setIsPasswordBad(null), [values, stepPage]);
-
+ 
+  // Called when the user clicks 'Login'
+  // 1) If the user's email or password is incorrect, then display an error message
+  // 2) If the user's email is not verified, then redirect to the verification page
+  // 3) Otherwise, the user's login is successful
   const login = async () => {
     //const keepLoggedIn = document.getElementById('keepLoggedIn').checked;
     setIsBackendLoading(true);
@@ -97,18 +111,11 @@ export default function Login() {
             // at this time the user is logged in if no MFA required
             console.log('new password completed!');
             console.log('login worked!');
-            toast.success('Login Success', {
-              position: 'top-right',
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
+            toast.success('Login Success', toastOptions);
           })
           .catch((e) => {
-            console.log(e);
+            console.error(e);
+            toast.error(e, toastOptions);
           });
         } else {
           // if (keepLoggedIn) {
@@ -116,16 +123,8 @@ export default function Login() {
           //   localStorage.setItem('accessToken', user.accessToken);
           // }
           console.log('login worked!');
-          console.log(JSON.stringify(user));
-          toast.success('Login Success', {
-            position: 'top-right',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
+          // console.log(JSON.stringify(user));
+          toast.success('Login Success', toastOptions);
         }
         setLoadingAuth(true);
         setIsBackendLoading(false);
@@ -137,19 +136,12 @@ export default function Login() {
         } else {
           setIsInputBad(true);
           setIsBackendLoading(false);
-          toast.error('Invalid username or password', {
-            position: 'top-right',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
+          toast.error('Invalid username or password', toastOptions);
         }
       });
   };
 
+  // Called when the user clicks 'Resend'
   // NOTE: Be sure to check your spam folder for
   // these resent verification emails.
   const handleResend = async () => {
@@ -158,15 +150,7 @@ export default function Login() {
     console.log('Resending verification for ' + email);
     Auth.resendSignUp(email)
     .then(() => {
-      toast.success('Email verification sent', {
-        position: 'top-right',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      toast.success('Email verification sent', toastOptions);
       // Must wait 3 seconds before you can resend
       // another verification email.
       new Promise(r => setTimeout(r, 3000)).then(() => {
@@ -180,33 +164,18 @@ export default function Login() {
       if (errMsg.includes('LimitExceededException')) {
         errMsg = 'Exceeded daily email limit for the operation or the account.';
       }
-      toast.error(errMsg, {
-        position: 'top-right',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      toast.error(errMsg, toastOptions);
     });
   };
 
+  // Called when the user clicks 'Verify'
   const navigate = useNavigate();
   const handleVerify = async () => {
     setIsBackendLoading(true);
     Auth.confirmSignUp(values.login.useremail, values.verification.completesignup)
       .then(() => {
         setIsBackendLoading(false);
-        toast.success('Email verified!', {
-          position: 'top-right',
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        toast.success('Email verified!', toastOptions);
         navigate('/dashboard');
       })
       .catch((err) => {
@@ -214,20 +183,13 @@ export default function Login() {
         if(errMsg.includes('CodeMismatchException')) {
           errMsg = 'Incorrect verification code';
         }
-        toast.error(errMsg, {
-          position: 'top-right',
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        toast.error(errMsg, toastOptions);
         setIsBackendLoading(false);
         setIsInputBad(true);
       });
   };
 
+  // Called when the user clicks 'Change password'
   const handleConfirmChangePassword = async () => {
     const { newpassword, confirmpassword } = values.forgot3;
     const regex = /[A-Z]/;
@@ -245,15 +207,7 @@ export default function Login() {
     Auth.forgotPasswordSubmit(values.forgot1.useremail, values.forgot2.verifycode, newpassword)
     .then(() => {
       setIsBackendLoading(false);
-      toast.success('Password reset successfully!', {
-        position: 'top-right',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      toast.success('Password reset successfully!', toastOptions);
       handleNextPage('forgot4');
     })
     .catch((err) => {
@@ -262,17 +216,9 @@ export default function Login() {
       handleNextPage('forgot2');
       let errMsg = err.log ?? err.code ?? err.name;
       if (err.name === 'CodeMismatchException') {
-        errMsg = 'Verification code is wrong';
+        errMsg = 'Incorrect verification code';
       }
-      toast.error(errMsg, {
-        position: 'top-right',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      toast.error(errMsg, toastOptions);
     });
   };
 
@@ -479,6 +425,7 @@ function LoginForm({active, handleNextPage, login, isInputBad, isLoginDisabled})
  */
 function ForgotPasswordOne({active, handleNextPage, values, isInputBad, setIsInputBad, isBackendLoading, setIsBackendLoading}) {
   
+  // Called when the user clicks 'Request password change'
   const handleForgotPW1 = (e) => {
     setIsBackendLoading(true);
     Auth.forgotPassword(values.forgot1.useremail)
@@ -495,15 +442,7 @@ function ForgotPasswordOne({active, handleNextPage, values, isInputBad, setIsInp
           errMsg = 'Account with this email does not exist.';
         }
         errMsg = errMsg.replace('Username', 'Email');
-        toast.error(errMsg, {
-          position: 'top-right',
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        toast.error(errMsg, toastOptions);
       });
   }
   
