@@ -249,17 +249,30 @@ export default function SocialMessages() {
         const chats = await DataStore.query(ChatRoom, (c) => c.id.eq(chat.chatRoomId));
         const ProfilesAsyncCollection = chats[0].Profiles;
         const profiles = await ProfilesAsyncCollection.values;
+        // console.log("A Chat:", chats[0])
+        // console.log("Chatroom:", chat.chatRoomId, "Profiles:", profiles)
 
-        const profileIdsArray = profiles
+        var profileIdsArray = profiles
           .map((profile) => profile.profileId)
-          .filter((profileId) => profileId !== userProfile.id);
+
+        // console.log("Profile Ids:", profileIdsArray)
+
+        profileIdsArray = profileIdsArray.filter((profileId) => profileId !== userProfile.id);
+
+        // console.log("Chatroom", chat.chatRoomId, "Profile Ids:", profileIdsArray)
 
         const fullNameArray = await Promise.all(
           profileIdsArray.map(async (id) => {
+            if(!id){
+              return "No Name";
+            }
             const profile = await DataStore.query(Profile, (p) => p.id.eq(id));
+            // console.log("Searching for id", id, "Profiles:", profile, "First Profile:", profile[0])
             return `${profile[0].firstName} ${profile[0].lastName}`;
           })
         );
+
+        // console.log("fullNameArray:", fullNameArray)
 
         return {
           chatroom: chats[0],
@@ -274,10 +287,14 @@ export default function SocialMessages() {
   const searchChats = async (query) => {
     try {  
       const results = await getAllChatRooms()
-  
+      
+      // console.log("Got all chat Rooms")
+
       if (!query) {
         setDisplayChats(results.map((result) => result.chatroom));
+        // console.log("Display Chats:", displayChats)
         setProfilesOfJoined(results.map((result) => result.fullNameArray));
+        // console.log("ProfilesOfJoined:", profilesOfJoined)
       } else {
         const searchableData = results.map(({ chatroom, fullNameArray }) => ({
           chatName: chatroom.ChatName,
@@ -394,6 +411,7 @@ export default function SocialMessages() {
             </TableHead>
             <TableBody aria-label='Accounts Table Body'>
                   {displayChats.map((chatroom, index) => {
+
                   const profileOfJoined = profilesOfJoined[index];
                   return (
                     <Row

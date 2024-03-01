@@ -40,6 +40,8 @@ import { Profile, Friend, ChatRoom, ProfileChatRoom } from './../../models';
 import { Storage } from 'aws-amplify';
 import { Chat, Dataset } from '@mui/icons-material';
 
+import { createNewChatRoom, findExistingChatRoom } from '../util/SocialChatRooms';
+
 const Page = styled((props) => (
   <Box {...props} />
 ))(() => ({
@@ -289,53 +291,11 @@ export default function SocialFriends() {
       console.error("Error deleting friend", error);
     }
   }
-  
-  // creates a new chatroom for the 
-  const createNewChatRoom = async (selected) => {
-    const profiles = [userProfile];
-  
-    selected.forEach(async (email) => {
-      const profile = await DataStore.query(Profile, (p) => p.email.eq(email));
-      profiles.push(profile[0]);
-    });
-  
-    const newChatRoom = await DataStore.save(
-      new ChatRoom({
-        ChatName: "Chat Name",
-        Profiles: [],
-        Messages: [],
-      })
-    );
-  
-    profiles.forEach(async (profile) => {
-      const profileChatRoomRelation = await DataStore.save(
-        new ProfileChatRoom({
-          "profile": profile,
-          "chatRoom": newChatRoom
-        })
-      );
-    });
     
-    return newChatRoom;
-  };
-  
   const reloadPageAfterDelay = () => {
     setTimeout(() => {
       window.location.reload();
     }, 500);
-  };
-
-  const findExistingChatRoom = async (allChatRooms, profileIDs) => {
-    for (const chat of allChatRooms) {
-        const ProfilesAsyncCollection = chat.Profiles;
-        const profiles = await ProfilesAsyncCollection.values;
-        const profileIds = profiles.map(profile => profile.profileId);
-
-        if (profileIds.sort().join(',') === profileIDs.sort().join(',')) {
-            return chat;
-        }
-    }
-    return null;
   };
 
   const handleMessageAction = async (event) => {
