@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../util/AuthContext";
 import { Link } from "react-router-dom";
+import PersonIcon from "@mui/icons-material/Person";
 import ThemedButton from "../components/ThemedButton";
 
 import "../stylesheets/Landing.css";
@@ -26,16 +27,29 @@ export default function Landing() {
           <h2 className="secondaryTitle">
             Connect alumni with their alma mater
           </h2>
-          <Link to="/signup">
-            <ThemedButton
-              aria-label="Signup page button"
-              color={"yellow"}
-              variant={"gradient"}
-              style={{ marginLeft: "1rem" }}
-            >
-              Join Now
-            </ThemedButton>
-          </Link>
+          <div class="centerButton">
+            <Link to="/login">
+              <ThemedButton
+                aria-label="Login page button"
+                startIcon={<PersonIcon />}
+                color={"gray"}
+                variant={"cancel"}
+                style={{ marginTop: "10px", marginRight: "5px" }}
+              >
+                Login
+              </ThemedButton>
+            </Link>
+            <Link to="/signup">
+              <ThemedButton
+                aria-label="Signup page button"
+                color={"yellow"}
+                variant={"gradient"}
+                style={{ marginTop: "10px", marginLeft: "5px" }}
+              >
+                Join Now
+              </ThemedButton>
+            </Link>
+          </div>
         </div>
       </div>
     </div>

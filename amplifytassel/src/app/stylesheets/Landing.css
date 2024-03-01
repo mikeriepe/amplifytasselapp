@@ -12,6 +12,7 @@
 
 .title {
   width: 40vw;
+  min-width: 450px;
   height: 100vh;
   position: absolute;
   border: "0.5px solid rgba(0, 0, 0, 0.15)";
@@ -22,20 +23,28 @@
 
 .elements {
   margin-top: 40vh;
+  width: 100%;
+  align-items: center;
 }
 
 .ACmmTitle {
   color: #f1b521;
-  width: 500px;
-  padding-left: 20px;
-  margin: 15px;
   font-weight: 500;
-  font-size: 45px;
+  font-size: 40px;
+  text-align: center;
 }
 
 .secondaryTitle {
   margin: 5px;
+  text-align: center;
   color: rgba(108, 110, 114, 0.8);
-  padding-left: 30px;
   font-weight: 500;
+}
+
+.centerButton {
+  width: 50%;
+  display: flex;
+  margin: auto;
+  align-items: center;
+  justify-content: center;
 }
