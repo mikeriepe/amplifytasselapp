@@ -22,6 +22,7 @@ import MyProfile from './pages/MyProfile';
 import ViewProfile from './pages/ViewProfile';
 import AnimationStarFlying from './components/AnimationStarFlying';
 import AnimationConfetti from './components/AnimationConfetti';
+import Progress from './components/Progress';
 import { Auth } from 'aws-amplify';
 
 
@@ -29,12 +30,67 @@ import useAuth from './util/AuthContext';
 import { Amplify} from 'aws-amplify'
 import awsExports from "../aws-exports";
 import useAnimation from './util/AnimationContext';
+
+import { Navigate, Outlet } from 'react-router-dom';
+
 Amplify.configure(awsExports);
 
-const initialState = { name: '', description: '' }
+/**
+ * Admin Routes - Only accessible by Admin accounts.
+ *  1) If user auth is loading, return a loading icon.
+ *  2) If the user is not logged in, redirect to the login page.
+ *  3) If the user is an admin, permit them to access the route.
+ *  4) Otherwise, redirect to the profile page.
+ */
+const AdminLayout = (props) => {
+  const { loadingAuth, user, userProfile } = props;
+  if (loadingAuth) return <Progress />;
+  if (!user) return <Navigate to="/login" replace />;
+  if (userProfile?.status === 'ADMIN') return <Outlet />;
+  return <Navigate to="/myprofile" replace />;
+};
+
+/**
+ * Approved Layout Routes - Only accessible by Approved accounts.
+ * 1) If user auth is loading, return a loading icon.
+ * 2) If the user is not logged in, redirect to the login page.
+ * 3) If the user is authorized, permit them to access the route.
+ * 4) Otherwise, redirect to the profile page.
+ */
+const ApprovedLayout = (props) => {
+  const { loadingAuth, user, userProfile } = props;
+  if (loadingAuth) return <Progress />;
+  if (!user) return <Navigate to="/login" replace />;
+  if (userProfile?.status === 'ADMIN' || userProfile?.status === 'APPROVED') return <Outlet />;
+  return <Navigate to="/myprofile" replace />;
+}
+
+/**
+ * Logged-In Routes - Accessible by logged-in users.
+ * 1) If the user auth is loading, return a loading icon.
+ * 2) If the user is not logged in, redirect to the login page.
+ * 3) Otherwise, permit them to access the route.
+ */
+const LoggedInLayout = (props) => {
+  const { loadingAuth, user } = props;
+  if (loadingAuth) return <Progress />;
+  if (!user) return <Navigate to="/login" replace />;
+  return <Outlet />;
+}
+
+/**
+ * Logged-Out Routes - Accessible by users who are not logged in.
+ * 1) If the user is logged in, redirect to the profile page.
+ * 2) Otherwise, permit them to access the route.
+ */
+const LoggedOutLayout = (props) => {
+  const { user } = props;
+  if (user) return <Navigate to="/myprofile" replace />;
+  return <Outlet />;
+}
 
 const App = () => {
-  const {userProfile} = useAuth();
+  const { loadingAuth, user, userProfile } = useAuth();
   const {
     showStarAnimation,
     showConfettiAnimation,
@@ -75,26 +131,35 @@ const App = () => {
   return (
     <Box sx={{display: 'flex'}}>
       <ToastContainer />
-      {userProfile !== null ? <NavBarLoggedIn /> : <NavBarLoggedOut />}
+      {(!loadingAuth && user) ? <NavBarLoggedIn /> : <NavBarLoggedOut />}
       <Box component='main' sx={{flexGrow: 1, marginTop: '70px'}}>
         <Routes>
-          <Route path='/' element={<Landing />}/>
-          <Route path='/login' element={<Login />} />
-          <Route path='/signup' element={<Signup />} />
-          <Route path='/settings' element={<Settings />}/>
-          <Route
-            path='/opportunity/:opportunityid'
-            element={<ViewOpportunity />}
-          />
-          <Route path='/profile/:profileid' element={<ViewProfile />} />
-          <Route path='/dashboard' element={<Dashboard />}/>
-          <Route path='/approvals' element={<Approvals/>}/>
-          <Route path='/opportunities' element={<Opportunities />}/>
-          <Route path='/myprofile' element={<MyProfile />}/>
-          <Route path='/landing' element={<Landing />}/>
-          <Route path='/updateprofile' element={<UpdateProfile />} />
-          <Route path='/social' element={<Socials/>} />
-          <Route path='/social/:chatroomid' element={<ViewMessages/>}/>
+          {/* Routes only accessible if you are logged out */}
+          <Route element={<LoggedOutLayout user={user} />}>
+            <Route path='/' element={<Landing />}/>
+            <Route path='/landing' element={<Landing />}/>
+            <Route path='/login' element={<Login />} />
+            <Route path='/signup' element={<Signup />} />
+          </Route>
+          {/* Routes only accessible if you are logged in */}
+          <Route element={<LoggedInLayout loadingAuth={loadingAuth} user={user} />}>
+            <Route path='/myprofile' element={<MyProfile />}/>
+            <Route path='/updateprofile' element={<UpdateProfile />} />
+          </Route>
+          {/* Routes only accessible if you are approved or an admin */}
+          <Route element={<ApprovedLayout loadingAuth={loadingAuth} user={user} userProfile={userProfile} />}>
+            <Route path='/dashboard' element={<Dashboard />}/>
+            <Route path='/opportunities' element={<Opportunities />}/>
+            <Route path='/opportunity/:opportunityid' element={<ViewOpportunity />} />
+            <Route path='/social' element={<Socials/>} />
+            <Route path='/social/:chatroomid' element={<ViewMessages/>}/>
+            <Route path='/settings' element={<Settings />}/>
+            <Route path='/profile/:profileid' element={<ViewProfile />} />
+          </Route>
+          {/* Routes only accessible if you are an admin */}
+          <Route element={<AdminLayout loadingAuth={loadingAuth} user={user} userProfile={userProfile} />}>
+            <Route path='/approvals' element={<Approvals/>}/>
+          </Route>
         </Routes>
       </Box>
       {showStarAnimation &&

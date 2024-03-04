@@ -70,9 +70,8 @@ const ListTextStyling = {
  * @return {JSX} NavBar Component
  */
 export default function NavBarLoggedIn() {
-  const { userProfile, setUser, setLoggedIn, setUserProfile } = useAuth();
+  const { userProfile, setLoadingAuth } = useAuth();
   const theme = useTheme();
-  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [tabIndex, setTabIndex] = useState(window.location.pathname);
   const [profilePicture, setProfilePicture] = useState(null);
@@ -142,10 +141,7 @@ export default function NavBarLoggedIn() {
     console.log("logout api called here");
     Auth.signOut()
       .then(() => {
-        setUser(null);
-        setLoggedIn(false);
-        setUserProfile(null);
-        navigate("/");
+        setLoadingAuth(true);
       })
       .catch((err) => {
         console.log("error logging out: ", err);
