@@ -1,6 +1,4 @@
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import useAuth from "../util/AuthContext";
+import React from "react";
 import { Link } from "react-router-dom";
 import PersonIcon from "@mui/icons-material/Person";
 import ThemedButton from "../components/ThemedButton";
@@ -8,14 +6,6 @@ import ThemedButton from "../components/ThemedButton";
 import "../stylesheets/Landing.css";
 
 export default function Landing() {
-  const navigate = useNavigate();
-  const { user } = useAuth();
-
-  useEffect(() => {
-    if (user != null) {
-      navigate("/dashboard");
-    }
-  }, [user, navigate]);
 
   return (
     <div className="Landing">
@@ -55,4 +45,3 @@ export default function Landing() {
     </div>
   );
 }
-//Landing.js changes: hook up useAuth to redirect you to myprofile if it detects you're already logged in
