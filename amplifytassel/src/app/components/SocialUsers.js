@@ -299,10 +299,7 @@ export default function SocialUsers() {
         friends2.forEach((item) => {
           itemsToRemove.push(item.Friend);
         });
-        // If there are matching FriendRequests, mark the item for removal
-        if (friendRequests.length > 0) {
-          itemsToRemove.push(item.id);
-        }
+
         console.log("items to remove", itemsToRemove);
         console.log("tempResult", tempResult);
         console.log(tempResult);
