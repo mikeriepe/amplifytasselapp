@@ -35,8 +35,11 @@ import {toast} from 'react-toastify';
 import '../stylesheets/ApprovalTable.css';
 
 import { DataStore } from '@aws-amplify/datastore';
-import { Profile } from './../../models';
+import { Profile, ChatRoom } from './../../models';
 import { Storage } from 'aws-amplify';
+import { findExistingInfoChatRoom, createNewChatRoom } from '../util/SocialChatRooms';
+import useAuth from '../util/AuthContext';
+import { sendMessage } from '../util/SocialChat';
 
 const Page = styled((props) => (
   <Box {...props} />
@@ -181,6 +184,8 @@ export default function ApprovalAccounts() {
   const [sortStatusOrder, setSortStatusOrder] = useState('');
   const [selectAllChecked, setSelectAllChecked] = useState(false);
 
+  const {userProfile} = useAuth();
+
   const handleDialogOpen = () => {
     setDialogOpen(true);
   };
@@ -292,7 +297,7 @@ export default function ApprovalAccounts() {
     setSelectAllChecked(!selectAllChecked);
     if (!selectAllChecked) {
       const newSelected = accounts.map((user) => user.email);
-      console.log(newSelected);
+      // console.log("handleSelectAll newSelect:", newSelected);
       setSelected(newSelected);
     } else {
       setSelected([]);
@@ -313,7 +318,7 @@ export default function ApprovalAccounts() {
       } else {
         newSelected.splice(currentIndex, 1);
       }
-      console.log(newSelected);
+      // console.log("handleSelect newSelect:", newSelected);
       setSelected(newSelected);
     }
   };
@@ -340,6 +345,7 @@ export default function ApprovalAccounts() {
         break;
     }
     const profiles = selected.map((profile) => {
+      // console.log("Accounts:", accounts);
       const info = accounts.find((account) => account.email === profile);
       return info;
     });
@@ -352,10 +358,10 @@ export default function ApprovalAccounts() {
           updated.status = status
         }))
         .then((res) => {
-        console.log(res);
+        // console.log(res);
         getAccounts('status', true);
         setSelected([]);
-        console.log(selected);
+        // console.log(selected);
       })
       .catch((err) => {
         console.log(err);
@@ -398,10 +404,13 @@ export default function ApprovalAccounts() {
 
   const handleDialogSubmit = () => {
     const status = 'REQUESTED';
-    const profiles = selected.map((profile) => {
-      const info = accounts.find((account) => account.email === profile);
+    const profiles = selected.map((email) => {
+      const info = accounts.find((account) => account.email === email);
       return info;
     });
+
+    const selectedProfileIds = profiles.map((profile) => profile.id);
+
     setLoading(true);
     // eslint-disable-next-line guard-for-in
     for (let index = 0; index < profiles.length; index++) {
@@ -411,17 +420,33 @@ export default function ApprovalAccounts() {
           updated.status = status
           updated.infoRequest = requestInfo;
         }))
-        .then((res) => {
-        console.log(res);
+        .then(async (res) => {
+        // console.log(res);
         setDialogOpen(false);
-        setRequestInfo('');
         getAccounts('status', true);
+
+        // Create a new chatroom if they don't have one attached, otherwise get the existing one - can be done without a special field for the time being.
+        const allChatRooms = await DataStore.query(ChatRoom);
+        
+        var chat = await findExistingInfoChatRoom(userProfile, selectedProfileIds, allChatRooms);
+
+        if (chat === null){
+          // console.log("Selected:", selected);
+          chat = await createNewChatRoom(userProfile, selected);
+        }
+
+        // console.log("Chatroom:", chat.id);
+        // console.log("User:", userProfile);
+
+        // Create a new message in the chatroom with the infoRequest as text
+        await sendMessage(chat.id, userProfile, requestInfo);
       })
       .catch((err) => {
         console.log(err);
         alert('Error requesting info, please try again');
       });
     }
+    setRequestInfo('');
   };
 
   const handleSort = (rowId) => {
@@ -532,7 +557,7 @@ export default function ApprovalAccounts() {
                   type="text"
                   fullWidth
                   variant="standard"
-                  onChange={handleRequestInfo}
+                  onBlur={handleRequestInfo}
                 />
               </DialogContent>
               <DialogActions>

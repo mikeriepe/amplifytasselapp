@@ -152,7 +152,7 @@ export default function SocialMessages() {
   const [profilesOfJoined, setProfilesOfJoined] = useState([]);
   const [isChatModalOpen, setChatModalOpen] = useState(false);
   const [selectedChatroomid, setSelectedChatroomid] = useState('');
-  const [selectedChatroomName, setselectedChatroomName] = useState('');
+  const [selectedChatroomName, setSelectedChatroomName] = useState('');
   const [chatroomMessages, setChatroomMessages] = useState([]);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [allChats, setAllChats] = useState([]);
@@ -160,11 +160,14 @@ export default function SocialMessages() {
   useEffect(() => {
     const fetchAllChats = async () => {
       try {
-        const allChatsResponse = await DataStore.query(Message);
+        const allChatsResponse = await DataStore.query(ChatRoom); // Fetches all chatroom in Database..
         setAllChats(allChatsResponse);
 
         // Call the new function to get all chat messages
         getAllChatMessages(allChatsResponse);
+
+        searchChats("")
+
       } catch (error) {
         console.error("Error fetching all chat messages", error);
       }
@@ -224,52 +227,74 @@ export default function SocialMessages() {
       Time: formatTimestamp(msg.Time),
     }));
 
-    setselectedChatroomName(chatroom.ChatName);
+    setSelectedChatroomName(chatroom.ChatName);
     setSelectedChatroomid(chatroom.id);
     setChatroomMessages(formattedMessages);
     setChatModalOpen(true);
   };
 
   const handleSettingsClick = async (chatroom) => {
-    setselectedChatroomName(chatroom.ChatName);
+    setSelectedChatroomName(chatroom.ChatName);
     setSelectedChatroomid(chatroom.id);
     setIsSettingsOpen(true);
   };
 
+  const getAllChatRooms = async () => {
+    const profile = await DataStore.query(Profile, (p) => p.id.eq(userProfile.id));
+    const chatRoomAsyncCollection = profile[0].Chatrooms;
+    const chatroom = await chatRoomAsyncCollection.values;
+
+    const results = await Promise.all(
+      chatroom.map(async (chat) => {
+        const chats = await DataStore.query(ChatRoom, (c) => c.id.eq(chat.chatRoomId));
+        const ProfilesAsyncCollection = chats[0].Profiles;
+        const profiles = await ProfilesAsyncCollection.values;
+        // console.log("A Chat:", chats[0])
+        // console.log("Chatroom:", chat.chatRoomId, "Profiles:", profiles)
+
+        var profileIdsArray = profiles
+          .map((profile) => profile.profileId)
+
+        // console.log("Profile Ids:", profileIdsArray)
+
+        profileIdsArray = profileIdsArray.filter((profileId) => profileId !== userProfile.id);
+
+        // console.log("Chatroom", chat.chatRoomId, "Profile Ids:", profileIdsArray)
+
+        const fullNameArray = await Promise.all(
+          profileIdsArray.map(async (id) => {
+            if(!id){
+              return "No Name";
+            }
+            const profile = await DataStore.query(Profile, (p) => p.id.eq(id));
+            // console.log("Searching for id", id, "Profiles:", profile, "First Profile:", profile[0])
+            return `${profile[0].firstName} ${profile[0].lastName}`;
+          })
+        );
+
+        // console.log("fullNameArray:", fullNameArray)
+
+        return {
+          chatroom: chats[0],
+          fullNameArray,
+        };
+      })
+    );
+    return results;
+  }
+ 
   // Taken from Approvals, searches admin/approved accounts based on query
   const searchChats = async (query) => {
-    try {
-      const profile = await DataStore.query(Profile, (p) => p.id.eq(userProfile.id));
-      const chatRoomAsyncCollection = profile[0].Chatrooms;
-      const chatroom = await chatRoomAsyncCollection.values;
-  
-      const results = await Promise.all(
-        chatroom.map(async (chat) => {
-          const chats = await DataStore.query(ChatRoom, (c) => c.id.eq(chat.chatRoomId));
-          const ProfilesAsyncCollection = chats[0].Profiles;
-          const profiles = await ProfilesAsyncCollection.values;
-  
-          const profileIdsArray = profiles
-            .filter((profile) => profile.profileId !== userProfile.id)
-            .map((profile) => profile.profileId);
-  
-          const fullNameArray = await Promise.all(
-            profileIdsArray.map(async (id) => {
-              const profile = await DataStore.query(Profile, (p) => p.id.eq(id));
-              return `${profile[0].firstName} ${profile[0].lastName}`;
-            })
-          );
-  
-          return {
-            chatroom: chats[0],
-            fullNameArray,
-          };
-        })
-      );
-  
+    try {  
+      const results = await getAllChatRooms()
+      
+      // console.log("Got all chat Rooms")
+
       if (!query) {
         setDisplayChats(results.map((result) => result.chatroom));
+        // console.log("Display Chats:", displayChats)
         setProfilesOfJoined(results.map((result) => result.fullNameArray));
+        // console.log("ProfilesOfJoined:", profilesOfJoined)
       } else {
         const searchableData = results.map(({ chatroom, fullNameArray }) => ({
           chatName: chatroom.ChatName,
@@ -386,6 +411,7 @@ export default function SocialMessages() {
             </TableHead>
             <TableBody aria-label='Accounts Table Body'>
                   {displayChats.map((chatroom, index) => {
+
                   const profileOfJoined = profilesOfJoined[index];
                   return (
                     <Row
