@@ -53,13 +53,7 @@
       "service": "Cognito"
     }
   },
-  "function": {
-    "recommendation": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda"
-    }
-  },
+  "function": {},
   "storage": {
     "s3Storage": {
       "dependsOn": [],
