@@ -307,7 +307,7 @@ export default function SocialFriends() {
     const allChatRooms = await DataStore.query(ChatRoom);
     const existingChatRoom = await findExistingChatRoom(allChatRooms, profileIDs);
     if(existingChatRoom == null){
-      const newChatroom = createNewChatRoom(selected);
+      const newChatroom = createNewChatRoom(userProfile, selected);
       handleOpenChatModal(newChatroom);
     }
     else{
