@@ -209,9 +209,7 @@ export default function ApprovalOpportunities() {
           // Create a chatroom with its poster or identify with only the admin and the poster
           const allChatRooms = await DataStore.query(ChatRoom);
         
-          var chat = null // await findExistingInfoChatRoom(userProfile, [posterProfileID], allChatRooms);
-
-          console.log("posterProfileId:", [posterProfileID])
+          var chat = await findExistingInfoChatRoom(userProfile, [posterProfileID], allChatRooms);
 
           if (chat === null){
             chat = await createNewChatRoom(userProfile, [posterProfileID]);

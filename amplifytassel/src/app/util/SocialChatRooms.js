@@ -3,16 +3,21 @@ import {  Profile, ChatRoom, ProfileChatRoom} from '../../models';
 
 // creates a new chatroom for the 
 export async function createNewChatRoom(userProfile, selected){
-    const profiles = [userProfile];
 
-    selected.forEach(async (profileID) => {
-        const profile = await DataStore.query(Profile, (p) => p.id.eq(profileID));
-        profiles.push(profile[0]);
-    });
+    const profiles = [userProfile]
+
+    for (const profileID of selected){
+        const profile = await DataStore.query(Profile, (profile) => profile.id.eq(profileID))
+        profiles.push(profile[0])
+    }
+
+    console.log("Profiles:", profiles)
+
+    const chatName = "A Chat between " + profiles.map((profile) => profile.firstName + " " + profile.lastName).join(", ")
 
     const newChatRoom = await DataStore.save(
         new ChatRoom({
-        ChatName: "A Chat between " + profiles.map((profile) => profile.firstName + " " + profile.lastName).join(", "),
+        ChatName: chatName,
         Profiles: [],
         Messages: [],
         })
@@ -25,7 +30,10 @@ export async function createNewChatRoom(userProfile, selected){
             "chatRoom": newChatRoom
         })
         ).catch(
-            (reason) => console.log("ProfileChatroom rejected because:", reason)
+            (reason) => {
+                console.log("ProfileChatroom rejected because:", reason)
+                alert("Failed to attach", profile.firstName, profile.lastName, "to this chatroom.")
+            }
         );
     });
 
