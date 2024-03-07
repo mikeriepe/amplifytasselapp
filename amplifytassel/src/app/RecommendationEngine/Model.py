@@ -19,16 +19,14 @@ def recommendation_engine(event, context):
        return {
           "statusCode": 400
        }
+    
     try:
       event = json.loads(event["body"])
-    except:
-       print("Event Body not loading properly:", event["body"])
+    except Exception as error:
+       print("Error:", error, "Event Body not loading properly:", event["body"])
        return {
           "statusCode": 500
        }
-
-    print("Event Body Keys:", event.keys())
-    print("Users:", event["users"][0])
 
     user = event["users"][0]
     events = event['events']
@@ -61,7 +59,7 @@ def recommendation_engine(event, context):
 
     return {
        "statusCode": 200,
-       "message": json.dumps({"order": sorted_event_ids})
+       "body": json.dumps({"order": sorted_event_ids})
     }
 
 def weight_tags(texts, entities_tags, tag_weight=2.0,text_weight=1.0):
