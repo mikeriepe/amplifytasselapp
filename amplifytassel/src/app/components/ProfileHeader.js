@@ -8,6 +8,7 @@ import { Modal, Box } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import Stack from '@mui/material/Stack';
 import { Link } from 'react-router-dom';
 import ProfileBanner from './ProfileBanner.js'
 import useAuth from '../util/AuthContext.js';
@@ -358,7 +359,6 @@ export default function ProfileHeader({ data,editButton }) {
   }, [selectedProfileFile])
 
   let level = 1; // replace this with a dynamic value
-  console.log(calculateUserLevel(data.points));
   switch (calculateUserLevel(data.points)) {
     case 1:
       level = level1;
@@ -395,9 +395,6 @@ export default function ProfileHeader({ data,editButton }) {
   }
   let xpBarPercentage = calculateXpBarPercentage(data.points);
   let pointsToNextLevel = calculatePointsToNextLevel(data.points);
-  console.log(data.points);
-  console.log(xpBarPercentage);
-  console.log(pointsToNextLevel);
 
   const progress = 65; 
 
@@ -410,9 +407,14 @@ export default function ProfileHeader({ data,editButton }) {
           sx={{ display: 'flex', height: '100%' }}
         >
           <Text>
-            <h2 className='text-dark ellipsis' aria-label='Profile Header Full Name'>
-              {data.firstName + ' ' + data.lastName}
-            </h2>
+            <Stack direction='row' style={{alignItems: 'center', justifyContent: 'start'}}>
+              <h2 className='text-dark ellipsis' aria-label='Profile Header Full Name'>
+                {data.firstName + ' ' + data.lastName}
+              </h2>
+              <h5 style={{marginLeft: 8, marginBottom: -2}}>
+                He/Him
+              </h5>
+            </Stack>
             <h5 className='text-bold text-blue ellipsis' aria-label='Profile Header Majors'>
               {majors?.length >0 && majors.map((major,index) => (
                 <p key={index}>{majors[index]}</p>

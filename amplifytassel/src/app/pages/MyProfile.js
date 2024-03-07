@@ -6,6 +6,7 @@ import MuiBox from '@mui/material/Box';
 import useAuth from '../util/AuthContext';
 import ProfileAlert from '../components/ProfileAlert';
 import ProfileHeader from '../components/ProfileHeader';
+import ProfileSocials from '../components/ProfileSocials';
 import ProfileAbout from '../components/ProfileAbout';
 import ProfileWork from '../components/ProfileWork';
 import ProfileVolunteer from '../components/ProfileVolunteer';
@@ -65,6 +66,7 @@ export default function MyProfile() {
             }}
           />
           <ProfileHeader data={userProfile} editButton={true} />
+          <ProfileSocials data={userProfile} />
           <ProfileAbout data={userProfile} />
           <ProfileWork data={userProfile} />
           <ProfileVolunteer data={userProfile} />
