@@ -19,8 +19,13 @@ def recommendation_engine(event, context):
        return {
           "statusCode": 400
        }
-
-    event = json.loads(event["body"])
+    try:
+      event = json.loads(event["body"])
+    except:
+       print("Event Body not loading properly:", event["body"])
+       return {
+          "statusCode": 500
+       }
 
     print("Event Body Keys:", event.keys())
     print("Users:", event["users"][0])
