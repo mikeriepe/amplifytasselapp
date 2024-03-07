@@ -4,14 +4,15 @@ import {  Profile, ChatRoom, ProfileChatRoom} from '../../models';
 // creates a new chatroom for the 
 export async function createNewChatRoom(userProfile, selected){
 
-    const profiles = [userProfile]
+    const profilePromises = selected.map(
+        async (profileID) => {
+            const profile = await DataStore.query(Profile, (profile) => profile.id.eq(profileID));
+            return profile[0];
+        }
+    )
 
-    for (const profileID of selected){
-        const profile = await DataStore.query(Profile, (profile) => profile.id.eq(profileID))
-        profiles.push(profile[0])
-    }
-
-    console.log("Profiles:", profiles)
+    const selectedProfiles = await Promise.all(profilePromises);
+    const profiles = [userProfile].concat(selectedProfiles);
 
     const chatName = "A Chat between " + profiles.map((profile) => profile.firstName + " " + profile.lastName).join(", ")
 
