@@ -55,17 +55,31 @@ export async function findExistingChatRoom(allChatRooms, profileIDs) {
     return null;
 };
 
+// Temporary implementation until we change the data model to accomodate the infoChatRoom instead.
 export async function findExistingInfoChatRoom(userProfile, requested, allChatRooms){
+    // Always use the latest available chatroom between them.
+    allChatRooms = allChatRooms.sort((cr1, cr2) => cr1.createdAt > cr2.createdAt ? -1:1);
     for (const chat of allChatRooms) {
         const ProfilesAsyncCollection = chat.Profiles;
-        const profiles = await ProfilesAsyncCollection.values;
+        const chatProfiles = await ProfilesAsyncCollection.values;
 
-        console.log("Profile:", profiles[0], profiles[0].profileId);
-        console.log("Requested:", requested);
+        if(chatProfiles.length === 0){
+            continue;
+        }
 
-        if (profiles.every((profile) => profile.status === "ADMIN" || requested.includes(profile.profileId))){
-            if(!profiles.map((profile) => profile.id).includes(userProfile.id)){
-                console.log("Found existing chat", chat)
+        const profilePromises = chatProfiles.map(
+            async (chatProfile) => {
+                const chatProfileId = chatProfile.profileId;
+                const profile = await DataStore.query(Profile, (profile) => profile.id.eq(chatProfileId));
+                return profile[0]
+            }
+        )
+
+        const profiles = await Promise.all(profilePromises)
+        const profileIds = profiles.map((profile) => profile.id)
+
+        if (profiles.every((profile) => profile.status === "ADMIN" || requested.includes(profile.id)) && requested.every((requestedProfileId) => profileIds.includes(requestedProfileId))) {
+            if(!profileIds.includes(userProfile.id)){
                 const _ = await DataStore.save(
                     new ProfileChatRoom({
                         "profile": userProfile,
