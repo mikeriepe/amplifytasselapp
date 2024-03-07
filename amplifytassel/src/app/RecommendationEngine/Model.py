@@ -15,6 +15,16 @@ print("Took:", post_init - pre_init, "s to load Model.")
 def recommendation_engine(event, context):
     # get the opportunities' and user info.
 
+    if "body" not in event:
+       return {
+          "statusCode": 400
+       }
+
+    event = json.loads(event["body"])
+
+    print("Event Body Keys:", event.keys())
+    print("Users:", event["users"][0])
+
     user = event["users"][0]
     events = event['events']
 
@@ -23,10 +33,16 @@ def recommendation_engine(event, context):
     events_tags = [event["tags"] for event in events]
     event_ids = [event["eventID"] for event in events]
 
+    print("Extracted fields")
+
     user_embeddings = weight_tags([user_text], [user['tags']])
     event_embeddings = weight_tags(events_text, events_tags)
 
+    print("Embeddings")
+
     similarity_scores = util.pytorch_cos_sim(user_embeddings, event_embeddings)
+
+    print("Similarity Scores")
     
     _, sorted_event_ids = list(
         zip(
@@ -36,7 +52,12 @@ def recommendation_engine(event, context):
         )
     )
 
-    return json.dumps({"order": sorted_event_ids})
+    print({"order": sorted_event_ids})
+
+    return {
+       "statusCode": 200,
+       "message": json.dumps({"order": sorted_event_ids})
+    }
 
 def weight_tags(texts, entities_tags, tag_weight=2.0,text_weight=1.0):
     combined_embeddings = []
