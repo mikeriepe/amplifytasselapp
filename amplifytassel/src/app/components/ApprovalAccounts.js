@@ -418,7 +418,6 @@ export default function ApprovalAccounts() {
       DataStore.save(
         Profile.copyOf(profile, updated => {
           updated.status = status
-          updated.infoRequest = requestInfo;
         }))
         .then(async (res) => {
         // console.log(res);
@@ -428,7 +427,7 @@ export default function ApprovalAccounts() {
         // Create a new chatroom if they don't have one attached, otherwise get the existing one - can be done without a special field for the time being.
         const allChatRooms = await DataStore.query(ChatRoom);
         
-        var chat = await findExistingInfoChatRoom(userProfile, selectedProfileIds, allChatRooms);
+        var chat = null //await findExistingInfoChatRoom(userProfile, selectedProfileIds, allChatRooms);
 
         if (chat === null){
           // console.log("Selected:", selected);

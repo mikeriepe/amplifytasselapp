@@ -5,14 +5,14 @@ import {  Profile, ChatRoom, ProfileChatRoom} from '../../models';
 export async function createNewChatRoom(userProfile, selected){
     const profiles = [userProfile];
 
-    selected.forEach(async (email) => {
-        const profile = await DataStore.query(Profile, (p) => p.email.eq(email));
+    selected.forEach(async (profileID) => {
+        const profile = await DataStore.query(Profile, (p) => p.id.eq(profileID));
         profiles.push(profile[0]);
     });
 
     const newChatRoom = await DataStore.save(
         new ChatRoom({
-        ChatName: "A Chatter with " + userProfile.firstName + " " + userProfile.lastName + ", " + profiles.map((profile) => profile.firstName).join(", "),
+        ChatName: "A Chat between " + profiles.map((profile) => profile.firstName + " " + profile.lastName).join(", "),
         Profiles: [],
         Messages: [],
         })
@@ -24,13 +24,10 @@ export async function createNewChatRoom(userProfile, selected){
             "profile": profile,
             "chatRoom": newChatRoom
         })
+        ).catch(
+            (reason) => console.log("ProfileChatroom rejected because:", reason)
         );
     });
-
-    var oldChatroom = await DataStore.query(ChatRoom, (c) => c.id.eq(newChatRoom.id))
-    oldChatroom = oldChatroom[0]
-
-    // console.log("Old Chat Room Profiles:", await oldChatroom.Profiles.values)
 
 return newChatRoom;
 };
