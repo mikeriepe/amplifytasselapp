@@ -160,6 +160,50 @@ export default function NavBarLoggedIn() {
     setTabIndex(index);
   };
 
+  const pagesToButtons = (pages) =>{
+    return <List>
+    {pages.map((arr) => {
+      const [label, route, icon] = arr;
+      return (
+        <Link key={label} to={route}>
+          <Tooltip title={label} placement='right'>
+            <ListItemButton
+              onClick={() => handleTabClick(route)}
+              sx={ListButtonStyling}
+            >
+              <ListItemIcon
+                sx={{
+                  ...ListIconStyling,
+                  mr: open ? 3 : 'auto',
+                  color: route === tabIndex ?
+                    'var(--primary-blue-main)' :
+                    'var(--tertiary-gray-main)',
+                }}
+              >
+                {icon}
+              </ListItemIcon>
+              <ListItemText
+                sx={{
+                  ...ListTextStyling,
+                  '.MuiTypography-root': {
+                    ...ListTextStyling['.MuiTypography-root'],
+                    'color': route === tabIndex ?
+                      'var(--primary-blue-main)' :
+                      'var(--tertiary-gray-main)',
+                  },
+                  'opacity': open ? 1 : 0,
+                }}
+              >
+                {label}
+              </ListItemText>
+            </ListItemButton>
+          </Tooltip>
+        </Link>
+      );
+    })}
+  </List>
+  }
+
   useEffect(() => {
     setTabIndex(window.location.pathname);
   }, []);
@@ -265,56 +309,7 @@ export default function NavBarLoggedIn() {
             )}
           </IconButton>
         </Nav.DrawerHeader>
-        {userProfile?.status === "PENDING" ||
-        userProfile?.status === "REQUESTED" ||
-        userProfile?.status === "UPDATED" ||
-        userProfile?.status === "DENIED" ? (
-          <></>
-        ) : (
-          <List>
-            {pages.map((arr) => {
-              const [label, route, icon] = arr;
-              return (
-                <Link key={label} to={route}>
-                  <Tooltip title={label} placement="right">
-                    <ListItemButton
-                      onClick={() => handleTabClick(route)}
-                      sx={ListButtonStyling}
-                    >
-                      <ListItemIcon
-                        sx={{
-                          ...ListIconStyling,
-                          mr: open ? 3 : "auto",
-                          color:
-                            route === tabIndex
-                              ? "var(--primary-blue-main)"
-                              : "var(--tertiary-gray-main)",
-                        }}
-                      >
-                        {icon}
-                      </ListItemIcon>
-                      <ListItemText
-                        sx={{
-                          ...ListTextStyling,
-                          ".MuiTypography-root": {
-                            ...ListTextStyling[".MuiTypography-root"],
-                            color:
-                              route === tabIndex
-                                ? "var(--primary-blue-main)"
-                                : "var(--tertiary-gray-main)",
-                          },
-                          opacity: open ? 1 : 0,
-                        }}
-                      >
-                        {label}
-                      </ListItemText>
-                    </ListItemButton>
-                  </Tooltip>
-                </Link>
-              );
-            })}
-          </List>
-        )}
+        {userProfile?.status === 'PENDING' || userProfile?.status === 'REQUESTED' ||  userProfile?.status === 'UPDATED' || userProfile?.status === 'DENIED' ? pagesToButtons([['Social', '/social', <PeopleAltIcon key='Social' />]]) : pagesToButtons(pages)}
         <Box sx={LogoutStyling}>
           <List>
             <Tooltip title="Logout" placement="right">

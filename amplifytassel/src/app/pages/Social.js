@@ -8,6 +8,7 @@ import SocialFriends from '../components/SocialFriends'
 import SocialIncomingRequests from '../components/SocialIncomingRequests';
 import SocialOutgoingRequests from '../components/SocialOutgoingRequests';
 import SocialMessages from '../components/SocialMessages';
+import useAuth from '../util/AuthContext';
 
 const Page = styled((props) => (
   <MuiBox {...props} />
@@ -25,13 +26,15 @@ const Page = styled((props) => (
  */
 export default function Socials() {
   const [tab, setTab] = useState(0);
-  const tabs = [
+  const {userProfile} = useAuth();
+
+  const tabs = (userProfile.status === "ADMIN" || userProfile.status === "APPROVED") ? [
     {name: 'Users', component: <SocialUsers/>},
     {name: 'Friends', component: <SocialFriends/>},
     {name: 'Incoming', component: <SocialIncomingRequests/>},
     {name: 'Outgoing', component: <SocialOutgoingRequests/>},
     {name: 'Messages', component: <SocialMessages/>}
-  ];
+  ]: [{name: 'Messages', component: <SocialMessages/>}];
   return (
     <Page>
       <MuiBox>
