@@ -13,13 +13,18 @@ post_init = time()
 print("Took:", post_init - pre_init, "s to load Model.")
 
 def recommendation_engine(event, context):
-    # get the opportunities' and user info.
+    # Respond to preflight request with 200.
+    if event["httpMethod"] == "OPTIONS":
+       return {
+          "statusCode": 200
+       }
 
     if "body" not in event:
        return {
           "statusCode": 400
        }
-    
+    # get the opportunities' and user info.
+
     try:
       event = json.loads(event["body"])
     except Exception as error:
