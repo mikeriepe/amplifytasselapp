@@ -46,35 +46,14 @@ export default function ProfileSocials({data}) {
       <h4 className='text-dark'>Socials</h4>
       <Grid container alignItems={'center'}>
         <Grid item xs={0.6}>
-          <Tooltip title='LinkedIn'>
           <a href='https://www.linkedin.com/in/dawichan/' target='_blank'>
           <IconButton>
             <LinkedInIcon />
           </IconButton>
           </a>
-          </Tooltip>
         </Grid>
         <Grid item xs={11}>
           dawichan
-        </Grid>
-        <Grid item xs={0.6}>
-          <Tooltip title='School email'>
-            <IconButton>
-              <EmailIcon />
-            </IconButton>
-          </Tooltip>
-        </Grid>
-        <Grid item xs={11}>
-          dawichan@ucsc.edu
-          <Chip
-            label='Unverified'
-            onClick={() => toast.error('Email unverified', toastOptions)}
-            icon={<ClearIcon />}
-            color='primary'
-            size='small'
-            style={{marginLeft: 8}}
-            disableRipple
-          />
         </Grid>
         <Grid item xs={0.6}>
           <Tooltip title='User email'>
@@ -84,12 +63,31 @@ export default function ProfileSocials({data}) {
           </Tooltip>
         </Grid>
         <Grid item xs={11}>
-          danielchandg@gmail.com
+          {data?.email}
           <Chip
             label='Verified'
             onClick={() => toast.success('Email verified', toastOptions)}
             icon={<CheckIcon />}
             color='success'
+            size='small'
+            style={{marginLeft: 8}}
+            disableRipple
+          />
+        </Grid>
+        <Grid item xs={0.6}>
+          <Tooltip title='School email'>
+            <IconButton>
+              <EmailIcon />
+            </IconButton>
+          </Tooltip>
+        </Grid>
+        <Grid item xs={11}>
+          {data?.schoolEmail}
+          <Chip
+            label='Unverified'
+            onClick={() => toast.error('Email unverified', toastOptions)}
+            icon={<ClearIcon />}
+            color='primary'
             size='small'
             style={{marginLeft: 8}}
             disableRipple

@@ -20,6 +20,7 @@ import ViewOpportunity from './pages/ViewOpportunity';
 import Opportunities from './pages/Opportunities';
 import MyProfile from './pages/MyProfile';
 import ViewProfile from './pages/ViewProfile';
+import VerifySchoolEmail from './pages/VerifySchoolEmail';
 import AnimationStarFlying from './components/AnimationStarFlying';
 import AnimationConfetti from './components/AnimationConfetti';
 import Progress from './components/Progress';
@@ -145,6 +146,7 @@ const App = () => {
           <Route element={<LoggedInLayout loadingAuth={loadingAuth} user={user} />}>
             <Route path='/myprofile' element={<MyProfile />}/>
             <Route path='/updateprofile' element={<UpdateProfile />} />
+            <Route path='/verifyschoolemail' element={<VerifySchoolEmail />} />
             <Route path='/social' element={<Socials/>} />
             <Route path='/social/:chatroomid' element={<ViewMessages/>}/>
           </Route>

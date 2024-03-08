@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
-import {Modal, Box} from '@mui/material';
+import {Modal, Box, Stack} from '@mui/material';
 import {styled} from '@mui/material';
 import MuiBox from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
@@ -79,7 +79,7 @@ const OutlinedIconButton = ({children}, props) => (
   </ButtonBase>
 );
 
-
+const isSchoolEmailVerified = false;
 /**
  * updates Profile Calendar
  * @return {HTML} Update Profile component
@@ -87,6 +87,9 @@ const OutlinedIconButton = ({children}, props) => (
 export default function UpdateProfile() {
   const navigate = useNavigate();
   const {user, userProfile, setUserProfile} = useAuth();
+  useEffect(() => {
+    console.log('profile', userProfile);
+  });
   const [showWorkForm, setShowWorkForm] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showVolunteerForm, setShowVolunteerForm] = useState(false);
@@ -97,6 +100,12 @@ export default function UpdateProfile() {
   const [allKeywords, setAllKeywords] = useState([]);
   const [values, setValues] = useState({
     1: {
+      firstName: userProfile.firstName,
+      lastName: userProfile.lastName,
+      linkedIn: userProfile.linkedIn ?? 'https://www.linkedin.com/in/dawichan/',
+      email: userProfile.email,
+      schoolEmail: userProfile.schoolEmail,
+      pronouns: userProfile.pronouns ?? 'He/Him',
       graduationYear: userProfile.graduationYear,
       location: userProfile.location,
       about: userProfile.about,
@@ -231,10 +240,16 @@ export default function UpdateProfile() {
       );
     }
 
-    // Update Profile Fields: graduationYear, location, about
+    // Update Profile Fields: firstName, lastName, pronouns, graduationYear, location, about
     let res = await DataStore.query(Profile, userProfile.id)
     console.log(res);
     await DataStore.save(Profile.copyOf(res, updated => {
+      updated.firstName = values[1].firstName;
+      updated.lastName = values[1].lastName;
+      // updated.linkedIn = values[1].linkedIn;
+      // updated.email = values[1].email;
+      updated.schoolEmail = values[1].schoolEmail;
+      // updated.pronouns = values[1].pronouns;
       updated.graduationYear = values[1].graduationYear;
       updated.location = values[1].location;
       updated.about = values[1].about;
@@ -263,6 +278,12 @@ export default function UpdateProfile() {
         setSelectedKeywords(keywords);
         setValues({
           1: {
+            firstName: userProfile.firstName,
+            lastName: userProfile.lastName,
+            linkedIn: userProfile.linkedIn ?? 'https://www.linkedin.com/in/dawichan/',
+            email: userProfile.email,
+            schoolEmail: userProfile.schoolEmail,
+            pronouns: userProfile.pronouns ?? 'He/Him',
             graduationYear: userProfile.graduationYear,
             majors: null, //FIXME
             location: userProfile.location,
@@ -339,6 +360,45 @@ export default function UpdateProfile() {
                   <h2 className='text-normal'>Update Profile</h2>
                 </div>
                 <div className='grid-flow-large' width='100%'>
+                  <div className='grid-flow-small' aria-label={'Update Name'}>
+                    <p className='text-bold'>
+                      Name
+                    </p>
+                    <Stack direction='row' spacing={1}>
+                      <ThemedInput
+                        placeholder={'First name'}
+                        type={'text'}
+                        index={'firstName'}
+                        step={1}
+                        fill={'firstName'}
+                        content={values[1].firstName === '' ?
+                          null : values[1].firstName}
+                      />
+                      <ThemedInput
+                        placeholder={'Last name'}
+                        type={'text'}
+                        index={'lastName'}
+                        step={1}
+                        fill={'lastName'}
+                        content={values[1].lastName === '' ?
+                          null : values[1].lastName}
+                      />
+                    </Stack>
+                  </div>
+                  <div className='grid-flow-small' aria-label={'Update Pronouns'}>
+                    <p className='text-bold'>
+                      Pronouns
+                    </p>
+                    <ThemedInput
+                      placeholder={'Enter your pronouns'}
+                      type={'text'}
+                      index={'pronouns'}
+                      step={1}
+                      fill={'pronouns'}
+                      content={values[1].pronouns === '' ?
+                        null : values[1].pronouns}
+                    />
+                  </div>
                   <div className='grid-flow-small' aria-label={'Update Profile Grad Year'}>
                     <p className='text-bold'>
                       Graduation Year
@@ -355,6 +415,47 @@ export default function UpdateProfile() {
                       content={values[1].graduationYear === '' ?
                         null : values[1].graduationYear}
                     />
+                  </div>
+                  <div className='grid-flow-small' aria-label={'Add LinkedIn'}>
+                    <p className='text-bold'>
+                      LinkedIn
+                    </p>
+                    <ThemedInput
+                      placeholder={'Your LinkedIn username'}
+                      type={'text'}
+                      index={'linkedIn'}
+                      step={1}
+                      fill={'linkedIn'}
+                      content={values[1].linkedIn === '' ?
+                        null : values[1].linkedIn}
+                    />
+                  </div>
+                  <div className='grid-flow-small' aria-label={'Verify UCSC Email'}>
+                    <p className='text-bold'>
+                      School Email
+                    </p>
+                    <ThemedInput
+                      placeholder={'Your UCSC email'}
+                      type={'text'}
+                      index={'schoolEmail'}
+                      step={1}
+                      fill={'schoolEmail'}
+                      content={values[1].schoolEmail === '' ?
+                        null : values[1].schoolEmail}
+                    />
+                    { !isSchoolEmailVerified &&
+                      <Link to='/verifyschoolemail'>
+                        <ThemedButton
+                          color={'yellow'}
+                          variant={'themed'}
+                          value={'login'}
+                          onClick={() => {}}
+                          style={{width: '15%'}}
+                        >
+                          Verify
+                        </ThemedButton>
+                      </Link>
+                    }
                   </div>
                   <div className='grid-flow-small' aria-label={'Update Profile Major'}>
                     <p className='text-bold'>
