@@ -96,13 +96,13 @@ const headCells = [
     id: 'roleName',
     numeric: false,
     disablePadding: false,
-    label: 'Requested Role',
+    label: 'Role Applied To',
   },
   {
     id: 'requestTime',
     numeric: false,
     disablePadding: false,
-    label: 'Date of Request',
+    label: 'Date of Application',
   },
   {
     id: 'status',
@@ -424,7 +424,7 @@ function EnhancedTableToolbar({
         </h4>
       ) : (
         <h4 className='text-dark' style={{flex: '1 1 100%'}}>
-          Requests
+          Applicants
         </h4>
       )}
 
