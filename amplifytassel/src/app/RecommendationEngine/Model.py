@@ -47,6 +47,7 @@ def recommendation_engine(event, context):
     print("Extracted fields")
 
     user_embeddings = weight_tags([user_text], [user['tags']])
+    print("Events Text:", events_text, "Events Tags:", events_tags)
     event_embeddings = weight_tags(events_text, events_tags)
 
     print("Embeddings")
@@ -75,6 +76,7 @@ def weight_tags(texts, entities_tags, tag_weight=2.0,text_weight=1.0):
     tags_embeddings = []
 
     if len(entities_tags) == 0:
+      print("No tags")
       return text_embeddings / text_weight
 
     for entity_tags in entities_tags:
