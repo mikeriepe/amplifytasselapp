@@ -3,16 +3,22 @@ import {  Profile, ChatRoom, ProfileChatRoom} from '../../models';
 
 // creates a new chatroom for the 
 export async function createNewChatRoom(userProfile, selected){
-    const profiles = [userProfile];
 
-    selected.forEach(async (email) => {
-        const profile = await DataStore.query(Profile, (p) => p.email.eq(email));
-        profiles.push(profile[0]);
-    });
+    const profilePromises = selected.map(
+        async (profileID) => {
+            const profile = await DataStore.query(Profile, (profile) => profile.id.eq(profileID));
+            return profile[0];
+        }
+    )
+
+    const selectedProfiles = await Promise.all(profilePromises);
+    const profiles = [userProfile].concat(selectedProfiles);
+
+    const chatName = "A Chat between " + profiles.map((profile) => profile.firstName + " " + profile.lastName).join(", ")
 
     const newChatRoom = await DataStore.save(
         new ChatRoom({
-        ChatName: "A Chatter with " + userProfile.firstName + " " + userProfile.lastName + ", " + profiles.map((profile) => profile.firstName).join(", "),
+        ChatName: chatName,
         Profiles: [],
         Messages: [],
         })
@@ -24,13 +30,13 @@ export async function createNewChatRoom(userProfile, selected){
             "profile": profile,
             "chatRoom": newChatRoom
         })
+        ).catch(
+            (reason) => {
+                console.log("ProfileChatroom rejected because:", reason)
+                alert("Failed to attach", profile.firstName, profile.lastName, "to this chatroom.")
+            }
         );
     });
-
-    var oldChatroom = await DataStore.query(ChatRoom, (c) => c.id.eq(newChatRoom.id))
-    oldChatroom = oldChatroom[0]
-
-    // console.log("Old Chat Room Profiles:", await oldChatroom.Profiles.values)
 
 return newChatRoom;
 };
@@ -49,17 +55,31 @@ export async function findExistingChatRoom(allChatRooms, profileIDs) {
     return null;
 };
 
+// Temporary implementation until we change the data model to accomodate the infoChatRoom instead.
 export async function findExistingInfoChatRoom(userProfile, requested, allChatRooms){
+    // Always use the latest available chatroom between them.
+    allChatRooms = allChatRooms.sort((cr1, cr2) => cr1.createdAt > cr2.createdAt ? -1:1);
     for (const chat of allChatRooms) {
         const ProfilesAsyncCollection = chat.Profiles;
-        const profiles = await ProfilesAsyncCollection.values;
+        const chatProfiles = await ProfilesAsyncCollection.values;
 
-        console.log("Profile:", profiles[0], profiles[0].profileId);
-        console.log("Requested:", requested);
+        if(chatProfiles.length === 0){
+            continue;
+        }
 
-        if (profiles.every((profile) => profile.status === "ADMIN" || requested.includes(profile.profileId))){
-            if(!profiles.map((profile) => profile.id).includes(userProfile.id)){
-                console.log("Found existing chat", chat)
+        const profilePromises = chatProfiles.map(
+            async (chatProfile) => {
+                const chatProfileId = chatProfile.profileId;
+                const profile = await DataStore.query(Profile, (profile) => profile.id.eq(chatProfileId));
+                return profile[0]
+            }
+        )
+
+        const profiles = await Promise.all(profilePromises)
+        const profileIds = profiles.map((profile) => profile.id)
+
+        if (profiles.every((profile) => profile.status === "ADMIN" || requested.includes(profile.id)) && requested.every((requestedProfileId) => profileIds.includes(requestedProfileId))) {
+            if(!profileIds.includes(userProfile.id)){
                 const _ = await DataStore.save(
                     new ProfileChatRoom({
                         "profile": userProfile,
