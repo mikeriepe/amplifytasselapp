@@ -585,23 +585,31 @@ export default function FetchWrapper({
     let reqs = await DataStore.query(Request, (r) => r.and(r => [
       r.opportunityID.eq(params.opportunityid),
     ]));
+
+    let extendedReqs = []
+
     // attach the firstName and requested role name for sorting purposes
     for (let i = 0; i < reqs.length; i++) {
       // get the profile
-      const reqProf = await DataStore.query(Profile, (p) => p.and(p => [
-        p.id.eq(reqs[i].profileID),
-      ]));
+      const reqProf = await DataStore.query(Profile, (p) => p.id.eq(reqs[i].profileID));
       // get the role
       const reqRole = await DataStore.query(Role, (r) => r.and(r => [
         r.id.eq(reqs[i].roleID),
       ]));
-      reqs[i] = {
+
+      if(reqProf.length === 0 || reqRole.length === 0){
+        continue
+      }
+
+      console.log("Not an empty reqProf");
+
+      extendedReqs.push({
         ...reqs[i],
         firstName: reqProf[0].firstName,
         roleName: reqRole[0].name,
-      };
+      });
     }
-    setRequests([...reqs]);
+    setRequests([...extendedReqs]);
   };
 
   const updateRequests = (updatedRequests) => {
