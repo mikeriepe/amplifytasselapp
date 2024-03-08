@@ -46,12 +46,16 @@ def recommendation_engine(event, context):
 
     print("Extracted fields")
 
+    print("USER")
+
     user_embeddings = weight_tags([user_text], [user['tags']])
     print("Events Text:", events_text, "Events Tags:", events_tags)
+    print("EVENTS")
     event_embeddings = weight_tags(events_text, events_tags)
 
     print("Embeddings")
-
+    user_embeddings = user_embeddings.astype(np.float32)
+    event_embeddings = event_embeddings.astype(np.float32)
     similarity_scores = util.pytorch_cos_sim(user_embeddings, event_embeddings)
 
     print("Similarity Scores")
@@ -73,6 +77,8 @@ def recommendation_engine(event, context):
 
 def weight_tags(texts, entities_tags, tag_weight=2.0,text_weight=1.0):
     text_embeddings = model.encode(texts) * text_weight
+
+    print("Text Embedding Type:", text_embeddings.dtype)
     tags_embeddings = []
 
     if len(entities_tags) == 0:
@@ -88,5 +94,7 @@ def weight_tags(texts, entities_tags, tag_weight=2.0,text_weight=1.0):
       tags_embeddings.append(tag_embedding)
 
     tags_embeddings = np.concatenate(tags_embeddings)
+
+    print("Tag Embedding Type:", tags_embeddings.dtype)
 
     return (text_embeddings + tags_embeddings)/(tag_weight + text_weight)
