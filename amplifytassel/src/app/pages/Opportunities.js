@@ -178,21 +178,17 @@ const getAllOpportunities = () => {
     o.profileID.ne(userProfile.id),
   ]))
   .then((res) => {
-    const firstList = res;
+    var firstList = res;
+
+    console.log("Approved Opportunities:", res);
     DataStore.query(Opportunity, (o) => o.and(o => [
       o.Requests.profileID.eq(userProfile.id)
     ]))
     .then((res) => {
-      for (let i = 0; i < res.length; i++) {
-        for (let j = 0; j < firstList.length; j++) {
-          if (res[i].id === firstList[j].id) {
-            firstList.splice(j, 1);
-          }
-        }
-      }
+      firstList = firstList.filter((opp) => !res.includes(opp))
       const timeBoxedList = [];
       for (let i = 0; i < firstList.length; i++) {
-        if (new Date(firstList[i].startTime) > Date.now()) {
+        if (true || new Date(firstList[i].startTime) > Date.now()) {
           timeBoxedList.push(firstList[i]);
         }
       }

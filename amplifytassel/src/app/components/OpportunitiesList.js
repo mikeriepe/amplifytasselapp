@@ -139,7 +139,7 @@ export default function OpportunitiesList({
   // Call flask service to get matching recommendations
   const fetchOpportunities = async (mergedJSON) => {
     try {
-      const response = await fetch("http://ec2-52-53-237-11.us-west-1.compute.amazonaws.com/recommendations_endpoint", {
+      const response = await fetch("https://2vx9se0n7e.execute-api.us-west-1.amazonaws.com/default/recommendation-engine", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json', // Specify the content type as JSON
@@ -212,7 +212,7 @@ export default function OpportunitiesList({
             const sub = await opp?.subject;
             const tags = await extractOppKeywords(await opp);
             
-            console.log(tags)
+            console.log("OppTags:", tags);
             if (descEvent === null && eventData == null 
               && prefs == null && sub == null) {
               delete oppFields[num];  
@@ -225,6 +225,7 @@ export default function OpportunitiesList({
             oppFields.events[num]["subject"] = sub ? sub : "";
             oppFields.events[num]["tags"] = tags ? tags : "";
 
+            console.log("Opp:", eventName);
 
           }catch(error){
             console.error("Error fetching keywords:", error);
@@ -316,8 +317,10 @@ export default function OpportunitiesList({
     });
 
     // Filter opportunities and store in displayOpps
+    console.log("opportunities:", opportunities);
     const copyOpps = opportunities.filter((opp) => {
-      const location = locationFilterLower.length == 0 ?
+      console.log("copyOpps:", opp)
+      const location = locationFilterLower.length === 0 ?
         true :
         opp.locationType ?
         locationFilterLower.indexOf(opp.locationType.toLowerCase()) > -1 :
