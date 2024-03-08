@@ -68,10 +68,11 @@ def recommendation_engine(event, context):
     }
 
 def weight_tags(texts, entities_tags, tag_weight=2.0,text_weight=1.0):
-    combined_embeddings = []
-
     text_embeddings = model.encode(texts) * text_weight
     tags_embeddings = []
+
+    if len(entities_tags) == 0:
+      return text_embeddings / text_weight
 
     for entity_tags in entities_tags:
       if entity_tags:
