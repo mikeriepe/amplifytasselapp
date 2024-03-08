@@ -36,6 +36,9 @@ def recommendation_engine(event, context):
     user = event["users"][0]
     events = event['events']
 
+    print("User:", user)
+    print("Events:", events)
+
     user_text = user['description'] + ' ' + user['volunteerExp'] + ' ' + user["workExp"]
     events_text = [event['description'] + ' ' + ' ' + event['subject'] + ' ' + event['eventData'] + ' ' + event['eventName'] for event in events]
     events_tags = [event["tags"] for event in events]
