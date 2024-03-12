@@ -1,6 +1,255 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const createMessage = /* GraphQL */ `
+  mutation CreateMessage(
+    $input: CreateMessageInput!
+    $condition: ModelMessageConditionInput
+  ) {
+    createMessage(input: $input, condition: $condition) {
+      id
+      ChatRoomID
+      Sender
+      Time
+      Content
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const updateMessage = /* GraphQL */ `
+  mutation UpdateMessage(
+    $input: UpdateMessageInput!
+    $condition: ModelMessageConditionInput
+  ) {
+    updateMessage(input: $input, condition: $condition) {
+      id
+      ChatRoomID
+      Sender
+      Time
+      Content
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const deleteMessage = /* GraphQL */ `
+  mutation DeleteMessage(
+    $input: DeleteMessageInput!
+    $condition: ModelMessageConditionInput
+  ) {
+    deleteMessage(input: $input, condition: $condition) {
+      id
+      ChatRoomID
+      Sender
+      Time
+      Content
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const createChatRoom = /* GraphQL */ `
+  mutation CreateChatRoom(
+    $input: CreateChatRoomInput!
+    $condition: ModelChatRoomConditionInput
+  ) {
+    createChatRoom(input: $input, condition: $condition) {
+      id
+      ChatName
+      Messages {
+        nextToken
+        startedAt
+        __typename
+      }
+      Profiles {
+        nextToken
+        startedAt
+        __typename
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const updateChatRoom = /* GraphQL */ `
+  mutation UpdateChatRoom(
+    $input: UpdateChatRoomInput!
+    $condition: ModelChatRoomConditionInput
+  ) {
+    updateChatRoom(input: $input, condition: $condition) {
+      id
+      ChatName
+      Messages {
+        nextToken
+        startedAt
+        __typename
+      }
+      Profiles {
+        nextToken
+        startedAt
+        __typename
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const deleteChatRoom = /* GraphQL */ `
+  mutation DeleteChatRoom(
+    $input: DeleteChatRoomInput!
+    $condition: ModelChatRoomConditionInput
+  ) {
+    deleteChatRoom(input: $input, condition: $condition) {
+      id
+      ChatName
+      Messages {
+        nextToken
+        startedAt
+        __typename
+      }
+      Profiles {
+        nextToken
+        startedAt
+        __typename
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const createFriendRequest = /* GraphQL */ `
+  mutation CreateFriendRequest(
+    $input: CreateFriendRequestInput!
+    $condition: ModelFriendRequestConditionInput
+  ) {
+    createFriendRequest(input: $input, condition: $condition) {
+      id
+      Sender
+      Receiver
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const updateFriendRequest = /* GraphQL */ `
+  mutation UpdateFriendRequest(
+    $input: UpdateFriendRequestInput!
+    $condition: ModelFriendRequestConditionInput
+  ) {
+    updateFriendRequest(input: $input, condition: $condition) {
+      id
+      Sender
+      Receiver
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const deleteFriendRequest = /* GraphQL */ `
+  mutation DeleteFriendRequest(
+    $input: DeleteFriendRequestInput!
+    $condition: ModelFriendRequestConditionInput
+  ) {
+    deleteFriendRequest(input: $input, condition: $condition) {
+      id
+      Sender
+      Receiver
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const createFriend = /* GraphQL */ `
+  mutation CreateFriend(
+    $input: CreateFriendInput!
+    $condition: ModelFriendConditionInput
+  ) {
+    createFriend(input: $input, condition: $condition) {
+      id
+      profileID
+      Friend
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const updateFriend = /* GraphQL */ `
+  mutation UpdateFriend(
+    $input: UpdateFriendInput!
+    $condition: ModelFriendConditionInput
+  ) {
+    updateFriend(input: $input, condition: $condition) {
+      id
+      profileID
+      Friend
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const deleteFriend = /* GraphQL */ `
+  mutation DeleteFriend(
+    $input: DeleteFriendInput!
+    $condition: ModelFriendConditionInput
+  ) {
+    deleteFriend(input: $input, condition: $condition) {
+      id
+      profileID
+      Friend
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
 export const createKeyword = /* GraphQL */ `
   mutation CreateKeyword(
     $input: CreateKeywordInput!
@@ -484,6 +733,26 @@ export const createProfile = /* GraphQL */ `
       }
       banner
       points
+      FriendRequests {
+        nextToken
+        startedAt
+        __typename
+      }
+      Friends {
+        nextToken
+        startedAt
+        __typename
+      }
+      Chatrooms {
+        nextToken
+        startedAt
+        __typename
+      }
+      Messages {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -580,6 +849,26 @@ export const updateProfile = /* GraphQL */ `
       }
       banner
       points
+      FriendRequests {
+        nextToken
+        startedAt
+        __typename
+      }
+      Friends {
+        nextToken
+        startedAt
+        __typename
+      }
+      Chatrooms {
+        nextToken
+        startedAt
+        __typename
+      }
+      Messages {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -676,6 +965,26 @@ export const deleteProfile = /* GraphQL */ `
       }
       banner
       points
+      FriendRequests {
+        nextToken
+        startedAt
+        __typename
+      }
+      Friends {
+        nextToken
+        startedAt
+        __typename
+      }
+      Chatrooms {
+        nextToken
+        startedAt
+        __typename
+      }
+      Messages {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -1066,6 +1375,165 @@ export const deleteNote = /* GraphQL */ `
       id
       name
       description
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const createProfileChatRoom = /* GraphQL */ `
+  mutation CreateProfileChatRoom(
+    $input: CreateProfileChatRoomInput!
+    $condition: ModelProfileChatRoomConditionInput
+  ) {
+    createProfileChatRoom(input: $input, condition: $condition) {
+      id
+      chatRoomId
+      profileId
+      chatRoom {
+        id
+        ChatName
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      profile {
+        id
+        email
+        about
+        location
+        picture
+        firstName
+        lastName
+        status
+        graduationYear
+        active
+        isAdmin
+        isApproved
+        schoolEmail
+        infoRequest
+        infoResponse
+        banner
+        points
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const updateProfileChatRoom = /* GraphQL */ `
+  mutation UpdateProfileChatRoom(
+    $input: UpdateProfileChatRoomInput!
+    $condition: ModelProfileChatRoomConditionInput
+  ) {
+    updateProfileChatRoom(input: $input, condition: $condition) {
+      id
+      chatRoomId
+      profileId
+      chatRoom {
+        id
+        ChatName
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      profile {
+        id
+        email
+        about
+        location
+        picture
+        firstName
+        lastName
+        status
+        graduationYear
+        active
+        isAdmin
+        isApproved
+        schoolEmail
+        infoRequest
+        infoResponse
+        banner
+        points
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const deleteProfileChatRoom = /* GraphQL */ `
+  mutation DeleteProfileChatRoom(
+    $input: DeleteProfileChatRoomInput!
+    $condition: ModelProfileChatRoomConditionInput
+  ) {
+    deleteProfileChatRoom(input: $input, condition: $condition) {
+      id
+      chatRoomId
+      profileId
+      chatRoom {
+        id
+        ChatName
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      profile {
+        id
+        email
+        about
+        location
+        picture
+        firstName
+        lastName
+        status
+        graduationYear
+        active
+        isAdmin
+        isApproved
+        schoolEmail
+        infoRequest
+        infoResponse
+        banner
+        points
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version

@@ -26,7 +26,17 @@
   "auth": {
     "amplifytassel": {
       "customAuth": false,
-      "dependsOn": [],
+      "dependsOn": [
+        {
+          "attributes": [
+            "Arn",
+            "Name"
+          ],
+          "category": "function",
+          "resourceName": "amplifytasselPostConfirmation",
+          "triggerProvider": "Cognito"
+        }
+      ],
       "frontendAuthConfig": {
         "mfaConfiguration": "OFF",
         "mfaTypes": [
@@ -53,7 +63,31 @@
       "service": "Cognito"
     }
   },
-  "function": {},
+  "function": {
+    "amplifytasselPostConfirmation": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_function_amplifytasselPostConfirmation_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "amplifytasselPostConfirmation"
+        }
+      ]
+    },
+    "AMPLIFY_function_amplifytasselPostConfirmation_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "amplifytasselPostConfirmation"
+        }
+      ]
+    }
+  },
   "storage": {
     "s3Storage": {
       "dependsOn": [],

@@ -1,6 +1,427 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const getMessage = /* GraphQL */ `
+  query GetMessage($id: ID!) {
+    getMessage(id: $id) {
+      id
+      ChatRoomID
+      Sender
+      Time
+      Content
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const listMessages = /* GraphQL */ `
+  query ListMessages(
+    $filter: ModelMessageFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listMessages(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        ChatRoomID
+        Sender
+        Time
+        Content
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const syncMessages = /* GraphQL */ `
+  query SyncMessages(
+    $filter: ModelMessageFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncMessages(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
+      items {
+        id
+        ChatRoomID
+        Sender
+        Time
+        Content
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const messagesByChatRoomID = /* GraphQL */ `
+  query MessagesByChatRoomID(
+    $ChatRoomID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelMessageFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    messagesByChatRoomID(
+      ChatRoomID: $ChatRoomID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        ChatRoomID
+        Sender
+        Time
+        Content
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const messagesBySender = /* GraphQL */ `
+  query MessagesBySender(
+    $Sender: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelMessageFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    messagesBySender(
+      Sender: $Sender
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        ChatRoomID
+        Sender
+        Time
+        Content
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const getChatRoom = /* GraphQL */ `
+  query GetChatRoom($id: ID!) {
+    getChatRoom(id: $id) {
+      id
+      ChatName
+      Messages {
+        nextToken
+        startedAt
+        __typename
+      }
+      Profiles {
+        nextToken
+        startedAt
+        __typename
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const listChatRooms = /* GraphQL */ `
+  query ListChatRooms(
+    $filter: ModelChatRoomFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listChatRooms(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        ChatName
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const syncChatRooms = /* GraphQL */ `
+  query SyncChatRooms(
+    $filter: ModelChatRoomFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncChatRooms(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
+      items {
+        id
+        ChatName
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const getFriendRequest = /* GraphQL */ `
+  query GetFriendRequest($id: ID!) {
+    getFriendRequest(id: $id) {
+      id
+      Sender
+      Receiver
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const listFriendRequests = /* GraphQL */ `
+  query ListFriendRequests(
+    $filter: ModelFriendRequestFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listFriendRequests(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        Sender
+        Receiver
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const syncFriendRequests = /* GraphQL */ `
+  query SyncFriendRequests(
+    $filter: ModelFriendRequestFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncFriendRequests(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
+      items {
+        id
+        Sender
+        Receiver
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const friendRequestsBySender = /* GraphQL */ `
+  query FriendRequestsBySender(
+    $Sender: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelFriendRequestFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    friendRequestsBySender(
+      Sender: $Sender
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        Sender
+        Receiver
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const getFriend = /* GraphQL */ `
+  query GetFriend($id: ID!) {
+    getFriend(id: $id) {
+      id
+      profileID
+      Friend
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const listFriends = /* GraphQL */ `
+  query ListFriends(
+    $filter: ModelFriendFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listFriends(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        profileID
+        Friend
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const syncFriends = /* GraphQL */ `
+  query SyncFriends(
+    $filter: ModelFriendFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncFriends(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
+      items {
+        id
+        profileID
+        Friend
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const friendsByProfileID = /* GraphQL */ `
+  query FriendsByProfileID(
+    $profileID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelFriendFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    friendsByProfileID(
+      profileID: $profileID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        profileID
+        Friend
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
 export const getKeyword = /* GraphQL */ `
   query GetKeyword($id: ID!) {
     getKeyword(id: $id) {
@@ -590,6 +1011,26 @@ export const getProfile = /* GraphQL */ `
       }
       banner
       points
+      FriendRequests {
+        nextToken
+        startedAt
+        __typename
+      }
+      Friends {
+        nextToken
+        startedAt
+        __typename
+      }
+      Chatrooms {
+        nextToken
+        startedAt
+        __typename
+      }
+      Messages {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -1272,6 +1713,178 @@ export const syncNotes = /* GraphQL */ `
         id
         name
         description
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const getProfileChatRoom = /* GraphQL */ `
+  query GetProfileChatRoom($id: ID!) {
+    getProfileChatRoom(id: $id) {
+      id
+      chatRoomId
+      profileId
+      chatRoom {
+        id
+        ChatName
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      profile {
+        id
+        email
+        about
+        location
+        picture
+        firstName
+        lastName
+        status
+        graduationYear
+        active
+        isAdmin
+        isApproved
+        schoolEmail
+        infoRequest
+        infoResponse
+        banner
+        points
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const listProfileChatRooms = /* GraphQL */ `
+  query ListProfileChatRooms(
+    $filter: ModelProfileChatRoomFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listProfileChatRooms(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        chatRoomId
+        profileId
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const syncProfileChatRooms = /* GraphQL */ `
+  query SyncProfileChatRooms(
+    $filter: ModelProfileChatRoomFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncProfileChatRooms(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
+      items {
+        id
+        chatRoomId
+        profileId
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const profileChatRoomsByChatRoomId = /* GraphQL */ `
+  query ProfileChatRoomsByChatRoomId(
+    $chatRoomId: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelProfileChatRoomFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    profileChatRoomsByChatRoomId(
+      chatRoomId: $chatRoomId
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        chatRoomId
+        profileId
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const profileChatRoomsByProfileId = /* GraphQL */ `
+  query ProfileChatRoomsByProfileId(
+    $profileId: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelProfileChatRoomFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    profileChatRoomsByProfileId(
+      profileId: $profileId
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        chatRoomId
+        profileId
         createdAt
         updatedAt
         _version

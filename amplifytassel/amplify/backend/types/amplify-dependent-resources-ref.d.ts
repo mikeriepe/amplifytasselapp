@@ -10,15 +10,13 @@ export type AmplifyDependentResourcesAttributes = {
     "amplifytassel": {
       "AppClientID": "string",
       "AppClientIDWeb": "string",
-      "IdentityPoolId": "string",
-      "IdentityPoolName": "string",
       "UserPoolArn": "string",
       "UserPoolId": "string",
       "UserPoolName": "string"
     }
   },
   "function": {
-    "recommendation": {
+    "amplifytasselPostConfirmation": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
       "LambdaExecutionRoleArn": "string",
