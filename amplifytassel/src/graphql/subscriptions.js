@@ -1,6 +1,225 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const onCreateMessage = /* GraphQL */ `
+  subscription OnCreateMessage($filter: ModelSubscriptionMessageFilterInput) {
+    onCreateMessage(filter: $filter) {
+      id
+      ChatRoomID
+      Sender
+      Time
+      Content
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateMessage = /* GraphQL */ `
+  subscription OnUpdateMessage($filter: ModelSubscriptionMessageFilterInput) {
+    onUpdateMessage(filter: $filter) {
+      id
+      ChatRoomID
+      Sender
+      Time
+      Content
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const onDeleteMessage = /* GraphQL */ `
+  subscription OnDeleteMessage($filter: ModelSubscriptionMessageFilterInput) {
+    onDeleteMessage(filter: $filter) {
+      id
+      ChatRoomID
+      Sender
+      Time
+      Content
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const onCreateChatRoom = /* GraphQL */ `
+  subscription OnCreateChatRoom($filter: ModelSubscriptionChatRoomFilterInput) {
+    onCreateChatRoom(filter: $filter) {
+      id
+      ChatName
+      Messages {
+        nextToken
+        startedAt
+        __typename
+      }
+      Profiles {
+        nextToken
+        startedAt
+        __typename
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateChatRoom = /* GraphQL */ `
+  subscription OnUpdateChatRoom($filter: ModelSubscriptionChatRoomFilterInput) {
+    onUpdateChatRoom(filter: $filter) {
+      id
+      ChatName
+      Messages {
+        nextToken
+        startedAt
+        __typename
+      }
+      Profiles {
+        nextToken
+        startedAt
+        __typename
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const onDeleteChatRoom = /* GraphQL */ `
+  subscription OnDeleteChatRoom($filter: ModelSubscriptionChatRoomFilterInput) {
+    onDeleteChatRoom(filter: $filter) {
+      id
+      ChatName
+      Messages {
+        nextToken
+        startedAt
+        __typename
+      }
+      Profiles {
+        nextToken
+        startedAt
+        __typename
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const onCreateFriendRequest = /* GraphQL */ `
+  subscription OnCreateFriendRequest(
+    $filter: ModelSubscriptionFriendRequestFilterInput
+  ) {
+    onCreateFriendRequest(filter: $filter) {
+      id
+      Sender
+      Receiver
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateFriendRequest = /* GraphQL */ `
+  subscription OnUpdateFriendRequest(
+    $filter: ModelSubscriptionFriendRequestFilterInput
+  ) {
+    onUpdateFriendRequest(filter: $filter) {
+      id
+      Sender
+      Receiver
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const onDeleteFriendRequest = /* GraphQL */ `
+  subscription OnDeleteFriendRequest(
+    $filter: ModelSubscriptionFriendRequestFilterInput
+  ) {
+    onDeleteFriendRequest(filter: $filter) {
+      id
+      Sender
+      Receiver
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const onCreateFriend = /* GraphQL */ `
+  subscription OnCreateFriend($filter: ModelSubscriptionFriendFilterInput) {
+    onCreateFriend(filter: $filter) {
+      id
+      profileID
+      Friend
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateFriend = /* GraphQL */ `
+  subscription OnUpdateFriend($filter: ModelSubscriptionFriendFilterInput) {
+    onUpdateFriend(filter: $filter) {
+      id
+      profileID
+      Friend
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const onDeleteFriend = /* GraphQL */ `
+  subscription OnDeleteFriend($filter: ModelSubscriptionFriendFilterInput) {
+    onDeleteFriend(filter: $filter) {
+      id
+      profileID
+      Friend
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
 export const onCreateKeyword = /* GraphQL */ `
   subscription OnCreateKeyword($filter: ModelSubscriptionKeywordFilterInput) {
     onCreateKeyword(filter: $filter) {
@@ -442,6 +661,26 @@ export const onCreateProfile = /* GraphQL */ `
       }
       banner
       points
+      FriendRequests {
+        nextToken
+        startedAt
+        __typename
+      }
+      Friends {
+        nextToken
+        startedAt
+        __typename
+      }
+      Chatrooms {
+        nextToken
+        startedAt
+        __typename
+      }
+      Messages {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -535,6 +774,26 @@ export const onUpdateProfile = /* GraphQL */ `
       }
       banner
       points
+      FriendRequests {
+        nextToken
+        startedAt
+        __typename
+      }
+      Friends {
+        nextToken
+        startedAt
+        __typename
+      }
+      Chatrooms {
+        nextToken
+        startedAt
+        __typename
+      }
+      Messages {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -628,6 +887,26 @@ export const onDeleteProfile = /* GraphQL */ `
       }
       banner
       points
+      FriendRequests {
+        nextToken
+        startedAt
+        __typename
+      }
+      Friends {
+        nextToken
+        startedAt
+        __typename
+      }
+      Chatrooms {
+        nextToken
+        startedAt
+        __typename
+      }
+      Messages {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -988,6 +1267,162 @@ export const onDeleteNote = /* GraphQL */ `
       id
       name
       description
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const onCreateProfileChatRoom = /* GraphQL */ `
+  subscription OnCreateProfileChatRoom(
+    $filter: ModelSubscriptionProfileChatRoomFilterInput
+  ) {
+    onCreateProfileChatRoom(filter: $filter) {
+      id
+      chatRoomId
+      profileId
+      chatRoom {
+        id
+        ChatName
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      profile {
+        id
+        email
+        about
+        location
+        picture
+        firstName
+        lastName
+        status
+        graduationYear
+        active
+        isAdmin
+        isApproved
+        schoolEmail
+        infoRequest
+        infoResponse
+        banner
+        points
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateProfileChatRoom = /* GraphQL */ `
+  subscription OnUpdateProfileChatRoom(
+    $filter: ModelSubscriptionProfileChatRoomFilterInput
+  ) {
+    onUpdateProfileChatRoom(filter: $filter) {
+      id
+      chatRoomId
+      profileId
+      chatRoom {
+        id
+        ChatName
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      profile {
+        id
+        email
+        about
+        location
+        picture
+        firstName
+        lastName
+        status
+        graduationYear
+        active
+        isAdmin
+        isApproved
+        schoolEmail
+        infoRequest
+        infoResponse
+        banner
+        points
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const onDeleteProfileChatRoom = /* GraphQL */ `
+  subscription OnDeleteProfileChatRoom(
+    $filter: ModelSubscriptionProfileChatRoomFilterInput
+  ) {
+    onDeleteProfileChatRoom(filter: $filter) {
+      id
+      chatRoomId
+      profileId
+      chatRoom {
+        id
+        ChatName
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      profile {
+        id
+        email
+        about
+        location
+        picture
+        firstName
+        lastName
+        status
+        graduationYear
+        active
+        isAdmin
+        isApproved
+        schoolEmail
+        infoRequest
+        infoResponse
+        banner
+        points
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
