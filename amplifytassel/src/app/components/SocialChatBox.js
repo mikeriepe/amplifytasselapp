@@ -5,6 +5,7 @@ import {styled} from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import useAuth from '../util/AuthContext';
+import {sendMessage} from "../util/SocialChat";
 import { DataStore, Predicates } from 'aws-amplify';
 import { Message, Profile } from './../../models';
 import Filter from 'bad-words';
@@ -127,7 +128,7 @@ const ChatModal = ({ open, handleClose, chatroomName, chatroomID, chatroomMessag
       handleSendMessage();
     }
   };
-  
+
   const handleSendMessage = async () => {
     console.log("New msg sent", message);
 
@@ -135,24 +136,15 @@ const ChatModal = ({ open, handleClose, chatroomName, chatroomID, chatroomMessag
       setShowProfanityWarning(true);
       return;
     }
-    const currentDate = new Date();
-    const formattedTimestamp = currentDate.toISOString();
     
-    const newMessage = await DataStore.save(
-      new Message({
-        "ChatRoomID": chatroomID,
-        "Content": message,
-        "Sender": userProfile.id,
-        "Time": formattedTimestamp,
-      })
-    );
+    const newMessage = await sendMessage(chatroomID, userProfile, message)
 
     // Clone the original message to avoid modifying the saved instance
     const chatMessage = { ...newMessage };
     // Update the Sender property with the concatenated first and last names
     chatMessage.senderName  = `${userProfile.firstName} ${userProfile.lastName}`;
     // Update the Time property with the formatted timestamp
-    chatMessage.Time = formatTimestamp(formattedTimestamp);
+    chatMessage.Time = formatTimestamp(newMessage.Time);
     
     console.log("chatMsg", chatMessage);
 

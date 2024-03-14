@@ -240,7 +240,7 @@ function ViewOpportunity({opportunity}) {
         />,
     },
     {
-      name: 'Requests',
+      name: 'Applicants',
       component: <ViewOpportunityRequests
         updateMembers={updateMembers}
         members={members}

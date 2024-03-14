@@ -145,14 +145,14 @@ const App = () => {
           <Route element={<LoggedInLayout loadingAuth={loadingAuth} user={user} />}>
             <Route path='/myprofile' element={<MyProfile />}/>
             <Route path='/updateprofile' element={<UpdateProfile />} />
+            <Route path='/social' element={<Socials/>} />
+            <Route path='/social/:chatroomid' element={<ViewMessages/>}/>
           </Route>
           {/* Routes only accessible if you are approved or an admin */}
           <Route element={<ApprovedLayout loadingAuth={loadingAuth} user={user} userProfile={userProfile} />}>
             <Route path='/dashboard' element={<Dashboard />}/>
             <Route path='/opportunities' element={<Opportunities />}/>
             <Route path='/opportunity/:opportunityid' element={<ViewOpportunity />} />
-            <Route path='/social' element={<Socials/>} />
-            <Route path='/social/:chatroomid' element={<ViewMessages/>}/>
             <Route path='/settings' element={<Settings />}/>
             <Route path='/profile/:profileid' element={<ViewProfile />} />
           </Route>

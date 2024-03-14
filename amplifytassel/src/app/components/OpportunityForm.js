@@ -1,45 +1,49 @@
-import Box from '@mui/material/Box';
-import React, {useState, useEffect} from 'react';
-import {StepLabel, IconButton, FormHelperText, Hidden} from '@mui/material';
-import Paper from '@mui/material/Paper';
-import Skeleton from '@mui/material/Skeleton';
-import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
-import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
-import TextField from '@mui/material/TextField';
-import FormLabel from '@mui/material/FormLabel';
-import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import {toast} from 'react-toastify';
-import Chip from '@mui/material/Chip';
-import MuiBox from '@mui/material/Box';
-import { v4 as uuidv4 } from 'uuid';
+import Box from "@mui/material/Box";
+import React, { useState, useEffect } from "react";
+import { StepLabel, IconButton, FormHelperText, Hidden } from "@mui/material";
+import Paper from "@mui/material/Paper";
+import Skeleton from "@mui/material/Skeleton";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import TextField from "@mui/material/TextField";
+import FormLabel from "@mui/material/FormLabel";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import { toast } from "react-toastify";
+import Chip from "@mui/material/Chip";
+import MuiBox from "@mui/material/Box";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import FormControl from "@mui/material/FormControl";
+import MenuItem from "@mui/material/MenuItem";
+import InputLabel from "@mui/material/InputLabel";
+import { v4 as uuidv4 } from "uuid";
 // import Stack from '@mui/material/Stack';
 
-import {yupResolver} from '@hookform/resolvers/yup';
-import * as Yup from 'yup';
-import {useForm} from 'react-hook-form';
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+import { useForm } from "react-hook-form";
 
-import ThemedButton from '../components/ThemedButton';
-import {TextInput} from './TextInput';
-import {TimeInput} from './TimeInput.js';
-import {DropdownInput} from './DropdownInput';
-import {CheckboxInput} from './CheckboxInput';
-import {DateInput} from './DateInput';
-import { DataStore, Storage } from 'aws-amplify';
-import { Keyword, Major } from '../../models';
-import { Opportunity } from '../../models';
+import ThemedButton from "../components/ThemedButton";
+import { TextInput } from "./TextInput";
+import { TimeInput } from "./TimeInput.js";
+import { DropdownInput } from "./DropdownInput";
+import { CheckboxInput } from "./CheckboxInput";
+import { DateInput } from "./DateInput";
+import { DataStore, Storage } from "aws-amplify";
+import { Keyword, Major } from "../../models";
+import { Opportunity } from "../../models";
 
-const Banner = ({image}, props) => {
+const Banner = ({ image }, props) => {
   return (
-    <MuiBox sx={{height: '130px', width: '200px'}} {...props}>
+    <MuiBox sx={{ height: "130px", width: "200px" }} {...props}>
       <img
         src={image}
         style={{
-          height: '100%',
-          width: '100%',
-          objectFit: 'cover',
-          border: '0.5px solid rgba(0, 0, 0, 0.15)',
-          borderRadius: '10px',
+          height: "100%",
+          width: "100%",
+          objectFit: "cover",
+          border: "0.5px solid rgba(0, 0, 0, 0.15)",
+          borderRadius: "10px",
         }}
       />
     </MuiBox>
@@ -55,134 +59,131 @@ const imageMimeType = /image\/(png|jpg|jpeg)/i;
  * @param {Function} onClose
  * @return {HTML} OpportunityForm component
  */
-export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
+export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
   const [opportunityTypes, setOpportunityTypes] = useState([]);
-  const [temp, setTemp] = useState('');
+  const [temp, setTemp] = useState("");
   const [fileData, setFileData] = useState(null);
   const [fileDataURL, setFileDataURL] = useState(defaultValues.eventBanner);
   const [fileKey, setFileKey] = useState(defaultValues.bannerKey);
   const [banner, setBanner] = useState(null);
   const [selectedMajors, setSelectedMajors] = useState([]);
   const [totalMajors, setTotalMajors] = useState([]);
-  if(fileKey != '' && fileDataURL == defaultValues.eventBanner) {
+  if (fileKey != "" && fileDataURL == defaultValues.eventBanner) {
     console.log(fileKey);
     Storage.get(fileKey, {
-      level: 'public'
+      level: "public",
     })
-    .then((res) => {
-      setFileDataURL(res);
-    })
-    .catch((err) => {
-      console.log("Error:" + err);
-    })
+      .then((res) => {
+        setFileDataURL(res);
+      })
+      .catch((err) => {
+        console.log("Error:" + err);
+      });
   }
   // Selected tags by the user
   const [selectedTags, setSelectedTags] = useState(
-    defaultValues.keywords ?
-    Object.values(defaultValues.keywords) :
-    [],
+    defaultValues.keywords ? Object.values(defaultValues.keywords) : []
   );
   //if(defaultValues.bannerKey.length > 5)
   //{
   //}
   const [allTags, setAllTags] = useState([]);
   const getKeywords = () => {
-   DataStore.query(Keyword)
-   .then((res) => {
-    const tempKeywords = [];
-    for (let i = 0; i < res.length; i++) {
-      tempKeywords.push(res[i].name);
-    }
-    const filteredAllTags = tempKeywords.filter((x) => !selectedTags.includes(x));
-    filteredAllTags.sort();
-    setAllTags(filteredAllTags);
-   })
-   .catch((err) => {
-    console.log(err);
-    alert('Error retrieving keywords, please try again');
-   });
+    DataStore.query(Keyword)
+      .then((res) => {
+        const tempKeywords = [];
+        for (let i = 0; i < res.length; i++) {
+          tempKeywords.push(res[i].name);
+        }
+        const filteredAllTags = tempKeywords.filter(
+          (x) => !selectedTags.includes(x)
+        );
+        filteredAllTags.sort();
+        setAllTags(filteredAllTags);
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("Error retrieving keywords, please try again");
+      });
   };
 
   const [currLocationType, setCurrLocationType] = useState(
-      defaultValues.locationType,
+    defaultValues.locationType
   );
 
   const [currSponsorType, setCurrSponsorType] = useState(
-    defaultValues.organizations === undefined ? 'user sponsor' : 
-    (defaultValues.organizations[0] === '' ? 'user sponsor' : 'organization sponsor')
+    defaultValues.organizations === undefined
+      ? "user sponsor"
+      : defaultValues.organizations[0] === ""
+      ? "user sponsor"
+      : "organization sponsor"
   );
 
   const [currRoles, setCurrRoles] = useState(
-    defaultValues.Roles && defaultValues.Roles !== null ?
-    defaultValues.Roles : ['General Participant'],
+    defaultValues.Roles && defaultValues.Roles !== null
+      ? defaultValues.Roles
+      : ["General Participant"]
   );
-  const [roleError, setRoleError] = useState('');
+  const [roleError, setRoleError] = useState("");
   const maxRoles = 4;
   // All tags array hardcoded for now
   // Will be stored in the DB in the future
   // setAllTags
   // const [allTags, setAllTags] = useState(filteredAllTags);
   const validationSchema = Yup.object().shape({
-    name: Yup.string().required('Event name is required'),
-    locationType: Yup.string().required('Location type is required'),
+    name: Yup.string().required("Event name is required"),
+    locationType: Yup.string().required("Location type is required"),
     //organizations: Yup.string().notRequired(),
     location: Yup.object().shape({
-      'address': Yup.string().when([], {
-        is: () => currLocationType != 'remote',
-        then: () => Yup.string().required('Street address is required'),
+      address: Yup.string().when([], {
+        is: () => currLocationType != "remote",
+        then: () => Yup.string().required("Street address is required"),
         otherwise: () => Yup.string().notRequired(),
       }),
-      'city': Yup.string().when([], {
-        is: () => currLocationType != 'remote',
-        then: () => Yup.string().required('City is required'),
+      city: Yup.string().when([], {
+        is: () => currLocationType != "remote",
+        then: () => Yup.string().required("City is required"),
         otherwise: () => Yup.string().notRequired(),
       }),
-      'state': Yup.string().when([], {
-        is: () => currLocationType != 'remote',
-        then: () => Yup.string().required('State/province is required'),
+      state: Yup.string().when([], {
+        is: () => currLocationType != "remote",
+        then: () => Yup.string().required("State/province is required"),
         otherwise: () => Yup.string().notRequired(),
       }),
-      'zip': Yup.string().when([], {
-        is: () => currLocationType != 'remote',
-        then: () => Yup.string().required('Zip code is required'),
+      zip: Yup.string().when([], {
+        is: () => currLocationType != "remote",
+        then: () => Yup.string().required("Zip code is required"),
         otherwise: () => Yup.string().notRequired(),
       }),
     }),
     // TODO: check website format?
     zoomLink: Yup.string().when([], {
-      is: () => currLocationType != 'in-person',
-      then: () => Yup.string().required('Event zoom link is required'),
+      is: () => currLocationType != "in-person",
+      then: () => Yup.string().required("Event zoom link is required"),
       otherwise: () => Yup.string().notRequired(),
     }),
-    
+
     // organizations: Yup.string().when([], {
     //   is: () => currSponsorType == 'organization sponsor',
     //   then: Yup.string().required('Organization is required'),
     //   otherwise: Yup.string().notRequired(),
     // }),
-    
-    description: Yup.string().required('Description is required'),
-    eventdata: Yup.string().required('Other details required'),
-    //opportunitytype: Yup.string().required('Opportunity type is required'),
-    startdate: Yup
-        .date()
-        .required('Start date is required'),
-    enddate: Yup
-        .date()
-        .min(Yup.ref('startdate'), 'End date must be after start date')
-        .required('End date is required'),
 
-    starttime: Yup
-        .date()
-        .required('Start time is required'),
-    endtime: Yup
-    .date()
-    .min(Yup.ref('starttime'), 'End time must be after start time')
-    .required('End time is required'),
-    
-    subject: Yup.string().required('Subject is required'),
+    description: Yup.string().required("Description is required"),
+    eventdata: Yup.string().required("Other details required"),
+    //opportunitytype: Yup.string().required('Opportunity type is required'),
+    startdate: Yup.date().required("Start date is required"),
+    enddate: Yup.date()
+      .min(Yup.ref("startdate"), "End date must be after start date")
+      .required("End date is required"),
+
+    starttime: Yup.date().required("Start time is required"),
+    endtime: Yup.date()
+      .min(Yup.ref("starttime"), "End time must be after start time")
+      .required("End time is required"),
+
+    subject: Yup.string().required("Subject is required"),
     keywords: Yup.object().notRequired(),
-    
   });
   /*
   const getOpportunityTypes = () => {
@@ -211,8 +212,9 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
 */
   const handleSponsorChange = (e) => {
     setCurrSponsorType(
-      currSponsorType == 'user sponsor' ?
-      'organization sponsor' : 'user sponsor',
+      currSponsorType == "user sponsor"
+        ? "organization sponsor"
+        : "user sponsor"
     );
   };
 
@@ -238,12 +240,12 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
   const handleAdditionalRoleClick = () => {
     if (currRoles.length < maxRoles) {
       const rolesCopy = [...currRoles];
-      rolesCopy.push('');
+      rolesCopy.push("");
       console.log(rolesCopy);
       setCurrRoles(rolesCopy);
     } else {
-      toast.error('Maximum number of roles reached', {
-        position: 'top-right',
+      toast.error("Maximum number of roles reached", {
+        position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,
@@ -272,52 +274,45 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
 
   const subjectOptions = [
     {
-      label: 'Computer Science',
-      value: 'computer science',
+      label: "Computer Science",
+      value: "computer science",
     },
     {
-      label: 'Computer Engineering',
-      value: 'computer engineering',
+      label: "Computer Engineering",
+      value: "computer engineering",
     },
     {
-      label: 'Art',
-      value: 'art',
+      label: "Art",
+      value: "art",
     },
   ];
 
   const locationOptions = [
     {
-      label: 'In-Person',
-      value: 'in-person',
+      label: "In-Person",
+      value: "in-person",
     },
     {
-      label: 'Remote',
-      value: 'remote',
+      label: "Remote",
+      value: "remote",
     },
     {
-      label: 'Hybrid',
-      value: 'hybrid',
+      label: "Hybrid",
+      value: "hybrid",
     },
   ];
 
-  const {
-    register,
-    control,
-    handleSubmit,
-    getValues,
-    setValue,
-  } = useForm({
+  const { register, control, handleSubmit, getValues, setValue } = useForm({
     resolver: yupResolver(validationSchema),
     defaultValues: defaultValues,
   });
 
-
   const downloadFile = async () => {
     const img = await Storage.get(fileKey, {
-      level: "public"
+      level: "public",
     });
     setBanner(img);
-  }
+  };
 
   const changeHandler = (e) => {
     const file = e.target.files[0];
@@ -326,18 +321,19 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
       return;
     }
     setFileData(file);
-  }
+  };
 
   useEffect(() => {
-    let fileReader, isCancel = false;
+    let fileReader,
+      isCancel = false;
     if (fileData) {
       fileReader = new FileReader();
       fileReader.onload = (e) => {
         const { result } = e.target;
         if (result && !isCancel) {
-          setFileDataURL(result)
+          setFileDataURL(result);
         }
-      }
+      };
       fileReader.readAsDataURL(fileData);
     }
     return () => {
@@ -345,8 +341,7 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
       if (fileReader && fileReader.readyState === 1) {
         fileReader.abort();
       }
-    }
-
+    };
   }, [fileData]);
 
   useEffect(() => {
@@ -358,16 +353,16 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
 
     // get all majors
     DataStore.query(Major)
-    .then((majorsTotal) => {
-      // console.log('majorsTotal', majorsTotal);
-      majorsTotal = majorsTotal.sort(function(a, b) {
-        return (a.name > b.name) ? 1 : -1;
+      .then((majorsTotal) => {
+        // console.log('majorsTotal', majorsTotal);
+        majorsTotal = majorsTotal.sort(function (a, b) {
+          return a.name > b.name ? 1 : -1;
+        });
+        setTotalMajors(majorsTotal.map((major) => major.name));
       })
-      setTotalMajors(majorsTotal.map(major => major.name));
-    })
-    .catch((err) => {
-      console.log(err);
-    })
+      .catch((err) => {
+        console.log(err);
+      });
   }, [fileKey]);
 
   /*
@@ -377,7 +372,6 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
     }
   }, [fileData])
   */
-
 
   const handleDeleteTag = (tagIndexToDelete) => () => {
     const tempSelectedTags = [...selectedTags];
@@ -422,20 +416,20 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
   return (
     <Paper
       sx={{
-        backgroundColor: 'rgb(240, 240, 240)',
-        zIndex: '10',
-        boxShadow: '-3px 5px 8px 0px rgba(84, 84, 84, 0.81)',
-        borderRadius: '10px',
-        margin: '3rem',
-        padding: '1rem',
+        backgroundColor: "rgb(240, 240, 240)",
+        zIndex: "10",
+        boxShadow: "-3px 5px 8px 0px rgba(84, 84, 84, 0.81)",
+        borderRadius: "10px",
+        margin: "3rem",
+        padding: "1rem",
       }}
     >
       <StepLabel
         sx={{
-          display: 'flex',
-          color: 'darkgray',
-          opacity: '50%',
-          marginBottom: '10px',
+          display: "flex",
+          color: "darkgray",
+          opacity: "50%",
+          marginBottom: "10px",
         }}
       >
         New Opportunity
@@ -443,107 +437,107 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
 
       <Box
         sx={{
-          display: 'grid',
-          gridAutoFlow: 'column',
-          gridGap: '1vw',
-          gridTemplateColumns: '45vw',
-          marginBottom: '5px',
+          display: "grid",
+          gridAutoFlow: "column",
+          gridGap: "1vw",
+          gridTemplateColumns: "45vw",
+          marginBottom: "5px",
         }}
       >
-
         {/* LEFT SECTION */}
         <Box>
           <TextInput
-            name='name'
+            name="name"
             control={control}
-            label='Opportunity Title'
+            label="Opportunity Title"
             register={register}
           />
 
           {/* Dropdown Menus*/}
           <Box
             sx={{
-              display: 'grid',
-              gridAutoFlow: 'column',
-              gridGap: '10px',
-              marginTop: '5px',
+              display: "grid",
+              gridAutoFlow: "column",
+              gridGap: "10px",
+              marginTop: "5px",
             }}
-          > 
+          >
             {
-                //opportunityTypes ?
-                //<DropdownInput
-                  //name='opportunitytype'
-                  //control={control}
-                  //label='Opportunity Type'
-                  //options={opportunityTypes}
-                  //register={register}
-                ///>:
-                //<Skeleton variant="rectangular" width={325} height={26} />
+              //opportunityTypes ?
+              //<DropdownInput
+              //name='opportunitytype'
+              //control={control}
+              //label='Opportunity Type'
+              //options={opportunityTypes}
+              //register={register}
+              ///>:
+              //<Skeleton variant="rectangular" width={325} height={26} />
             }
-            
+
             <DropdownInput
-              name='locationType'
+              name="locationType"
               control={control}
-              label='Location Type'
+              label="Location Type"
               options={locationOptions}
-              defaultValue='in-person'
+              defaultValue="in-person"
               customOnChange={handleLocationTypeChange}
               register={register}
             />
           </Box>
 
           <CheckboxInput
-            name='organizationsponsor'
+            name="organizationsponsor"
             control={control}
-            label='Organization Sponsor'
+            label="Organization Sponsor"
             customOnChange={handleSponsorChange}
-            defaultChecked={
-              currSponsorType == 'organization sponsor'
-            }
+            defaultChecked={currSponsorType == "organization sponsor"}
           />
 
           {/* ORGANIZATION DETAILS */}
-          {
-            currSponsorType == 'organization sponsor' &&
-              <Box>
-                <TextInput
-                  name='organization'
-                  control={control}
-                  label='Organization'
-                  register={register}
-                />
-              </Box>
-          }
+          {currSponsorType == "organization sponsor" && (
+            <Box>
+              <TextInput
+                name="organization"
+                control={control}
+                label="Organization"
+                register={register}
+              />
+            </Box>
+          )}
 
           <TextInput
-            name='description'
+            name="description"
             control={control}
-            label='Enter Description'
+            label="Enter Description"
             multi={true}
             register={register}
           />
 
-          <Box sx={{marginTop: '5px', marginBottom: '10px'}}>
-            <Box sx={{
-              marginBottom: '5px',
-              display: 'grid',
-              gridAutoFlow: 'column',
-              gridGap: '5px',
-            }}>
-              <FormLabel value='eventroles'
-                sx={{display: 'flex',
-                  position: 'relative',
-                  fontSize: '12pt',
-                  height: '25px',
-                  top: '6px',
-                  ml: '2px',
+          <Box sx={{ marginTop: "5px", marginBottom: "10px" }}>
+            <Box
+              sx={{
+                marginBottom: "5px",
+                display: "grid",
+                gridAutoFlow: "column",
+                gridGap: "5px",
+              }}
+            >
+              <FormLabel
+                value="eventroles"
+                sx={{
+                  display: "flex",
+                  position: "relative",
+                  fontSize: "12pt",
+                  height: "25px",
+                  top: "6px",
+                  ml: "2px",
                 }}
               >
                 Opportunity Roles
               </FormLabel>
               <IconButton
-                size='small'
-                sx = {{color: '#00C2FF'}}
+                size="small"
+                sx={{ color: "#00C2FF" }}
                 aria-label="additional opportunity role"
                 onClick={handleAdditionalRoleClick}
               >
@@ -551,65 +545,89 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
               </IconButton>
             </Box>
 
-            {
-              currRoles.length > 0 &&
-              (currRoles.slice(1,currRoles.length)).map((role, index) => (
-                <Box
-                  key={`role${index}`}
-                  id={index.toString()}
-                >
+            {currRoles.length > 0 &&
+              currRoles.slice(1, currRoles.length).map((role, index) => (
+                <Box key={`role${index}`} id={index.toString()}>
                   <TextField
                     sx={{
-                      marginTop: '5px',
-                      backgroundColor: 'rgb(255, 255, 255)',
+                      marginTop: "5px",
+                      backgroundColor: "rgb(255, 255, 255)",
                     }}
                     name={`role${index}`}
                     id={index.toString()}
                     value={role.name}
                     onChange={handleRoleChange}
-                    label='Role Name'
+                    label="Role Name"
                   />
+                  <FormControl
+                    style={{
+                      width: "100px",
+                      marginTop: "5px",
+                      marginLeft: "10px",
+                    }}
+                  >
+                    <InputLabel id="demo-simple-select-label">Hours</InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      label="Hours"
+                    >
+                      <MenuItem value={1}>1</MenuItem>
+                      <MenuItem value={2}>2</MenuItem>
+                      <MenuItem value={3}>3</MenuItem>
+                      <MenuItem value={4}>4</MenuItem>
+                      <MenuItem value={5}>5</MenuItem>
+                      <MenuItem value={6}>6</MenuItem>
+                      <MenuItem value={7}>7</MenuItem>
+                      <MenuItem value={8}>8</MenuItem>
+                    </Select>
+                  </FormControl>
                   <IconButton
                     id={index.toString()}
                     aria-label="remove opportunity role"
                     color="inherit"
-                    sx = {{position: 'relative',
-                      marginTop: '12px',
-                      marginLeft: '5px'}}
+                    sx={{
+                      position: "relative",
+                      marginTop: "12px",
+                      marginLeft: "5px",
+                    }}
                     onClick={handleRemoveRoleClick}
                   >
                     <RemoveCircleOutlineIcon
-                      sx={{color: 'red'}}
+                      sx={{ color: "red" }}
                       fontSize="large"
                     />
                   </IconButton>
                 </Box>
-              ))
-            }
-            <FormHelperText sx={{color: 'red'}}>{roleError}</FormHelperText>
+              ))}
+            <FormHelperText sx={{ color: "red" }}>{roleError}</FormHelperText>
           </Box>
-          <FormLabel value='keywords'
-            sx={{display: 'flex',
-              position: 'relative',
-              fontSize: '12pt',
-              height: '25px',
-              top: '6px',
-              ml: '2px',
+          <FormLabel
+            value="keywords"
+            sx={{
+              display: "flex",
+              position: "relative",
+              fontSize: "12pt",
+              height: "25px",
+              top: "6px",
+              ml: "2px",
             }}
           >
             Tags
           </FormLabel>
-          <Box sx={{marginTop: '5px'}}>
-            <Box sx={{
-              display: 'grid',
-              gridAutoFlow: 'column',
-              gridGap: '5px',
-              backgroundColor: 'rgb(255, 255, 255)',
-              minHeight: '40px',
-              display: 'block',
-              padding: '5px',
-              borderRadius: '5px',
-            }}>
+          <Box sx={{ marginTop: "5px" }}>
+            <Box
+              sx={{
+                display: "grid",
+                gridAutoFlow: "column",
+                gridGap: "5px",
+                backgroundColor: "rgb(255, 255, 255)",
+                minHeight: "40px",
+                display: "block",
+                padding: "5px",
+                borderRadius: "5px",
+              }}
+            >
               {/* Show the selected tags here */}
               {selectedTags.map((tag, index) => (
                 <Chip
@@ -618,35 +636,38 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
                   key={`role${index}`}
                   id={index.toString()}
                   sx={{
-                    padding: '5px',
-                    margin: '2px',
+                    padding: "5px",
+                    margin: "2px",
                   }}
                   onDelete={handleDeleteTag(index)}
                 />
               ))}
             </Box>
-            <FormLabel value='AllKeywords'
-              sx={{display: 'flex',
-                position: 'relative',
-                fontSize: '12pt',
-                height: '25px',
-                top: '6px',
-                ml: '2px',
-                mb: '4px',
+            <FormLabel
+              value="AllKeywords"
+              sx={{
+                display: "flex",
+                position: "relative",
+                fontSize: "12pt",
+                height: "25px",
+                top: "6px",
+                ml: "2px",
+                mb: "4px",
               }}
             >
               Add Tags
             </FormLabel>
-            <Box sx={{
-              display: 'grid',
-              gridAutoFlow: 'column',
-              gridGap: '5px',
-              backgroundColor: 'rgb(255, 255, 255)',
-              minHeight: '40px',
-              display: 'block',
-              padding: '5px',
-              borderRadius: '5px',
-            }}
+            <Box
+              sx={{
+                display: "grid",
+                gridAutoFlow: "column",
+                gridGap: "5px",
+                backgroundColor: "rgb(255, 255, 255)",
+                minHeight: "40px",
+                display: "block",
+                padding: "5px",
+                borderRadius: "5px",
+              }}
             >
               {/* Show the all the tags here */}
               {allTags.map((tag, index) => (
@@ -656,73 +677,81 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
                   key={`role${index}`}
                   id={index.toString()}
                   sx={{
-                    padding: '5px',
-                    margin: '2px',
+                    padding: "5px",
+                    margin: "2px",
                   }}
                   onClick={handleAddTag(index)}
                 />
               ))}
             </Box>
           </Box>
-
         </Box>
 
         {/* RIGHT SECTION */}
         <Box>
-        <Box 
-            sx={{
-            display: 'grid',
-            gridAutoFlow: 'column',
-            gridGap: '0.5vw',
-            gridTemplateColumns: '22.5vw',
-            marginBottom: '5px',
-            alignItems: 'center'
-          }}
-        >
-        { fileDataURL != null &&
-          <Box
-          >
-              <Banner image={fileDataURL} />
-          </Box>
-        }
           <Box
             sx={{
-              //display: 'grid',
-              gridAutoFlow: 'row',
-              //gridAutoColumns: 'max-content',
-              gridGap: '100px',
-              marginTop: '5px',
-              justifyContent: 'center'
+              display: "grid",
+              gridAutoFlow: "column",
+              gridGap: "0.5vw",
+              gridTemplateColumns: "22.5vw",
+              marginBottom: "5px",
+              alignItems: "center",
             }}
+          >
+            {fileDataURL != null && (
+              <Box>
+                <Banner image={fileDataURL} />
+              </Box>
+            )}
+            <Box
+              sx={{
+                //display: 'grid',
+                gridAutoFlow: "row",
+                //gridAutoColumns: 'max-content',
+                gridGap: "100px",
+                marginTop: "5px",
+                justifyContent: "center",
+              }}
             >
-              <ThemedButton variant="themed" component="label" color={'blue'} aria-label='Choose button'>
+              <ThemedButton
+                variant="themed"
+                component="label"
+                color={"blue"}
+                aria-label="Choose button"
+              >
                 Choose Image
-                <input hidden accept="image/*" type="file" onChange={changeHandler}/>
+                <input
+                  hidden
+                  accept="image/*"
+                  type="file"
+                  onChange={changeHandler}
+                />
               </ThemedButton>
+            </Box>
           </Box>
-          </Box>
-          
+
           {/* DATE PICKERS */}
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <Box
               sx={{
-                display: 'grid',
-                gridAutoFlow: 'column',
-                gridGap: '10px',
-                marginTop: '10px'
+                display: "grid",
+                gridAutoFlow: "column",
+                gridGap: "10px",
+                marginTop: "10px",
               }}
             >
               <DateInput
-                name='startdate'
+                name="startdate"
                 control={control}
-                label='Start Date'
+                label="Start Date"
                 register={register}
                 minDate={new Date()}
               />
               <DateInput
-                name='enddate'
+                name="enddate"
                 control={control}
-                label='End Date'
+                label="End Date"
                 register={register}
                 minDate={new Date()}
               />
@@ -731,189 +760,185 @@ export default function OpportunityForm({onClose, defaultValues, onSubmit}) {
             {/* TIME PICKERS */}
             <Box
               sx={{
-                display: 'grid',
-                gridAutoFlow: 'column',
-                gridGap: '10px',
+                display: "grid",
+                gridAutoFlow: "column",
+                gridGap: "10px",
               }}
             >
               <TimeInput
-                name='starttime'
+                name="starttime"
                 control={control}
-                label='Start Time'
+                label="Start Time"
                 register={register}
               />
               <TimeInput
-                name='endtime'
+                name="endtime"
                 control={control}
-                label='End Time'
+                label="End Time"
                 register={register}
               />
             </Box>
-
           </LocalizationProvider>
 
           {/* ADDRESS */}
-          {
-            currLocationType != 'remote' &&
-            <Box sx={{marginTop: '5px'}}>
+          {currLocationType != "remote" && (
+            <Box sx={{ marginTop: "5px" }}>
               <TextInput
-                name='location.address'
+                name="location.address"
                 control={control}
-                label='Enter Street Address'
+                label="Enter Street Address"
                 register={register}
               />
               <TextInput
-                name='location.city'
+                name="location.city"
                 control={control}
-                label='Enter City'
+                label="Enter City"
                 register={register}
               />
 
               <Box
                 sx={{
-                  display: 'grid',
-                  gridAutoFlow: 'column',
-                  gridGap: '10px',
+                  display: "grid",
+                  gridAutoFlow: "column",
+                  gridGap: "10px",
                 }}
               >
                 <TextInput
-                  name='location.state'
+                  name="location.state"
                   control={control}
-                  label='Enter State/Province'
+                  label="Enter State/Province"
                   register={register}
                 />
                 <TextInput
-                  name='location.zip'
+                  name="location.zip"
                   control={control}
-                  label='Enter Zipcode'
+                  label="Enter Zipcode"
                   register={register}
                 />
               </Box>
             </Box>
-          }
+          )}
 
           {/* ZOOM LINK */}
-          {
-            currLocationType != 'in-person' &&
+          {currLocationType != "in-person" && (
             <TextInput
-              name='zoomLink'
+              name="zoomLink"
               control={control}
-              label='Event Zoom Link'
+              label="Event Zoom Link"
               register={register}
             />
-          }
+          )}
 
           <DropdownInput
-            name='subject'
+            name="subject"
             control={control}
-            label='Subject'
+            label="Subject"
             options={totalMajors}
             register={register}
           />
           <TextInput
-            name='eventdata'
+            name="eventdata"
             control={control}
-            label='Other details'
+            label="Other details"
             register={register}
           />
         </Box>
-        </Box>
+      </Box>
 
       {/* Submit/Cancel Button wrapper */}
       <Box
         sx={{
-          display: 'grid',
-          gridAutoFlow: 'column',
-          gridAutoColumns: 'max-content',
-          gridGap: '10px',
-          justifyContent: 'end',
+          display: "grid",
+          gridAutoFlow: "column",
+          gridAutoColumns: "max-content",
+          gridGap: "10px",
+          justifyContent: "end",
         }}
       >
         <ThemedButton
-          aria-label='Back button'
-          color={'yellow'}
-          variant={'themed'}
+          aria-label="Back button"
+          color={"yellow"}
+          variant={"themed"}
           onClick={onClose}
         >
           Back
         </ThemedButton>
         <ThemedButton
-          aria-label='Save button'
-          color={'blue'}
-          variant={'themed'}
+          aria-label="Save button"
+          color={"blue"}
+          variant={"themed"}
           onClick={async () => {
-            console.log('SAVE CLICKED');
+            console.log("SAVE CLICKED");
             //const key = await uploadFile();
             //console.log(key);
             //if(fileKey.length > 0) {
-              //await Storage.remove(fileKey);
+            //await Storage.remove(fileKey);
             //}
             //Storage.put(uuidv4() + "-" + fileData.name, fileData, {
-              //contentType: fileData.type,
+            //contentType: fileData.type,
             //})
             //.then((res) => {
-              //console.log(res);
-              //setValue('bannerKey', res.key);
-               // convert times to those on given days
-              setValue('imgData', fileData);
-              const values = getValues();
+            //console.log(res);
+            //setValue('bannerKey', res.key);
+            // convert times to those on given days
+            setValue("imgData", fileData);
+            const values = getValues();
 
-              const combinedStart = combineTimeDate(
-                  new Date(values.starttime),
-                  new Date(values.startdate),
-              );
-              setValue('startTime', combinedStart);
-              //setValue('startdate', combinedStart);
+            const combinedStart = combineTimeDate(
+              new Date(values.starttime),
+              new Date(values.startdate)
+            );
+            setValue("startTime", combinedStart);
+            //setValue('startdate', combinedStart);
 
-              const combinedEnd = combineTimeDate(
-                  new Date(values.endtime),
-                  new Date(values.enddate),
-              );
-              setValue('endTime', combinedEnd);
-              //setValue('enddate', combinedEnd);
+            const combinedEnd = combineTimeDate(
+              new Date(values.endtime),
+              new Date(values.enddate)
+            );
+            setValue("endTime", combinedEnd);
+            //setValue('enddate', combinedEnd);
 
-              // manual role validation
-              // ensure none are empty
-              if (currRoles.includes('')) {
-                setRoleError('Role name is required');
-                return;
-              }
+            // manual role validation
+            // ensure none are empty
+            if (currRoles.includes("")) {
+              setRoleError("Role name is required");
+              return;
+            }
 
-              // Make sure no values written
-              // to DB that do not match location/sponsor type
-              if (values.locationType == 'in-person') {
-                setValue('zoomLink', '');
-              }
+            // Make sure no values written
+            // to DB that do not match location/sponsor type
+            if (values.locationType == "in-person") {
+              setValue("zoomLink", "");
+            }
 
-              if (values.locationType == 'remote') {
-                setValue('location.zip', '');
-                setValue('location.city', '');
-                setValue('location.state', '');
-                setValue('location.address', '');
+            if (values.locationType == "remote") {
+              setValue("location.zip", "");
+              setValue("location.city", "");
+              setValue("location.state", "");
+              setValue("location.address", "");
 
-                setValue('location', {});
-              }
+              setValue("location", {});
+            }
 
-              if (currSponsorType == 'user sponsor') {
-                setValue('organization', '');
-              }
+            if (currSponsorType == "user sponsor") {
+              setValue("organization", "");
+            }
 
-              // set curr roles in values
-              setValue('roles', currRoles);
+            // set curr roles in values
+            setValue("roles", currRoles);
 
-              // Convert the selected tags to an object
-              const tagstToSubmit = convertTagsToObject(selectedTags);
-              setValue('keywords', tagstToSubmit);
+            // Convert the selected tags to an object
+            const tagstToSubmit = convertTagsToObject(selectedTags);
+            setValue("keywords", tagstToSubmit);
 
-              //setValue('bannerKey', await uploadFile());
+            //setValue('bannerKey', await uploadFile());
 
-              handleSubmit(onSubmit)();
+            handleSubmit(onSubmit)();
             //})
             //.catch((err) => {
-              //console.log(err);
-              //console.log("Error uploading img");
+            //console.log(err);
+            //console.log("Error uploading img");
             //})
-           
           }}
         >
           Save

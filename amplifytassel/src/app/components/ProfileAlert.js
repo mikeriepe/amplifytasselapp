@@ -17,6 +17,7 @@ import '../stylesheets/ProfileAlert.css';
 import { ProfileStatus } from '../../models';
 import { Profile } from '../../models';
 import { DataStore } from '@aws-amplify/datastore';
+import {useNavigate} from "react-router-dom"
 
 
 /**
@@ -24,48 +25,50 @@ import { DataStore } from '@aws-amplify/datastore';
  * @return {HTML} Alert component
  */
 export default function ProfileAlert({data}) {
-  const { setUserProfile } = useAuth();
-  const [open, setOpen] = React.useState(false);
-  const [openView, setOpenView] = React.useState(false);
-  const [response, setResponse] = React.useState('');
-  const [reRender, setReRender] = React.useState(0);
+  // const { setUserProfile } = useAuth();
+  // const [open, setOpen] = React.useState(false);
+  // const [openView, setOpenView] = React.useState(false);
+  // const [response, setResponse] = React.useState('');
+  // const [reRender, setReRender] = React.useState(0);
+  const navigate = useNavigate()
 
   const handleDialog = () => {
-    setOpen(true);
+    // Redirect to chat (/social)
+    navigate("/social")
   };
-  const handleClose = () => {
-    setOpen(false);
-  };
-  const handleViewDialog = () => {
-    setOpenView(true);
-  };
-  const handleViewDialogClose = () => {
-    setOpenView(false);
-  };
+  // const handleClose = () => {
+  //   setOpen(false);
+  // };
+  // const handleViewDialog = () => {
+  //   setOpenView(true);
+  // };
+  // const handleViewDialogClose = () => {
+  //   setOpenView(false);
+  // };
 
-  const handleSubmit = async (e) => {
-    // UPDATE profile.infoResponse
-    e.preventDefault();
-    DataStore.query(Profile, p => p.email.eq(data.profileEmail))
-      .then((profiles) => {
-        // console.log('profile', profiles);
-        DataStore.save(Profile.copyOf(profiles[0], updated => {
-          updated.infoResponse = response;
-          updated.status = ProfileStatus.UPDATED;
-        }))
-          .then(() => {
-            DataStore.query(Profile, c => c.email.eq(data.profileEmail))
-              .then((profile) => {
-                setUserProfile(profile[0]);
-              })
-            setOpen(false);
-            setResponse('');
-          });
-      })
-      .catch((err) => {
-        console.log('error retreiving/updating profile: ', err);
-      });
-  };
+  // const handleSubmit = async (e) => {
+  //   // UPDATE profile.infoResponse
+  //   e.preventDefault();
+  //   DataStore.query(Profile, p => p.email.eq(data.profileEmail))
+  //     .then((profiles) => {
+  //       // console.log('profile', profiles);
+  //       DataStore.save(Profile.copyOf(profiles[0], updated => {
+  //         updated.infoResponse = response;
+  //         updated.status = ProfileStatus.UPDATED;
+  //       }))
+  //         .then(() => {
+  //           DataStore.query(Profile, c => c.email.eq(data.profileEmail))
+  //             .then((profile) => {
+  //               setUserProfile(profile[0]);
+  //             })
+  //           setOpen(false);
+  //           setResponse('');
+  //         });
+  //     })
+  //     .catch((err) => {
+  //       console.log('error retreiving/updating profile: ', err);
+  //     });
+  // };
 
   return (
     <div>
@@ -127,7 +130,7 @@ export default function ProfileAlert({data}) {
         </Alert>
       }
 
-      {data.status === ProfileStatus.UPDATED &&
+      {/* data.status === ProfileStatus.UPDATED &&
         <Alert
           style={{width: '800px', marginTop: '20px'}}
           icon={<CheckIcon fontSize="inherit" className='icon' />}
@@ -145,9 +148,9 @@ export default function ProfileAlert({data}) {
             You have responded to <strong>request for more info</strong>
           </div>
         </Alert>
-      }
+        */}
 
-      <Dialog open={open} onClose={handleClose}>
+      {/* <Dialog open={open} onClose={handleClose}>
         <DialogTitle>
           <div className='alert-text'>
             Respond to request for more info:
@@ -201,7 +204,7 @@ export default function ProfileAlert({data}) {
             Cancel
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
     </div>
   );
 }
