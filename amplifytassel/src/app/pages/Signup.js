@@ -159,6 +159,7 @@ export default function Signup() {
         handleNextStep(3);
       })
       .catch((err) => {
+        console.error(err);
         console.error("Email: " + values[2].useremail + " already exists.");
         setIsUserEmailTaken(true);
         setErrors([...errors, "useremailtaken"]);
@@ -261,7 +262,7 @@ export default function Signup() {
         });
       })
       .catch((err) => {
-        console.error("Error resending email verification", err);
+        console.error(err);
         let errMsg = err.log ?? err.code ?? err.name;
         toast.error(errMsg, toastOptions);
         setIsResendingVerification(false);
@@ -275,9 +276,11 @@ export default function Signup() {
     Auth.confirmSignUp(values[2].useremail, values[3].verifycode)
       .then(() => {
         setIsVerifying(false);
+        toast.success('Email verified!', toastOptions);
         navigate("/login");
       })
       .catch((err) => {
+        console.error(err);
         let errMsg = err.log ?? err.code ?? err.name;
         if (errMsg.includes("CodeMismatchException")) {
           errMsg = "Incorrect verification code";

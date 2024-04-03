@@ -9,7 +9,8 @@
       "UnauthRoleName": "amplify-amplifytassel-dev-233440-unauthRole",
       "StackName": "amplify-amplifytassel-dev-233440",
       "StackId": "arn:aws:cloudformation:us-west-1:940349617006:stack/amplify-amplifytassel-dev-233440/f0e5a660-d832-11ed-8387-02df6eec1ad5",
-      "AmplifyAppId": "d1kxowt9pyz5tz"
+      "AmplifyAppId": "d1kxowt9pyz5tz",
+      "AuthTriggerTemplateURL": "https://s3.amazonaws.com/amplify-amplifytassel-dev-233440-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json"
     },
     "categories": {
       "auth": {
@@ -20,6 +21,12 @@
       },
       "api": {
         "amplifytassel": {}
+      },
+      "function": {
+        "amplifytasselPostConfirmation": {
+          "deploymentBucketName": "amplify-amplifytassel-dev-233440-deployment",
+          "s3Key": "amplify-builds/amplifytasselPostConfirmation-6a4a3831452f69372b65-build.zip"
+        }
       }
     }
   }
