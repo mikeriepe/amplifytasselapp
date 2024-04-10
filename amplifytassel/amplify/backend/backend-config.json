@@ -64,6 +64,21 @@
     }
   },
   "function": {
+    "accountStatusUpdateEmail": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "amplifytassel"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "amplifytasselPostConfirmation": {
       "build": true,
       "providerPlugin": "awscloudformation",
@@ -71,6 +86,22 @@
     }
   },
   "parameters": {
+    "AMPLIFY_function_accountStatusUpdateEmail_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "accountStatusUpdateEmail"
+        }
+      ]
+    },
+    "AMPLIFY_function_accountStatusUpdateEmail_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "accountStatusUpdateEmail"
+        }
+      ]
+    },
     "AMPLIFY_function_amplifytasselPostConfirmation_deploymentBucketName": {
       "usedBy": [
         {

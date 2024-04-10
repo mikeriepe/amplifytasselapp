@@ -25,7 +25,11 @@
       "function": {
         "amplifytasselPostConfirmation": {
           "deploymentBucketName": "amplify-amplifytassel-dev-233440-deployment",
-          "s3Key": "amplify-builds/amplifytasselPostConfirmation-6a4a3831452f69372b65-build.zip"
+          "s3Key": "amplify-builds/amplifytasselPostConfirmation-51776d554c444e457946-build.zip"
+        },
+        "accountStatusUpdateEmail": {
+          "deploymentBucketName": "amplify-amplifytassel-dev-233440-deployment",
+          "s3Key": "amplify-builds/accountStatusUpdateEmail-6a414d63735536534c36-build.zip"
         }
       }
     }

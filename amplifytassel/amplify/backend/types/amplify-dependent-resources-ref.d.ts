@@ -16,6 +16,13 @@ export type AmplifyDependentResourcesAttributes = {
     }
   },
   "function": {
+    "accountStatusUpdateEmail": {
+      "Arn": "string",
+      "LambdaExecutionRole": "string",
+      "LambdaExecutionRoleArn": "string",
+      "Name": "string",
+      "Region": "string"
+    },
     "amplifytasselPostConfirmation": {
       "Arn": "string",
       "LambdaExecutionRole": "string",

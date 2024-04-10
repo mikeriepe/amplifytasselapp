@@ -124,7 +124,12 @@ export default function Login() {
           // }
           console.log('login worked!');
           // console.log(JSON.stringify(user));
-          toast.success('Login Success', toastOptions);
+          try {
+            toast.success('Login Success', toastOptions);
+          }
+          catch (e) {
+            console.error(e);
+          }
         }
         setLoadingAuth(true);
         setIsBackendLoading(false);
