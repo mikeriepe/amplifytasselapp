@@ -14,7 +14,7 @@ exports.handler = async (event) => {
       const newImage = AWS.DynamoDB.Converter.unmarshall(record.dynamodb.NewImage);
       const oldImage = AWS.DynamoDB.Converter.unmarshall(record.dynamodb.OldImage);
       console.log(`Email: ${newImage.email}. Status: ${oldImage.status} -> ${newImage.status}`);
-      if (oldImage.status !== newImage.status) {
+      if (oldImage.status && oldImage.status !== newImage.status) {
         if (newImage.status === 'APPROVED') {
           console.log(`User ${newImage.email} has been approved`);
           return await sendEmail(
