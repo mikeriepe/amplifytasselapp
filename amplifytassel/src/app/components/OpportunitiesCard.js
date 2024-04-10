@@ -729,13 +729,21 @@ export default function OpportunitiesCard({
     downloadFile();
   }, [creator]);
 
+  const a = opportunity.eventName;
+
   return (
     <>
       {opportunity &&(
         <Card className='clickable'>
           <div
             className='flex-space-between flex-align-center'
-            style={{padding: '1.5em'}}
+            style={{padding: '1.5em',
+            backgroundColor:
+            a.includes('Car') || a.includes('Natural') ? '#efe' :
+            a.includes('Art') ? '#eff' :
+            a.includes('Party') || a.includes('Become') ? '#eee' :
+            undefined
+            }}
           >
             <CardActionArea
               component={RouterLink}
@@ -888,6 +896,13 @@ export default function OpportunitiesCard({
           <CardActionArea
             component={RouterLink}
             to={`/Opportunity/${opportunity.id}`}
+            style={{
+            backgroundColor:
+            a.includes('Car') || a.includes('Natural') ? '#efe' :
+            a.includes('Art') ? '#eff' :
+            a.includes('Party') || a.includes('Become') ? '#eee' :
+            undefined
+            }}
           >
             <Divider sx={{borderBottom: '0.5px solid rgba(0, 0, 0, 0.15)'}} />
             <div

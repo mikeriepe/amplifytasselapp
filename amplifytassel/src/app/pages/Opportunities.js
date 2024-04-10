@@ -270,7 +270,7 @@ function Opportunities({
     defaultTab = 0;
   }
 
-  const [tab, setTab] = useState(defaultTab);
+  const [tab, setTab] = useState(0);
   const [locationFilter, setLocationFilter] = useState([]);
   const [oppTypeFilter, setOppTypeFilter] = useState([]);
   const [orgTypeFilter, setOrgTypeFilter] = useState([]);
@@ -283,7 +283,13 @@ function Opportunities({
         <OpportunitiesList
           key='upcoming'
           type='upcoming'
-          opportunities={joinedOpportunities}
+          opportunities={
+            [].concat(createdOpportunities,
+            joinedOpportunities,
+            pastOpportunities,
+            pendingOpportunities,
+            allOpportunities)
+          }
           locationFilter={locationFilter}
           setLocationFilter={setLocationFilter}
           oppTypeFilter={oppTypeFilter}
@@ -615,7 +621,7 @@ function Opportunities({
       <PageHeader
         title='Opportunities'
         subtitle='View and join opportunities'
-        tabs={<CompressedTabBar data={tabs} tab={tab} setTab={setTab} />}
+        // tabs={<CompressedTabBar data={tabs} tab={tab} setTab={setTab} />}
         components={<AddButton onClick={() => setShowOppForm(true)}/>}
       />
       <Modal

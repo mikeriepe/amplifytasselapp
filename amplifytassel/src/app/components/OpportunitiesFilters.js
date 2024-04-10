@@ -186,6 +186,71 @@ export default function OpportunityFilters({
           className='flex-vertical flow-small'
           style={{padding: '0 3em', paddingBottom: '2em'}}
         >
+
+          <div className='flex-vertical flow-tiny'>
+            <MuiBox
+              className='
+                flex-space-between
+                flex-align-center
+                clickable
+                no-highlight
+              '
+              onClick={handleCollapseOppType}
+            >
+              <h5>Time</h5>
+              {collapseOppType ?
+                <ExpandLessRoundedIcon /> :
+                 <ExpandMoreRoundedIcon />
+              }
+            </MuiBox>
+            <Collapse in={collapseOppType} timeout='auto' unmountOnExit>
+              <FormGroup className='flex-vertical flex-flow-small'>
+              <div key={`opportunity-type-filter-past`}>
+                <FormControlLabel
+                  className='no-highlight'
+                  control={
+                    <Checkbox
+                      color='secondary'
+                      size='small'
+                      disableRipple
+                      sx={{paddingBlock: '0'}}
+                    />
+                  }
+                  label={'Past'}
+                  componentsProps={{
+                    typography: {
+                      fontSize: '0.8rem',
+                      fontWeight: '600',
+                      color: 'var(--text-disabled)',
+                    },
+                  }}
+                />
+              </div>
+              <div key={`opportunity-type-filter-future`}>
+                <FormControlLabel
+                  className='no-highlight'
+                  control={
+                    <Checkbox
+                      color='secondary'
+                      size='small'
+                      disableRipple
+                      sx={{paddingBlock: '0'}}
+                    />
+                  }
+                  label={'Future'}
+                  componentsProps={{
+                    typography: {
+                      fontSize: '0.8rem',
+                      fontWeight: '600',
+                      color: 'var(--text-disabled)',
+                    },
+                  }}
+                />
+              </div>
+              </FormGroup>
+            </Collapse>
+          </div>
+
           {/* Location Filters */}
           <div className='flex-vertical flow-tiny'>
             <MuiBox

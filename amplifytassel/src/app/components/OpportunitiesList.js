@@ -376,7 +376,7 @@ export default function OpportunitiesList({
             }}
           />
           <ThemedDropdown
-            menuItems={['Recommended', 'Alphabet', 'Major']}
+            menuItems={['Default', 'Recommended', 'Alphabet', 'Major']}
             sortSelection={handleDropdown}
             value={dropdownSelect}
           />
