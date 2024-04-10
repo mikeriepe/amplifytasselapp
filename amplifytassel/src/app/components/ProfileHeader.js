@@ -423,8 +423,8 @@ export default function ProfileHeader({ data,editButton }) {
             <p className='ellipsis' aria-label='Profile Header Graduation Year'>Class of {data.graduationYear}</p>
             <p className='ellipsis' aria-label='Profile Header Location'>{data.location}</p>
           </Text>
-          <Level level={level} sx={{ flex: 1 }}/>
-          <Box sx={{
+          {/* <Level level={level} sx={{ flex: 1 }}/> */}
+          {/* <Box sx={{
               display: 'flex',
               alignItems: 'center',
               flexDirection: 'column',
@@ -439,7 +439,7 @@ export default function ProfileHeader({ data,editButton }) {
               What's this?
             </p>
           }
-          </Box>
+          </Box> */}
           <Box sx={{
               display: 'flex',
               alignItems: 'center',

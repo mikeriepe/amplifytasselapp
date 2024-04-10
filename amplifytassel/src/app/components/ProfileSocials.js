@@ -54,6 +54,15 @@ export default function ProfileSocials({data}) {
         </Grid>
         <Grid item xs={11}>
           dawichan
+          <Chip
+            label='Verified'
+            onClick={() => toast.success('Email verified', toastOptions)}
+            icon={<CheckIcon />}
+            color='success'
+            size='small'
+            style={{marginLeft: 8}}
+            disableRipple
+          />
         </Grid>
         <Grid item xs={0.6}>
           <Tooltip title='User email'>
