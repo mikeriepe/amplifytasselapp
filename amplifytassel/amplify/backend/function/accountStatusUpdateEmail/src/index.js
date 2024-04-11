@@ -6,6 +6,8 @@ const ses = new AWS.SES({ apiVersion: '2010-12-01' });
 
 /**
  * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
+ * References:
+ * - https://docs.amplify.aws/javascript/tools/cli/usage/lambda-triggers/#dynamodb-lambda-triggers
  */
 exports.handler = async (event) => {
 

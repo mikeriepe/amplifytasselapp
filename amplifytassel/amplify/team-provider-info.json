@@ -30,7 +30,8 @@
         "accountStatusUpdateEmail": {
           "deploymentBucketName": "amplify-amplifytassel-dev-233440-deployment",
           "s3Key": "amplify-builds/accountStatusUpdateEmail-6a414d63735536534c36-build.zip"
-        }
+        },
+        "requestStatusUpdateEmail": {}
       }
     }
   }
