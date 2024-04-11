@@ -36,11 +36,14 @@ import { styled } from "@mui/material/styles";
 import { toast } from "react-toastify";
 import "../stylesheets/ApprovalTable.css";
 
-import { DataStore, Storage } from 'aws-amplify';
-import { Opportunity, Profile, ChatRoom } from './../../models';
-import { createNewChatRoom, findExistingInfoChatRoom } from '../util/SocialChatRooms';
-import {sendMessage} from "../util/SocialChat";
-import useAuth from "../util/AuthContext"
+import { DataStore, Storage } from "aws-amplify";
+import { Opportunity, Profile, ChatRoom } from "./../../models";
+import {
+  createNewChatRoom,
+  findExistingInfoChatRoom,
+} from "../util/SocialChatRooms";
+import { sendMessage } from "../util/SocialChat";
+import useAuth from "../util/AuthContext";
 
 const Page = styled((props) => <Box {...props} />)(() => ({
   display: "flex",
@@ -129,9 +132,9 @@ function Row(props) {
         <TableCell className="data-cell">{row.description}</TableCell>
         <TableCell className="data-cell" component="th" scope="row">
           <div style={{ display: "flex" }}>
-            <Avatar image={profile.profilePicture} />
+            <Avatar image={profile?.profilePicture} />
             {/* eslint-disable-next-line max-len */}
-            <div className="text-center-vert">{`${profile.firstName} ${profile.lastName}`}</div>
+            <div className="text-center-vert">{`${profile?.firstName} ${profile?.lastName}`}</div>
           </div>
         </TableCell>
         <TableCell className="data-cell">
@@ -185,7 +188,7 @@ export default function ApprovalOpportunities() {
   const [sortStatusOrder, setSortStatusOrder] = useState("");
   const [selectAllChecked, setSelectAllChecked] = useState(false);
 
-  const {userProfile} = useAuth();
+  const { userProfile } = useAuth();
 
   const handleDialogOpen = () => {
     setDialogOpen(true);
@@ -201,45 +204,49 @@ export default function ApprovalOpportunities() {
   };
 
   const handleDialogSubmit = () => {
-    const opportunities = selected.map(
-      (oppId) => opps.find((opp) => opp.id === oppId)
+    const opportunities = selected.map((oppId) =>
+      opps.find((opp) => opp.id === oppId)
     );
 
-    opportunities.forEach(
-      (opportunity) => {
-        const posterProfileID = opportunity.profileID;
-    
-        // Set opportunities to REQUESTED
-        DataStore.save(
-          Opportunity.copyOf(opportunity, updatedOpportunity => {
-            updatedOpportunity.status = "REQUESTED";
-          }
-          )
-        ).then( async (res) => {
+    opportunities.forEach((opportunity) => {
+      const posterProfileID = opportunity.profileID;
+
+      // Set opportunities to REQUESTED
+      DataStore.save(
+        Opportunity.copyOf(opportunity, (updatedOpportunity) => {
+          updatedOpportunity.status = "REQUESTED";
+        })
+      )
+        .then(async (res) => {
           // Create a chatroom with its poster or identify with only the admin and the poster
           const allChatRooms = await DataStore.query(ChatRoom);
-        
-          var chat = await findExistingInfoChatRoom(userProfile, [posterProfileID], allChatRooms);
 
-          if (chat === null){
+          var chat = await findExistingInfoChatRoom(
+            userProfile,
+            [posterProfileID],
+            allChatRooms
+          );
+
+          if (chat === null) {
             chat = await createNewChatRoom(userProfile, [posterProfileID]);
           }
 
           // Send info request as message
-          await sendMessage(chat.id, userProfile, `Admin ${userProfile.firstName} ${userProfile.lastName} is requesting some information about your opportunity "${opportunity.eventName}": \n${requestInfo}`);
-        }
-        ).catch((err) => {
-        console.log("Error requesting info:", err);
-        alert("Error requesting info, please try again.");
-        }
-    )
-      }
-    )
+          await sendMessage(
+            chat.id,
+            userProfile,
+            `Admin ${userProfile.firstName} ${userProfile.lastName} is requesting some information about your opportunity "${opportunity.eventName}": \n${requestInfo}`
+          );
+        })
+        .catch((err) => {
+          console.log("Error requesting info:", err);
+          alert("Error requesting info, please try again.");
+        });
+    });
 
     // Include link to the particular opportunity in the message (in case one poster has many opportunities).
 
-
-    setRequestInfo('')
+    setRequestInfo("");
     setDialogOpen(false);
   };
 

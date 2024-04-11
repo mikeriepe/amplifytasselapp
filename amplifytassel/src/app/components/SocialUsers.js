@@ -119,19 +119,16 @@ function Row(props) {
         </TableCell>
         <TableCell className="data-cell" padding="checkbox"></TableCell>
         {/* eslint-disable-next-line max-len */}
-        <TableCell
-          className="data-cell"
-          component="th"
-          scope="row"
-          sx={{ display: "flex", flexDirection: "row" }}
-        >
-          <Avatar
-            image={profilePicture}
-            handleAvatarClick={handleAvatarClick}
-            profileid={row.id}
-          />
-          {/* eslint-disable-next-line max-len */}
-          <div className="text-center-vert">{`${row.firstName} ${row.lastName}`}</div>
+        <TableCell className="data-cell" component="th" scope="row">
+          <div style={{ display: "flex" }}>
+            <Avatar
+              image={profilePicture}
+              handleAvatarClick={handleAvatarClick}
+              profileid={row.id}
+            />
+            {/* eslint-disable-next-line max-len */}
+            <div className="text-center-vert">{`${row.firstName} ${row.lastName}`}</div>
+          </div>
         </TableCell>
         <TableCell className="data-cell">{row.email}</TableCell>
         <TableCell className="data-cell">{row.graduationYear}</TableCell>
