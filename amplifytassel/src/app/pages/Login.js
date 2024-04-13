@@ -8,7 +8,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Paper from '@mui/material/Paper';
 import ThemedButton from '../components/ThemedButton';
 import ThemedInput from '../components/ThemedInput';
-import LoginBanner from '../assets/LoginBanner.png';
+import LoginBanner from '../assets/sammy-ocean.png';
 import useAuth from '../util/AuthContext';
 import '../stylesheets/LoginSignup.css';
 import { Auth } from 'aws-amplify';
@@ -236,17 +236,9 @@ export default function Login() {
       <Box className='page' aria-label='Login form'>
         <Paper className='card' elevation={0} sx={PaperStyling}>
           <div className='card-banner flow-small padding-64'>
-            <p className='text-bold text-italic text-white'>Logo.</p>
             <h3 className='text-xbold text-white'>Welcome back!</h3>
             <div className='flow-tiny'>
               <img src={LoginBanner} alt='login banner' />
-              <p
-                className='text-bold text-white text-tiny'
-                style={{position: 'absolute', bottom: '8.5em'}}
-              >
-                Image from&nbsp;
-                <a href="https://icons8.com/?utm_source=figma-plugin-icons8&utm_medium=cross-promo&utm_campaign=web-version">icons8.com</a>
-              </p>
             </div>
           </div>
           <Box
