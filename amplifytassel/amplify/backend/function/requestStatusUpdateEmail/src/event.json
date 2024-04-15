@@ -1,5 +1,123 @@
 {
-  "key1": "value1",
-  "key2": "value2",
-  "key3": "value3"
+  "Records": [
+    {
+      "eventID": "b87ce0dc3f8418275594f8706a16f9c2",
+      "eventName": "MODIFY",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "us-west-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1712213466,
+        "Keys": {
+          "id": {
+            "S": "335243ca-a453-4157-9686-46164789eb63"
+          }
+        },
+        "NewImage": {
+          "lastName": {
+            "S": "dummy50"
+          },
+          "_lastChangedAt": {
+            "N": "1712213465780"
+          },
+          "__typename": {
+            "S": "Profile"
+          },
+          "volunteerExperience": {
+            "L": []
+          },
+          "active": {
+            "BOOL": true
+          },
+          "isAdmin": {
+            "BOOL": false
+          },
+          "experience": {
+            "L": []
+          },
+          "createdAt": {
+            "S": "2024-03-12T19:14:04.834Z"
+          },
+          "firstName": {
+            "S": "test"
+          },
+          "graduationYear": {
+            "S": "2024"
+          },
+          "id": {
+            "S": "335243ca-a453-4157-9686-46164789eb63"
+          },
+          "isApproved": {
+            "BOOL": false
+          },
+          "_version": {
+            "N": "4"
+          },
+          "email": {
+            "S": "danielchandg+50@gmail.com"
+          },
+          "status": {
+            "S": "APPROVED"
+          },
+          "updatedAt": {
+            "S": "2024-04-04T06:51:05.723Z"
+          }
+        },
+        "OldImage": {
+          "lastName": {
+            "S": "dummy50"
+          },
+          "_lastChangedAt": {
+            "N": "1712212596169"
+          },
+          "__typename": {
+            "S": "Profile"
+          },
+          "volunteerExperience": {
+            "L": []
+          },
+          "active": {
+            "BOOL": true
+          },
+          "isAdmin": {
+            "BOOL": false
+          },
+          "experience": {
+            "L": []
+          },
+          "createdAt": {
+            "S": "2024-03-12T19:14:04.834Z"
+          },
+          "firstName": {
+            "S": "test"
+          },
+          "graduationYear": {
+            "S": "2024"
+          },
+          "id": {
+            "S": "335243ca-a453-4157-9686-46164789eb63"
+          },
+          "isApproved": {
+            "BOOL": false
+          },
+          "_version": {
+            "N": "3"
+          },
+          "email": {
+            "S": "danielchandg+50@gmail.com"
+          },
+          "status": {
+            "S": "ADMIN"
+          },
+          "updatedAt": {
+            "S": "2024-04-04T06:36:36.128Z"
+          }
+        },
+        "SequenceNumber": "1706439900000000026323137042",
+        "SizeBytes": 645,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:us-west-1:940349617006:table/Profile-eqwgxei7kree5jkd4arqvkptum-dev/stream/2023-04-11T17:41:22.420"
+    }
+  ]
 }

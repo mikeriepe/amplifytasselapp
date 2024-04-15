@@ -113,13 +113,13 @@
                 "RoleName": {
                     "Fn::If": [
                         "ShouldNotCreateEnvResources",
-                        "amplifytasselLambdaRole405e3795",
+                        "amplifytasselLambdaRoleb13e71e7",
                         {
 
                             "Fn::Join": [
                                 "",
                                 [
-                                    "amplifytasselLambdaRole405e3795",
+                                    "amplifytasselLambdaRoleb13e71e7",
                                     "-",
                                     {
                                         "Ref": "env"
