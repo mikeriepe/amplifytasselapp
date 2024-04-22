@@ -42,8 +42,10 @@ export function AuthProvider(props) {
     isAuthLoading.current = true;
     Auth.currentAuthenticatedUser()
       .then((authUser) => {
+        // console.log('email: ' + authUser.attributes.email);
         DataStore.query(Profile, c => c.email.eq(authUser.attributes.email))
           .then((profile) => {
+            // console.log('profile: ' + JSON.stringify(profile));
             setLoadingAuth(false);
             isAuthLoading.current = false;
             if (
@@ -55,7 +57,13 @@ export function AuthProvider(props) {
               return;
             }
             setUser(authUser.attributes);
-            setUserProfile(profile[0] ?? {});
+            try {
+              setUserProfile(profile[profile.length - 1]);
+            }
+            catch (error) {
+              console.log('Unable to find profile: ' + error.message);
+              setUserProfile({});
+            }
             console.log('Logged in, set user and userProfile');
           })
           .catch((err) => {

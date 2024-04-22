@@ -360,6 +360,7 @@ function EnhancedTableToolbar({
           })
         );
 
+        try {
         // fetch and delete the profile from the role
         const profRole = await DataStore.query(ProfileRole, (p) => p.and(p => [
           p.roleId.eq(selectedRequests[i][0].roleID),
@@ -373,6 +374,8 @@ function EnhancedTableToolbar({
           o.profileId.eq(selectedRequests[i][0].profileID)
         ]));
         await DataStore.delete(oppProf[0]);
+        }
+        catch (e) {}
 
         // update the states
         // remove the member from the member list

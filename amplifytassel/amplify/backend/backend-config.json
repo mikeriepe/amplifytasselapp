@@ -83,6 +83,30 @@
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
+    },
+    "requestStatusUpdateEmail": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ],
+          "category": "api",
+          "resourceName": "amplifytassel"
+        },
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput",
+            "GraphQLAPIKeyOutput"
+          ],
+          "category": "api",
+          "resourceName": "amplifytassel"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
     }
   },
   "parameters": {
@@ -115,6 +139,22 @@
         {
           "category": "function",
           "resourceName": "amplifytasselPostConfirmation"
+        }
+      ]
+    },
+    "AMPLIFY_function_requestStatusUpdateEmail_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "requestStatusUpdateEmail"
+        }
+      ]
+    },
+    "AMPLIFY_function_requestStatusUpdateEmail_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "requestStatusUpdateEmail"
         }
       ]
     }

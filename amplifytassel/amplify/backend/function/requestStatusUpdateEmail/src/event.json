@@ -1,0 +1,67 @@
+{
+  "Records": [
+      {
+          "eventID": "0e41b09ade8ec854ac0b37fa006d5893",
+          "eventName": "INSERT",
+          "eventVersion": "1.1",
+          "eventSource": "aws:dynamodb",
+          "awsRegion": "us-west-1",
+          "dynamodb": {
+              "ApproximateCreationDateTime": 1713385505,
+              "Keys": {
+                  "id": {
+                      "S": "3f6aa2f6-7317-453b-ac59-48427c90685b"
+                  }
+              },
+              "NewImage": {
+                  "_lastChangedAt": {
+                      "N": "1713385504607"
+                  },
+                  "responseTime": {
+                      "S": "2024-04-17T20:25:03.165Z"
+                  },
+                  "roleID": {
+                      "S": "f53543a5-2f75-4b46-9e7d-1f1a99237d2b"
+                  },
+                  "__typename": {
+                      "S": "Request"
+                  },
+                  "requestMessage": {
+                      "S": "This is DanielChang applying to join Car Crash Test. It is 1:24pm on 4/17"
+                  },
+                  "requestTime": {
+                      "S": "2024-04-17T20:25:03.165Z"
+                  },
+                  "createdAt": {
+                      "S": "2024-04-17T20:25:04.604Z"
+                  },
+                  "opportunityID": {
+                      "S": "c03749bb-24ec-42b8-8561-a5a5caf62e9d"
+                  },
+                  "profileID": {
+                      "S": "d0856ca5-8ff1-464d-98fe-57d4926ce8e6"
+                  },
+                  "id": {
+                      "S": "3f6aa2f6-7317-453b-ac59-48427c90685b"
+                  },
+                  "responseMessage": {
+                      "S": " "
+                  },
+                  "_version": {
+                      "N": "1"
+                  },
+                  "status": {
+                      "S": "PENDING"
+                  },
+                  "updatedAt": {
+                      "S": "2024-04-17T20:25:04.604Z"
+                  }
+              },
+              "SequenceNumber": "1771058900000000012536154832",
+              "SizeBytes": 514,
+              "StreamViewType": "NEW_AND_OLD_IMAGES"
+          },
+          "eventSourceARN": "arn:aws:dynamodb:us-west-1:940349617006:table/Request-eqwgxei7kree5jkd4arqvkptum-dev/stream/2023-04-11T17:41:22.858"
+      }
+  ]
+}

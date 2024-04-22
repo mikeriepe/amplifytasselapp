@@ -25,11 +25,15 @@
       "function": {
         "amplifytasselPostConfirmation": {
           "deploymentBucketName": "amplify-amplifytassel-dev-233440-deployment",
-          "s3Key": "amplify-builds/amplifytasselPostConfirmation-51776d554c444e457946-build.zip"
+          "s3Key": "amplify-builds/amplifytasselPostConfirmation-7339326e3245384e4c4b-build.zip"
         },
         "accountStatusUpdateEmail": {
           "deploymentBucketName": "amplify-amplifytassel-dev-233440-deployment",
-          "s3Key": "amplify-builds/accountStatusUpdateEmail-6a414d63735536534c36-build.zip"
+          "s3Key": "amplify-builds/accountStatusUpdateEmail-69472b696a722f503835-build.zip"
+        },
+        "requestStatusUpdateEmail": {
+          "deploymentBucketName": "amplify-amplifytassel-dev-233440-deployment",
+          "s3Key": "amplify-builds/requestStatusUpdateEmail-446f4e4b726c44727341-build.zip"
         }
       }
     }

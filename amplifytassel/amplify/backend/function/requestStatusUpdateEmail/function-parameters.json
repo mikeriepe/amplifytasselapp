@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "api": {
+      "amplifytassel": [
+        "Query"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}
