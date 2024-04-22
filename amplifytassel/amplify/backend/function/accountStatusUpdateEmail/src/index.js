@@ -22,7 +22,9 @@ exports.handler = async (event) => {
           return await sendEmail(
             newImage.email,
             'Your Account Has Been Approved',
-            'Your account has been approved.'
+`Your Tassel account was approved.
+
+Have any questions? Contact us at tasselsupport@gmail.com.`
           );
         }
         if (newImage.status === 'DENIED') {
@@ -30,15 +32,19 @@ exports.handler = async (event) => {
           return await sendEmail(
             newImage.email,
             'Your Account Has Been Denied',
-            'Sorry, unfortunately your Tassel Account cound not be verified.'
+`Sorry, unfortunately your Tassel account was denied.
+
+Have any questions? Contact us at tasselsupport@gmail.com.`
           );
         }
         if (newImage.status === 'ADMIN') {
           console.log(`User ${newImage.email} was promoted to admin`);
           return await sendEmail(
             newImage.email,
-            'You Were Promoted To Admin',
-            'Your Tassel account was promoted to Admin.'
+            'You Have Been Promoted To Admin',
+`Your Tassel account was promoted to Admin.
+
+Have any questions? Contact us at tasselsupport@gmail.com.`
           );
         }
       }

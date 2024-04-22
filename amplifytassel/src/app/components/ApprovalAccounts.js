@@ -320,6 +320,8 @@ export default function ApprovalAccounts() {
   const getAccounts = (sortBy, reset) => {
     DataStore.query(Profile)
       .then((res) => {
+        // console.log('Profiles (' + res.length + '):');
+        // console.log(res.map((account) => account.email));
         sortAccounts(res, sortBy, reset);
         setLoading(false);
       })

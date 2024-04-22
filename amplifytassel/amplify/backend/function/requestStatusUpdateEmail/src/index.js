@@ -45,14 +45,14 @@ const profileQuery = /* GraphQL */ `
  */
 exports.handler = async (event) => {
 
-  console.log(event);
+  // console.log(JSON.stringify(event));
   
   return await Promise.all(event.Records.map(async (record) => {
     try {
       const newImage = AWS.DynamoDB.Converter.unmarshall(record.dynamodb.NewImage);
       const oldImage = AWS.DynamoDB.Converter.unmarshall(record.dynamodb.OldImage);
-      console.log(`Old image: ${JSON.stringify(oldImage)}`);
-      console.log(`New image: ${JSON.stringify(newImage)}`);
+      // console.log(`Old image: ${JSON.stringify(oldImage)}`);
+      // console.log(`New image: ${JSON.stringify(newImage)}`);
 
       /*
         Sample Image
@@ -74,6 +74,7 @@ exports.handler = async (event) => {
         }
       */
 
+      // Get opportunity name, email of user who sent request, and role name
       const { roleID, opportunityID, profileID } = newImage;
 
       const requestQueryVariables = {
@@ -82,13 +83,15 @@ exports.handler = async (event) => {
         profileID
       };
 
+      // console.log('Request query variables: ' + JSON.stringify(requestQueryVariables));
+
       const requestOptions = {
         method: 'POST',
         headers: {
           'x-api-key': GRAPHQL_API_KEY,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ requestQuery, requestQueryVariables })
+        body: JSON.stringify({ query: requestQuery, variables: requestQueryVariables })
       };
 
       const requestResponse = await fetch(GRAPHQL_ENDPOINT, requestOptions);
@@ -117,39 +120,60 @@ exports.handler = async (event) => {
       const profileEmail = requestBody.data.getProfile.email;
       const roleName = requestBody.data.getRole.name;
 
-      console.log('Request: User ' + profileEmail + ' requested role ' + roleName + ' for opportunity ' + opportunityName);
+      // Get email of user who created the opportunity
+      const profileQueryVariables = {
+        profileID: requestBody.data.getOpportunity.profileID
+      }
+      const profileOptions = {
+        method: 'POST',
+        headers: {
+          'x-api-key': GRAPHQL_API_KEY,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ query: profileQuery, variables: profileQueryVariables })
+      };
+      const profileResponse = await fetch(GRAPHQL_ENDPOINT, profileOptions);
+      const profileBody = await profileResponse.json();
+      const creatorEmail = profileBody.data.getProfile.email;
 
       if (!oldImage.status && newImage.status) {
         // New opportunity request was created.
         // Send email to the opportunity author.
-        console.log('Sending email to creator of opportunity ' + requestBody.data.getOpportunity.eventName);
-        const profileQueryVariables = {
-          profileID: body.data.getOpportunity.profileID
-        }
-        const profileOptions = {
-          method: 'POST',
-          headers: {
-            'x-api-key': GRAPHQL_API_KEY,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ profileQuery, profileQueryVariables })
-        };
-        const profileResponse = await fetch(GRAPHQL_ENDPOINT, profileOptions);
-        const profileBody = await profileResponse.json();
+        console.log('Request: User ' + profileEmail + ' requested role ' + roleName + ' for opportunity ' + opportunityName);
+        return await sendEmail(
+          creatorEmail,
+          'A New User Has Requested To Join ' + opportunityName,
+`User ${profileEmail} has requested the role ${roleName} for an opportunity you created: ${opportunityName}.
 
-        console.log('profileBody: ' + JSON.stringify(profileBody));
-
+View the opportunity here: <link>`
+        );
       }
-      else if (oldImage.status !== newImage.status) {
+      else if (oldImage.status && oldImage.status !== newImage.status) {
         if (newImage.status === 'APPROVED') {
+          // Notify user they have been approved.
+          console.log('User ' + profileEmail + ' has been approved for the role of ' + roleName + ' for the opportunity ' + opportunityName);
+          return await sendEmail(
+            profileEmail,
+            'You Have Been Approved For ' + opportunityName,
+`Congrats! Your application for the role ${roleName} for the opportunity ${opportunityName} has been accepted.
 
+View the opportunity here: <link>
+
+Have any questions? Email the organizer - ${creatorEmail}`
+          );
         }
         if (newImage.status === 'REJECTED') {
-          
+          // Notify user they have been rejected.
+          console.log('User ' + profileEmail + ' has been rejected for the role of ' + roleName + ' for the opportunity ' + opportunityName);
+          return await sendEmail(
+            profileEmail,
+            'You Have Been Rejected For ' + opportunityName,
+`Your application for the role of ${roleName} for the opportunity ${opportunityName} has been rejected.
+
+Have any questions? Email the organizer - ${creatorEmail}`
+          );
         }
       }
-
-      
     }
     catch (error) {
       console.log('ERROR: ' + error);

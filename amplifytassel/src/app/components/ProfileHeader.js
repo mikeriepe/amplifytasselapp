@@ -396,7 +396,7 @@ export default function ProfileHeader({ data, editButton }) {
   }, [selectedProfileFile]);
 
   let level = 1; // replace this with a dynamic value
-  console.log(calculateUserLevel(data.points));
+  // console.log(calculateUserLevel(data.points));
   switch (calculateUserLevel(data.points)) {
     case 1:
       level = level1;
@@ -433,9 +433,9 @@ export default function ProfileHeader({ data, editButton }) {
   }
   let xpBarPercentage = calculateXpBarPercentage(data.points);
   let pointsToNextLevel = calculatePointsToNextLevel(data.points);
-  console.log(data.points);
-  console.log(xpBarPercentage);
-  console.log(pointsToNextLevel);
+  // console.log(data.points);
+  // console.log(xpBarPercentage);
+  // console.log(pointsToNextLevel);
 
   const progress = 65;
 

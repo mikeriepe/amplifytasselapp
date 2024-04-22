@@ -17,11 +17,11 @@ exports.handler = async (event, context) => {
       return await sendEmail(
         event.request.userAttributes.email,
         'Welcome to Tassel!',
-        `Welcome to Tassel, ${firstName} ${lastName}!
+`Welcome to Tassel, ${firstName} ${lastName}!
 
-        Your account is pending approval from a Tassel administrator.
-        
-        Need help? Contact us at tasselsupport@gmail.com.`
+Your account is pending approval from a Tassel administrator.
+
+Need help? Contact us at tasselsupport@gmail.com.`
       );
     } catch (err) {
       return err;

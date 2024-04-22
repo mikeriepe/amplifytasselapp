@@ -1,6 +1,8 @@
 {
   "version": "1",
   "cognitoConfig": {
+    "identityPoolName": "amplifytassel_identitypool_8a7d0ec1",
+    "allowUnauthenticatedIdentities": true,
     "resourceNameTruncated": "amplif3673f2dc",
     "userPoolName": "amplifytassel",
     "autoVerifiedAttributes": [
@@ -31,7 +33,7 @@
     "userpoolClientSetAttributes": false,
     "sharedId": "3673f2dc",
     "resourceName": "amplifytassel",
-    "authSelections": "userPoolOnly",
+    "authSelections": "identityPoolAndUserPool",
     "serviceName": "Cognito",
     "usernameAttributes": [
       "email"
@@ -76,7 +78,9 @@
       "Ref": "AWS::StackId"
     },
     "permissions": [],
-    "authTriggerConnections": "[\n  {\n    \"triggerType\": \"PostConfirmation\",\n    \"lambdaFunctionName\": \"amplifytasselPostConfirmation\"\n  }\n]",
+    "authTriggerConnections": [
+      "{\"triggerType\":\"PostConfirmation\",\"lambdaFunctionName\":\"amplifytasselPostConfirmation\"}"
+    ],
     "authProviders": []
   }
 }
