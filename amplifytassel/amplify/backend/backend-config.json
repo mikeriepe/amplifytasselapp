@@ -84,6 +84,22 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
+    "opportunityStatusUpdateEmail": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput",
+            "GraphQLAPIKeyOutput"
+          ],
+          "category": "api",
+          "resourceName": "amplifytassel"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "requestStatusUpdateEmail": {
       "build": true,
       "dependsOn": [

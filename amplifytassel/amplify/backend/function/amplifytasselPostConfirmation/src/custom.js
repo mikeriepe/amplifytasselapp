@@ -21,6 +21,8 @@ exports.handler = async (event, context) => {
 
 Your account is pending approval from a Tassel administrator.
 
+In the meantime, you can update your profile so we can verify your identity: tassel.com/myprofile
+
 Need help? Contact us at tasselsupport@gmail.com.`
       );
     } catch (err) {

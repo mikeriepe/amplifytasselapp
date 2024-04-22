@@ -145,7 +145,7 @@ exports.handler = async (event) => {
           'A New User Has Requested To Join ' + opportunityName,
 `User ${profileEmail} has requested the role ${roleName} for an opportunity you created: ${opportunityName}.
 
-View the opportunity here: <link>`
+View the opportunity here: tassel.com/Opportunity/${opportunityID}`
         );
       }
       else if (oldImage.status && oldImage.status !== newImage.status) {
@@ -157,7 +157,7 @@ View the opportunity here: <link>`
             'You Have Been Approved For ' + opportunityName,
 `Congrats! Your application for the role ${roleName} for the opportunity ${opportunityName} has been accepted.
 
-View the opportunity here: <link>
+View the opportunity here: tassel.com/Opportunity/${opportunityID}
 
 Have any questions? Email the organizer - ${creatorEmail}`
           );
@@ -169,6 +169,8 @@ Have any questions? Email the organizer - ${creatorEmail}`
             profileEmail,
             'You Have Been Rejected For ' + opportunityName,
 `Your application for the role of ${roleName} for the opportunity ${opportunityName} has been rejected.
+
+View the opportunity here: tassel.com/Opportunity/${opportunityID}
 
 Have any questions? Email the organizer - ${creatorEmail}`
           );

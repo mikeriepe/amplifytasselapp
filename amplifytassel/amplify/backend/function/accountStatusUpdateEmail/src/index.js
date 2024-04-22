@@ -24,6 +24,8 @@ exports.handler = async (event) => {
             'Your Account Has Been Approved',
 `Your Tassel account was approved.
 
+View your profile here: tassel.com/myprofile
+
 Have any questions? Contact us at tasselsupport@gmail.com.`
           );
         }
@@ -34,6 +36,8 @@ Have any questions? Contact us at tasselsupport@gmail.com.`
             'Your Account Has Been Denied',
 `Sorry, unfortunately your Tassel account was denied.
 
+View your profile here: tassel.com/myprofile
+
 Have any questions? Contact us at tasselsupport@gmail.com.`
           );
         }
@@ -43,6 +47,8 @@ Have any questions? Contact us at tasselsupport@gmail.com.`
             newImage.email,
             'You Have Been Promoted To Admin',
 `Your Tassel account was promoted to Admin.
+
+View your profile here: tassel.com/myprofile
 
 Have any questions? Contact us at tasselsupport@gmail.com.`
           );
