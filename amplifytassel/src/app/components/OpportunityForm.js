@@ -17,6 +17,7 @@ import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
 import { v4 as uuidv4 } from "uuid";
+import "../stylesheets/OpportunityForm.css"
 // import Stack from '@mui/material/Stack';
 
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -738,7 +739,7 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
                 display: "grid",
                 gridAutoFlow: "column",
                 gridGap: "10px",
-                marginTop: "10px",
+                marginTop: "15px",
               }}
             >
               <DateInput
@@ -763,6 +764,7 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
                 display: "grid",
                 gridAutoFlow: "column",
                 gridGap: "10px",
+                marginTop: "10px",
               }}
             >
               <TimeInput

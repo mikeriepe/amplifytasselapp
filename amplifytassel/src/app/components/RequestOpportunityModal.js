@@ -68,7 +68,7 @@ export default function RequestModal(props) {
               Send Request to Join
             </ThemedButton>
           </div>
-          <div className='request-buttons-cancel'>
+          <div className='request-buttons-cancel' style={{marginTop: '10px'}}>
             <ThemedButton
               color={'gray'}
               variant={'cancel'}

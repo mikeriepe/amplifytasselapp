@@ -7,7 +7,7 @@ import Paper from "@mui/material/Paper";
 import ThemedButton from "../components/ThemedButton";
 import ThemedInput from "../components/ThemedInput";
 import ThemedStepper from "../components/ThemedStepper";
-import SignupBanner from "../assets/SignupBanner.png";
+import SignupBanner from "../assets/sammy-ocean.png";
 import "../stylesheets/LoginSignup.css";
 import { Auth } from "aws-amplify";
 import { DataStore } from "@aws-amplify/datastore";
@@ -300,18 +300,11 @@ export default function Signup() {
       <Box className="page" aria-label="Signup form">
         <Paper className="card" elevation={0} sx={PaperStyling}>
           <div className="card-banner flow-small padding-64">
-            <p className="text-bold text-italic text-white">Logo.</p>
             <h3 className="text-xbold text-white">
               Grow your connection with the UCSC community!
             </h3>
             <div className="flow-tiny">
               <img src={SignupBanner} />
-              <p className="text-bold text-white text-tiny">
-                Image from&nbsp;
-                <a href="https://icons8.com/?utm_source=figma-plugin-icons8&utm_medium=cross-promo&utm_campaign=web-version">
-                  icons8.com
-                </a>
-              </p>
             </div>
           </div>
           <Box className="card-content padding-64">
