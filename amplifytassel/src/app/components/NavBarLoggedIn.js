@@ -22,6 +22,7 @@ import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import NotificationsRoundedIcon from "@mui/icons-material/NotificationsRounded";
 import SettingsIcon from "@mui/icons-material/Settings";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
+import UCSCIcon from "../assets/ucsc-logo.jpg"
 import Notification from "./Notification";
 import ThemedButton from "./ThemedButton";
 import useAuth from "../util/AuthContext";
@@ -29,6 +30,13 @@ import * as Nav from "./NavBarComponents";
 import { Storage } from "aws-amplify";
 
 import { Auth } from "aws-amplify";
+
+const LogoStyling = {
+  position: "absolute",
+  width: "100%",
+  bottom: 0,
+  marginBottom: "65px",
+}
 
 const LogoutStyling = {
   position: "absolute",
@@ -310,6 +318,9 @@ export default function NavBarLoggedIn() {
           </IconButton>
         </Nav.DrawerHeader>
         {userProfile?.status === 'PENDING' || userProfile?.status === 'REQUESTED' ||  userProfile?.status === 'UPDATED' || userProfile?.status === 'DENIED' ? pagesToButtons([['Social', '/social', <PeopleAltIcon key='Social' />]]) : pagesToButtons(pages)}
+        <Box sx = {LogoStyling}>
+          <img src = {UCSCIcon}></img>
+        </Box>
         <Box sx={LogoutStyling}>
           <List>
             <Tooltip title="Logout" placement="right">

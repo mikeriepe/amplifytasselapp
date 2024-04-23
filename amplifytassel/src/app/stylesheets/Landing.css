@@ -21,27 +21,27 @@
 }
 
 .elements {
-  background-color: white;
-  margin-top: 50vh;
-  width: 50%;
-  margin-left: 25vw;
-  align-items: center;
-  padding: 20px;
-  border-radius: 30px;
-
+  margin-top: 25vh;
+  margin-left: 5vw;
 }
 
 .ACmmTitle {
   color: #f1b521;
-  font-weight: 500;
-  font-size: 40px;
+  font-weight: 750;
+  font-size: 5vw;
   text-align: center;
+  padding: 10px;
+  background-color: #003c6c;
+  display: inline-block;
+  padding: 20px;
 }
 
 .secondaryTitle {
   margin: 5px;
   text-align: center;
-  color: rgba(108, 110, 114, 0.8);
+  display: inline-block;
+  color: #f1b521;
+  background-color: #003c6c;
   font-weight: 500;
 }
 
