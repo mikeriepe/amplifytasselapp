@@ -395,10 +395,11 @@ export default function ApprovalAccounts() {
           updated.status = status;
         })
       )
-        .then((res) => {
+        .then(async (res) => {
         // console.log(res);
-        getAccounts('status', true);
         setSelected([]);
+        await new Promise(r => setTimeout(r, 300));
+        getAccounts('status', true);
         // console.log(selected);
       })
       .catch((err) => {
