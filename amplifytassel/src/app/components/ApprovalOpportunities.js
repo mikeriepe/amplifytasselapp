@@ -389,7 +389,7 @@ export default function ApprovalOpportunities() {
     DataStore.query(Opportunity)
       .then((res) => {
         sortOpps(res, sortBy, reset);
-        console.log(res);
+        // console.log(res);
         setLoading(false);
       })
       .catch((err) => {
@@ -468,15 +468,17 @@ export default function ApprovalOpportunities() {
     // eslint-disable-next-line guard-for-in
     for (let index = 0; index < opportunities.length; index++) {
       const opp = opportunities[index];
+      console.log(`saving opportunity ${opp.eventName} as status ${status}`);
       DataStore.save(
         Opportunity.copyOf(opp, (updated) => {
           updated.status = status;
         })
       )
-        .then((res) => {
-          getOpps("status", true);
-          getProfiles();
+        .then(async (res) => {
           setSelected([]);
+          getProfiles();
+          await new Promise(r => setTimeout(r, 300));
+          getOpps("status", true);
         })
         .catch((err) => {
           console.log(err);

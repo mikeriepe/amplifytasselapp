@@ -158,6 +158,22 @@
         }
       ]
     },
+    "AMPLIFY_function_opportunityStatusUpdateEmail_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "opportunityStatusUpdateEmail"
+        }
+      ]
+    },
+    "AMPLIFY_function_opportunityStatusUpdateEmail_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "opportunityStatusUpdateEmail"
+        }
+      ]
+    },
     "AMPLIFY_function_requestStatusUpdateEmail_deploymentBucketName": {
       "usedBy": [
         {
