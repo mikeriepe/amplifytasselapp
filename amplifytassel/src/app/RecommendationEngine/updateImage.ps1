@@ -1,4 +1,4 @@
-docker build -t $args[1]:latest .
+docker build -t $args[1]:latest $args[2]
 
 # aws ecr create-repository --repository-name recommendation-engine --image-scanning-configuration scanOnPush=true --region us-west-1
 
