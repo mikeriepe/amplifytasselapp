@@ -3,7 +3,6 @@
   top: 0;
   width: 100%;
   height: 100vh;
-  background: url("../assets/UCSC_mascot.jpeg") no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -22,9 +21,14 @@
 }
 
 .elements {
-  margin-top: 40vh;
-  width: 100%;
+  background-color: white;
+  margin-top: 50vh;
+  width: 50%;
+  margin-left: 25vw;
   align-items: center;
+  padding: 20px;
+  border-radius: 30px;
+
 }
 
 .ACmmTitle {
@@ -47,4 +51,14 @@
   margin: auto;
   align-items: center;
   justify-content: center;
+}
+
+video {
+  object-fit: cover;
+  width: 100vw;
+  height: 120vh;
+  position: fixed;
+  top: -20vh;
+  left: 0;
+  z-index: -1;
 }

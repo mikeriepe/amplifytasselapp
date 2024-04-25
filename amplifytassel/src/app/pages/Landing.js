@@ -2,15 +2,19 @@ import React from "react";
 import { Link } from "react-router-dom";
 import PersonIcon from "@mui/icons-material/Person";
 import ThemedButton from "../components/ThemedButton";
-
+import LandingVideo from "../assets/landing_video.mp4";
+import Paper from '@mui/material/Paper';
+import Box from '@mui/material/Box'
 import "../stylesheets/Landing.css";
 
 export default function Landing() {
 
   return (
     <div className="Landing">
-      <div className="title">
-        <div className="elements">
+      <video autoPlay muted loop class="landingVideo">
+        <source src={LandingVideo} type="video/mp4"/>
+      </video>
+      <div className="elements">
           <h1 className="ACmmTitle" id="landingTitle">
             Tassel Volunteering
           </h1>
@@ -41,7 +45,6 @@ export default function Landing() {
             </Link>
           </div>
         </div>
-      </div>
     </div>
   );
 }
