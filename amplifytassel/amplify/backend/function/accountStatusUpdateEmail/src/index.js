@@ -34,7 +34,7 @@ Have any questions? Contact us at tasselsupport@gmail.com.`
           return await sendEmail(
             newImage.email,
             'Your Account Has Been Denied',
-`Sorry, unfortunately your Tassel account was denied.
+`Your Tassel account was denied.
 
 View your profile here: tassel.com/myprofile
 

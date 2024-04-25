@@ -86,7 +86,7 @@ Have any questions? Contact us at tasselsupport@gmail.com.`
           return await sendEmail(
             email,
             `Your Opportunity ${name} Was Approved`,
-`Congrats! Your opportunity ${name} has been approved.
+`Your opportunity ${name} has been approved by Tassel administrators.
 
 View your opportunity here: tassel.com/Opportunity/${id}
 
@@ -98,7 +98,7 @@ Have any questions? Contact us at tasselsupport@gmail.com.`
           return await sendEmail(
             email,
             `Your Opportunity ${name} Was Denied`,
-`Sorry, unfortunately your opportunity ${name} was denied.
+`Unfortunately your opportunity ${name} has been denied by Tassel administrators.
 
 View your opportunity here: tassel.com/Opportunity/${id}
 
