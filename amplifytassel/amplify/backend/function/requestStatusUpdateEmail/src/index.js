@@ -155,7 +155,7 @@ View the opportunity here: tassel.com/Opportunity/${opportunityID}`
           return await sendEmail(
             profileEmail,
             'You Have Been Approved For ' + opportunityName,
-`Your application for the role ${roleName} for the opportunity ${opportunityName} has been accepted.
+`Congrats! Your application for the role ${roleName} for the opportunity ${opportunityName} has been accepted.
 
 View the opportunity here: tassel.com/Opportunity/${opportunityID}
 

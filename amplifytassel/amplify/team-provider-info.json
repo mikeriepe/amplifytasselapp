@@ -16,29 +16,26 @@
       "auth": {
         "amplifytassel": {}
       },
-      "storage": {
-        "s3Storage": {}
-      },
-      "api": {
-        "amplifytassel": {}
-      },
       "function": {
-        "amplifytasselPostConfirmation": {
-          "deploymentBucketName": "amplify-amplifytassel-dev-233440-deployment",
-          "s3Key": "amplify-builds/amplifytasselPostConfirmation-346e4656756265784b74-build.zip"
-        },
         "accountStatusUpdateEmail": {
           "deploymentBucketName": "amplify-amplifytassel-dev-233440-deployment",
           "s3Key": "amplify-builds/accountStatusUpdateEmail-59365645673247443065-build.zip"
         },
-        "requestStatusUpdateEmail": {
+        "amplifytasselPostConfirmation": {
           "deploymentBucketName": "amplify-amplifytassel-dev-233440-deployment",
-          "s3Key": "amplify-builds/requestStatusUpdateEmail-3743356e53634f4e6430-build.zip"
+          "s3Key": "amplify-builds/amplifytasselPostConfirmation-346e4656756265784b74-build.zip"
         },
         "opportunityStatusUpdateEmail": {
           "deploymentBucketName": "amplify-amplifytassel-dev-233440-deployment",
           "s3Key": "amplify-builds/opportunityStatusUpdateEmail-3045466134564f513337-build.zip"
+        },
+        "requestStatusUpdateEmail": {
+          "deploymentBucketName": "amplify-amplifytassel-dev-233440-deployment",
+          "s3Key": "amplify-builds/requestStatusUpdateEmail-3743356e53634f4e6430-build.zip"
         }
+      },
+      "storage": {
+        "s3Storage": {}
       }
     }
   }
