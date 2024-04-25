@@ -484,7 +484,7 @@ export default function ApprovalOpportunities() {
         .then(async (res) => {
           setSelected([]);
           getProfiles();
-          await new Promise(r => setTimeout(r, 300));
+          await new Promise(r => setTimeout(r, 1000));
           getOpps("status", true);
         })
         .catch((err) => {

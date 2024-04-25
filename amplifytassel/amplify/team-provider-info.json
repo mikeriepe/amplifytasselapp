@@ -27,15 +27,18 @@
         },
         "opportunityStatusUpdateEmail": {
           "deploymentBucketName": "amplify-amplifytassel-dev-233440-deployment",
-          "s3Key": "amplify-builds/opportunityStatusUpdateEmail-3045466134564f513337-build.zip"
+          "s3Key": "amplify-builds/opportunityStatusUpdateEmail-6c7464526c7675574239-build.zip"
         },
         "requestStatusUpdateEmail": {
           "deploymentBucketName": "amplify-amplifytassel-dev-233440-deployment",
-          "s3Key": "amplify-builds/requestStatusUpdateEmail-3743356e53634f4e6430-build.zip"
+          "s3Key": "amplify-builds/requestStatusUpdateEmail-7165314c376858427a58-build.zip"
         }
       },
       "storage": {
         "s3Storage": {}
+      },
+      "api": {
+        "amplifytassel": {}
       }
     }
   }

@@ -38,6 +38,10 @@ export declare type ProfileCreateFormInputValues = {
     infoResponse?: string;
     banner?: string;
     points?: number;
+    linkedin?: string;
+    dateOfBirth?: string;
+    collegeAffiliation?: string;
+    pronouns?: string;
 };
 export declare type ProfileCreateFormValidationValues = {
     email?: ValidationFunction<string>;
@@ -56,6 +60,10 @@ export declare type ProfileCreateFormValidationValues = {
     infoResponse?: ValidationFunction<string>;
     banner?: ValidationFunction<string>;
     points?: ValidationFunction<number>;
+    linkedin?: ValidationFunction<string>;
+    dateOfBirth?: ValidationFunction<string>;
+    collegeAffiliation?: ValidationFunction<string>;
+    pronouns?: ValidationFunction<string>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type ProfileCreateFormOverridesProps = {
@@ -76,6 +84,10 @@ export declare type ProfileCreateFormOverridesProps = {
     infoResponse?: PrimitiveOverrideProps<TextFieldProps>;
     banner?: PrimitiveOverrideProps<TextFieldProps>;
     points?: PrimitiveOverrideProps<TextFieldProps>;
+    linkedin?: PrimitiveOverrideProps<TextFieldProps>;
+    dateOfBirth?: PrimitiveOverrideProps<TextFieldProps>;
+    collegeAffiliation?: PrimitiveOverrideProps<TextFieldProps>;
+    pronouns?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type ProfileCreateFormProps = React.PropsWithChildren<{
     overrides?: ProfileCreateFormOverridesProps | undefined | null;

@@ -398,7 +398,7 @@ export default function ApprovalAccounts() {
         .then(async (res) => {
         // console.log(res);
         setSelected([]);
-        await new Promise(r => setTimeout(r, 300));
+        await new Promise(r => setTimeout(r, 1000));
         getAccounts('status', true);
         // console.log(selected);
       })
