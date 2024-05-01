@@ -79,6 +79,16 @@ const Avatar = ({ image, handleAvatarClick, profileid }, props) => (
   />
 );
 
+const toastOptions = {
+  position: 'top-right',
+  autoClose: 5000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+};
+
 /**
  * row for account table
  * @param {*} props
@@ -395,15 +405,18 @@ export default function ApprovalAccounts() {
           updated.status = status;
         })
       )
-        .then((res) => {
+        .then(async (res) => {
         // console.log(res);
-        getAccounts('status', true);
         setSelected([]);
+        await new Promise(r => setTimeout(r, 1000));
+        getAccounts('status', true);
         // console.log(selected);
+        toast.success(`Account status updated`, toastOptions);
       })
       .catch((err) => {
         console.log(err);
-        alert('Error approving profiles, please try again');
+        toast.error(err.log ?? err.msg ?? err.name ?? err.message, toastOptions);
+        // alert('Error approving profiles, please try again');
       });
     }
   };
@@ -422,23 +435,17 @@ export default function ApprovalAccounts() {
           updated.status = "ADMIN";
         })
       )
-        .then((res) => {
-          getAccounts("status", true);
+        .then(async (res) => {
           setSelected([]);
+          await new Promise(r => setTimeout(r, 1000));
+          getAccounts("status", true);
+          toast.success("Admin promoted successfully!", toastOptions);
         })
         .catch((err) => {
           console.log(err);
-          alert("Error creating admin, please try again");
+          toast.error(err.log ?? err.msg ?? err.name ?? err.message, toastOptions);
+          // alert("Error creating admin, please try again");
         });
-      toast.success("Admin promoted successfully!", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
     }
   };
 

@@ -16,25 +16,29 @@
       "auth": {
         "amplifytassel": {}
       },
+      "function": {
+        "accountStatusUpdateEmail": {
+          "deploymentBucketName": "amplify-amplifytassel-dev-233440-deployment",
+          "s3Key": "amplify-builds/accountStatusUpdateEmail-48472f4c426567513342-build.zip"
+        },
+        "amplifytasselPostConfirmation": {
+          "deploymentBucketName": "amplify-amplifytassel-dev-233440-deployment",
+          "s3Key": "amplify-builds/amplifytasselPostConfirmation-346e4656756265784b74-build.zip"
+        },
+        "opportunityStatusUpdateEmail": {
+          "deploymentBucketName": "amplify-amplifytassel-dev-233440-deployment",
+          "s3Key": "amplify-builds/opportunityStatusUpdateEmail-4a7952502f524e377833-build.zip"
+        },
+        "requestStatusUpdateEmail": {
+          "deploymentBucketName": "amplify-amplifytassel-dev-233440-deployment",
+          "s3Key": "amplify-builds/requestStatusUpdateEmail-4b39363846516a4b374c-build.zip"
+        }
+      },
       "storage": {
         "s3Storage": {}
       },
       "api": {
         "amplifytassel": {}
-      },
-      "function": {
-        "amplifytasselPostConfirmation": {
-          "deploymentBucketName": "amplify-amplifytassel-dev-233440-deployment",
-          "s3Key": "amplify-builds/amplifytasselPostConfirmation-7339326e3245384e4c4b-build.zip"
-        },
-        "accountStatusUpdateEmail": {
-          "deploymentBucketName": "amplify-amplifytassel-dev-233440-deployment",
-          "s3Key": "amplify-builds/accountStatusUpdateEmail-69472b696a722f503835-build.zip"
-        },
-        "requestStatusUpdateEmail": {
-          "deploymentBucketName": "amplify-amplifytassel-dev-233440-deployment",
-          "s3Key": "amplify-builds/requestStatusUpdateEmail-446f4e4b726c44727341-build.zip"
-        }
       }
     }
   }

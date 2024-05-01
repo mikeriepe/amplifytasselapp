@@ -44,8 +44,6 @@ const profileQuery = /* GraphQL */ `
  * @description GraphQL queries reference: AWS AppSync -> amplifytassel-dev -> Queries
  */
 exports.handler = async (event) => {
-
-  // console.log(JSON.stringify(event));
   
   return await Promise.all(event.Records.map(async (record) => {
     try {
@@ -75,7 +73,7 @@ exports.handler = async (event) => {
       */
 
       // Get opportunity name, email of user who sent request, and role name
-      const { roleID, opportunityID, profileID } = newImage;
+      const { roleID, opportunityID, profileID, requestMessage } = newImage;
 
       const requestQueryVariables = {
         opportunityID,
@@ -139,13 +137,15 @@ exports.handler = async (event) => {
       if (!oldImage.status && newImage.status) {
         // New opportunity request was created.
         // Send email to the opportunity author.
-        console.log('Request: User ' + profileEmail + ' requested role ' + roleName + ' for opportunity ' + opportunityName);
+        console.log('Request: User ' + profileEmail + ' requested role ' + roleName + ' for opportunity ' + opportunityName + ' with the message ' + requestMessage);
         return await sendEmail(
           creatorEmail,
           'A New User Has Requested To Join ' + opportunityName,
-`User ${profileEmail} has requested the role ${roleName} for an opportunity you created: ${opportunityName}.
+`User ${profileEmail} has requested the role ${roleName} for your opportunity ${opportunityName} with the following message:
 
-View the opportunity here: <link>`
+${requestMessage}
+
+View the opportunity here: tassel.com/Opportunity/${opportunityID}`
         );
       }
       else if (oldImage.status && oldImage.status !== newImage.status) {
@@ -155,9 +155,9 @@ View the opportunity here: <link>`
           return await sendEmail(
             profileEmail,
             'You Have Been Approved For ' + opportunityName,
-`Congrats! Your application for the role ${roleName} for the opportunity ${opportunityName} has been accepted.
+`Your application for the role ${roleName} for the opportunity ${opportunityName} has been accepted.
 
-View the opportunity here: <link>
+View the opportunity here: tassel.com/Opportunity/${opportunityID}
 
 Have any questions? Email the organizer - ${creatorEmail}`
           );
@@ -169,6 +169,8 @@ Have any questions? Email the organizer - ${creatorEmail}`
             profileEmail,
             'You Have Been Rejected For ' + opportunityName,
 `Your application for the role of ${roleName} for the opportunity ${opportunityName} has been rejected.
+
+View the opportunity here: tassel.com/Opportunity/${opportunityID}
 
 Have any questions? Email the organizer - ${creatorEmail}`
           );

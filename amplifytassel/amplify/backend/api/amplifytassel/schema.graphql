@@ -110,6 +110,11 @@ type Profile @model @auth(rules: [{allow: public}]) {
   Friends: [Friend] @hasMany(indexName: "byProfile", fields: ["id"])
   Chatrooms: [ChatRoom] @manyToMany(relationName: "ProfileChatRoom")
   Messages: [Message] @hasMany(indexName: "byProfile", fields: ["id"])
+  InfoRequestChatroom: ChatRoom @hasOne
+  linkedin: AWSURL
+  dateOfBirth: AWSDate
+  collegeAffiliation: String
+  pronouns: String
 }
 
 type Request @model @auth(rules: [{allow: public}]) {
