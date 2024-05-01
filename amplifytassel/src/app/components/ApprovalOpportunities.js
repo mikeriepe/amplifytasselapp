@@ -80,6 +80,16 @@ const Avatar = ({ image }, props) => (
   />
 );
 
+const toastOptions = {
+  position: 'top-right',
+  autoClose: 5000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+};
+
 /**
  * row for account table
  * @param {*} props
@@ -486,10 +496,12 @@ export default function ApprovalOpportunities() {
           getProfiles();
           await new Promise(r => setTimeout(r, 1000));
           getOpps("status", true);
+          toast.success(`Opportunity status updated`, toastOptions);
         })
         .catch((err) => {
           console.log(err);
-          alert("Error approving opportunity, please try again");
+          toast.error(err.log ?? err.msg ?? err.name ?? err.message, toastOptions);
+          // alert("Error approving opportunity, please try again");
         });
     }
   };

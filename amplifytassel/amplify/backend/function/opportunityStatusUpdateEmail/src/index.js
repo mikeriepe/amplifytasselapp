@@ -85,8 +85,8 @@ Have any questions? Contact us at tasselsupport@gmail.com.`
           console.log(`Opportunity ${name} has been approved`);
           return await sendEmail(
             email,
-            `Your Opportunity ${name} Was Approved`,
-`Congrats! Your opportunity ${name} has been approved.
+            `Your Opportunity ${name} Has Been Approved`,
+`Your opportunity ${name} has been approved.
 
 View your opportunity here: tassel.com/Opportunity/${id}
 
@@ -97,8 +97,8 @@ Have any questions? Contact us at tasselsupport@gmail.com.`
           console.log(`Opportunity ${name} has been denied`);
           return await sendEmail(
             email,
-            `Your Opportunity ${name} Was Denied`,
-`Sorry, unfortunately your opportunity ${name} was denied.
+            `Your Opportunity ${name} Has Been Denied`,
+`Your opportunity ${name} has been denied.
 
 View your opportunity here: tassel.com/Opportunity/${id}
 

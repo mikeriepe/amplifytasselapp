@@ -19,7 +19,7 @@
       "function": {
         "accountStatusUpdateEmail": {
           "deploymentBucketName": "amplify-amplifytassel-dev-233440-deployment",
-          "s3Key": "amplify-builds/accountStatusUpdateEmail-59365645673247443065-build.zip"
+          "s3Key": "amplify-builds/accountStatusUpdateEmail-48472f4c426567513342-build.zip"
         },
         "amplifytasselPostConfirmation": {
           "deploymentBucketName": "amplify-amplifytassel-dev-233440-deployment",
@@ -27,11 +27,11 @@
         },
         "opportunityStatusUpdateEmail": {
           "deploymentBucketName": "amplify-amplifytassel-dev-233440-deployment",
-          "s3Key": "amplify-builds/opportunityStatusUpdateEmail-6c7464526c7675574239-build.zip"
+          "s3Key": "amplify-builds/opportunityStatusUpdateEmail-4a7952502f524e377833-build.zip"
         },
         "requestStatusUpdateEmail": {
           "deploymentBucketName": "amplify-amplifytassel-dev-233440-deployment",
-          "s3Key": "amplify-builds/requestStatusUpdateEmail-7165314c376858427a58-build.zip"
+          "s3Key": "amplify-builds/requestStatusUpdateEmail-4b39363846516a4b374c-build.zip"
         }
       },
       "storage": {
