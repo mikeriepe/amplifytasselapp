@@ -10,6 +10,7 @@ import useAuth from "../util/AuthContext";
 import ProfileAlert from "../components/ProfileAlert";
 import ProfileHeader from "../components/ProfileHeader";
 import ProfileAbout from "../components/ProfileAbout";
+import ProfileSocials from "../components/ProfileSocials";
 import ProfileWork from "../components/ProfileWork";
 import ProfileVolunteer from "../components/ProfileVolunteer";
 import ProfileKeywords from "../components/ProfileKeywords";
@@ -81,6 +82,7 @@ export default function MyProfile() {
             <div></div>
           )}
           <ProfileHeader data={userProfile} editButton={true} />
+          <ProfileSocials data={userProfile} />
           <ProfileAbout data={userProfile} />
           <ProfileWork data={userProfile} />
           <ProfileVolunteer data={userProfile} />

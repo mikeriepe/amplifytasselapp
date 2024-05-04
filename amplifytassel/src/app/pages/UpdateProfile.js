@@ -1,62 +1,63 @@
-import React, {useEffect, useState} from 'react';
-import {useNavigate} from 'react-router-dom';
-import {Modal, Box} from '@mui/material';
-import {styled} from '@mui/material';
-import MuiBox from '@mui/material/Box';
-import Chip from '@mui/material/Chip';
-import {toast} from 'react-toastify';
-import useAuth from '../util/AuthContext';
-import ThemedInput from '../components/ThemedInput';
-import ThemedButton from '../components/ThemedButton';
-import {InputContext} from '../components/ThemedInput';
-import {MultiSelectContext} from '../components/MultiSelect';
-import {Link} from 'react-router-dom';
-import WorkExperienceList from '../components/WorkExperienceList';
-import ThemedDropdown from '../components/ThemedDropdown';
-import AddIcon from '@mui/icons-material/Add';
-import RemoveIcon from '@mui/icons-material/Remove';
-import ButtonBase from '@mui/material/ButtonBase';
-import WorkExperienceForm from '../components/WorkExperienceForm';
-import WorkExperienceDeleteModal from '../components/WorkExperienceDeleteModal';
-import VolunteerExperienceForm from '../components/VolunteerExperienceForm';
-import VolunteerExperienceDeleteModal from
-  '../components/VolunteerExperienceDeleteModal';
-import VolunteerExperienceList from '../components/VolunteerExperienceList';
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
-import Tooltip from '@mui/material/Tooltip';
-import HelpIcon from '@mui/icons-material/Help';
-import Alert from '@mui/material/Alert';
-import InfoIcon from '@mui/icons-material/Info';
-import WarningIcon from '@mui/icons-material/Warning';
-import CheckIcon from '@mui/icons-material/Check';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Modal, Box } from "@mui/material";
+import { styled } from "@mui/material";
+import MuiBox from "@mui/material/Box";
+import Chip from "@mui/material/Chip";
+import { toast } from "react-toastify";
+import useAuth from "../util/AuthContext";
+import ThemedInput from "../components/ThemedInput";
+import ThemedButton from "../components/ThemedButton";
+import { InputContext } from "../components/ThemedInput";
+import { MultiSelectContext } from "../components/MultiSelect";
+import { Link } from "react-router-dom";
+import WorkExperienceList from "../components/WorkExperienceList";
+import ThemedDropdown from "../components/ThemedDropdown";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
+import ButtonBase from "@mui/material/ButtonBase";
+import WorkExperienceForm from "../components/WorkExperienceForm";
+import WorkExperienceDeleteModal from "../components/WorkExperienceDeleteModal";
+import VolunteerExperienceForm from "../components/VolunteerExperienceForm";
+import VolunteerExperienceDeleteModal from "../components/VolunteerExperienceDeleteModal";
+import VolunteerExperienceList from "../components/VolunteerExperienceList";
+import TextField from "@mui/material/TextField";
+import Autocomplete from "@mui/material/Autocomplete";
+import Tooltip from "@mui/material/Tooltip";
+import HelpIcon from "@mui/icons-material/Help";
+import Alert from "@mui/material/Alert";
+import InfoIcon from "@mui/icons-material/Info";
+import WarningIcon from "@mui/icons-material/Warning";
+import CheckIcon from "@mui/icons-material/Check";
 
-
-import useAnimation from '../util/AnimationContext';
-import { DataStore } from '@aws-amplify/datastore';
-import { Keyword, KeywordProfile, Profile, Major, ProfileMajor } from '../../models';
-import MultiSelect from '../components/MultiSelect';
-import { Dataset } from '@mui/icons-material';
-import { PointsAddition } from '../util/PointsAddition';
+import useAnimation from "../util/AnimationContext";
+import { DataStore } from "@aws-amplify/datastore";
+import {
+  Keyword,
+  KeywordProfile,
+  Profile,
+  Major,
+  ProfileMajor,
+} from "../../models";
+import MultiSelect from "../components/MultiSelect";
+import { Dataset } from "@mui/icons-material";
+import { PointsAddition } from "../util/PointsAddition";
 
 // Animations
-import { calculateIfUserLeveledUp } from '../util/PointsAddition';
+import { calculateIfUserLeveledUp } from "../util/PointsAddition";
 
-const Page = styled((props) => (
-  <MuiBox {...props} />
-))(() => ({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  gap: '1em',
-  marginBlock: '1em',
-  overflow: 'auto',
+const Page = styled((props) => <MuiBox {...props} />)(() => ({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  gap: "1em",
+  marginBlock: "1em",
+  overflow: "auto",
 }));
 
-
-const OutlinedIconButton = ({children}, props) => (
+const OutlinedIconButton = ({ children }, props) => (
   <ButtonBase
-    component='div'
+    component="div"
     onMouseDown={(e) => {
       e.stopPropagation();
     }}
@@ -65,13 +66,13 @@ const OutlinedIconButton = ({children}, props) => (
       e.preventDefault();
     }}
     sx={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '40px',
-      width: '40px',
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      height: "40px",
+      width: "40px",
       padding: 0,
-      background: 'transparent',
+      background: "transparent",
     }}
     {...props}
   >
@@ -79,18 +80,18 @@ const OutlinedIconButton = ({children}, props) => (
   </ButtonBase>
 );
 
-
 /**
  * updates Profile Calendar
  * @return {HTML} Update Profile component
  */
 export default function UpdateProfile() {
   const navigate = useNavigate();
-  const {user, userProfile, setUserProfile} = useAuth();
+  const { user, userProfile, setUserProfile } = useAuth();
   const [showWorkForm, setShowWorkForm] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showVolunteerForm, setShowVolunteerForm] = useState(false);
-  const [showDeleteVolunteerModal, setShowDeleteVolunteerModal] = useState(false);
+  const [showDeleteVolunteerModal, setShowDeleteVolunteerModal] =
+    useState(false);
   const [selectedMajors, setSelectedMajors] = useState([]);
   const [totalMajors, setTotalMajors] = useState([]);
   const [selectedKeywords, setSelectedKeywords] = useState([]);
@@ -100,15 +101,13 @@ export default function UpdateProfile() {
       graduationYear: userProfile.graduationYear,
       location: userProfile.location,
       about: userProfile.about,
+      linkedin: userProfile.linkedin,
     },
   });
 
   // animations
-  const {
-    setShowConfettiAnimation,
-    setShowStarAnimation
-  } = useAnimation();
-// add util file and util functions that adds the points when called
+  const { setShowConfettiAnimation, setShowStarAnimation } = useAnimation();
+  // add util file and util functions that adds the points when called
   const handleDeleteTag = (tagIndex) => () => {
     const tempSelectedTags = [...selectedKeywords];
     // add the to be deleted tag back to all tags
@@ -134,7 +133,12 @@ export default function UpdateProfile() {
     setAllKeywords(tempAllTags);
   };
 
-  const calculatePointsEarned = async (userProfile, selctdMajors, selctdKeywords, selctdVals) => {
+  const calculatePointsEarned = async (
+    userProfile,
+    selctdMajors,
+    selctdKeywords,
+    selctdVals
+  ) => {
     var pointsToBeAdded = 0;
 
     // Check location
@@ -146,14 +150,18 @@ export default function UpdateProfile() {
     if (userProfile.about === null && selctdVals[1].about !== null) {
       pointsToBeAdded += 20;
     }
-    
-    const existingKeywords = await DataStore.query(KeywordProfile, kp => kp.profileId.eq(userProfile.id));
+
+    const existingKeywords = await DataStore.query(KeywordProfile, (kp) =>
+      kp.profileId.eq(userProfile.id)
+    );
     // Check Keywords
     if (existingKeywords.length === 0 && selctdKeywords.length > 0) {
       pointsToBeAdded += 20;
     }
 
-    const existingMajors = await DataStore.query(ProfileMajor, pm => pm.profileId.eq(userProfile.id));
+    const existingMajors = await DataStore.query(ProfileMajor, (pm) =>
+      pm.profileId.eq(userProfile.id)
+    );
     // Check Majors
     if (existingMajors.length === 0 && selctdMajors.length > 0) {
       pointsToBeAdded += 20;
@@ -165,17 +173,22 @@ export default function UpdateProfile() {
   // selectedTags, keywords, selectedMajors, majors
   const updateProfile = async () => {
     // Calculate the points and add them
-    const pointsToAdd = await calculatePointsEarned(userProfile, selectedMajors, selectedKeywords, values);
+    const pointsToAdd = await calculatePointsEarned(
+      userProfile,
+      selectedMajors,
+      selectedKeywords,
+      values
+    );
     const oldPoints = userProfile.points;
     PointsAddition(pointsToAdd, userProfile.id, setUserProfile);
     // Check if they leveled up
-    let toasterStr = '';
+    let toasterStr = "";
     if (pointsToAdd > 0) {
       const isLevelUp = calculateIfUserLeveledUp(oldPoints, pointsToAdd);
       if (isLevelUp) {
         // Display confetti animation
         setShowConfettiAnimation(true);
-        toasterStr = 'and you leveled up!';
+        toasterStr = "and you leveled up!";
       } else {
         // Display star animation
         setShowStarAnimation(true);
@@ -188,7 +201,9 @@ export default function UpdateProfile() {
     // // UPDATE KEYWORDS Relationship(so that it == selectedKeywords)
     const selectedKeywordIDs = selectedKeywords.map((keyword) => keyword.id);
     // console.log('selectedKeywordIDs', selectedKeywordIDs);
-    const keywordProfiles = await DataStore.query(KeywordProfile, kp => kp.profileId.eq(userProfile.id));
+    const keywordProfiles = await DataStore.query(KeywordProfile, (kp) =>
+      kp.profileId.eq(userProfile.id)
+    );
     // delete keywords that no longer belong to profile(not in selectedKeywords)
     for (const keywordProfile of keywordProfiles) {
       if (!selectedKeywordIDs.includes(keywordProfile.keywordId)) {
@@ -207,43 +222,48 @@ export default function UpdateProfile() {
         await DataStore.save(
           new KeywordProfile({
             keyword: keyword,
-            profile: profile
+            profile: profile,
           })
         );
       }
     }
 
     // Update Majors Relationship
-    const profileMajors = await DataStore.query(ProfileMajor, pm => pm.profileId.eq(userProfile.id));
+    const profileMajors = await DataStore.query(ProfileMajor, (pm) =>
+      pm.profileId.eq(userProfile.id)
+    );
     // console.log('profileMajors', profileMajors);
     for (const pm of profileMajors) {
       await DataStore.delete(pm);
     }
     const profile = await DataStore.query(Profile, userProfile.id);
     for (const majorName of selectedMajors) {
-      let [major] = await DataStore.query(Major, m => m.name.eq(majorName));
+      let [major] = await DataStore.query(Major, (m) => m.name.eq(majorName));
       // console.log('major', major);
       await DataStore.save(
         new ProfileMajor({
           major: major,
-          profile: profile
+          profile: profile,
         })
       );
     }
 
     // Update Profile Fields: graduationYear, location, about
-    let res = await DataStore.query(Profile, userProfile.id)
+    let res = await DataStore.query(Profile, userProfile.id);
     console.log(res);
-    await DataStore.save(Profile.copyOf(res, updated => {
-      updated.graduationYear = values[1].graduationYear;
-      updated.location = values[1].location;
-      updated.about = values[1].about;
-    }));
+    await DataStore.save(
+      Profile.copyOf(res, (updated) => {
+        updated.graduationYear = values[1].graduationYear;
+        updated.location = values[1].location;
+        updated.about = values[1].about;
+        updated.linkedin = values[1].linkedin;
+      })
+    );
     res = await DataStore.query(Profile, userProfile.id);
     setUserProfile(res);
     // console.log('userProfile', userProfile);
     toast.success(`Account updated ${toasterStr}`, {
-      position: 'top-right',
+      position: "top-right",
       autoClose: 5000,
       hideProgressBar: false,
       closeOnClick: true,
@@ -252,14 +272,14 @@ export default function UpdateProfile() {
       progress: undefined,
     });
   };
-  
+
   useEffect(() => {
     // get selectedKeywords, keywords, allKeywords
     DataStore.query(Keyword, (k) => k.Profiles.profile.id.eq(userProfile.id))
       .then((keywords) => {
-        keywords = keywords.sort(function(a, b) {
-          return (a.name > b.name) ? 1 : -1;
-        })
+        keywords = keywords.sort(function (a, b) {
+          return a.name > b.name ? 1 : -1;
+        });
         setSelectedKeywords(keywords);
         setValues({
           1: {
@@ -268,18 +288,20 @@ export default function UpdateProfile() {
             location: userProfile.location,
             about: userProfile.about,
             keywords: keywords,
+            linkedin: userProfile.linkedin,
           },
         });
-        DataStore.query(Keyword)
-          .then((keywordsAll) => {
-            // console.log('keywords', keywords);
-            // console.log('keywordsAll', keywordsAll);
-            keywordsAll = keywordsAll.sort(function(a, b) {
-              return (a.name > b.name) ? 1 : -1;
-            })
-            let keywordsIdArray = keywords.map((obj) => (obj.id));
-            setAllKeywords(keywordsAll.filter(k => !keywordsIdArray.includes(k.id)));
-          })
+        DataStore.query(Keyword).then((keywordsAll) => {
+          // console.log('keywords', keywords);
+          // console.log('keywordsAll', keywordsAll);
+          keywordsAll = keywordsAll.sort(function (a, b) {
+            return a.name > b.name ? 1 : -1;
+          });
+          let keywordsIdArray = keywords.map((obj) => obj.id);
+          setAllKeywords(
+            keywordsAll.filter((k) => !keywordsIdArray.includes(k.id))
+          );
+        });
       })
       .catch((err) => {
         console.log(err);
@@ -288,76 +310,93 @@ export default function UpdateProfile() {
     DataStore.query(Major)
       .then((majorsTotal) => {
         // console.log('majorsTotal', majorsTotal);
-        majorsTotal = majorsTotal.sort(function(a, b) {
-          return (a.name > b.name) ? 1 : -1;
-        })
-        setTotalMajors(majorsTotal.map(major => major.name));
-        return DataStore.query(Major, m => m.profiles.profileId.eq(userProfile.id));
+        majorsTotal = majorsTotal.sort(function (a, b) {
+          return a.name > b.name ? 1 : -1;
+        });
+        setTotalMajors(majorsTotal.map((major) => major.name));
+        return DataStore.query(Major, (m) =>
+          m.profiles.profileId.eq(userProfile.id)
+        );
       })
       .then((majorsSelected) => {
         // console.log('majorsSelected', majorsSelected.map(major => major.name));
-        setSelectedMajors(majorsSelected.map(major => major.name));
+        setSelectedMajors(majorsSelected.map((major) => major.name));
       })
       .catch((err) => {
         console.log(err);
-      })
+      });
   }, []);
 
   const handleSubmit = async (e) => {
     await updateProfile();
-    navigate('/myProfile');
+    navigate("/myProfile");
   };
 
   return (
     <Page>
       <InputContext.Provider value={[values, setValues]}>
-        <MultiSelectContext.Provider value={[selectedMajors, setSelectedMajors]}>
-          <Box className='updatepage' width='100%' aria-label='Signup form'>
-            <Box className='update-card-content'>
-              <div className='flex-space-multi' style={
-                { display: null }
-              }>
+        <MultiSelectContext.Provider
+          value={[selectedMajors, setSelectedMajors]}
+        >
+          <Box className="updatepage" width="100%" aria-label="Signup form">
+            <Box className="update-card-content">
+              <div className="flex-space-multi" style={{ display: null }}>
                 <div>
-                  {(userProfile.points === null || userProfile.points === 0) &&
+                  {(userProfile.points === null ||
+                    userProfile.points === 0) && (
                     <div>
                       <Alert
-                        style={{ width: '800px', marginTop: '20px', textAlign: 'center' }}
+                        style={{
+                          width: "800px",
+                          marginTop: "20px",
+                          textAlign: "center",
+                        }}
                         severity="info"
-                        icon={<InfoIcon fontSize="inherit" className='icon' />}
+                        icon={<InfoIcon fontSize="inherit" className="icon" />}
                       >
-                        <div className='alert-text' color="warning">
-                          Earn <strong>+100</strong> Tassel points by filling out your profile!
+                        <div className="alert-text" color="warning">
+                          Earn <strong>+100</strong> Tassel points by filling
+                          out your profile!
                         </div>
                       </Alert>
                       <div>
                         <br></br>
                       </div>
                     </div>
-                  }
+                  )}
                 </div>
                 <div>
-                  <h2 className='text-normal'>Update Profile</h2>
+                  <h2 className="text-normal">Update Profile</h2>
                 </div>
-                <div className='grid-flow-large' width='100%'>
-                  <div className='grid-flow-small' aria-label={'Update Profile Grad Year'}>
-                    <p className='text-bold'>
+                <div className="grid-flow-large" width="100%">
+                  <div
+                    className="grid-flow-small"
+                    aria-label={"Update Profile Grad Year"}
+                  >
+                    <p className="text-bold">
                       Graduation Year
                       {/* <Tooltip title="Fill out this field to get 10 points" arrow>
                         <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
                       </Tooltip> */}
                     </p>
                     <ThemedInput
-                      placeholder={'Enter your graduation year'}
-                      type={'text'}
-                      index={'graduationYear'}
+                      placeholder={"Enter your graduation year"}
+                      type={"text"}
+                      index={"graduationYear"}
                       step={1}
-                      fill={'graduationYear'}
-                      content={values[1].graduationYear === '' ?
-                        null : values[1].graduationYear}
+                      fill={"graduationYear"}
+                      content={
+                        values[1].graduationYear === ""
+                          ? null
+                          : values[1].graduationYear
+                      }
                     />
                   </div>
-                  <div className='grid-flow-small' aria-label={'Update Profile Major'}>
-                    <p className='text-bold'>
+                  <div
+                    className="grid-flow-small"
+                    aria-label={"Update Profile Major"}
+                  >
+                    <p className="text-bold">
                       Major
                       {/* <Tooltip title="Fill out this field to get 10 points" arrow>
                         <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
@@ -367,156 +406,200 @@ export default function UpdateProfile() {
                       {totalMajors.length && <MultiSelect data={totalMajors} />}
                     </div>
                   </div>
-                  <div className='grid-flow-small' aria-label={'Update Profile Location'}>
-                    <p className='text-bold'>
+                  <div
+                    className="grid-flow-small"
+                    aria-label={"Update Profile Location"}
+                  >
+                    <p className="text-bold">
                       Location
                       {/* <Tooltip title="Fill out this field to get 10 points" arrow>
                         <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
                       </Tooltip> */}
                     </p>
-                    
+
                     <ThemedInput
-                      placeholder={'Santa Cruz, CA'}
-                      type={'text'}
-                      index={'location'}
+                      placeholder={"Santa Cruz, CA"}
+                      type={"text"}
+                      index={"location"}
                       step={1}
-                      fill={'location'}
-                      content={values[1].location === '' ?
-                        null : values[1].location}
+                      fill={"location"}
+                      content={
+                        values[1].location === "" ? null : values[1].location
+                      }
                     />
                   </div>
-                  <div className='grid-flow-small' aria-label={'Update Profile About'}>
-                    <p className='text-bold'>
+                  <div
+                    className="grid-flow-small"
+                    aria-label={"Update Socials"}
+                  >
+                    <p className="text-bold">
+                      Socials
+                      {/* <Tooltip title="Fill out this field to get 10 points" arrow>
+                        <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
+                      </Tooltip> */}
+                    </p>
+                    <ThemedInput
+                      placeholder={"LinkedIn Link"}
+                      type={"text"}
+                      index={"linkedin"}
+                      step={1}
+                      fill={"linkedin"}
+                      content={
+                        values[1].linkedin === "" ? null : values[1].linkedin
+                      }
+                    />
+                  </div>
+                  <div
+                    className="grid-flow-small"
+                    aria-label={"Update Profile About"}
+                  >
+                    <p className="text-bold">
                       About You
                       {/* <Tooltip title="Fill out this field to get 10 points" arrow>
                         <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
                       </Tooltip> */}
                     </p>
                     <ThemedInput
-                      placeholder={'Tell people a little about yourself'}
-                      type={'text'}
-                      index={'about'}
+                      placeholder={"Tell people a little about yourself"}
+                      type={"text"}
+                      index={"about"}
                       step={1}
-                      fill={'about'}
-                      content={values[1].about === '' ?
-                        null : values[1].about}
+                      fill={"about"}
+                      content={values[1].about === "" ? null : values[1].about}
                     />
                   </div>
-                  <div className='grid-flow-small'>
+                  <div className="grid-flow-small">
                     <div
-                      className='flex-space-between flex-align-center'
-                      style={{ background: 'var(--background-primary)' }}
+                      className="flex-space-between flex-align-center"
+                      style={{ background: "var(--background-primary)" }}
                     >
-                      <p className='text-bold' aria-label={'Update Profile Work Experience'}>
+                      <p
+                        className="text-bold"
+                        aria-label={"Update Profile Work Experience"}
+                      >
                         Work Experience
                         {/* <Tooltip title="Fill out this field to get 10 points" arrow>
                         <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
                       </Tooltip> */}
                       </p>
-                      <div className='flex-space-between flex-align-center'>
-                        {(
+                      <div className="flex-space-between flex-align-center">
+                        {
                           <OutlinedIconButton>
                             <RemoveIcon
-                              aria-label={'Remove Work Experience'}
+                              aria-label={"Remove Work Experience"}
                               sx={{
-                                height: '20px',
-                                width: '20px',
-                                color: 'var(--text-gray)',
-                                stroke: 'var(--text-gray)',
-                                strokeWidth: '2px',
+                                height: "20px",
+                                width: "20px",
+                                color: "var(--text-gray)",
+                                stroke: "var(--text-gray)",
+                                strokeWidth: "2px",
                               }}
                               onClick={() => setShowDeleteModal(true)}
                             />
                           </OutlinedIconButton>
-                        )}
-                        {(
+                        }
+                        {
                           <OutlinedIconButton>
                             <AddIcon
-                              aria-label={'Add Work Experience'}
+                              aria-label={"Add Work Experience"}
                               sx={{
-                                height: '20px',
-                                width: '20px',
-                                color: 'var(--text-gray)',
-                                stroke: 'var(--text-gray)',
-                                strokeWidth: '2px',
+                                height: "20px",
+                                width: "20px",
+                                color: "var(--text-gray)",
+                                stroke: "var(--text-gray)",
+                                strokeWidth: "2px",
                               }}
                               onClick={() => setShowWorkForm(true)}
                             />
                           </OutlinedIconButton>
-                        )}
+                        }
                       </div>
                     </div>
                     <WorkExperienceList
-                      workExperience={userProfile.experience} />
+                      workExperience={userProfile.experience}
+                    />
                   </div>
-                  <div className='grid-flow-small'>
+                  <div className="grid-flow-small">
                     <div
-                      className='flex-space-between flex-align-center'
-                      style={{ background: 'var(--background-primary)' }}
+                      className="flex-space-between flex-align-center"
+                      style={{ background: "var(--background-primary)" }}
                     >
-                      <p className='text-bold' aria-label={'Update Profile Volunteer Experience'}>
+                      <p
+                        className="text-bold"
+                        aria-label={"Update Profile Volunteer Experience"}
+                      >
                         Volunteer Experience
                         {/* <Tooltip title="Fill out this field to get 10 points" arrow>
                         <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
                       </Tooltip> */}
                       </p>
-                      <div className='flex-space-between flex-align-center'>
-                        {(
+                      <div className="flex-space-between flex-align-center">
+                        {
                           <OutlinedIconButton>
                             <RemoveIcon
-                              aria-label={'Remove Volunteer Experience'}
+                              aria-label={"Remove Volunteer Experience"}
                               sx={{
-                                height: '20px',
-                                width: '20px',
-                                color: 'var(--text-gray)',
-                                stroke: 'var(--text-gray)',
-                                strokeWidth: '2px',
+                                height: "20px",
+                                width: "20px",
+                                color: "var(--text-gray)",
+                                stroke: "var(--text-gray)",
+                                strokeWidth: "2px",
                               }}
                               onClick={() => setShowDeleteVolunteerModal(true)}
                             />
                           </OutlinedIconButton>
-                        )}
-                        {(
+                        }
+                        {
                           <OutlinedIconButton>
                             <AddIcon
-                              aria-label={'Add Volunteer Experience'}
+                              aria-label={"Add Volunteer Experience"}
                               sx={{
-                                height: '20px',
-                                width: '20px',
-                                color: 'var(--text-gray)',
-                                stroke: 'var(--text-gray)',
-                                strokeWidth: '2px',
+                                height: "20px",
+                                width: "20px",
+                                color: "var(--text-gray)",
+                                stroke: "var(--text-gray)",
+                                strokeWidth: "2px",
                               }}
                               onClick={() => setShowVolunteerForm(true)}
                             />
                           </OutlinedIconButton>
-                        )}
+                        }
                       </div>
                     </div>
                     <VolunteerExperienceList
-                      volunteerExperience={userProfile.volunteerExperience} />
+                      volunteerExperience={userProfile.volunteerExperience}
+                    />
                   </div>
-                  <div className='grid-flow-small'>
+                  <div className="grid-flow-small">
                     <div
-                      className='flex-space-between flex-align-center'
-                      style={{ background: 'var(--background-primary)' }}
+                      className="flex-space-between flex-align-center"
+                      style={{ background: "var(--background-primary)" }}
                     >
-                      <p className='text-bold' aria-label={'Update Profile Interests'}>
+                      <p
+                        className="text-bold"
+                        aria-label={"Update Profile Interests"}
+                      >
                         Interests
                         {/* <Tooltip title="Fill out this field to get 10 points" arrow>
                         <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
                       </Tooltip> */}
                       </p>
                     </div>
-                    <div className='flex'>
-                      <div className='flex-justify-center'>
-                        <p className='flex-justify-center
-                        text-bold'>Your Interests
+                    <div className="flex">
+                      <div className="flex-justify-center">
+                        <p
+                          className="flex-justify-center
+                        text-bold"
+                        >
+                          Your Interests
                         </p>
                       </div>
                       <div>
-                        {selectedKeywords &&
-                          <div className='border' aria-label='Update Profile Interests Chips'>
+                        {selectedKeywords && (
+                          <div
+                            className="border"
+                            aria-label="Update Profile Interests Chips"
+                          >
                             {selectedKeywords.map((label, index) => (
                               <div key={index} className="label-box">
                                 <Chip
@@ -525,24 +608,27 @@ export default function UpdateProfile() {
                                   key={`role${index}`}
                                   id={index.toString()}
                                   sx={{
-                                    padding: '5px',
-                                    margin: '2px',
+                                    padding: "5px",
+                                    margin: "2px",
                                   }}
                                   onDelete={handleDeleteTag(index)}
                                 />
-
                               </div>
                             ))}
                           </div>
-                        }
+                        )}
                       </div>
                       <div>
-                        <p className='flex-justify-center
-                        text-bold '>Categories</p>
+                        <p
+                          className="flex-justify-center
+                        text-bold "
+                        >
+                          Categories
+                        </p>
 
                         <div>
-                          {allKeywords &&
-                            <div className='border'>
+                          {allKeywords && (
+                            <div className="border">
                               {allKeywords.map((label, index) => (
                                 <Chip
                                   data-test-id={`Categories ${label.id}`}
@@ -550,40 +636,38 @@ export default function UpdateProfile() {
                                   key={`role${index}`}
                                   id={index.toString()}
                                   sx={{
-                                    padding: '5px',
-                                    margin: '2px',
+                                    padding: "5px",
+                                    margin: "2px",
                                   }}
                                   onClick={handleAddTag(index)}
                                 />
                               ))}
                             </div>
-                          }
+                          )}
                         </div>
                       </div>
                     </div>
-
-
                   </div>
                 </div>
-                <div className='grid-flow-small'>
-                  <div className='flex-flow-large'>
-                    <Link to='/myprofile'>
+                <div className="grid-flow-small">
+                  <div className="flex-flow-large">
+                    <Link to="/myprofile">
                       <ThemedButton
-                        aria-label='Next step button'
-                        color={'blue'}
-                        variant={'themed'}
+                        aria-label="Next step button"
+                        color={"blue"}
+                        variant={"themed"}
                       >
                         Back
                       </ThemedButton>
                     </Link>
-                      <ThemedButton
-                        aria-label='Next step button'
-                        color={'yellow'}
-                        variant={'themed'}
-                        onClick={(e) => handleSubmit(e)}
-                      >
-                        Save
-                      </ThemedButton>
+                    <ThemedButton
+                      aria-label="Next step button"
+                      color={"yellow"}
+                      variant={"themed"}
+                      onClick={(e) => handleSubmit(e)}
+                    >
+                      Save
+                    </ThemedButton>
                   </div>
                 </div>
               </div>
@@ -596,17 +680,16 @@ export default function UpdateProfile() {
         onBackdropClick={() => setShowWorkForm(false)}
         onClose={() => setShowWorkForm(false)}
       >
-        <WorkExperienceForm
-          onClose={() =>
-          setShowWorkForm(!showWorkForm)} />
+        <WorkExperienceForm onClose={() => setShowWorkForm(!showWorkForm)} />
       </Modal>
       <Modal
         open={showDeleteModal}
         onBackdropClick={() => setShowDeleteModal(false)}
         onClose={() => setShowDeleteModal(false)}
       >
-        <WorkExperienceDeleteModal onClose={() =>
-          setShowDeleteModal(!showDeleteModal)} />
+        <WorkExperienceDeleteModal
+          onClose={() => setShowDeleteModal(!showDeleteModal)}
+        />
       </Modal>
       <Modal
         open={showVolunteerForm}
@@ -614,16 +697,17 @@ export default function UpdateProfile() {
         onClose={() => setShowVolunteerForm(false)}
       >
         <VolunteerExperienceForm
-          onClose={() =>
-          setShowVolunteerForm(!showVolunteerForm)} />
+          onClose={() => setShowVolunteerForm(!showVolunteerForm)}
+        />
       </Modal>
       <Modal
         open={showDeleteVolunteerModal}
         onBackdropClick={() => setShowDeleteVolunteerModal(false)}
         onClose={() => setShowDeleteVolunteerModal(false)}
       >
-        <VolunteerExperienceDeleteModal onClose={() =>
-          setShowDeleteVolunteerModal(!showDeleteVolunteerModal)} />
+        <VolunteerExperienceDeleteModal
+          onClose={() => setShowDeleteVolunteerModal(!showDeleteVolunteerModal)}
+        />
       </Modal>
     </Page>
   );
