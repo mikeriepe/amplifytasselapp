@@ -51,6 +51,7 @@ import {
 } from "../util/SocialChatRooms";
 import { sendMessage } from "../util/SocialChat";
 import useAuth from "../util/AuthContext";
+import moment from "moment";
 
 const Page = styled((props) => <Box {...props} />)(() => ({
   display: "flex",
@@ -147,6 +148,12 @@ function Row(props) {
           </div>
         </TableCell>
         <TableCell className="data-cell">{row.description}</TableCell>
+        <TableCell className="data-cell">
+          {moment(row.startTime).format('MMMM Do YYYY, h:mm a')}
+        </TableCell>
+        <TableCell className="data-cell">
+          {moment.duration(moment(row.startTime).diff(row.endTime)).humanize()}
+        </TableCell>
         <TableCell className="data-cell" component="th" scope="row">
           <div style={{ display: "flex" }}>
             <Avatar image={profile?.profilePicture} />
@@ -198,12 +205,14 @@ export default function ApprovalOpportunities() {
   const [filters, setFilters] = useState({
     approved: false,
     denied: false,
+    pending: false,
+    showPast: false,
     search: ''
   });
   const [openFilter, setOpenFilter] = useState(false);
 
   useEffect(() => {
-    const { approved, denied, pending, search } = filters;
+    const { approved, denied, pending, showPast, search } = filters;
     setDisplayOpps(opps.filter((opportunity) => {
       try {
         if (search !== '') {
@@ -214,6 +223,7 @@ export default function ApprovalOpportunities() {
           });
           if (!ok) return false;
         }
+        if (!showPast && moment(opportunity.endTime).isBefore(moment())) return false;
         if (!approved && !denied && !pending) return true;
         if (!approved && opportunity.status === 'APPROVED') return false;
         if (!denied && opportunity.status === 'DENIED') return false;
@@ -235,6 +245,8 @@ export default function ApprovalOpportunities() {
   const [sortTitleOrder, setSortTitleOrder] = useState("");
   const [sortDescriptionOrder, setSortDescriptionOrder] = useState("");
   const [sortCreatorOrder, setSortCreatorOrder] = useState("");
+  const [sortDateOrder, setSortDateOrder] = useState('');
+  const [sortDurationOrder, setSortDurationOrder] = useState('');
   const [sortStatusOrder, setSortStatusOrder] = useState("");
   const [selectAllChecked, setSelectAllChecked] = useState(false);
 
@@ -440,6 +452,40 @@ export default function ApprovalOpportunities() {
         setSortCreatorOrder("asc");
       }
     }
+    if (sortBy === 'date') {
+      if (sortDateOrder === '') {
+        setOpps(
+          json.sort(function (a, b) {
+            return moment(a.startTime).isBefore(moment(b.startTime)) ? 1 : -1;
+          })
+        );
+        setSortDateOrder('asc');
+      } else {
+        setOpps(
+          json.sort(function (a, b) {
+            return moment(a.startTime).isBefore(moment(b.startTime)) ? -1 : 1;
+          })
+        );
+        setSortDateOrder('');
+      }
+    }
+    if (sortBy === 'duration') {
+      if (sortDurationOrder === '') {
+        setOpps(
+          json.sort(function (a, b) {
+            return moment.duration(moment(a.startTime).diff(a.endTime)).asSeconds() > moment.duration(moment(b.startTime).diff(b.endTime)).asSeconds() ? 1 : -1;
+          })
+        );
+        setSortDurationOrder('asc');
+      } else {
+        setOpps(
+          json.sort(function (a, b) {
+            return moment.duration(moment(a.startTime).diff(a.endTime)).asSeconds() > moment.duration(moment(b.startTime).diff(b.endTime)).asSeconds() ? -1 : 1;
+          })
+        );
+        setSortDurationOrder('');
+      }
+    }
   };
 
   const getOpps = (sortBy, reset) => {
@@ -561,9 +607,15 @@ export default function ApprovalOpportunities() {
       getOpps(rowId, false);
     }
     if (rowId === "creator") {
-      getOpps(rowId, false);
+      // getOpps(rowId, false);
     }
     if (rowId === "status") {
+      getOpps(rowId, false);
+    }
+    if (rowId === 'date') {
+      getOpps(rowId, false);
+    }
+    if (rowId === 'duration') {
       getOpps(rowId, false);
     }
     setLoading(false);
@@ -578,6 +630,10 @@ export default function ApprovalOpportunities() {
       return sortCreatorOrder;
     } else if (row === "status") {
       return sortStatusOrder;
+    } else if (row === 'date') {
+      return sortDateOrder;
+    } else if (row === 'duration') {
+      return sortDurationOrder;
     }
   };
 
@@ -593,6 +649,16 @@ export default function ApprovalOpportunities() {
       id: "description",
       disablePadding: false,
       label: "Description",
+    },
+    {
+      id: "date",
+      disablePadding: false,
+      label: "Start Date",
+    },
+    {
+      id: "duration",
+      disablePadding: false,
+      label: "Duration",
     },
     {
       id: "creator",
@@ -786,6 +852,30 @@ export default function ApprovalOpportunities() {
                           />
                         }
                         label={'Pending'}
+                        componentsProps={{
+                          typography: {
+                            fontSize: '0.8rem',
+                            fontWeight: '600',
+                            color: 'var(--text-disabled)',
+                          },
+                        }}
+                      />
+                      <FormControlLabel
+                        className='no-highlight'
+                        control={
+                          <Checkbox
+                            color='secondary'
+                            size='small'
+                            onChange={(event) => {
+                              setFilters({...filters, showPast: event.target.checked});
+                            }}
+                            checked={filters.showPast}
+                            tabIndex={-1}
+                            disableRipple
+                            sx={{paddingBlock: '1px'}}
+                          />
+                        }
+                        label={'Show Completed Opportunities'}
                         componentsProps={{
                           typography: {
                             fontSize: '0.8rem',
