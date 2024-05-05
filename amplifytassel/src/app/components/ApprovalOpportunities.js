@@ -494,7 +494,7 @@ export default function ApprovalOpportunities() {
         .then(async (res) => {
           setSelected([]);
           getProfiles();
-          await new Promise(r => setTimeout(r, 1000));
+          await new Promise(r => setTimeout(r, 300));
           getOpps("status", true);
           toast.success(`Opportunity status updated`, toastOptions);
         })

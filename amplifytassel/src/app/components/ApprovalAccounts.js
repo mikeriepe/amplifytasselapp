@@ -22,6 +22,13 @@ import TableBody from "@mui/material/TableBody";
 // import TableFooter from '@mui/material/TableFooter';
 // import TablePagination from '@mui/material/TablePagination';
 import Collapse from "@mui/material/Collapse";
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormGroup from '@mui/material/FormGroup';
+import MuiBox from '@mui/material/Box';
+import Tooltip from '@mui/material/Tooltip';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import InputAdornment from '@mui/material/InputAdornment';
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import Checkbox from "@mui/material/Checkbox";
 import ThemedButton from "./ThemedButton";
 import IconButton from "@mui/material/IconButton";
@@ -194,6 +201,42 @@ function Row(props) {
  */
 export default function ApprovalAccounts() {
   const [accounts, setAccounts] = useState([]);
+  const [displayAccounts, setDisplayAccounts] = useState([]);
+  const [filters, setFilters] = useState({
+    admin: false,
+    approved: false,
+    denied: false,
+    pending: false,
+    search: '',
+  });
+  const [openFilter, setOpenFilter] = useState(false);
+
+  useEffect(() => {
+    const { admin, approved, denied, pending, search } = filters;
+    setDisplayAccounts(accounts.filter((account) => {
+      try {
+        if (search !== '') {
+          let ok = false;
+          [account.graduationYear, account.email, account.firstName + ' ' + account.lastName].forEach((field) => {
+            if (typeof field !== 'string') return;
+            if (field.toLowerCase().includes(search.toLowerCase())) ok = true;
+          });
+          if (!ok) return false;
+        }
+        if (!admin && !approved && !denied && !pending) return true;
+        if (!admin && account.status === 'ADMIN') return false;
+        if (!approved && account.status === 'APPROVED') return false;
+        if (!denied && account.status === 'DENIED') return false;
+        if (!pending && account.status === 'PENDING') return false;
+        return true;
+      }
+      catch (error) {
+        console.error(error);
+        return false;
+      }
+    }));
+  }, [accounts, filters]);
+
   const [selected, setSelected] = useState([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -319,7 +362,7 @@ export default function ApprovalAccounts() {
       } else if (sortYearOrder === "desc") {
         setAccounts(
           json.sort(function (a, b) {
-            return a.graduationYear - b.graduationyYear;
+            return a.graduationYear - b.graduationYear;
           })
         );
         setSortYearOrder("asc");
@@ -344,7 +387,7 @@ export default function ApprovalAccounts() {
   const handleSelectAll = () => {
     setSelectAllChecked(!selectAllChecked);
     if (!selectAllChecked) {
-      const newSelected = accounts.map((user) => user.email);
+      const newSelected = displayAccounts.map((user) => user.email);
       // console.log("handleSelectAll newSelect:", newSelected);
       setSelected(newSelected);
     } else {
@@ -408,7 +451,7 @@ export default function ApprovalAccounts() {
         .then(async (res) => {
         // console.log(res);
         setSelected([]);
-        await new Promise(r => setTimeout(r, 1000));
+        await new Promise(r => setTimeout(r, 300));
         getAccounts('status', true);
         // console.log(selected);
         toast.success(`Account status updated`, toastOptions);
@@ -437,7 +480,7 @@ export default function ApprovalAccounts() {
       )
         .then(async (res) => {
           setSelected([]);
-          await new Promise(r => setTimeout(r, 1000));
+          await new Promise(r => setTimeout(r, 300));
           getAccounts("status", true);
           toast.success("Admin promoted successfully!", toastOptions);
         })
@@ -560,8 +603,10 @@ export default function ApprovalAccounts() {
         <Toolbar>
           <Box
             aria-label="Account Actions"
+            flex={1}
+            flexDirection='row'
             style={{
-              marginRight: "1rem",
+              marginRight: "1rem"
             }}
           >
             <ThemedButton
@@ -635,8 +680,161 @@ export default function ApprovalAccounts() {
             >
               Promote Admin
             </ThemedButton>
+            <TextField
+              placeholder='Search'
+              size='small'
+              onChange={(e) => setFilters({...filters, search: e.target.value})}
+              InputProps={{
+                style: {
+                  fontSize: '0.9rem',
+                  backgroundColor: 'white',
+                  borderRadius: '10px',
+                },
+                startAdornment: (
+                  <InputAdornment position='start'>
+                    <SearchRoundedIcon color='tertiary' />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{
+                'width': 'auto',
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: 'rgba(0, 0, 0, 0.15)',
+                  },
+                },
+              }}
+            />
           </Box>
-          {/* <Typography variant='h4'>Search Bar</Typography> */}
+
+          <>
+            <MuiPaper
+              sx={{paddingLeft: '8px', height: openFilter ? undefined : '0px'}}
+            >
+              <MuiBox
+                className='
+                flex-space-between
+                flex-align-center
+                clickable
+                no-highlight
+                '
+              >
+                <div className='flex-horizontal flow-tiny'>
+                  <Collapse in={openFilter} timeout='auto' unmountOnExit>
+                    <FormGroup
+                      className='flex-horizontal flex-flow-small'
+                      sx={{paddingBlock: '8px'}}
+                    >
+                      <FormControlLabel
+                        className='no-highlight'
+                        control={
+                          <Checkbox
+                            color='secondary'
+                            size='small'
+                            onChange={(event) => setFilters({...filters, admin: event.target.checked})}
+                            checked={filters.admin}
+                            tabIndex={-1}
+                            disableRipple
+                            sx={{paddingBlock: '1px'}}
+
+                          />
+                        }
+                        label={'Admin'}
+                        componentsProps={{
+                          typography: {
+                            fontSize: '0.8rem',
+                            fontWeight: '600',
+                            color: 'var(--text-disabled)',
+                          },
+                        }}
+                      />
+                      <FormControlLabel
+                        className='no-highlight'
+                        control={
+                          <Checkbox
+                            color='secondary'
+                            size='small'
+                            onChange={(event) => {
+                              setFilters({...filters, approved: event.target.checked});
+                            }}
+                            checked={filters.approved}
+                            tabIndex={-1}
+                            disableRipple
+                            sx={{paddingBlock: '1px'}}
+                          />
+                        }
+                        label={'Approved'}
+                        componentsProps={{
+                          typography: {
+                            fontSize: '0.8rem',
+                            fontWeight: '600',
+                            color: 'var(--text-disabled)',
+                          },
+                        }}
+                      />
+                      <FormControlLabel
+                        className='no-highlight'
+                        control={
+                          <Checkbox
+                            color='secondary'
+                            size='small'
+                            onChange={(event) => {
+                              setFilters({...filters, denied: event.target.checked});
+                            }}
+                            checked={filters.denied}
+                            tabIndex={-1}
+                            disableRipple
+                            sx={{paddingBlock: '1px'}}
+                          />
+                        }
+                        label={'Denied'}
+                        componentsProps={{
+                          typography: {
+                            fontSize: '0.8rem',
+                            fontWeight: '600',
+                            color: 'var(--text-disabled)',
+                          },
+                        }}
+                      />
+                      <FormControlLabel
+                        className='no-highlight'
+                        control={
+                          <Checkbox
+                            color='secondary'
+                            size='small'
+                            onChange={(event) => {
+                              setFilters({...filters, pending: event.target.checked});
+                            }}
+                            checked={filters.pending}
+                            tabIndex={-1}
+                            disableRipple
+                            sx={{paddingBlock: '1px'}}
+                          />
+                        }
+                        label={'Pending'}
+                        componentsProps={{
+                          typography: {
+                            fontSize: '0.8rem',
+                            fontWeight: '600',
+                            color: 'var(--text-disabled)',
+                          },
+                        }}
+                      />
+                    </FormGroup>
+                  </Collapse>
+                </div>
+              </MuiBox>
+            </MuiPaper>
+            <Tooltip
+              title='Filter list'
+              flex={0}
+            >
+              <IconButton onClick={() => setOpenFilter(!openFilter)}>
+                <FilterListIcon />
+              </IconButton>
+            </Tooltip>
+          </>
+
         </Toolbar>
       </Card>
       <Card>
@@ -700,7 +898,7 @@ export default function ApprovalAccounts() {
               </TableRow>
             </TableHead>
             <TableBody aria-label="Accounts Table Body">
-              {accounts.map((account) => {
+              {displayAccounts.map((account) => {
                 return (
                   <Row
                     key={account.id}
