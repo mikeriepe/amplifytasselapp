@@ -22,6 +22,13 @@ import TableBody from "@mui/material/TableBody";
 // import TablePagination from '@mui/material/TablePagination';
 import Collapse from "@mui/material/Collapse";
 import Checkbox from "@mui/material/Checkbox";
+import FilterListIcon from '@mui/icons-material/FilterList';
+import InputAdornment from '@mui/material/InputAdornment';
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormGroup from '@mui/material/FormGroup';
+import MuiBox from '@mui/material/Box';
+import Tooltip from '@mui/material/Tooltip';
 import ThemedButton from "./ThemedButton";
 import IconButton from "@mui/material/IconButton";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -187,6 +194,39 @@ function Row(props) {
  */
 export default function ApprovalOpportunities() {
   const [opps, setOpps] = useState([]);
+  const [displayOpps, setDisplayOpps] = useState([]);
+  const [filters, setFilters] = useState({
+    approved: false,
+    denied: false,
+    search: ''
+  });
+  const [openFilter, setOpenFilter] = useState(false);
+
+  useEffect(() => {
+    const { approved, denied, pending, search } = filters;
+    setDisplayOpps(opps.filter((opportunity) => {
+      try {
+        if (search !== '') {
+          let ok = false;
+          [opportunity.eventName, opportunity.description].forEach((field) => {
+            if (typeof field !== 'string') return;
+            if (field.toLowerCase().includes(search.toLowerCase())) ok = true;
+          });
+          if (!ok) return false;
+        }
+        if (!approved && !denied && !pending) return true;
+        if (!approved && opportunity.status === 'APPROVED') return false;
+        if (!denied && opportunity.status === 'DENIED') return false;
+        if (!pending && opportunity.status === 'PENDING') return false;
+        return true;
+      }
+      catch (error) {
+        console.error(error);
+        return false;
+      }
+    }));
+  }, [opps, filters]);
+
   const [profiles, setProfiles] = useState([]);
   const [selected, setSelected] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -429,7 +469,7 @@ export default function ApprovalOpportunities() {
   const handleSelectAll = () => {
     setSelectAllChecked(!selectAllChecked);
     if (!selectAllChecked) {
-      const newSelected = opps.map((opps) => opps.id);
+      const newSelected = displayOpps.map((opps) => opps.id);
       console.log(newSelected);
       setSelected(newSelected);
     } else {
@@ -572,6 +612,8 @@ export default function ApprovalOpportunities() {
         <Toolbar>
           <Box
             aria-label="Opportunity Actions"
+            flex={1}
+            flexDirection='row'
             style={{
               marginRight: "1rem",
             }}
@@ -635,8 +677,138 @@ export default function ApprovalOpportunities() {
             >
               Deny
             </ThemedButton>
+            <TextField
+              placeholder='Search'
+              size='small'
+              onChange={(e) => setFilters({...filters, search: e.target.value})}
+              InputProps={{
+                style: {
+                  fontSize: '0.9rem',
+                  backgroundColor: 'white',
+                  borderRadius: '10px',
+                },
+                startAdornment: (
+                  <InputAdornment position='start'>
+                    <SearchRoundedIcon color='tertiary' />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{
+                'width': 'auto',
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: 'rgba(0, 0, 0, 0.15)',
+                  },
+                },
+              }}
+            />
           </Box>
-          {/* <Typography variant='h4'>Search Bar</Typography> */}
+
+          <>
+            <MuiPaper
+              sx={{paddingLeft: '8px', height: openFilter ? undefined : '0px'}}
+            >
+              <MuiBox
+                className='
+                flex-space-between
+                flex-align-center
+                clickable
+                no-highlight
+                '
+              >
+                <div className='flex-horizontal flow-tiny'>
+                  <Collapse in={openFilter} timeout='auto' unmountOnExit>
+                    <FormGroup
+                      className='flex-horizontal flex-flow-small'
+                      sx={{paddingBlock: '8px'}}
+                    >
+                      <FormControlLabel
+                        className='no-highlight'
+                        control={
+                          <Checkbox
+                            color='secondary'
+                            size='small'
+                            onChange={(event) => {
+                              setFilters({...filters, approved: event.target.checked});
+                            }}
+                            checked={filters.approved}
+                            tabIndex={-1}
+                            disableRipple
+                            sx={{paddingBlock: '1px'}}
+                          />
+                        }
+                        label={'Approved'}
+                        componentsProps={{
+                          typography: {
+                            fontSize: '0.8rem',
+                            fontWeight: '600',
+                            color: 'var(--text-disabled)',
+                          },
+                        }}
+                      />
+                      <FormControlLabel
+                        className='no-highlight'
+                        control={
+                          <Checkbox
+                            color='secondary'
+                            size='small'
+                            onChange={(event) => {
+                              setFilters({...filters, denied: event.target.checked});
+                            }}
+                            checked={filters.denied}
+                            tabIndex={-1}
+                            disableRipple
+                            sx={{paddingBlock: '1px'}}
+                          />
+                        }
+                        label={'Denied'}
+                        componentsProps={{
+                          typography: {
+                            fontSize: '0.8rem',
+                            fontWeight: '600',
+                            color: 'var(--text-disabled)',
+                          },
+                        }}
+                      />
+                      <FormControlLabel
+                        className='no-highlight'
+                        control={
+                          <Checkbox
+                            color='secondary'
+                            size='small'
+                            onChange={(event) => {
+                              setFilters({...filters, pending: event.target.checked});
+                            }}
+                            checked={filters.pending}
+                            tabIndex={-1}
+                            disableRipple
+                            sx={{paddingBlock: '1px'}}
+                          />
+                        }
+                        label={'Pending'}
+                        componentsProps={{
+                          typography: {
+                            fontSize: '0.8rem',
+                            fontWeight: '600',
+                            color: 'var(--text-disabled)',
+                          },
+                        }}
+                      />
+                    </FormGroup>
+                  </Collapse>
+                </div>
+              </MuiBox>
+            </MuiPaper>
+            <Tooltip
+              title='Filter list'
+              flex={0}
+            >
+              <IconButton onClick={() => setOpenFilter(!openFilter)}>
+                <FilterListIcon />
+              </IconButton>
+            </Tooltip>
+          </>
+
         </Toolbar>
       </Card>
       <Card>
@@ -697,7 +869,7 @@ export default function ApprovalOpportunities() {
               </TableRow>
             </TableHead>
             <TableBody aria-label="Opportunities Table Body">
-              {opps.map((opp) => {
+              {displayOpps.map((opp) => {
                 return (
                   <Row
                     key={opp.id}
