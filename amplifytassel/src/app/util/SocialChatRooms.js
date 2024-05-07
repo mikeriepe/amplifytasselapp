@@ -55,7 +55,7 @@ export async function findExistingChatRoom(allChatRooms, profileIDs) {
     return null;
 };
 
-// Temporary implementation until we change the data model to accomodate the infoChatRoom instead.
+// TO-DO: Temporary implementation until we change the data model to accomodate the infoChatRoom instead.
 export async function findExistingInfoChatRoom(userProfile, requested, allChatRooms){
     // Always use the latest available chatroom between them.
     allChatRooms = allChatRooms.sort((cr1, cr2) => cr1.createdAt > cr2.createdAt ? -1:1);

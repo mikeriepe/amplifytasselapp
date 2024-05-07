@@ -35,6 +35,10 @@ export default function NewForm1(props) {
     Field0: "",
     banner: "",
     points: "",
+    linkedin: "",
+    dateOfBirth: "",
+    collegeAffiliation: "",
+    pronouns: "",
   };
   const [about, setAbout] = React.useState(initialValues.about);
   const [location, setLocation] = React.useState(initialValues.location);
@@ -44,6 +48,14 @@ export default function NewForm1(props) {
   const [Field0, setField0] = React.useState(initialValues.Field0);
   const [banner, setBanner] = React.useState(initialValues.banner);
   const [points, setPoints] = React.useState(initialValues.points);
+  const [linkedin, setLinkedin] = React.useState(initialValues.linkedin);
+  const [dateOfBirth, setDateOfBirth] = React.useState(
+    initialValues.dateOfBirth
+  );
+  const [collegeAffiliation, setCollegeAffiliation] = React.useState(
+    initialValues.collegeAffiliation
+  );
+  const [pronouns, setPronouns] = React.useState(initialValues.pronouns);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     const cleanValues = profileRecord
@@ -55,6 +67,10 @@ export default function NewForm1(props) {
     setField0(cleanValues.Field0);
     setBanner(cleanValues.banner);
     setPoints(cleanValues.points);
+    setLinkedin(cleanValues.linkedin);
+    setDateOfBirth(cleanValues.dateOfBirth);
+    setCollegeAffiliation(cleanValues.collegeAffiliation);
+    setPronouns(cleanValues.pronouns);
     setErrors({});
   };
   const [profileRecord, setProfileRecord] = React.useState(profileModelProp);
@@ -75,6 +91,10 @@ export default function NewForm1(props) {
     Field0: [],
     banner: [],
     points: [],
+    linkedin: [{ type: "URL" }],
+    dateOfBirth: [],
+    collegeAffiliation: [],
+    pronouns: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -108,6 +128,10 @@ export default function NewForm1(props) {
           Field0,
           banner,
           points,
+          linkedin,
+          dateOfBirth,
+          collegeAffiliation,
+          pronouns,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -143,6 +167,10 @@ export default function NewForm1(props) {
             graduationYear: modelFields.graduationYear,
             banner: modelFields.banner,
             points: modelFields.points,
+            linkedin: modelFields.linkedin,
+            dateOfBirth: modelFields.dateOfBirth,
+            collegeAffiliation: modelFields.collegeAffiliation,
+            pronouns: modelFields.pronouns,
           };
           await DataStore.save(
             Profile.copyOf(profileRecord, (updated) => {
@@ -176,6 +204,10 @@ export default function NewForm1(props) {
               Field0,
               banner,
               points,
+              linkedin,
+              dateOfBirth,
+              collegeAffiliation,
+              pronouns,
             };
             const result = onChange(modelFields);
             value = result?.about ?? value;
@@ -205,6 +237,10 @@ export default function NewForm1(props) {
               Field0,
               banner,
               points,
+              linkedin,
+              dateOfBirth,
+              collegeAffiliation,
+              pronouns,
             };
             const result = onChange(modelFields);
             value = result?.location ?? value;
@@ -234,6 +270,10 @@ export default function NewForm1(props) {
               Field0,
               banner,
               points,
+              linkedin,
+              dateOfBirth,
+              collegeAffiliation,
+              pronouns,
             };
             const result = onChange(modelFields);
             value = result?.graduationYear ?? value;
@@ -262,6 +302,10 @@ export default function NewForm1(props) {
               Field0: value,
               banner,
               points,
+              linkedin,
+              dateOfBirth,
+              collegeAffiliation,
+              pronouns,
             };
             const result = onChange(modelFields);
             value = result?.Field0 ?? value;
@@ -307,6 +351,10 @@ export default function NewForm1(props) {
               Field0,
               banner: value,
               points,
+              linkedin,
+              dateOfBirth,
+              collegeAffiliation,
+              pronouns,
             };
             const result = onChange(modelFields);
             value = result?.banner ?? value;
@@ -340,6 +388,10 @@ export default function NewForm1(props) {
               Field0,
               banner,
               points: value,
+              linkedin,
+              dateOfBirth,
+              collegeAffiliation,
+              pronouns,
             };
             const result = onChange(modelFields);
             value = result?.points ?? value;
@@ -353,6 +405,141 @@ export default function NewForm1(props) {
         errorMessage={errors.points?.errorMessage}
         hasError={errors.points?.hasError}
         {...getOverrideProps(overrides, "points")}
+      ></TextField>
+      <TextField
+        label="Linkedin"
+        isRequired={false}
+        isReadOnly={false}
+        value={linkedin}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              about,
+              location,
+              graduationYear,
+              Field0,
+              banner,
+              points,
+              linkedin: value,
+              dateOfBirth,
+              collegeAffiliation,
+              pronouns,
+            };
+            const result = onChange(modelFields);
+            value = result?.linkedin ?? value;
+          }
+          if (errors.linkedin?.hasError) {
+            runValidationTasks("linkedin", value);
+          }
+          setLinkedin(value);
+        }}
+        onBlur={() => runValidationTasks("linkedin", linkedin)}
+        errorMessage={errors.linkedin?.errorMessage}
+        hasError={errors.linkedin?.hasError}
+        {...getOverrideProps(overrides, "linkedin")}
+      ></TextField>
+      <TextField
+        label="Date of birth"
+        isRequired={false}
+        isReadOnly={false}
+        type="date"
+        value={dateOfBirth}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              about,
+              location,
+              graduationYear,
+              Field0,
+              banner,
+              points,
+              linkedin,
+              dateOfBirth: value,
+              collegeAffiliation,
+              pronouns,
+            };
+            const result = onChange(modelFields);
+            value = result?.dateOfBirth ?? value;
+          }
+          if (errors.dateOfBirth?.hasError) {
+            runValidationTasks("dateOfBirth", value);
+          }
+          setDateOfBirth(value);
+        }}
+        onBlur={() => runValidationTasks("dateOfBirth", dateOfBirth)}
+        errorMessage={errors.dateOfBirth?.errorMessage}
+        hasError={errors.dateOfBirth?.hasError}
+        {...getOverrideProps(overrides, "dateOfBirth")}
+      ></TextField>
+      <TextField
+        label="College affiliation"
+        isRequired={false}
+        isReadOnly={false}
+        value={collegeAffiliation}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              about,
+              location,
+              graduationYear,
+              Field0,
+              banner,
+              points,
+              linkedin,
+              dateOfBirth,
+              collegeAffiliation: value,
+              pronouns,
+            };
+            const result = onChange(modelFields);
+            value = result?.collegeAffiliation ?? value;
+          }
+          if (errors.collegeAffiliation?.hasError) {
+            runValidationTasks("collegeAffiliation", value);
+          }
+          setCollegeAffiliation(value);
+        }}
+        onBlur={() =>
+          runValidationTasks("collegeAffiliation", collegeAffiliation)
+        }
+        errorMessage={errors.collegeAffiliation?.errorMessage}
+        hasError={errors.collegeAffiliation?.hasError}
+        {...getOverrideProps(overrides, "collegeAffiliation")}
+      ></TextField>
+      <TextField
+        label="Pronouns"
+        isRequired={false}
+        isReadOnly={false}
+        value={pronouns}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              about,
+              location,
+              graduationYear,
+              Field0,
+              banner,
+              points,
+              linkedin,
+              dateOfBirth,
+              collegeAffiliation,
+              pronouns: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.pronouns ?? value;
+          }
+          if (errors.pronouns?.hasError) {
+            runValidationTasks("pronouns", value);
+          }
+          setPronouns(value);
+        }}
+        onBlur={() => runValidationTasks("pronouns", pronouns)}
+        errorMessage={errors.pronouns?.errorMessage}
+        hasError={errors.pronouns?.hasError}
+        {...getOverrideProps(overrides, "pronouns")}
       ></TextField>
       <Flex
         justifyContent="space-between"

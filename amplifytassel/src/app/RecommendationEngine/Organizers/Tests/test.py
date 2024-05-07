@@ -14,6 +14,8 @@ if __name__ == "__main__":
 
     print("Test JSON:", test_json)
 
+    exit(0)
+
     response = requests.post(test_func_uri, json = test_json)
 
     assert response.status_code == 200

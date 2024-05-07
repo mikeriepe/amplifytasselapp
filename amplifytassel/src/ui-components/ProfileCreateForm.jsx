@@ -45,6 +45,10 @@ export default function ProfileCreateForm(props) {
     infoResponse: "",
     banner: "",
     points: "",
+    linkedin: "",
+    dateOfBirth: "",
+    collegeAffiliation: "",
+    pronouns: "",
   };
   const [email, setEmail] = React.useState(initialValues.email);
   const [about, setAbout] = React.useState(initialValues.about);
@@ -70,6 +74,14 @@ export default function ProfileCreateForm(props) {
   );
   const [banner, setBanner] = React.useState(initialValues.banner);
   const [points, setPoints] = React.useState(initialValues.points);
+  const [linkedin, setLinkedin] = React.useState(initialValues.linkedin);
+  const [dateOfBirth, setDateOfBirth] = React.useState(
+    initialValues.dateOfBirth
+  );
+  const [collegeAffiliation, setCollegeAffiliation] = React.useState(
+    initialValues.collegeAffiliation
+  );
+  const [pronouns, setPronouns] = React.useState(initialValues.pronouns);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     setEmail(initialValues.email);
@@ -88,6 +100,10 @@ export default function ProfileCreateForm(props) {
     setInfoResponse(initialValues.infoResponse);
     setBanner(initialValues.banner);
     setPoints(initialValues.points);
+    setLinkedin(initialValues.linkedin);
+    setDateOfBirth(initialValues.dateOfBirth);
+    setCollegeAffiliation(initialValues.collegeAffiliation);
+    setPronouns(initialValues.pronouns);
     setErrors({});
   };
   const validations = {
@@ -107,6 +123,10 @@ export default function ProfileCreateForm(props) {
     infoResponse: [],
     banner: [],
     points: [],
+    linkedin: [{ type: "URL" }],
+    dateOfBirth: [],
+    collegeAffiliation: [],
+    pronouns: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -150,6 +170,10 @@ export default function ProfileCreateForm(props) {
           infoResponse,
           banner,
           points,
+          linkedin,
+          dateOfBirth,
+          collegeAffiliation,
+          pronouns,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -220,6 +244,10 @@ export default function ProfileCreateForm(props) {
               infoResponse,
               banner,
               points,
+              linkedin,
+              dateOfBirth,
+              collegeAffiliation,
+              pronouns,
             };
             const result = onChange(modelFields);
             value = result?.email ?? value;
@@ -259,6 +287,10 @@ export default function ProfileCreateForm(props) {
               infoResponse,
               banner,
               points,
+              linkedin,
+              dateOfBirth,
+              collegeAffiliation,
+              pronouns,
             };
             const result = onChange(modelFields);
             value = result?.about ?? value;
@@ -298,6 +330,10 @@ export default function ProfileCreateForm(props) {
               infoResponse,
               banner,
               points,
+              linkedin,
+              dateOfBirth,
+              collegeAffiliation,
+              pronouns,
             };
             const result = onChange(modelFields);
             value = result?.location ?? value;
@@ -337,6 +373,10 @@ export default function ProfileCreateForm(props) {
               infoResponse,
               banner,
               points,
+              linkedin,
+              dateOfBirth,
+              collegeAffiliation,
+              pronouns,
             };
             const result = onChange(modelFields);
             value = result?.picture ?? value;
@@ -376,6 +416,10 @@ export default function ProfileCreateForm(props) {
               infoResponse,
               banner,
               points,
+              linkedin,
+              dateOfBirth,
+              collegeAffiliation,
+              pronouns,
             };
             const result = onChange(modelFields);
             value = result?.firstName ?? value;
@@ -415,6 +459,10 @@ export default function ProfileCreateForm(props) {
               infoResponse,
               banner,
               points,
+              linkedin,
+              dateOfBirth,
+              collegeAffiliation,
+              pronouns,
             };
             const result = onChange(modelFields);
             value = result?.lastName ?? value;
@@ -454,6 +502,10 @@ export default function ProfileCreateForm(props) {
               infoResponse,
               banner,
               points,
+              linkedin,
+              dateOfBirth,
+              collegeAffiliation,
+              pronouns,
             };
             const result = onChange(modelFields);
             value = result?.status ?? value;
@@ -524,6 +576,10 @@ export default function ProfileCreateForm(props) {
               infoResponse,
               banner,
               points,
+              linkedin,
+              dateOfBirth,
+              collegeAffiliation,
+              pronouns,
             };
             const result = onChange(modelFields);
             value = result?.graduationYear ?? value;
@@ -563,6 +619,10 @@ export default function ProfileCreateForm(props) {
               infoResponse,
               banner,
               points,
+              linkedin,
+              dateOfBirth,
+              collegeAffiliation,
+              pronouns,
             };
             const result = onChange(modelFields);
             value = result?.active ?? value;
@@ -602,6 +662,10 @@ export default function ProfileCreateForm(props) {
               infoResponse,
               banner,
               points,
+              linkedin,
+              dateOfBirth,
+              collegeAffiliation,
+              pronouns,
             };
             const result = onChange(modelFields);
             value = result?.isAdmin ?? value;
@@ -641,6 +705,10 @@ export default function ProfileCreateForm(props) {
               infoResponse,
               banner,
               points,
+              linkedin,
+              dateOfBirth,
+              collegeAffiliation,
+              pronouns,
             };
             const result = onChange(modelFields);
             value = result?.isApproved ?? value;
@@ -680,6 +748,10 @@ export default function ProfileCreateForm(props) {
               infoResponse,
               banner,
               points,
+              linkedin,
+              dateOfBirth,
+              collegeAffiliation,
+              pronouns,
             };
             const result = onChange(modelFields);
             value = result?.schoolEmail ?? value;
@@ -719,6 +791,10 @@ export default function ProfileCreateForm(props) {
               infoResponse,
               banner,
               points,
+              linkedin,
+              dateOfBirth,
+              collegeAffiliation,
+              pronouns,
             };
             const result = onChange(modelFields);
             value = result?.infoRequest ?? value;
@@ -758,6 +834,10 @@ export default function ProfileCreateForm(props) {
               infoResponse: value,
               banner,
               points,
+              linkedin,
+              dateOfBirth,
+              collegeAffiliation,
+              pronouns,
             };
             const result = onChange(modelFields);
             value = result?.infoResponse ?? value;
@@ -797,6 +877,10 @@ export default function ProfileCreateForm(props) {
               infoResponse,
               banner: value,
               points,
+              linkedin,
+              dateOfBirth,
+              collegeAffiliation,
+              pronouns,
             };
             const result = onChange(modelFields);
             value = result?.banner ?? value;
@@ -840,6 +924,10 @@ export default function ProfileCreateForm(props) {
               infoResponse,
               banner,
               points: value,
+              linkedin,
+              dateOfBirth,
+              collegeAffiliation,
+              pronouns,
             };
             const result = onChange(modelFields);
             value = result?.points ?? value;
@@ -853,6 +941,181 @@ export default function ProfileCreateForm(props) {
         errorMessage={errors.points?.errorMessage}
         hasError={errors.points?.hasError}
         {...getOverrideProps(overrides, "points")}
+      ></TextField>
+      <TextField
+        label="Linkedin"
+        isRequired={false}
+        isReadOnly={false}
+        value={linkedin}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              email,
+              about,
+              location,
+              picture,
+              firstName,
+              lastName,
+              status,
+              graduationYear,
+              active,
+              isAdmin,
+              isApproved,
+              schoolEmail,
+              infoRequest,
+              infoResponse,
+              banner,
+              points,
+              linkedin: value,
+              dateOfBirth,
+              collegeAffiliation,
+              pronouns,
+            };
+            const result = onChange(modelFields);
+            value = result?.linkedin ?? value;
+          }
+          if (errors.linkedin?.hasError) {
+            runValidationTasks("linkedin", value);
+          }
+          setLinkedin(value);
+        }}
+        onBlur={() => runValidationTasks("linkedin", linkedin)}
+        errorMessage={errors.linkedin?.errorMessage}
+        hasError={errors.linkedin?.hasError}
+        {...getOverrideProps(overrides, "linkedin")}
+      ></TextField>
+      <TextField
+        label="Date of birth"
+        isRequired={false}
+        isReadOnly={false}
+        type="date"
+        value={dateOfBirth}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              email,
+              about,
+              location,
+              picture,
+              firstName,
+              lastName,
+              status,
+              graduationYear,
+              active,
+              isAdmin,
+              isApproved,
+              schoolEmail,
+              infoRequest,
+              infoResponse,
+              banner,
+              points,
+              linkedin,
+              dateOfBirth: value,
+              collegeAffiliation,
+              pronouns,
+            };
+            const result = onChange(modelFields);
+            value = result?.dateOfBirth ?? value;
+          }
+          if (errors.dateOfBirth?.hasError) {
+            runValidationTasks("dateOfBirth", value);
+          }
+          setDateOfBirth(value);
+        }}
+        onBlur={() => runValidationTasks("dateOfBirth", dateOfBirth)}
+        errorMessage={errors.dateOfBirth?.errorMessage}
+        hasError={errors.dateOfBirth?.hasError}
+        {...getOverrideProps(overrides, "dateOfBirth")}
+      ></TextField>
+      <TextField
+        label="College affiliation"
+        isRequired={false}
+        isReadOnly={false}
+        value={collegeAffiliation}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              email,
+              about,
+              location,
+              picture,
+              firstName,
+              lastName,
+              status,
+              graduationYear,
+              active,
+              isAdmin,
+              isApproved,
+              schoolEmail,
+              infoRequest,
+              infoResponse,
+              banner,
+              points,
+              linkedin,
+              dateOfBirth,
+              collegeAffiliation: value,
+              pronouns,
+            };
+            const result = onChange(modelFields);
+            value = result?.collegeAffiliation ?? value;
+          }
+          if (errors.collegeAffiliation?.hasError) {
+            runValidationTasks("collegeAffiliation", value);
+          }
+          setCollegeAffiliation(value);
+        }}
+        onBlur={() =>
+          runValidationTasks("collegeAffiliation", collegeAffiliation)
+        }
+        errorMessage={errors.collegeAffiliation?.errorMessage}
+        hasError={errors.collegeAffiliation?.hasError}
+        {...getOverrideProps(overrides, "collegeAffiliation")}
+      ></TextField>
+      <TextField
+        label="Pronouns"
+        isRequired={false}
+        isReadOnly={false}
+        value={pronouns}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              email,
+              about,
+              location,
+              picture,
+              firstName,
+              lastName,
+              status,
+              graduationYear,
+              active,
+              isAdmin,
+              isApproved,
+              schoolEmail,
+              infoRequest,
+              infoResponse,
+              banner,
+              points,
+              linkedin,
+              dateOfBirth,
+              collegeAffiliation,
+              pronouns: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.pronouns ?? value;
+          }
+          if (errors.pronouns?.hasError) {
+            runValidationTasks("pronouns", value);
+          }
+          setPronouns(value);
+        }}
+        onBlur={() => runValidationTasks("pronouns", pronouns)}
+        errorMessage={errors.pronouns?.errorMessage}
+        hasError={errors.pronouns?.hasError}
+        {...getOverrideProps(overrides, "pronouns")}
       ></TextField>
       <Flex
         justifyContent="space-between"

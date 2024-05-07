@@ -1203,6 +1203,52 @@ export const schema = {
                         ]
                     }
                 },
+                "InfoRequestChatroom": {
+                    "name": "InfoRequestChatroom",
+                    "isArray": false,
+                    "type": {
+                        "model": "ChatRoom"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "association": {
+                        "connectionType": "HAS_ONE",
+                        "associatedWith": [
+                            "id"
+                        ],
+                        "targetNames": [
+                            "profileInfoRequestChatroomId"
+                        ]
+                    }
+                },
+                "linkedin": {
+                    "name": "linkedin",
+                    "isArray": false,
+                    "type": "AWSURL",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "dateOfBirth": {
+                    "name": "dateOfBirth",
+                    "isArray": false,
+                    "type": "AWSDate",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "collegeAffiliation": {
+                    "name": "collegeAffiliation",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "pronouns": {
+                    "name": "pronouns",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -1218,6 +1264,13 @@ export const schema = {
                     "isRequired": false,
                     "attributes": [],
                     "isReadOnly": true
+                },
+                "profileInfoRequestChatroomId": {
+                    "name": "profileInfoRequestChatroomId",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
                 }
             },
             "syncable": true,
@@ -2738,5 +2791,5 @@ export const schema = {
         }
     },
     "codegenVersion": "3.4.4",
-    "version": "d9f5ca5c9e59bdcdf753a029d23e5e05"
+    "version": "35ea9187ec1b91fbfa36c8ae1b603e55"
 };

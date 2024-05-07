@@ -1,12 +1,12 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import MuiAvatar from '@mui/material/Avatar';
 import MuiBox from '@mui/material/Box';
 import MuiPaper from '@mui/material/Paper';
 import ThemedButton from './ThemedButton';
 import ExampleCover from '../assets/examplecover.png';
 
-const Item = ({handleCardClick, profileid, children}, props) => (
-  <MuiPaper
+const Item = ({handleCardClick, profileid, children}, props) => {
+  return  <MuiPaper
     onClick={() => handleCardClick(profileid)}
     elevation={0}
     sx={{
@@ -20,12 +20,13 @@ const Item = ({handleCardClick, profileid, children}, props) => (
       borderRadius: '10px',
       textAlign: 'center',
       cursor: 'pointer',
+      
     }}
     {...props}
   >
     {children}
   </MuiPaper>
-);
+};
 
 const Banner = ({image}, props) => {
   return (
@@ -70,32 +71,29 @@ const Avatar = ({image}, props) => (
  * @param {Object} profileInfo
  * @return {JSX}
  */
-export default function ViewOpportunityFindPeople({
+export default function ViewOpportunityPeopleCard({
   profile,
-  getProfileInfo,
-  profileInfo,
   handleCardClick,
 }) {
-  useEffect(() => {
-    getProfileInfo(profile.userid);
-  }, []);
+
+  console.log("Image:", profile.picture);
 
   return (
-    <Item handleCardClick={handleCardClick} profileid={profile.profileid}>
-      {/* There is no profile banner implemented yet */}
-      <Banner image={/* profileInfo.profilebanner */ExampleCover} />
-      <Avatar image={profile.picture} />
-      <div style={{padding: '3.75em 1em 1em 1em'}}>
-        <div style={{marginBottom: '1em'}}>
-          <h4 className='text-bold text-dark'>
-            {`${profile.firstname} ${profile.lastname}`}
-          </h4>
-          <p>{profile.major}</p>
+      <Item handleCardClick={handleCardClick} profileid={profile.id}>
+        {/* There is no profile banner implemented yet */}
+        <Banner image={/* profileInfo.profilebanner */ExampleCover} />
+        <Avatar image={profile.picture} />
+        <div style={{padding: '3.75em 1em 1em 1em'}}>
+          <div style={{marginBottom: '1em'}}>
+            <h4 className='text-bold text-dark'>
+              {`${profile.firstName} ${profile.lastName}`}
+            </h4>
+            <p>{profile.major}</p>
+          </div>
+          <ThemedButton color='green' variant='round' size='small'>
+            Send Invite
+          </ThemedButton>
         </div>
-        <ThemedButton color='yellow' variant='round' size='small'>
-          Send Invite
-        </ThemedButton>
-      </div>
-    </Item>
+      </Item>
   );
 }

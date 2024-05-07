@@ -461,8 +461,14 @@ type EagerProfile = {
   readonly Friends?: (Friend | null)[] | null;
   readonly Chatrooms?: (ProfileChatRoom | null)[] | null;
   readonly Messages?: (Message | null)[] | null;
+  readonly InfoRequestChatroom?: ChatRoom | null;
+  readonly linkedin?: string | null;
+  readonly dateOfBirth?: string | null;
+  readonly collegeAffiliation?: string | null;
+  readonly pronouns?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
+  readonly profileInfoRequestChatroomId?: string | null;
 }
 
 type LazyProfile = {
@@ -502,8 +508,14 @@ type LazyProfile = {
   readonly Friends: AsyncCollection<Friend>;
   readonly Chatrooms: AsyncCollection<ProfileChatRoom>;
   readonly Messages: AsyncCollection<Message>;
+  readonly InfoRequestChatroom: AsyncItem<ChatRoom | undefined>;
+  readonly linkedin?: string | null;
+  readonly dateOfBirth?: string | null;
+  readonly collegeAffiliation?: string | null;
+  readonly pronouns?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
+  readonly profileInfoRequestChatroomId?: string | null;
 }
 
 export declare type Profile = LazyLoading extends LazyLoadingDisabled ? EagerProfile : LazyProfile
