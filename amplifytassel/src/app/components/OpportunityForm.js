@@ -968,27 +968,19 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
             // Convert the selected tags to an object
             const tagstToSubmit = convertTagsToObject(selectedTags);
             setValue("keywords", tagstToSubmit);
-
             //setValue('bannerKey', await uploadFile());
             if (values.recurringEventOptions != "None") {
+              const newStart = new Date(combinedStart);
+              const newEnd = new Date(combinedEnd);
               if (values.recurringEventOptions == "Weekly") {
-                const newStart = new Date(combinedStart);
-                const newEnd = new Date(combinedEnd);
                 newStart.setDate(newStart.getDate() + 7);
                 newEnd.setDate(newEnd.getDate() + 7);
-                console.log(newStart, newEnd);
               } else if (values.recurringEventOptions == "Biweekly") {
-                const newStart = new Date(combinedStart);
-                const newEnd = new Date(combinedEnd);
                 newStart.setDate(newStart.getDate() + 14);
                 newEnd.setDate(newEnd.getDate() + 14);
-                console.log(newStart, newEnd);
               } else if (values.recurringEventOptions == "Monthly") {
-                const newStart = new Date(combinedStart);
                 newStart.setMonth(newStart.getMonth() + 1);
-                const newEnd = new Date(combinedEnd);
                 newEnd.setMonth(newEnd.getMonth() + 1);
-                console.log(newStart, newEnd);
               }
             }
             handleSubmit(onSubmit)();
