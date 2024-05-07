@@ -138,7 +138,9 @@ function Row(props) {
             onChange={(event) => handleSelect(event, row)}
           />
         </TableCell>
-        <TableCell className="data-cell" padding="checkbox">
+        {/* This is a button to drop down additional info about a user. */}
+        {/* To re-enable, uncomment this and the commented-out <TableCell /> component in the Table Head. */}
+        {/* <TableCell className="data-cell" padding="checkbox">
           <IconButton
             aria-label="expand row"
             size="small"
@@ -146,7 +148,7 @@ function Row(props) {
           >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
-        </TableCell>
+        </TableCell> */}
         {/* eslint-disable-next-line max-len */}
         <TableCell className="data-cell" component="th" scope="row">
           <div style={{ display: "flex" }}>
@@ -866,7 +868,9 @@ export default function ApprovalAccounts() {
                     onChange={handleSelectAll}
                   />
                 </TableCell>
-                <TableCell padding="checkbox" />
+                {/* This is the Column header for a dropdown icon next to each profile. */}
+                {/* To re-enable, uncomment this and the commented-out TableCell in the Row component. */}
+                {/* <TableCell padding="checkbox" /> */}
                 {headCells.map((headCell) => (
                   <TableCell
                     key={headCell.id}
