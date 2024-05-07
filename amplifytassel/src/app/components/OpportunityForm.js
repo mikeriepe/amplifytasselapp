@@ -17,7 +17,7 @@ import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
 import { v4 as uuidv4 } from "uuid";
-import "../stylesheets/OpportunityForm.css"
+import "../stylesheets/OpportunityForm.css";
 // import Stack from '@mui/material/Stack';
 
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -111,6 +111,9 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
   const [currLocationType, setCurrLocationType] = useState(
     defaultValues.locationType
   );
+  const [currRecurringEventOptions, setCurrRecurringEventOptions] = useState(
+    defaultValues.recurringEventOptions
+  );
 
   const [currSponsorType, setCurrSponsorType] = useState(
     defaultValues.organizations === undefined
@@ -182,6 +185,7 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
     endtime: Yup.date()
       .min(Yup.ref("starttime"), "End time must be after start time")
       .required("End time is required"),
+    recurringEventOptions: Yup.string().required("Recurring Option Required"),
 
     subject: Yup.string().required("Subject is required"),
     keywords: Yup.object().notRequired(),
@@ -222,6 +226,11 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
   const handleLocationTypeChange = (e) => {
     const value = e.target.value;
     setCurrLocationType(value);
+  };
+
+  const handleRecurringEventsChange = (e) => {
+    const value = e.target.value;
+    setCurrRecurringEventOptions(value);
   };
 
   const combineTimeDate = (time, date) => {
@@ -300,6 +309,25 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
     {
       label: "Hybrid",
       value: "hybrid",
+    },
+  ];
+
+  const recurringEventOptions = [
+    {
+      label: "None",
+      value: "None",
+    },
+    {
+      label: "Weekly",
+      value: "Weekly",
+    },
+    {
+      label: "Biweekly",
+      value: "Biweekly",
+    },
+    {
+      label: "Monthly",
+      value: "Monthly",
     },
   ];
 
@@ -781,6 +809,14 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
               />
             </Box>
           </LocalizationProvider>
+          <DropdownInput
+            name="recurringEventOptions"
+            control={control}
+            label="Recurring Events"
+            options={recurringEventOptions}
+            customOnChange={handleRecurringEventsChange}
+            register={register}
+          />
 
           {/* ADDRESS */}
           {currLocationType != "remote" && (
@@ -934,7 +970,27 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
             setValue("keywords", tagstToSubmit);
 
             //setValue('bannerKey', await uploadFile());
-
+            if (values.recurringEventOptions != "None") {
+              if (values.recurringEventOptions == "Weekly") {
+                const newStart = new Date(combinedStart);
+                const newEnd = new Date(combinedEnd);
+                newStart.setDate(newStart.getDate() + 7);
+                newEnd.setDate(newEnd.getDate() + 7);
+                console.log(newStart, newEnd);
+              } else if (values.recurringEventOptions == "Biweekly") {
+                const newStart = new Date(combinedStart);
+                const newEnd = new Date(combinedEnd);
+                newStart.setDate(newStart.getDate() + 14);
+                newEnd.setDate(newEnd.getDate() + 14);
+                console.log(newStart, newEnd);
+              } else if (values.recurringEventOptions == "Monthly") {
+                const newStart = new Date(combinedStart);
+                newStart.setMonth(newStart.getMonth() + 1);
+                const newEnd = new Date(combinedEnd);
+                newEnd.setMonth(newEnd.getMonth() + 1);
+                console.log(newStart, newEnd);
+              }
+            }
             handleSubmit(onSubmit)();
             //})
             //.catch((err) => {
