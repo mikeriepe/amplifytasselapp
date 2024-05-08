@@ -186,7 +186,6 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
       .min(Yup.ref("starttime"), "End time must be after start time")
       .required("End time is required"),
     recurringEventOptions: Yup.string().required("Recurring Option Required"),
-
     subject: Yup.string().required("Subject is required"),
     keywords: Yup.object().notRequired(),
   });
@@ -230,6 +229,7 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
 
   const handleRecurringEventsChange = (e) => {
     const value = e.target.value;
+    console.log("v: ", value);
     setCurrRecurringEventOptions(value);
   };
 
@@ -328,6 +328,28 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
     {
       label: "Monthly",
       value: "Monthly",
+    },
+  ];
+  const frequencyOptions = [
+    {
+      label: "1",
+      value: "1",
+    },
+    {
+      label: "2",
+      value: "2",
+    },
+    {
+      label: "3",
+      value: "3",
+    },
+    {
+      label: "4",
+      value: "4",
+    },
+    {
+      label: "5",
+      value: "5",      
     },
   ];
 
@@ -809,14 +831,33 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
               />
             </Box>
           </LocalizationProvider>
-          <DropdownInput
-            name="recurringEventOptions"
-            control={control}
-            label="Recurring Events"
-            options={recurringEventOptions}
-            customOnChange={handleRecurringEventsChange}
-            register={register}
-          />
+          <Box
+            sx={{
+              display: "grid",
+              gridAutoFlow: "column",
+              gridGap: "10px",
+              marginTop: "8px",
+            }}
+          >
+            <DropdownInput
+              name="recurringEventOptions"
+              control={control}
+              label="Recurring Events"
+              options={recurringEventOptions}
+              defaultValue="None"
+              customOnChange={handleRecurringEventsChange}
+              register={register}
+            />
+            {currRecurringEventOptions != "None" && (
+              <DropdownInput
+              name="frequency"
+              control={control}
+              label="Frequency"
+              options={frequencyOptions}
+              register={register}
+            />
+            )}
+          </Box>
 
           {/* ADDRESS */}
           {currLocationType != "remote" && (
@@ -964,31 +1005,12 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
 
             // set curr roles in values
             setValue("roles", currRoles);
-
+            setValue("recurringEventOptions", values.recurringEventOptions)
+            setValue("frequencyOptions", values.frequency)
             // Convert the selected tags to an object
             const tagstToSubmit = convertTagsToObject(selectedTags);
             setValue("keywords", tagstToSubmit);
-            //setValue('bannerKey', await uploadFile());
-            if (values.recurringEventOptions != "None") {
-              const newStart = new Date(combinedStart);
-              const newEnd = new Date(combinedEnd);
-              if (values.recurringEventOptions == "Weekly") {
-                newStart.setDate(newStart.getDate() + 7);
-                newEnd.setDate(newEnd.getDate() + 7);
-              } else if (values.recurringEventOptions == "Biweekly") {
-                newStart.setDate(newStart.getDate() + 14);
-                newEnd.setDate(newEnd.getDate() + 14);
-              } else if (values.recurringEventOptions == "Monthly") {
-                newStart.setMonth(newStart.getMonth() + 1);
-                newEnd.setMonth(newEnd.getMonth() + 1);
-              }
-            }
             handleSubmit(onSubmit)();
-            //})
-            //.catch((err) => {
-            //console.log(err);
-            //console.log("Error uploading img");
-            //})
           }}
         >
           Save
