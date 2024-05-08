@@ -373,6 +373,7 @@ function Opportunities({
       'zip': '',
     },
     recurringEventOptions: 'None',
+    frequencyOptions: '1',
     sponsortype: 'user sponsor',
     zoomLink: '',
     //organization: [],

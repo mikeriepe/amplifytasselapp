@@ -186,6 +186,11 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
       .min(Yup.ref("starttime"), "End time must be after start time")
       .required("End time is required"),
     recurringEventOptions: Yup.string().required("Recurring Option Required"),
+    frequencyOptions: Yup.string().when([], {
+      is: () => currRecurringEventOptions != "None",
+      then: () => Yup.string().required("Frequency is required"),
+      otherwise: () => Yup.string().notRequired(),
+    }),
     subject: Yup.string().required("Subject is required"),
     keywords: Yup.object().notRequired(),
   });
@@ -330,7 +335,7 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
       value: "Monthly",
     },
   ];
-  const frequencyOptions = [
+  const frequencyOptionsList = [
     {
       label: "1",
       value: "1",
@@ -850,10 +855,11 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
             />
             {currRecurringEventOptions != "None" && (
               <DropdownInput
-              name="frequency"
+              name="frequencyOptions"
               control={control}
               label="Frequency"
-              options={frequencyOptions}
+              defaultValue = "1"
+              options={frequencyOptionsList}
               register={register}
             />
             )}
@@ -1006,7 +1012,7 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
             // set curr roles in values
             setValue("roles", currRoles);
             setValue("recurringEventOptions", values.recurringEventOptions)
-            setValue("frequencyOptions", values.frequency)
+            setValue("frequencyOptions", values.frequencyOptions)
             // Convert the selected tags to an object
             const tagstToSubmit = convertTagsToObject(selectedTags);
             setValue("keywords", tagstToSubmit);
