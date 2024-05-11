@@ -9,6 +9,7 @@ import OpportunitiesFilters from './OpportunitiesFilters';
 import ThemedDropdown from './ThemedDropdown';
 import Fuse from 'fuse.js';
 import useAuth from '../util/AuthContext';
+import { createOppProfile, createUserProfile } from '../util/ExtractInformation'
 
 const Page = styled((props) => (
   <MuiBox {...props} />
@@ -52,6 +53,7 @@ export default function OpportunitiesList({
   });
   // Component first renders
   useEffect(() => {
+    console.log("Initializing display opps to", opportunities);
     setDisplayOpps(opportunities);
     applyFilters();
   }, [opportunities]);
@@ -136,10 +138,11 @@ export default function OpportunitiesList({
     return sortedOpportunities;
   }
 
-  // Call flask service to get matching recommendations
+  // Call lambda function to get matching recommendations
   const fetchOpportunities = async (mergedJSON) => {
     try {
-      const response = await fetch("https://2vx9se0n7e.execute-api.us-west-1.amazonaws.com/default/recommendation-engine", {
+      const url = "https://2vx9se0n7e.execute-api.us-west-1.amazonaws.com/default/recommendation-engine"
+      const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json', // Specify the content type as JSON
@@ -154,42 +157,6 @@ export default function OpportunitiesList({
     }
   }
 
-
-  const extractUserKeywords = async () => {
-    try {
-      const value = await Promise.resolve(userProfile?.keywords?.values);
-      const keywordNames = [];
-      for (let i = 0; i < value.length; i++) {
-        const k = await Promise.resolve(value[i].keyword);
-        keywordNames.push(k.name);
-      }
-      keywordNames.sort();
-      //setUserKeywords(keywordNames);
-      return keywordNames
-
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const extractOppKeywords = async (opp) => {
-    try {
-      const value = await Promise.resolve(opp?.keywords?.values);
-      const keywordNames = [];
-      for (let i = 0; i < value.length; i++) {
-        const k = await Promise.resolve(value[i].keyword);
-        keywordNames.push(k.name);
-      }
-      keywordNames.sort();
-      //setUserKeywords(keywordNames);
-      return keywordNames
-
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-
   const handleSort = async (opps) => {
     let sortedOpps;
     if (dropdownSelect === 'Alphabet') {
@@ -200,32 +167,32 @@ export default function OpportunitiesList({
     } else if (dropdownSelect === 'Recommended') {
         const oppFields = {events:[]};
         const userFields = {users:[]};
+        let num = -1;
         for await(const [index, opp] of opps.entries()){
-          let num = index;
-          oppFields.events[num] = {}
+          num++;
+          oppFields.events[num] = {};
           try{
-            const eventID = await opp?.id;
-            const eventName = await opp?.eventName;
-            const descEvent = await opp?.description;
-            const eventData = await opp?.eventData;
-            const prefs = await opp?.preferences?.values;
-            const sub = await opp?.subject;
-            const tags = await extractOppKeywords(await opp);
-            
-            console.log(tags)
-            if (descEvent === null && eventData == null 
-              && prefs == null && sub == null) {
-              delete oppFields[num];  
+            const oppProfile = createOppProfile(opp);
+            var profileRetrieved = true;
+            oppProfile.then(
+              // eslint-disable-next-line no-loop-func
+              (oppProfileRes) => {
+                oppFields.events[num] = oppProfileRes;
+              }
+            ).catch(
+              // eslint-disable-next-line no-loop-func
+              () => {
+                num--;
+                profileRetrieved = false;
+              }
+            )
+
+            if(!profileRetrieved){
               continue;
             }
-            oppFields.events[num]["eventID"] = eventID ? eventID : "";
-            oppFields.events[num]["eventName"] = eventName ? eventName : "";
-            oppFields.events[num]["description"] = descEvent ? descEvent : "";
-            oppFields.events[num]["eventData"] = eventData ? eventData : "";
-            oppFields.events[num]["subject"] = sub ? sub : "";
-            oppFields.events[num]["tags"] = tags ? tags : "";
 
-
+            oppFields.events[num] = await oppProfile
+            console.log("oppFields:", oppFields);
           }catch(error){
             console.error("Error fetching keywords:", error);
             return 0;
@@ -234,22 +201,12 @@ export default function OpportunitiesList({
 
         //Fetch user profile data
         console.log(userProfile)
-        const profileAbout = userProfile?.about ? userProfile?.about : "";
-        const profileVolunteerExp = userProfile?.volunteerExperience ? userProfile?.volunteerExperience : "";
-        const workExp = userProfile?.experience ? userProfile?.experience : "";
 
-        console.log("User Tags:" + await extractUserKeywords())
-
-        userFields.users[0] = {}
-        userFields.users[0]["description"] = profileAbout;
-        userFields.users[0]["volunteerExp"] = userProfile?.volunteerExperience ? (profileVolunteerExp.map(exp => exp.description)).toString() : "";
-        userFields.users[0]["workExp"] = (workExp.map(exp => exp.description)).toString();
-
-        userFields.users[0]["tags"] = await extractUserKeywords();
+        userFields.users[0] = await createUserProfile(userProfile)
         
-        console.log(userFields);
+        console.log("userFields:", userFields);
 
-        console.log(oppFields);
+        console.log("oppFields:", oppFields);
 
         // Merge JSON objects
         // send this JSON to flask endpoint
@@ -281,6 +238,7 @@ export default function OpportunitiesList({
   // filtered data set
   const searchOpportunity = (query, searchData=opportunities) => {
     if (!query) {
+      console.log("Set Display Opps to:", searchData)
       setDisplayOpps(searchData);
       return;
     }
@@ -295,8 +253,10 @@ export default function OpportunitiesList({
       result.forEach((item) => {
         finalResult.push(item.item);
       });
+      console.log("Set Display Opps to:", finalResult)
       setDisplayOpps(finalResult);
     } else {
+      console.log("Set Display Opps to:", "[]");
       setDisplayOpps([]);
     }
   };

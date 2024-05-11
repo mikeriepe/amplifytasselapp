@@ -9,6 +9,7 @@ import ViewOpportunityAbout from '../components/ViewOpportunityAbout';
 import ViewOpportunityForums from '../components/ViewOpportunityForums';
 import ViewOpportunityMembers from '../components/ViewOpportunityMembers';
 import ViewOpportunityRequests from '../components/ViewOpportunityRequests';
+import ViewOpportunityFindPeople from '../components/ViewOpportunityPeople';
 import useAuth from '../util/AuthContext';
 import RequestModal from '../components/RequestOpportunityModal';
 import {toast} from 'react-toastify';
@@ -17,6 +18,7 @@ import { Opportunity, Role, Profile, Keyword, Request } from '../../models';
 import { PointsAddition } from '../util/PointsAddition';
 import useAnimation from '../util/AnimationContext';
 import { calculateIfUserLeveledUp } from '../util/PointsAddition';
+import {useNavigate} from 'react-router-dom';
 
 const Page = styled((props) => (
   <MuiBox {...props} />
@@ -87,6 +89,8 @@ function ViewOpportunity({opportunity}) {
   const [showReqForm, setshowReqForm] = React.useState(false);
   const [requestMessage, setRequestMessage] = React.useState('');
   const [requestedRole, setRequestedRole] = React.useState('');
+
+  const navigate = useNavigate();
 
   const {
     setShowConfettiAnimation,
@@ -246,14 +250,16 @@ function ViewOpportunity({opportunity}) {
         members={members}
       />,
     },
-    // Find people tab will be implemented in Spring 2023
-    // For now it will stay hidden
-    /*
+    // Find people tab is finally implemented in Spring 2024!
     {
-      name: 'Find People',
-      component: <ViewOpportunityFindPeople />,
+      name: 'Find Volunteers',
+      component: <ViewOpportunityFindPeople
+        opp = {opportunity}
+        handleCardClick = {(profileid) => {
+          navigate(`/Profile/${profileid}`);
+        }}
+       />,
     },
-    */
   ];
 
   const handleIsCreator = () => {
