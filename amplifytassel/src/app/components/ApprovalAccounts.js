@@ -46,6 +46,7 @@ import { Storage } from 'aws-amplify';
 import { findExistingInfoChatRoom, createNewChatRoom } from '../util/SocialChatRooms';
 import useAuth from '../util/AuthContext';
 import { sendMessage } from '../util/SocialChat';
+import { List, ListItem, ListItemText, ListItemButton } from "@mui/material";
 
 const Page = styled((props) => <Box {...props} />)(() => ({
   display: "flex",
@@ -377,6 +378,9 @@ export default function ApprovalAccounts() {
       .then((res) => {
         // console.log('Profiles (' + res.length + '):');
         // console.log(res.map((account) => account.email));
+        res.forEach((account) => {
+          downloadProfilePicture(account.id, account.picture);
+        });
         sortAccounts(res, sortBy, reset);
         setLoading(false);
       })
@@ -599,6 +603,15 @@ export default function ApprovalAccounts() {
     },
   ];
 
+  const [profilePictures, setProfilePictures] = useState({});
+  const downloadProfilePicture = async (profileId, picture) => {
+    if (profilePictures[profileId]) return;
+    const file = await Storage.get(picture, {
+      level: "public",
+    });
+    setProfilePictures((prev) => ({ ...prev, [profileId]: file }));
+  };
+
   return (
     <Page>
       <Card style={{ padding: ".5rem" }}>
@@ -636,13 +649,28 @@ export default function ApprovalAccounts() {
               Request More Info
             </ThemedButton>
             <Dialog open={dialogOpen} onClose={handleDialogClose}>
-              <DialogTitle>Request More Info</DialogTitle>
+              {/* <DialogTitle>Request More Info</DialogTitle> */}
               <DialogContent>
-                <DialogContentText>
+                <List>
+                  {selected.map((email) => {
+                    const info = accounts.find((account) => account.email === email);
+                    return (
+                      <ListItemButton key={info.id} onClick={() => window.open(`/Profile/${info.id}`, '_blank')}>
+                        <Avatar
+                          image={profilePictures[info.id] ?? "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"}
+                          profileid={info.id}
+                          handleAvatarClick={() => {}}
+                        />
+                        <ListItemText primary={info.firstName + ' ' + info.lastName} secondary={info.email} />
+                      </ListItemButton>
+                    );
+                  })}
+                </List>
+                {/* <DialogContentText>
                   Describe what other information you would like to get from the
                   selected users.
-                </DialogContentText>
-                <TextField
+                </DialogContentText> */}
+                {/* <TextField
                   autoFocus
                   margin="dense"
                   id="name"
@@ -651,11 +679,35 @@ export default function ApprovalAccounts() {
                   fullWidth
                   variant="standard"
                   onBlur={handleRequestInfo}
-                />
+                /> */}
               </DialogContent>
               <DialogActions>
-                <Button onClick={handleDialogClose}>Cancel</Button>
-                <Button onClick={handleDialogSubmit}>Send Requests</Button>
+                <ThemedButton color={"green"} variant={"gradient"} type={"submit"} onClick={() => {
+                  /**
+                  * @link https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/Creating_hyperlinks#email_links
+                  * @link https://www.30secondsofcode.org/react/s/mailto/
+                  */
+                  const Mailto = ({ emails, subject = '', body = '', children }) => {
+                    let params = subject || body ? '?' : '';
+                    if (subject) params += `subject=${encodeURIComponent(subject)}`;
+                    if (body) params += `${subject ? '&' : ''}body=${encodeURIComponent(body)}`;
+
+                    return `mailto:${emails.join(',')}${params}`;
+                  };
+                  if (selected.length > 0) {
+                    window.open(Mailto({emails: selected}));
+                  }
+                }}>
+                  Send Email
+                </ThemedButton>
+                <ThemedButton color={"blue"} variant={"themed"} type={"submit"} onClick={() => navigator.clipboard.writeText(selected.join(' '))}>
+                  Copy Emails
+                </ThemedButton>
+                <ThemedButton color={"yellow"} variant={"themed"} type={"submit"} onClick={handleDialogClose}>
+                  Close
+                </ThemedButton>
+                
+                {/* <Button onClick={handleDialogSubmit}>Send Requests</Button> */}
               </DialogActions>
             </Dialog>
             <ThemedButton
