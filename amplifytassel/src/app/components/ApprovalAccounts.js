@@ -46,7 +46,8 @@ import { Storage } from 'aws-amplify';
 import { findExistingInfoChatRoom, createNewChatRoom } from '../util/SocialChatRooms';
 import useAuth from '../util/AuthContext';
 import { sendMessage } from '../util/SocialChat';
-import { List, ListItem, ListItemText, ListItemButton } from "@mui/material";
+import { List, ListItemText, ListItemButton } from "@mui/material";
+import EmailDialog from "./EmailDialog";
 
 const Page = styled((props) => <Box {...props} />)(() => ({
   display: "flex",
@@ -498,51 +499,51 @@ export default function ApprovalAccounts() {
     }
   };
 
-  const handleDialogSubmit = () => {
-    const status = 'REQUESTED';
-    const profiles = selected.map((email) => {
-      const info = accounts.find((account) => account.email === email);
-      return info;
-    });
+  // const handleDialogSubmit = () => {
+  //   const status = 'REQUESTED';
+  //   const profiles = selected.map((email) => {
+  //     const info = accounts.find((account) => account.email === email);
+  //     return info;
+  //   });
 
-    const selectedProfileIds = profiles.map((profile) => profile.id);
+  //   const selectedProfileIds = profiles.map((profile) => profile.id);
 
-    setLoading(true);
-    // eslint-disable-next-line guard-for-in
-    for (let index = 0; index < profiles.length; index++) {
-      const profile = profiles[index];
-      DataStore.save(
-        Profile.copyOf(profile, updated => {
-          updated.status = status
-        }))
-        .then(async (res) => {
-        // console.log(res);
-        setDialogOpen(false);
-        getAccounts('status', true);
+  //   setLoading(true);
+  //   // eslint-disable-next-line guard-for-in
+  //   for (let index = 0; index < profiles.length; index++) {
+  //     const profile = profiles[index];
+  //     DataStore.save(
+  //       Profile.copyOf(profile, updated => {
+  //         updated.status = status
+  //       }))
+  //       .then(async (res) => {
+  //       // console.log(res);
+  //       setDialogOpen(false);
+  //       getAccounts('status', true);
 
-        // Create a new chatroom if they don't have one attached, otherwise get the existing one - can be done without a special field for the time being.
-        const allChatRooms = await DataStore.query(ChatRoom);
+  //       // Create a new chatroom if they don't have one attached, otherwise get the existing one - can be done without a special field for the time being.
+  //       const allChatRooms = await DataStore.query(ChatRoom);
         
-        var chat = null //await findExistingInfoChatRoom(userProfile, selectedProfileIds, allChatRooms);
+  //       var chat = null //await findExistingInfoChatRoom(userProfile, selectedProfileIds, allChatRooms);
 
-        if (chat === null){
-          // console.log("Selected:", selected);
-          chat = await createNewChatRoom(userProfile, selected);
-        }
+  //       if (chat === null){
+  //         // console.log("Selected:", selected);
+  //         chat = await createNewChatRoom(userProfile, selected);
+  //       }
 
-        // console.log("Chatroom:", chat.id);
-        // console.log("User:", userProfile);
+  //       // console.log("Chatroom:", chat.id);
+  //       // console.log("User:", userProfile);
 
-        // Create a new message in the chatroom with the infoRequest as text
-        await sendMessage(chat.id, userProfile, requestInfo);
-      })
-      .catch((err) => {
-        console.log(err);
-        alert('Error requesting info, please try again');
-      });
-    }
-    setRequestInfo('');
-  };
+  //       // Create a new message in the chatroom with the infoRequest as text
+  //       await sendMessage(chat.id, userProfile, requestInfo);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //       alert('Error requesting info, please try again');
+  //     });
+  //   }
+  //   setRequestInfo('');
+  // };
 
   const handleSort = (rowId) => {
     setLoading(true);
@@ -648,29 +649,22 @@ export default function ApprovalAccounts() {
             >
               Request More Info
             </ThemedButton>
+            <EmailDialog
+              emails={selected}
+              accounts={accounts}
+              profilePictures={profilePictures}
+              open={dialogOpen}
+              setClose={handleDialogClose}
+            />
+            {/*
             <Dialog open={dialogOpen} onClose={handleDialogClose}>
-              {/* <DialogTitle>Request More Info</DialogTitle> */}
+              <DialogTitle>Request More Info</DialogTitle>
               <DialogContent>
-                <List>
-                  {selected.map((email) => {
-                    const info = accounts.find((account) => account.email === email);
-                    return (
-                      <ListItemButton key={info.id} onClick={() => window.open(`/Profile/${info.id}`, '_blank')}>
-                        <Avatar
-                          image={profilePictures[info.id] ?? "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"}
-                          profileid={info.id}
-                          handleAvatarClick={() => {}}
-                        />
-                        <ListItemText primary={info.firstName + ' ' + info.lastName} secondary={info.email} />
-                      </ListItemButton>
-                    );
-                  })}
-                </List>
-                {/* <DialogContentText>
+                <DialogContentText>
                   Describe what other information you would like to get from the
                   selected users.
-                </DialogContentText> */}
-                {/* <TextField
+                </DialogContentText>
+                <TextField
                   autoFocus
                   margin="dense"
                   id="name"
@@ -679,37 +673,14 @@ export default function ApprovalAccounts() {
                   fullWidth
                   variant="standard"
                   onBlur={handleRequestInfo}
-                /> */}
+                />
               </DialogContent>
               <DialogActions>
-                <ThemedButton color={"green"} variant={"gradient"} type={"submit"} onClick={() => {
-                  /**
-                  * @link https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/Creating_hyperlinks#email_links
-                  * @link https://www.30secondsofcode.org/react/s/mailto/
-                  */
-                  const Mailto = ({ emails, subject = '', body = '', children }) => {
-                    let params = subject || body ? '?' : '';
-                    if (subject) params += `subject=${encodeURIComponent(subject)}`;
-                    if (body) params += `${subject ? '&' : ''}body=${encodeURIComponent(body)}`;
-
-                    return `mailto:${emails.join(',')}${params}`;
-                  };
-                  if (selected.length > 0) {
-                    window.open(Mailto({emails: selected}));
-                  }
-                }}>
-                  Send Email
-                </ThemedButton>
-                <ThemedButton color={"blue"} variant={"themed"} type={"submit"} onClick={() => navigator.clipboard.writeText(selected.join(' '))}>
-                  Copy Emails
-                </ThemedButton>
-                <ThemedButton color={"yellow"} variant={"themed"} type={"submit"} onClick={handleDialogClose}>
-                  Close
-                </ThemedButton>
-                
-                {/* <Button onClick={handleDialogSubmit}>Send Requests</Button> */}
+                <Button onClick={handleDialogClose}>Cancel</Button>
+                <Button onClick={handleDialogSubmit}>Send Requests</Button>
               </DialogActions>
             </Dialog>
+            */}
             <ThemedButton
               color={"gray"}
               variant={"themed"}
