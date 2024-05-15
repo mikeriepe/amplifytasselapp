@@ -857,7 +857,7 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
               <DropdownInput
               name="frequencyOptions"
               control={control}
-              label="Frequency"
+              label="Occurences"
               defaultValue = "1"
               options={frequencyOptionsList}
               register={register}

@@ -242,37 +242,6 @@ export default function OpportunityFilters({
               </FormGroup>
             </Collapse>
           </div>
-          <div className = 'flex flow-tiny'>
-            <MuiBox
-              className='
-                flex-space-between
-                flex-align-center
-                clickable
-                no-highlight
-              '
-              onClick={handleCollapseDate}
-            >
-              <h5>Dates</h5>
-              {collapseDate ?
-                <ExpandLessRoundedIcon /> :
-                 <ExpandMoreRoundedIcon />
-              }
-            </MuiBox>
-            <Collapse in={collapseDate} timeout='auto' unmountOnExit>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <div style={{display: "inline-block"}}>
-                  <DatePicker
-                    label="Start Date"
-                    sx = {{marginBottom: "10px", width: "45%"}}
-                  />
-                  <DatePicker
-                    label="End Date"
-                    sx = {{width: "45%", marginLeft: "10%"}}
-                  />
-                </div>       
-              </LocalizationProvider>
-            </Collapse>
-          </div>
           {/* Opportunity Types Filters */}
           {/*
           <div className='flex-vertical flow-tiny'>
