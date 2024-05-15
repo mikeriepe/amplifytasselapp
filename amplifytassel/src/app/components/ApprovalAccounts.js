@@ -127,7 +127,8 @@ function Row(props) {
   }, [row]);
 
   function handleAvatarClick(profileid) {
-    navigate(`/Profile/${profileid}`);
+    window.open(`/Profile/${profileid}`, "_blank");
+    // navigate(`/Profile/${profileid}`);
   }
 
   return (
@@ -499,51 +500,51 @@ export default function ApprovalAccounts() {
     }
   };
 
-  // const handleDialogSubmit = () => {
-  //   const status = 'REQUESTED';
-  //   const profiles = selected.map((email) => {
-  //     const info = accounts.find((account) => account.email === email);
-  //     return info;
-  //   });
+  const handleDialogSubmit = () => {
+    const status = 'REQUESTED';
+    const profiles = selected.map((email) => {
+      const info = accounts.find((account) => account.email === email);
+      return info;
+    });
 
-  //   const selectedProfileIds = profiles.map((profile) => profile.id);
+    const selectedProfileIds = profiles.map((profile) => profile.id);
 
-  //   setLoading(true);
-  //   // eslint-disable-next-line guard-for-in
-  //   for (let index = 0; index < profiles.length; index++) {
-  //     const profile = profiles[index];
-  //     DataStore.save(
-  //       Profile.copyOf(profile, updated => {
-  //         updated.status = status
-  //       }))
-  //       .then(async (res) => {
-  //       // console.log(res);
-  //       setDialogOpen(false);
-  //       getAccounts('status', true);
+    setLoading(true);
+    // eslint-disable-next-line guard-for-in
+    for (let index = 0; index < profiles.length; index++) {
+      const profile = profiles[index];
+      DataStore.save(
+        Profile.copyOf(profile, updated => {
+          updated.status = status
+        }))
+        .then(async (res) => {
+        // console.log(res);
+        setDialogOpen(false);
+        getAccounts('status', true);
 
-  //       // Create a new chatroom if they don't have one attached, otherwise get the existing one - can be done without a special field for the time being.
-  //       const allChatRooms = await DataStore.query(ChatRoom);
+        // Create a new chatroom if they don't have one attached, otherwise get the existing one - can be done without a special field for the time being.
+        const allChatRooms = await DataStore.query(ChatRoom);
         
-  //       var chat = null //await findExistingInfoChatRoom(userProfile, selectedProfileIds, allChatRooms);
+        var chat = null //await findExistingInfoChatRoom(userProfile, selectedProfileIds, allChatRooms);
 
-  //       if (chat === null){
-  //         // console.log("Selected:", selected);
-  //         chat = await createNewChatRoom(userProfile, selected);
-  //       }
+        if (chat === null){
+          // console.log("Selected:", selected);
+          chat = await createNewChatRoom(userProfile, selected);
+        }
 
-  //       // console.log("Chatroom:", chat.id);
-  //       // console.log("User:", userProfile);
+        // console.log("Chatroom:", chat.id);
+        // console.log("User:", userProfile);
 
-  //       // Create a new message in the chatroom with the infoRequest as text
-  //       await sendMessage(chat.id, userProfile, requestInfo);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //       alert('Error requesting info, please try again');
-  //     });
-  //   }
-  //   setRequestInfo('');
-  // };
+        // Create a new message in the chatroom with the infoRequest as text
+        await sendMessage(chat.id, userProfile, requestInfo);
+      })
+      .catch((err) => {
+        console.log(err);
+        alert('Error requesting info, please try again');
+      });
+    }
+    setRequestInfo('');
+  };
 
   const handleSort = (rowId) => {
     setLoading(true);

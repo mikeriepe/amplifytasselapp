@@ -43,7 +43,7 @@ export default function EmailDialog({ emails, accounts, profilePictures, open, s
     * @link https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/Creating_hyperlinks#email_links
     * @link https://www.30secondsofcode.org/react/s/mailto/
     */
-    const Mailto = ({ emails, subject = '', body = '', children }) => {
+    const Mailto = ({ emails, subject = '', body = '' }) => {
       let params = subject || body ? '?' : '';
       if (subject) params += `subject=${encodeURIComponent(subject)}`;
       if (body) params += `${subject ? '&' : ''}body=${encodeURIComponent(body)}`;

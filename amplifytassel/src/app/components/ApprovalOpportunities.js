@@ -52,6 +52,7 @@ import {
 import { sendMessage } from "../util/SocialChat";
 import useAuth from "../util/AuthContext";
 import moment from "moment";
+import EmailDialog from "./EmailDialog";
 
 const Page = styled((props) => <Box {...props} />)(() => ({
   display: "flex",
@@ -75,15 +76,19 @@ const Card = styled((props) => <MuiPaper elevation={0} {...props} />)(() => ({
   borderRadius: "10px",
 }));
 
-const Avatar = ({ image }, props) => (
+const Avatar = ({ image, handleAvatarClick }, props) => (
   <MuiAvatar
     {...props}
     src={image}
+    onClick={handleAvatarClick}
     sx={{
       height: "2.5rem",
       width: "2.5rem",
       border: "0.5px solid rgba(0, 0, 0, 0.15)",
       marginRight: "1rem",
+      ":hover": {
+        cursor: "pointer",
+      },
     }}
   />
 );
@@ -104,7 +109,7 @@ const toastOptions = {
  * @return {*} row object
  */
 function Row(props) {
-  const { row, handleSelect, profile, selectAllChecked, selected } = props;
+  const { row, handleSelect, profile, selectAllChecked, selected, profilePictures } = props;
   const [open, setOpen] = useState(false);
 
   const [banner, setBanner] = useState(null);
@@ -119,6 +124,14 @@ function Row(props) {
   useEffect(() => {
     downloadFile();
   }, []);
+
+  const navigateToOpportunity = () => {
+    window.open(`/Opportunity/${row.id}`, '_blank');
+  };
+
+  const navigateToProfile = () => {
+    if (profile?.id) window.open(`/Profile/${profile.id}`, '_blank');
+  };
 
   return (
     <React.Fragment>
@@ -144,7 +157,10 @@ function Row(props) {
         {/* eslint-disable-next-line max-len */}
         <TableCell className="data-cell" scope="row">
           <div style={{ display: "flex" }}>
-            <Avatar image={banner} />
+            <Avatar
+              image={banner}
+              handleAvatarClick={navigateToOpportunity}
+            />
             {/* eslint-disable-next-line max-len */}
             <div className="text-center-vert">{`${row.eventName}`}</div>
           </div>
@@ -158,7 +174,10 @@ function Row(props) {
         </TableCell>
         <TableCell className="data-cell" component="th" scope="row">
           <div style={{ display: "flex" }}>
-            <Avatar image={profile?.profilePicture} />
+            <Avatar
+              image={profilePictures[profile?.id] ?? "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"}
+              handleAvatarClick={navigateToProfile}
+            />
             {/* eslint-disable-next-line max-len */}
             <div className="text-center-vert">{`${profile?.firstName} ${profile?.lastName}`}</div>
           </div>
@@ -506,6 +525,9 @@ export default function ApprovalOpportunities() {
   const getProfiles = () => {
     DataStore.query(Profile)
       .then((res) => {
+        res.forEach((account) => {
+          downloadProfilePicture(account.id, account.picture);
+        });
         setProfiles(res);
       })
       .catch((err) => {
@@ -539,7 +561,7 @@ export default function ApprovalOpportunities() {
       } else {
         newSelected.splice(currentIndex, 1);
       }
-      console.log(newSelected);
+      // console.log(newSelected);
       setSelected(newSelected);
     }
   };
@@ -674,6 +696,33 @@ export default function ApprovalOpportunities() {
     },
   ];
 
+  const [selectedEmails, setSelectedEmails] = useState([]);
+
+  useEffect(() => {
+    const emails = selected.map((oppId) => {
+      try {
+        const opp = opps.find((opp) => opp.id === oppId);
+        const profile = profiles.find((profile) => profile.id === opp.profileID);
+        return profile.email;
+      }
+      catch (error) {
+        console.log(error);
+        return null;
+      }
+    });
+    const uniqueEmails = emails.filter((email, index) => email != null && emails.indexOf(email) === index);
+    setSelectedEmails(uniqueEmails);
+  }, [selected, opps, profiles]);
+
+  const [profilePictures, setProfilePictures] = useState({});
+  const downloadProfilePicture = async (profileId, picture) => {
+    if (profilePictures[profileId]) return;
+    const file = await Storage.get(picture, {
+      level: "public",
+    });
+    setProfilePictures((prev) => ({ ...prev, [profileId]: file }));
+  };
+
   return (
     <Page>
       <Card style={{ padding: ".5rem" }}>
@@ -710,6 +759,14 @@ export default function ApprovalOpportunities() {
             >
               Request More Info
             </ThemedButton>
+            <EmailDialog
+              emails={selectedEmails}
+              accounts={profiles}
+              profilePictures={profilePictures}
+              open={dialogOpen}
+              setClose={handleDialogClose}
+            />
+            {/*
             <Dialog open={dialogOpen} onClose={handleDialogClose}>
               <DialogTitle>Request More Info</DialogTitle>
               <DialogContent>
@@ -733,6 +790,7 @@ export default function ApprovalOpportunities() {
                 <Button onClick={handleDialogSubmit}>Send Requests</Button>
               </DialogActions>
             </Dialog>
+            */}
             <ThemedButton
               color={"gray"}
               variant={"themed"}
@@ -974,6 +1032,7 @@ export default function ApprovalOpportunities() {
                     handleSelect={handleSelect}
                     selectAllChecked={selectAllChecked}
                     selected={selected}
+                    profilePictures={profilePictures}
                   />
                 );
               })}
