@@ -29,6 +29,8 @@ import MuiPaper from '@mui/material/Paper';
 import {styled} from '@mui/material/styles';
 import { DataStore } from '@aws-amplify/datastore';
 import { Request, ProfileRole, OpportunityProfile, Profile, Role } from '../../models';
+import EmailDialog from './EmailDialog';
+import { Storage } from 'aws-amplify';
 
 
 /**
@@ -207,6 +209,9 @@ function EnhancedTableToolbar({
   updateDisplayReqs,
   members,
   updateMembers,
+  selectedEmails,
+  accounts,
+  profilePictures,
 }) {
   const [openFilter, setOpenFilter] = useState(false);
   const [filterValues, setFilterValues] = useState([]);
@@ -407,6 +412,8 @@ function EnhancedTableToolbar({
       });
   };
 
+  const [dialogOpen, setDialogOpen] = useState(false);
+
   return (
     <Toolbar
       sx={{
@@ -422,7 +429,7 @@ function EnhancedTableToolbar({
       }}
     >
       {numSelected > 0 ? (
-        <h4 className='text-blue' style={{flex: '1 1 100%'}}>
+        <h4 className='text-blue'>
           {numSelected} selected
         </h4>
       ) : (
@@ -434,6 +441,8 @@ function EnhancedTableToolbar({
       {numSelected > 0 ? (
         <Box
           className='flex-horizontal flex-flow-large'
+          flex={1}
+          justifyContent={'flex-end'}
           sx={{marginRight: '5px'}}
         >
           <ThemedButton
@@ -458,6 +467,22 @@ function EnhancedTableToolbar({
           >
             Deny
           </ThemedButton>
+          <ThemedButton
+            aria-label="Request More Info"
+            color='blue'
+            variant='themed'
+            size='small'
+            onClick={() => setDialogOpen(true)}
+          >
+            Request More Info
+          </ThemedButton>
+          <EmailDialog
+            emails={selectedEmails}
+            accounts={accounts}
+            profilePictures={profilePictures}
+            open={dialogOpen}
+            setClose={() => setDialogOpen(false)}
+          />
         </Box>
       ) : (
         <>
@@ -610,6 +635,7 @@ export default function FetchWrapper({
         ...reqs[i],
         firstName: reqProf[0].firstName,
         roleName: reqRole[0].name,
+        email: reqProf[0].email,
       });
     }
     setRequests([...extendedReqs]);
@@ -666,7 +692,7 @@ function ViewOpportunityRequests({
     if (event.target.checked) {
       // const newSelecteds = rows.map((n) => n.name);
       const newSelecteds = [];
-      console.log(displayReqs);
+      // console.log(displayReqs);
       const temp = displayReqs.sort(getComparator(order, orderBy));
       for (let i = page * rowsPerPage;
         i < temp.length && i < (page * rowsPerPage + rowsPerPage);
@@ -717,6 +743,45 @@ function ViewOpportunityRequests({
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+  
+  const [accounts, setAccounts] = useState([]);
+  const getAccounts = () => {
+    DataStore.query(Profile)
+      .then((res) => {
+        res.forEach((account) => {
+          downloadProfilePicture(account.id, account.picture);
+        });
+        setAccounts(res);
+      })
+      .catch((err) => {
+        alert("Error retrieving profiles");
+        console.log(err);
+      });
+  };
+  useEffect(getAccounts, []);
+
+  const [profilePictures, setProfilePictures] = useState({});
+  const downloadProfilePicture = async (profileId, picture) => {
+    if (profilePictures[profileId]) return;
+    const file = await Storage.get(picture, {
+      level: "public",
+    });
+    setProfilePictures((prev) => ({ ...prev, [profileId]: file }));
+  };
+  
+  const [selectedEmails, setSelectedEmails] = useState([]);
+  useEffect(() => {
+    const emails = selected.map((id) => {
+      try {
+        const req = requests.find((r) => r.profileID === id);
+        return req.email;
+      } catch (error) {
+        return null;
+      }
+    });
+    const uniqueEmails = emails.filter((email, index) => email != null && emails.indexOf(email) === index);
+    setSelectedEmails(uniqueEmails);
+  }, [selected, displayReqs]);
 
   return (
     <Box sx={{width: 'auto'}}>
@@ -739,6 +804,9 @@ function ViewOpportunityRequests({
           updateDisplayReqs={updateDisplayReqs}
           members={members}
           updateMembers={updateMembers}
+          selectedEmails={selectedEmails}
+          accounts={accounts}
+          profilePictures={profilePictures}
         />
         <TableContainer>
           <Table aria-labelledby='tableTitle'>
