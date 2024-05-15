@@ -20,6 +20,8 @@ const Item = ({handleCardClick, profileid, children}, props) => {
       borderRadius: '10px',
       textAlign: 'center',
       cursor: 'pointer',
+      marginTop: '10px',
+      marginLeft: '8px',
       
     }}
     {...props}

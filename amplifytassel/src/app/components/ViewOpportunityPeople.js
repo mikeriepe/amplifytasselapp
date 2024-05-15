@@ -3,6 +3,7 @@ import ViewOpportunityPeopleCard from "../components/ViewOpportunityPeopleCard";
 import { useState, useEffect } from 'react';
 import {Profile} from './../../models';
 import {createUserProfile, createOppProfile} from '../util/ExtractInformation'
+import Grid from '@mui/material/Grid'; // Grid version 1
 
 // Call lambda function to get matching recommendations
 const fetchPeopleIds = async (mergedJSON) => {
@@ -69,18 +70,21 @@ export default function ViewOpportunityFindPeople({
     }, [])
 
     return <>
+        <Grid container columnSpacing={{xs: 1}}>
         {people.map(
             (profile) => {
                 return (
-                    <ViewOpportunityPeopleCard
-                    key = {profile.id}
-                    profile = {profile}
-                    handleCardClick = {handleCardClick}/>
-                    )
+                    <Grid xs={6}>
+                        <ViewOpportunityPeopleCard
+                            key = {profile.id}
+                            profile = {profile}
+                            handleCardClick = {handleCardClick}/>
+                    </Grid>
+                        )
                 }
             )
-        } 
-
+        }
+        </Grid>
     </>  
 }
 
