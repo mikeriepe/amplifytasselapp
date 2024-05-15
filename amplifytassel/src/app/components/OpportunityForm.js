@@ -17,7 +17,7 @@ import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
 import { v4 as uuidv4 } from "uuid";
-import "../stylesheets/OpportunityForm.css"
+import "../stylesheets/OpportunityForm.css";
 // import Stack from '@mui/material/Stack';
 
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -111,6 +111,9 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
   const [currLocationType, setCurrLocationType] = useState(
     defaultValues.locationType
   );
+  const [currRecurringEventOptions, setCurrRecurringEventOptions] = useState(
+    defaultValues.recurringEventOptions
+  );
 
   const [currSponsorType, setCurrSponsorType] = useState(
     defaultValues.organizations === undefined
@@ -182,7 +185,12 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
     endtime: Yup.date()
       .min(Yup.ref("starttime"), "End time must be after start time")
       .required("End time is required"),
-
+    recurringEventOptions: Yup.string().required("Recurring Option Required"),
+    frequencyOptions: Yup.string().when([], {
+      is: () => currRecurringEventOptions != "None",
+      then: () => Yup.string().required("Frequency is required"),
+      otherwise: () => Yup.string().notRequired(),
+    }),
     subject: Yup.string().required("Subject is required"),
     keywords: Yup.object().notRequired(),
   });
@@ -222,6 +230,12 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
   const handleLocationTypeChange = (e) => {
     const value = e.target.value;
     setCurrLocationType(value);
+  };
+
+  const handleRecurringEventsChange = (e) => {
+    const value = e.target.value;
+    console.log("v: ", value);
+    setCurrRecurringEventOptions(value);
   };
 
   const combineTimeDate = (time, date) => {
@@ -300,6 +314,47 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
     {
       label: "Hybrid",
       value: "hybrid",
+    },
+  ];
+
+  const recurringEventOptions = [
+    {
+      label: "None",
+      value: "None",
+    },
+    {
+      label: "Weekly",
+      value: "Weekly",
+    },
+    {
+      label: "Biweekly",
+      value: "Biweekly",
+    },
+    {
+      label: "Monthly",
+      value: "Monthly",
+    },
+  ];
+  const frequencyOptionsList = [
+    {
+      label: "1",
+      value: "1",
+    },
+    {
+      label: "2",
+      value: "2",
+    },
+    {
+      label: "3",
+      value: "3",
+    },
+    {
+      label: "4",
+      value: "4",
+    },
+    {
+      label: "5",
+      value: "5",      
     },
   ];
 
@@ -781,6 +836,34 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
               />
             </Box>
           </LocalizationProvider>
+          <Box
+            sx={{
+              display: "grid",
+              gridAutoFlow: "column",
+              gridGap: "10px",
+              marginTop: "8px",
+            }}
+          >
+            <DropdownInput
+              name="recurringEventOptions"
+              control={control}
+              label="Recurring Events"
+              options={recurringEventOptions}
+              defaultValue="None"
+              customOnChange={handleRecurringEventsChange}
+              register={register}
+            />
+            {currRecurringEventOptions != "None" && (
+              <DropdownInput
+              name="frequencyOptions"
+              control={control}
+              label="Occurences"
+              defaultValue = "1"
+              options={frequencyOptionsList}
+              register={register}
+            />
+            )}
+          </Box>
 
           {/* ADDRESS */}
           {currLocationType != "remote" && (
@@ -928,19 +1011,12 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
 
             // set curr roles in values
             setValue("roles", currRoles);
-
+            setValue("recurringEventOptions", values.recurringEventOptions)
+            setValue("frequencyOptions", values.frequencyOptions)
             // Convert the selected tags to an object
             const tagstToSubmit = convertTagsToObject(selectedTags);
             setValue("keywords", tagstToSubmit);
-
-            //setValue('bannerKey', await uploadFile());
-
             handleSubmit(onSubmit)();
-            //})
-            //.catch((err) => {
-            //console.log(err);
-            //console.log("Error uploading img");
-            //})
           }}
         >
           Save

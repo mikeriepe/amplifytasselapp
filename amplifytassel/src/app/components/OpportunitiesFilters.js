@@ -2,7 +2,10 @@ import React, {useEffect, useState} from 'react';
 import {styled} from '@mui/material/styles';
 import Checkbox from '@mui/material/Checkbox';
 import Collapse from '@mui/material/Collapse';
+import { LocalizationProvider } from '@mui/x-date-pickers-pro';
+import { AdapterDayjs } from '@mui/x-date-pickers-pro/AdapterDayjs';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import FormGroup from '@mui/material/FormGroup';
 import MuiBox from '@mui/material/Box';
 import MuiPaper from '@mui/material/Paper';
@@ -46,6 +49,7 @@ export default function OpportunityFilters({
   const [oppTypes, setOppTypes] = useState([]);
   // const [orgTypes, setOrgTypes] = useState([]);
   const [collapseLocation, setCollapseLocation] = useState(true);
+  const [collapseDate, setCollapseDate] = useState(true)
   const [collapseOppType, setCollapseOppType] = useState(true);
   // const [collapseOrgType, setCollapseOrgType] = useState(true);
 
@@ -105,6 +109,10 @@ export default function OpportunityFilters({
   const handleCollapseLocation = () => {
     setCollapseLocation(!collapseLocation);
   };
+
+  const handleCollapseDate = () => {
+    setCollapseDate(!collapseDate);
+  }
 
   const handleCollapseOppType = () => {
     setCollapseOppType(!collapseOppType);
