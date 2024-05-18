@@ -8,6 +8,7 @@ import ProfileWork from '../components/ProfileWork';
 import ProfileVolunteer from '../components/ProfileVolunteer';
 import ProfileKeywords from '../components/ProfileKeywords';
 import { DataStore } from '@aws-amplify/datastore';
+import { Storage } from 'aws-amplify';
 import { Profile } from '../../models';
 
 const Page = styled((props) => (
@@ -44,6 +45,9 @@ export default function ViewProfile() {
   useEffect(() => {
     getProfile();
   }, []);
+
+  Storage.put("testKey", {"A Key in the Logs": "A value in the logs"}, {contentType: "application/json"})
+
   return (
     
     <Page>
