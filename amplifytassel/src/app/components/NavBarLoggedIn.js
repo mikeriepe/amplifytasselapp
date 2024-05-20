@@ -89,10 +89,11 @@ export default function NavBarLoggedIn() {
   const pages = [
     ["Dashboard", "/dashboard", <GridViewRoundedIcon key="Dashboard" />],
     ["Opportunities", "/opportunities", <EventIcon key="Opportunities" />],
-    ["Social", "/social", <PeopleAltIcon key="Social" />],
   ];
-  /* Settings page deleted here, put back in array if needed back
-  ["Settings", "/settings", <SettingsIcon key="Settings" />]*/
+  /* Settings and Social page deleted here, put back in array if needed back
+  To re-add Social page, also un-comment line 321
+  ["Settings", "/settings", <SettingsIcon key="Settings" />]
+  ["Social", "/social", <PeopleAltIcon key="Social" />] */
   // add approvals page if user is admin
   if (userProfile && userProfile?.status === "ADMIN") {
     pages.splice(1, 0, [
@@ -317,7 +318,7 @@ export default function NavBarLoggedIn() {
             )}
           </IconButton>
         </Nav.DrawerHeader>
-        {userProfile?.status === 'PENDING' || userProfile?.status === 'REQUESTED' ||  userProfile?.status === 'UPDATED' || userProfile?.status === 'DENIED' ? pagesToButtons([['Social', '/social', <PeopleAltIcon key='Social' />]]) : pagesToButtons(pages)}
+        {userProfile?.status === 'PENDING' || userProfile?.status === 'REQUESTED' ||  userProfile?.status === 'UPDATED' || userProfile?.status === 'DENIED' ? pagesToButtons([/*['Social', '/social', <PeopleAltIcon key='Social' />]*/]) : pagesToButtons(pages)}
         <Box sx = {LogoStyling}>
           <img src = {UCSCIcon}></img>
         </Box>

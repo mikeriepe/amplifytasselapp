@@ -41,6 +41,8 @@ import {
   calculateXpBarPercentage,
   calculatePointsToNextLevel,
 } from "../util/PointsAddition.js";
+import ThemedButton from "./ThemedButton.js";
+import EmailDialog from "./EmailDialog.js";
 
 const Header = styled((props) => <MuiPaper elevation={0} {...props} />)(() => ({
   position: "relative",
@@ -438,6 +440,7 @@ export default function ProfileHeader({ data, editButton }) {
   // console.log(pointsToNextLevel);
 
   const progress = 65;
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   return (
     <Header>
@@ -543,6 +546,38 @@ export default function ProfileHeader({ data, editButton }) {
                   />
                 </Box>
               </>
+            )}
+            {
+              !editButton && (
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  margin: "1em",
+                }}
+              >
+                <ThemedButton
+                  color={"blue"}
+                  variant={"themed"}
+                  type={"submit"}
+                  style={{
+                    fontSize: "0.875rem",
+                    marginRight: "1.5em"
+                  }}
+                  onClick={() => setDialogOpen(true)}
+                >
+                  Message
+                </ThemedButton>
+                <EmailDialog
+                  emails={[data.email]}
+                  accounts={[data]}
+                  profilePictures={{ [data.id]: profilePicture }}
+                  open={dialogOpen}
+                  setClose={() => setDialogOpen(false)}
+                  canClickAvatar={false}
+                />
+              </Box>
             )}
           </Box>
         </div>

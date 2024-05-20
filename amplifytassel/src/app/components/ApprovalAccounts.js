@@ -46,6 +46,8 @@ import { Storage } from 'aws-amplify';
 import { findExistingInfoChatRoom, createNewChatRoom } from '../util/SocialChatRooms';
 import useAuth from '../util/AuthContext';
 import { sendMessage } from '../util/SocialChat';
+import { List, ListItemText, ListItemButton } from "@mui/material";
+import EmailDialog from "./EmailDialog";
 
 const Page = styled((props) => <Box {...props} />)(() => ({
   display: "flex",
@@ -125,7 +127,8 @@ function Row(props) {
   }, [row]);
 
   function handleAvatarClick(profileid) {
-    navigate(`/Profile/${profileid}`);
+    window.open(`/Profile/${profileid}`, "_blank");
+    // navigate(`/Profile/${profileid}`);
   }
 
   return (
@@ -377,6 +380,9 @@ export default function ApprovalAccounts() {
       .then((res) => {
         // console.log('Profiles (' + res.length + '):');
         // console.log(res.map((account) => account.email));
+        res.forEach((account) => {
+          downloadProfilePicture(account.id, account.picture);
+        });
         sortAccounts(res, sortBy, reset);
         setLoading(false);
       })
@@ -599,6 +605,15 @@ export default function ApprovalAccounts() {
     },
   ];
 
+  const [profilePictures, setProfilePictures] = useState({});
+  const downloadProfilePicture = async (profileId, picture) => {
+    if (profilePictures[profileId]) return;
+    const file = await Storage.get(picture, {
+      level: "public",
+    });
+    setProfilePictures((prev) => ({ ...prev, [profileId]: file }));
+  };
+
   return (
     <Page>
       <Card style={{ padding: ".5rem" }}>
@@ -635,6 +650,14 @@ export default function ApprovalAccounts() {
             >
               Request More Info
             </ThemedButton>
+            <EmailDialog
+              emails={selected}
+              accounts={accounts}
+              profilePictures={profilePictures}
+              open={dialogOpen}
+              setClose={handleDialogClose}
+            />
+            {/*
             <Dialog open={dialogOpen} onClose={handleDialogClose}>
               <DialogTitle>Request More Info</DialogTitle>
               <DialogContent>
@@ -658,6 +681,7 @@ export default function ApprovalAccounts() {
                 <Button onClick={handleDialogSubmit}>Send Requests</Button>
               </DialogActions>
             </Dialog>
+            */}
             <ThemedButton
               color={"gray"}
               variant={"themed"}
