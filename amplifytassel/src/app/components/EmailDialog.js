@@ -30,7 +30,7 @@ const toastOptions = {
   progress: undefined,
 };
 
-export default function EmailDialog({ emails, accounts, profilePictures, open, setClose }) {
+export default function EmailDialog({ emails, accounts, profilePictures, open, setClose, canClickAvatar = true }) {
 
   const copyEmails = () => {
     if (emails.length === 0) return;
@@ -62,7 +62,9 @@ export default function EmailDialog({ emails, accounts, profilePictures, open, s
           {emails.length > 0 ? emails.map((email) => {
             const info = accounts.find((account) => account.email === email);
             return (
-              <ListItemButton key={info.id} onClick={() => window.open(`/Profile/${info.id}`, '_blank')}>
+              <ListItemButton key={info.id} onClick={() => {
+                if (canClickAvatar) window.open(`/Profile/${info.id}`, '_blank');
+              }}>
                 <Avatar image={profilePictures[info.id] ?? "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"} />
                 <ListItemText primary={info.firstName + ' ' + info.lastName} secondary={info.email} />
               </ListItemButton>
