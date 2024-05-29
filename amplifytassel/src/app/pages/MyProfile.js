@@ -6,7 +6,6 @@ import Fade from "@mui/material/Fade";
 import { styled } from "@mui/material";
 import Button from "@mui/material/Button";
 import MuiBox from "@mui/material/Box";
-import { BarChart } from '@mui/x-charts/BarChart';
 import useAuth from "../util/AuthContext";
 import ProfileAlert from "../components/ProfileAlert";
 import ProfileAnalytics from "../components/ProfileAnalytics";

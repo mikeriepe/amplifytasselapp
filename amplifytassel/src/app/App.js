@@ -32,6 +32,7 @@ import awsExports from "../aws-exports";
 import useAnimation from './util/AnimationContext';
 
 import { Navigate, Outlet } from 'react-router-dom';
+import Analytics from './pages/Analytics';
 
 Amplify.configure(awsExports);
 
@@ -159,6 +160,7 @@ const App = () => {
           {/* Routes only accessible if you are an admin */}
           <Route element={<AdminLayout loadingAuth={loadingAuth} user={user} userProfile={userProfile} />}>
             <Route path='/approvals' element={<Approvals/>}/>
+            <Route path='/analytics' element={<Analytics/>}/>
           </Route>
         </Routes>
       </Box>
