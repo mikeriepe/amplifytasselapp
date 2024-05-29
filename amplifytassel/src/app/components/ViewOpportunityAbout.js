@@ -6,6 +6,7 @@ import MuiAccordionSummary from '@mui/material/AccordionSummary';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { LineChart } from '@mui/x-charts/LineChart';
+import dayjs from "dayjs";
 import MuiPaper from '@mui/material/Paper';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import ThemedButton from './ThemedButton';
@@ -149,15 +150,16 @@ function GraphsCard(testData) {
   const recentApps = testData["testData"]["RecentApps"];
   const appRate = testData["testData"]["AppRate"];
   const apps = testData["testData"]["Apps"];
+
   const todaysDate = new Date();
-  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-  const dates = [];
+  const xAxisData = [];
   for (let i = 0; i < recentApps.length; i++){
-    const dateAsString = months[todaysDate.getMonth()] + " " + todaysDate.getDate().toString()
-    dates.push(dateAsString)
-    todaysDate.setDate(todaysDate.getDate() - 1);
+    const dateToPush = new Date();
+    dateToPush.setDate(todaysDate.getDate() - i)
+    xAxisData.push(dateToPush);
   }
-  console.log(dates.reverse());
+  console.log("xaxis: ", xAxisData);
+
   return (
     <GraphsPaper>
       <h4 className='text-dark' style={{paddingBottom: '1.5em'}}>
@@ -176,14 +178,22 @@ function GraphsCard(testData) {
       </Box>
       <Box>
         <h3>Recent Applications</h3>
-        <BarChart
-        series={[
-          { data: recentApps }
+        <LineChart
+        xAxis={[
+          {
+            label: "Date",
+            data: xAxisData.reverse(),
+            tickInterval: xAxisData,
+            scaleType: "time",
+            valueFormatter: (date) => dayjs(date).format("MMM D"),
+          },
         ]}
-        height={290}
-        xAxis={[{ data: dates.reverse(), scaleType: 'band' }]}
-        margin={{ top: 10, bottom: 30, left: 40, right: 10 }}
-        />
+        yAxis={[{ label: "Profile Views" }]}
+        series={[
+          { data: recentApps },
+        ]}
+        height={400}
+      />
       </Box>
       <div style = {{display: "inline-block"}}>
         <h3>Application Rate: {appRate}</h3>
