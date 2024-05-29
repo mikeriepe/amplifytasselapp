@@ -6,8 +6,10 @@ import Fade from "@mui/material/Fade";
 import { styled } from "@mui/material";
 import Button from "@mui/material/Button";
 import MuiBox from "@mui/material/Box";
+import { BarChart } from '@mui/x-charts/BarChart';
 import useAuth from "../util/AuthContext";
 import ProfileAlert from "../components/ProfileAlert";
+import ProfileAnalytics from "../components/ProfileAnalytics";
 import ProfileHeader from "../components/ProfileHeader";
 import ProfileAbout from "../components/ProfileAbout";
 import ProfileSocials from "../components/ProfileSocials";
@@ -87,6 +89,7 @@ export default function MyProfile() {
           <ProfileWork data={userProfile} />
           <ProfileVolunteer data={userProfile} />
           <ProfileKeywords data={userProfile} />
+          <ProfileAnalytics></ProfileAnalytics>
           <Button
             onClick={handleDeactivateAccount}
             aria-label="Profile Deactivate Account"

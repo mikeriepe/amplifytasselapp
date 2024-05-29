@@ -4,6 +4,8 @@ import Box from '@mui/material/Box';
 import MuiAccordion from '@mui/material/Accordion';
 import MuiAccordionSummary from '@mui/material/AccordionSummary';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
+import { BarChart } from '@mui/x-charts/BarChart';
+import { LineChart } from '@mui/x-charts/LineChart';
 import MuiPaper from '@mui/material/Paper';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import ThemedButton from './ThemedButton';
@@ -30,6 +32,10 @@ export default function ViewOpportunityAbout({
   opportunityid,
   tags,
 }) {
+  const testData = {"PopularUserTags" : {"Computer Science": 10, "Engineering": 15, "Mentoring": 20}, 
+                    "RecentApps" : [3, 1, 2, 4, 3, 10, 6],
+                    "AppRate": 1.25, 
+                    "Apps": 325}
   return (
     <>
       <DescriptionCard description={description} />
@@ -43,6 +49,7 @@ export default function ViewOpportunityAbout({
       <TagsCard
         tags={tags}
       />
+      <GraphsCard testData={testData}></GraphsCard>
     </>
   );
 };
@@ -78,6 +85,21 @@ function DescriptionCard({description}) {
     </Description>
   );
 }
+
+const GraphsPaper = styled((props) => (
+  <MuiPaper elevation={0} {...props} />
+))(() => ({
+  display: 'block',
+  flexDirection: 'column',
+  marginTop: '1em',
+  padding: '1.5em 2em 1.5em 2em',
+  height: 'auto',
+  width: 'auto',
+  background: 'white',
+  boxShadow: '0px 4px 50px -15px rgba(0, 86, 166, 0.15)',
+  border: '0.5px solid rgba(0, 0, 0, 0.15)',
+  borderRadius: '10px',
+}));
 
 const TagsPaper = styled((props) => (
   <MuiPaper elevation={0} {...props} />
@@ -120,6 +142,57 @@ function TagsCard({tags}) {
     </TagsPaper>
   );
 }
+
+function GraphsCard(testData) {
+  console.log("test data: ", testData);
+  const tags =  testData["testData"]["PopularUserTags"];
+  const recentApps = testData["testData"]["RecentApps"];
+  const appRate = testData["testData"]["AppRate"];
+  const apps = testData["testData"]["Apps"];
+  const todaysDate = new Date();
+  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+  const dates = [];
+  for (let i = 0; i < recentApps.length; i++){
+    const dateAsString = months[todaysDate.getMonth()] + " " + todaysDate.getDate().toString()
+    dates.push(dateAsString)
+    todaysDate.setDate(todaysDate.getDate() - 1);
+  }
+  console.log(dates.reverse());
+  return (
+    <GraphsPaper>
+      <h4 className='text-dark' style={{paddingBottom: '1.5em'}}>
+        Analytics
+      </h4>
+      <Box>
+        <h3>Popular Tags</h3>
+        <BarChart
+        series={[
+          { data: Object.values(tags) }
+        ]}
+        height={290}
+        xAxis={[{ data: Object.keys(tags), scaleType: 'band' }]}
+        margin={{ top: 10, bottom: 30, left: 40, right: 10 }}
+        />
+      </Box>
+      <Box>
+        <h3>Recent Applications</h3>
+        <BarChart
+        series={[
+          { data: recentApps }
+        ]}
+        height={290}
+        xAxis={[{ data: dates.reverse(), scaleType: 'band' }]}
+        margin={{ top: 10, bottom: 30, left: 40, right: 10 }}
+        />
+      </Box>
+      <div style = {{display: "inline-block"}}>
+        <h3>Application Rate: {appRate}</h3>
+        <h3>Total Applications: {apps}</h3>
+      </div>
+    </GraphsPaper>
+  )
+}
+
 
 // COMPONENTS FOR ABOUT PAGE ROLES SECTION -------------------------------------
 
