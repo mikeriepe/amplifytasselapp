@@ -2,6 +2,9 @@ import React from 'react';
 import {styled} from '@mui/material';
 import MuiPaper from '@mui/material/Paper';
 import { BarChart } from '@mui/x-charts/BarChart';
+import { LineChart } from '@mui/x-charts/LineChart';
+import dayjs from "dayjs";
+
 
 
 const Analytics = styled((props) => (
@@ -38,17 +41,36 @@ export default function ProfileAnalytics({data}) {
     todaysDate.setDate(todaysDate.getDate() - 1);
   }
   console.log(dates.reverse());
+
+  const todaysDate2 = new Date();
+  const xAxisData = [];
+  for (let i = 0; i < profileViews.length; i++){
+    const dateToPush = new Date();
+    dateToPush.setDate(todaysDate2.getDate() - i)
+    xAxisData.push(dateToPush);
+  }
+  console.log("xaxis: ", xAxisData);
+
   return (
     <Analytics>
       <h4 className='text-dark'>Analytics</h4>
-      <BarChart
-        series={[
-          { data: profileViews }
+      <h3>Profile Views</h3>
+      <LineChart
+        xAxis={[
+          {
+            label: "Date",
+            data: xAxisData.reverse(),
+            tickInterval: xAxisData,
+            scaleType: "time",
+            valueFormatter: (date) => dayjs(date).format("MMM D"),
+          },
         ]}
-        height={290}
-        xAxis={[{ data: dates, scaleType: 'band' }]}
-        margin={{ top: 10, bottom: 30, left: 40, right: 10 }}
-        />
+        yAxis={[{ label: "Profile Views" }]}
+        series={[
+          { data: profileViews },
+        ]}
+        height={400}
+      />
       <h3>Hours Spent Volunteering: {hoursSpentVolunteering}</h3>
     </Analytics>
   );
