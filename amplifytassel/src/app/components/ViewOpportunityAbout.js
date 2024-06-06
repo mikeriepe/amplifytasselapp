@@ -6,6 +6,10 @@ import MuiAccordionSummary from '@mui/material/AccordionSummary';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { LineChart } from '@mui/x-charts/LineChart';
+import Card from '@mui/material/Card';
+import { Grid } from '@mui/material';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
 import dayjs from "dayjs";
 import MuiPaper from '@mui/material/Paper';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
@@ -145,7 +149,6 @@ function TagsCard({tags}) {
 }
 
 function GraphsCard(testData) {
-  console.log("test data: ", testData);
   const tags =  testData["testData"]["PopularUserTags"];
   const recentApps = testData["testData"]["RecentApps"];
   const appRate = testData["testData"]["AppRate"];
@@ -158,26 +161,53 @@ function GraphsCard(testData) {
     dateToPush.setDate(todaysDate.getDate() - i)
     xAxisData.push(dateToPush);
   }
-  console.log("xaxis: ", xAxisData);
 
   return (
     <GraphsPaper>
       <h4 className='text-dark' style={{paddingBottom: '1.5em'}}>
         Analytics
       </h4>
-      <Box>
-        <h3>Popular Tags</h3>
-        <BarChart
+      <Grid container spacing={4}>
+        <Grid item lg={3} sm={6} xl={3} xs={12}>
+          <Card>
+            <CardContent>
+              <Typography color="text.secondary" gutterBottom>
+              Application Rate
+              </Typography>
+              <Typography variant="h4" component="div">
+                {appRate}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item lg={3} sm={6} xl={3} xs={12}>
+          <Card>
+            <CardContent>
+              <Typography color="text.secondary" gutterBottom>
+              Total Applications
+              </Typography>
+              <Typography variant="h4" component="div">
+                {apps}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+      <Typography style={{marginTop: "15px"}} variant="h6" component="div">
+          Popular Tags
+      </Typography>
+      <BarChart
         series={[
           { data: Object.values(tags) }
         ]}
         height={290}
         xAxis={[{ data: Object.keys(tags), scaleType: 'band' }]}
         margin={{ top: 10, bottom: 30, left: 40, right: 10 }}
-        />
-      </Box>
+      />
       <Box>
-        <h3>Recent Applications</h3>
+        <Typography style={{marginTop: "15px"}} variant="h6" component="div">
+          Recent Applications
+        </Typography>
         <LineChart
         xAxis={[
           {
@@ -195,10 +225,6 @@ function GraphsCard(testData) {
         height={400}
       />
       </Box>
-      <div style = {{display: "inline-block"}}>
-        <h3>Application Rate: {appRate}</h3>
-        <h3>Total Applications: {apps}</h3>
-      </div>
     </GraphsPaper>
   )
 }

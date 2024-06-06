@@ -2,6 +2,10 @@ import React from 'react';
 import {styled} from '@mui/material';
 import MuiPaper from '@mui/material/Paper';
 import { BarChart } from '@mui/x-charts/BarChart';
+import Card from '@mui/material/Card';
+import { Grid } from '@mui/material';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
 import { LineChart } from '@mui/x-charts/LineChart';
 import dayjs from "dayjs";
 
@@ -54,7 +58,23 @@ export default function ProfileAnalytics({data}) {
   return (
     <Analytics>
       <h4 className='text-dark'>Analytics</h4>
-      <h3>Profile Views</h3>
+      <Grid container spacing={4}>
+        <Grid item lg={3} sm={6} xl={3} xs={12}>
+          <Card>
+            <CardContent>
+              <Typography color="text.secondary" gutterBottom>
+              Hours Spent Volunteering
+              </Typography>
+              <Typography variant="h4" component="div">
+                {hoursSpentVolunteering} hrs
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+      <Typography variant="h6" component="div">
+        Profile Views
+      </Typography>
       <LineChart
         xAxis={[
           {
@@ -71,7 +91,6 @@ export default function ProfileAnalytics({data}) {
         ]}
         height={400}
       />
-      <h3>Hours Spent Volunteering: {hoursSpentVolunteering}</h3>
     </Analytics>
   );
 }
