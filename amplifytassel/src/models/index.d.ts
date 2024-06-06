@@ -461,6 +461,7 @@ type EagerProfile = {
   readonly Friends?: (Friend | null)[] | null;
   readonly Chatrooms?: (ProfileChatRoom | null)[] | null;
   readonly Messages?: (Message | null)[] | null;
+  readonly Analytics?: ProfileAnalytics | null;
   readonly InfoRequestChatroom?: ChatRoom | null;
   readonly linkedin?: string | null;
   readonly dateOfBirth?: string | null;
@@ -468,6 +469,7 @@ type EagerProfile = {
   readonly pronouns?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
+  readonly profileAnalyticsId?: string | null;
   readonly profileInfoRequestChatroomId?: string | null;
 }
 
@@ -508,6 +510,7 @@ type LazyProfile = {
   readonly Friends: AsyncCollection<Friend>;
   readonly Chatrooms: AsyncCollection<ProfileChatRoom>;
   readonly Messages: AsyncCollection<Message>;
+  readonly Analytics: AsyncItem<ProfileAnalytics | undefined>;
   readonly InfoRequestChatroom: AsyncItem<ChatRoom | undefined>;
   readonly linkedin?: string | null;
   readonly dateOfBirth?: string | null;
@@ -515,6 +518,7 @@ type LazyProfile = {
   readonly pronouns?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
+  readonly profileAnalyticsId?: string | null;
   readonly profileInfoRequestChatroomId?: string | null;
 }
 
@@ -522,6 +526,112 @@ export declare type Profile = LazyLoading extends LazyLoadingDisabled ? EagerPro
 
 export declare const Profile: (new (init: ModelInit<Profile>) => Profile) & {
   copyOf(source: Profile, mutator: (draft: MutableModel<Profile>) => MutableModel<Profile> | void): Profile;
+}
+
+type EagerSiteAnalytics = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<SiteAnalytics, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly monthlySignups?: (number | null)[] | null;
+  readonly dailySignups?: (number | null)[] | null;
+  readonly MonthlyPopularEvents?: (string | null)[] | null;
+  readonly MonthlyPopularTags?: (string | null)[] | null;
+  readonly monthlyUserTasselTime?: number | null;
+  readonly monthlyUserVolunteerTime?: number | null;
+  readonly monthlyUserApps?: number | null;
+  readonly monthlyNoShows?: number | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazySiteAnalytics = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<SiteAnalytics, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly monthlySignups?: (number | null)[] | null;
+  readonly dailySignups?: (number | null)[] | null;
+  readonly MonthlyPopularEvents?: (string | null)[] | null;
+  readonly MonthlyPopularTags?: (string | null)[] | null;
+  readonly monthlyUserTasselTime?: number | null;
+  readonly monthlyUserVolunteerTime?: number | null;
+  readonly monthlyUserApps?: number | null;
+  readonly monthlyNoShows?: number | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type SiteAnalytics = LazyLoading extends LazyLoadingDisabled ? EagerSiteAnalytics : LazySiteAnalytics
+
+export declare const SiteAnalytics: (new (init: ModelInit<SiteAnalytics>) => SiteAnalytics) & {
+  copyOf(source: SiteAnalytics, mutator: (draft: MutableModel<SiteAnalytics>) => MutableModel<SiteAnalytics> | void): SiteAnalytics;
+}
+
+type EagerProfileAnalytics = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<ProfileAnalytics, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly profileViews?: (number | null)[] | null;
+  readonly hoursSpentVolunteering?: number | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyProfileAnalytics = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<ProfileAnalytics, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly profileViews?: (number | null)[] | null;
+  readonly hoursSpentVolunteering?: number | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type ProfileAnalytics = LazyLoading extends LazyLoadingDisabled ? EagerProfileAnalytics : LazyProfileAnalytics
+
+export declare const ProfileAnalytics: (new (init: ModelInit<ProfileAnalytics>) => ProfileAnalytics) & {
+  copyOf(source: ProfileAnalytics, mutator: (draft: MutableModel<ProfileAnalytics>) => MutableModel<ProfileAnalytics> | void): ProfileAnalytics;
+}
+
+type EagerOpportunityAnalytics = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<OpportunityAnalytics, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly recentApps?: (number | null)[] | null;
+  readonly apps?: number | null;
+  readonly PopularUserTags?: (string | null)[] | null;
+  readonly appRate?: number | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyOpportunityAnalytics = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<OpportunityAnalytics, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly recentApps?: (number | null)[] | null;
+  readonly apps?: number | null;
+  readonly PopularUserTags?: (string | null)[] | null;
+  readonly appRate?: number | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type OpportunityAnalytics = LazyLoading extends LazyLoadingDisabled ? EagerOpportunityAnalytics : LazyOpportunityAnalytics
+
+export declare const OpportunityAnalytics: (new (init: ModelInit<OpportunityAnalytics>) => OpportunityAnalytics) & {
+  copyOf(source: OpportunityAnalytics, mutator: (draft: MutableModel<OpportunityAnalytics>) => MutableModel<OpportunityAnalytics> | void): OpportunityAnalytics;
 }
 
 type EagerRequest = {
@@ -630,8 +740,10 @@ type EagerOpportunity = {
   readonly keywords?: (KeywordOpportunity | null)[] | null;
   readonly status?: OpportunityStatus | keyof typeof OpportunityStatus | null;
   readonly bannerKey?: string | null;
+  readonly Analytics?: OpportunityAnalytics | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
+  readonly opportunityAnalyticsId?: string | null;
 }
 
 type LazyOpportunity = {
@@ -660,8 +772,10 @@ type LazyOpportunity = {
   readonly keywords: AsyncCollection<KeywordOpportunity>;
   readonly status?: OpportunityStatus | keyof typeof OpportunityStatus | null;
   readonly bannerKey?: string | null;
+  readonly Analytics: AsyncItem<OpportunityAnalytics | undefined>;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
+  readonly opportunityAnalyticsId?: string | null;
 }
 
 export declare type Opportunity = LazyLoading extends LazyLoadingDisabled ? EagerOpportunity : LazyOpportunity
