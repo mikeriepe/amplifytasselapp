@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import MuiBox from '@mui/material/Box';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
 import {styled} from '@mui/material/styles';
 import MuiPaper from '@mui/material/Paper';
 import { LineChart } from '@mui/x-charts/LineChart';
 import dayjs from "dayjs";
+import { Grid } from '@mui/material';
 
 const AnalyticsBox = styled((props) => (
     <MuiPaper elevation={0} {...props} />
@@ -66,8 +71,62 @@ export default function Analytics() {
   return (
     <Page>
         <AnalyticsBox>
-            <h1>Site Analytics</h1>
-            <h3>Monthly Sign Ups</h3>
+            <Typography variant="h3" component="div">
+            Site Analytics
+            </Typography>
+            <Grid container spacing={4}>
+              <Grid item lg={3} sm={6} xl={3} xs={12}>
+                <Card>
+                  <CardContent>
+                    <Typography color="text.secondary" gutterBottom>
+                        Monthly User Tassel Time
+                    </Typography>
+                    <Typography variant="h4" component="div">
+                      {testData["monthlyUserTasselTime"]} hrs
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid item lg={3} sm={6} xl={3} xs={12}>
+                <Card>
+                  <CardContent>
+                    <Typography color="text.secondary" gutterBottom>
+                      Monthly User Volunteer Time
+                    </Typography>
+                    <Typography variant="h4" component="div">
+                      {testData["monthlyUserVolunteerTime"]} hrs
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid item lg={3} sm={6} xl={3} xs={12}>
+                <Card>
+                  <CardContent>
+                    <Typography color="text.secondary" gutterBottom>
+                      Monthly User Applications
+                    </Typography>
+                    <Typography variant="h4" component="div">
+                      {testData["monthlyUserApps"]}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid item lg={3} sm={6} xl={3} xs={12}>
+                <Card>
+                  <CardContent>
+                    <Typography color="text.secondary" gutterBottom>
+                      Monthly No Shows
+                    </Typography>
+                    <Typography variant="h4" component="div">
+                      {testData["monthlyNoShows"]}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            </Grid>
+            <Typography color="text.primary" variant="h5">
+              Monthly Sign Ups
+            </Typography>
             <LineChart
                 xAxis={[
                 {
@@ -84,7 +143,9 @@ export default function Analytics() {
                 ]}
                 height={300}
             />
-            <h3>Daily Sign Ups</h3>
+            <Typography color="text.primary" variant="h5">
+              Daily Sign Ups
+            </Typography>
             <LineChart
                 xAxis={[
                 {
@@ -101,11 +162,6 @@ export default function Analytics() {
                 ]}
                 height={300}
             />
-
-            <h3>Monthly User Tassel Time: {testData["monthlyUserTasselTime"]}</h3>
-            <h3>Monthly User Volunteer Time: {testData["monthlyUserVolunteerTime"]}</h3>
-            <h3>Monthly User Applications: {testData["monthlyUserApps"]}</h3>
-            <h3>Monthly No Shows: {testData["monthlyNoShows"]}</h3>
         </AnalyticsBox>
     </Page>
   );
