@@ -12,6 +12,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import EventIcon from "@mui/icons-material/Event";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import TimelineIcon from '@mui/icons-material/Timeline';
 import GridViewRoundedIcon from "@mui/icons-material/GridViewRounded";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -90,7 +91,6 @@ export default function NavBarLoggedIn() {
     ["Dashboard", "/dashboard", <GridViewRoundedIcon key="Dashboard" />],
     ["Opportunities", "/opportunities", <EventIcon key="Opportunities" />],
     ["Social", "/social", <PeopleAltIcon key="Social" />],
-    ["Analytics", "/analytics", <PeopleAltIcon key = "Social" />]
   ];
   /* Settings page deleted here, put back in array if needed back
   ["Settings", "/settings", <SettingsIcon key="Settings" />]*/
@@ -101,6 +101,7 @@ export default function NavBarLoggedIn() {
       "/approvals",
       <AssignmentTurnedInIcon key="Approvals" />,
     ]);
+    pages.push(["Analytics", "/analytics", <TimelineIcon key = "Analytics" />])
   }
 
   // Notifications -------------------------------------------------------------

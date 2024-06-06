@@ -36,7 +36,7 @@ export default function ViewOpportunityAbout({
   const testData = {"PopularUserTags" : {"Computer Science": 10, "Engineering": 15, "Mentoring": 20}, 
                     "RecentApps" : [3, 1, 2, 4, 3, 10, 6],
                     "AppRate": 1.25, 
-                    "Apps": 325}
+                    "Apps": 325};
   return (
     <>
       <DescriptionCard description={description} />
@@ -50,7 +50,7 @@ export default function ViewOpportunityAbout({
       <TagsCard
         tags={tags}
       />
-      <GraphsCard testData={testData}></GraphsCard>
+      {isCreator ? <GraphsCard testData={testData}></GraphsCard> : <></>}
     </>
   );
 };
