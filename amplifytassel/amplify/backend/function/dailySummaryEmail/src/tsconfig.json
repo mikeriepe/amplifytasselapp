@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "commonjs",
+
+    /*  allows us to use ESM */
+    "esModuleInterop": true,
+    /* allow use of import AWS from 'aws-sdk' instead of import * as AWS from 'aws-sdk' */
+    "allowSyntheticDefaultImports": true,
+  },
+  "include": ["./*.ts"],
+  "exclude": ["node_modules", "**/*.spec.ts"]
+}

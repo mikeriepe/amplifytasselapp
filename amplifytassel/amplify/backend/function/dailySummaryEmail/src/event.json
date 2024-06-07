@@ -1,0 +1,13 @@
+{
+  "version": "0",
+  "id": "5a6662af-f06c-401a-b305-901f49c7ad52",
+  "detail-type": "Scheduled Event",
+  "source": "aws.scheduler",
+  "account": "940349617006",
+  "time": "2024-06-07T07:00:00Z",
+  "region": "us-west-1",
+  "resources": [
+    "arn:aws:scheduler:us-west-1:940349617006:schedule/default/DailyMidnightPST"
+  ],
+  "detail": "{}"
+}
