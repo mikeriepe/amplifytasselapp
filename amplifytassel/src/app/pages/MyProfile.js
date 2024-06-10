@@ -19,6 +19,7 @@ import ProfileKeywords from "../components/ProfileKeywords";
 import { Auth } from "aws-amplify";
 import { DataStore } from "@aws-amplify/datastore";
 import { Profile } from "../../models";
+import ProfileAnalyticsComponent from "../components/ProfileAnalytics";
 
 const Page = styled((props) => <MuiBox {...props} />)(() => ({
   display: "flex",
@@ -88,7 +89,7 @@ export default function MyProfile() {
           <ProfileWork data={userProfile} />
           <ProfileVolunteer data={userProfile} />
           <ProfileKeywords data={userProfile} />
-          <ProfileAnalytics></ProfileAnalytics>
+          <ProfileAnalyticsComponent></ProfileAnalyticsComponent>
           <Button
             onClick={handleDeactivateAccount}
             aria-label="Profile Deactivate Account"

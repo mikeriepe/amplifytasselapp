@@ -9,6 +9,9 @@ import MuiPaper from '@mui/material/Paper';
 import { LineChart } from '@mui/x-charts/LineChart';
 import dayjs from "dayjs";
 import { Grid } from '@mui/material';
+import { DataStore } from "@aws-amplify/datastore";
+import { SiteAnalytics, Profile } from "./../../models";
+
 
 const AnalyticsBox = styled((props) => (
     <MuiPaper elevation={0} {...props} />
@@ -52,9 +55,20 @@ export default function Analytics() {
                       "monthlyNoShows": 26,
     }
 
+    const [siteAnalyticsData, setSiteAnalyticsData] = useState();
+    const getSiteAnalytics = () => {
+      DataStore.query(SiteAnalytics).then((res) => {
+        setSiteAnalyticsData(res);
+        console.log("here: ", res);
+      }).catch((err) => {
+        alert("Error retrieving site analytics, please try again");
+        console.log(err);
+      });
+    };
+
     const todaysDate = new Date();
     const xAxisData = [];
-    for (let i = 0; i < testData["dailySignups"].length; i++){
+    for (let i = 0; i < siteAnalyticsData?.dailySignups?.length; i++){
       const dateToPush = new Date();
       dateToPush.setDate(todaysDate.getDate() - i)
       xAxisData.push(dateToPush);
@@ -62,12 +76,16 @@ export default function Analytics() {
 
     const todaysDate2 = new Date();
     const xAxisDataMonthly = [];
-    for (let i = 0; i < testData["monthlySignups"].length; i++){
+    for (let i = 0; i < siteAnalyticsData?.monthlySignups?.length; i++){
       const dateToPush = new Date();
       dateToPush.setMonth(todaysDate2.getMonth() - i)
       xAxisDataMonthly.push(dateToPush);
     }
 
+    useEffect(() => {
+      getSiteAnalytics();
+      // eslint-disable-next-line
+    }, []);
   return (
     <Page>
         <AnalyticsBox>
@@ -82,7 +100,7 @@ export default function Analytics() {
                         Monthly User Tassel Time
                     </Typography>
                     <Typography variant="h4" component="div">
-                      {testData["monthlyUserTasselTime"]} hrs
+                      {siteAnalyticsData?.monthlyUserTasselTime} hrs
                     </Typography>
                   </CardContent>
                 </Card>
@@ -94,7 +112,7 @@ export default function Analytics() {
                       Monthly User Volunteer Time
                     </Typography>
                     <Typography variant="h4" component="div">
-                      {testData["monthlyUserVolunteerTime"]} hrs
+                      {siteAnalyticsData?.monthlyUserVolunteerTime} hrs
                     </Typography>
                   </CardContent>
                 </Card>
@@ -106,7 +124,7 @@ export default function Analytics() {
                       Monthly User Applications
                     </Typography>
                     <Typography variant="h4" component="div">
-                      {testData["monthlyUserApps"]}
+                      {siteAnalyticsData?.monthlyUserApps}
                     </Typography>
                   </CardContent>
                 </Card>
@@ -118,7 +136,7 @@ export default function Analytics() {
                       Monthly No Shows
                     </Typography>
                     <Typography variant="h4" component="div">
-                      {testData["monthlyNoShows"]}
+                      {siteAnalyticsData?.monthlyNoShows}
                     </Typography>
                   </CardContent>
                 </Card>
@@ -127,7 +145,8 @@ export default function Analytics() {
             <Typography color="text.primary" variant="h5">
               Monthly Sign Ups
             </Typography>
-            <LineChart
+            {siteAnalyticsData?.monthlySignups ? 
+              <LineChart
                 xAxis={[
                 {
                     label: "Months",
@@ -139,29 +158,32 @@ export default function Analytics() {
                 ]}
                 yAxis={[{ label: "Monthly Sign Ups" }]}
                 series={[
-                { data: testData["monthlySignups"] },
+                { data: siteAnalyticsData?.monthlySignups },
                 ]}
                 height={300}
-            />
+              />
+            : <></>}
             <Typography color="text.primary" variant="h5">
               Daily Sign Ups
             </Typography>
-            <LineChart
-                xAxis={[
-                {
-                    label: "Date",
-                    data: xAxisData.reverse(),
-                    tickInterval: xAxisData,
-                    scaleType: "time",
-                    valueFormatter: (date) => dayjs(date).format("MMM D"),
-                },
-                ]}
-                yAxis={[{ label: "Daily Sign Ups" }]}
-                series={[
-                { data: testData["dailySignups"] },
-                ]}
-                height={300}
-            />
+            {siteAnalyticsData?.dailySignups ? 
+              <LineChart
+              xAxis={[
+              {
+                  label: "Date",
+                  data: xAxisData.reverse(),
+                  tickInterval: xAxisData,
+                  scaleType: "time",
+                  valueFormatter: (date) => dayjs(date).format("MMM D"),
+              },
+              ]}
+              yAxis={[{ label: "Daily Sign Ups" }]}
+              series={[
+              { data: siteAnalyticsData?.dailySignups },
+              ]}
+              height={300}
+          />
+            : <></>}
         </AnalyticsBox>
     </Page>
   );

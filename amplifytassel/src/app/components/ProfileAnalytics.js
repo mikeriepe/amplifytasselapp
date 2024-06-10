@@ -8,7 +8,9 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import { LineChart } from '@mui/x-charts/LineChart';
 import dayjs from "dayjs";
-
+import { DataStore } from "@aws-amplify/datastore";
+import { ProfileAnalytics } from "./../../models";
+import { useEffect, useState } from 'react';
 
 
 const Analytics = styled((props) => (
@@ -30,30 +32,41 @@ const Analytics = styled((props) => (
  * creates Profile
  * @return {HTML} Profile component
  */
-export default function ProfileAnalytics({data}) {
+export default function ProfileAnalyticsComponent({data}) {
   const testData = {"ProfileViews": [10, 5, 6, 10, 4],
                     "HoursSpentVolunteering": 100,
   }
-  const profileViews = testData["ProfileViews"];
-  const hoursSpentVolunteering = testData["HoursSpentVolunteering"]
-  const todaysDate = new Date();
-  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-  const dates = [];
-  for (let i = 0; i < profileViews.length; i++){
-    const dateAsString = months[todaysDate.getMonth()] + " " + todaysDate.getDate().toString()
-    dates.push(dateAsString)
-    todaysDate.setDate(todaysDate.getDate() - 1);
-  }
-  console.log(dates.reverse());
-
-  const todaysDate2 = new Date();
   const xAxisData = [];
-  for (let i = 0; i < profileViews.length; i++){
-    const dateToPush = new Date();
-    dateToPush.setDate(todaysDate2.getDate() - i)
-    xAxisData.push(dateToPush);
-  }
-  console.log("xaxis: ", xAxisData);
+  const profileViews = [];
+  const [profileAnalyticsData, setProfileAnalyticsData] = useState();
+  const getProfileAnalytics = () => {
+    DataStore.query(ProfileAnalytics).then((res) => {
+      setProfileAnalyticsData(res);
+      console.log("here: ", res);
+      profileViews = profileAnalyticsData.profileViews;
+      const todaysDate = new Date();
+      const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+      const dates = [];
+      for (let i = 0; i < profileViews.length; i++){
+        const dateAsString = months[todaysDate.getMonth()] + " " + todaysDate.getDate().toString()
+        dates.push(dateAsString)
+        todaysDate.setDate(todaysDate.getDate() - 1);
+      }
+      const todaysDate2 = new Date();
+      for (let i = 0; i < profileViews.length; i++){
+        const dateToPush = new Date();
+        dateToPush.setDate(todaysDate2.getDate() - i)
+        xAxisData.push(dateToPush);
+      }
+    }).catch((err) => {
+      console.log(err);
+    });
+  };
+
+  useEffect(() => {
+    getProfileAnalytics();
+    // eslint-disable-next-line
+  }, []);
 
   return (
     <Analytics>
@@ -65,9 +78,11 @@ export default function ProfileAnalytics({data}) {
               <Typography color="text.secondary" gutterBottom>
               Hours Spent Volunteering
               </Typography>
+              {profileAnalyticsData?.hoursSpentVolunteering ?
               <Typography variant="h4" component="div">
-                {hoursSpentVolunteering} hrs
+                {profileAnalyticsData?.hoursSpentVolunteering} hrs
               </Typography>
+              : <></>}
             </CardContent>
           </Card>
         </Grid>

@@ -1,0 +1,16 @@
+{
+  "lambdaLayers": [],
+  "environmentVariableList": [
+    {
+      "cloudFormationParameterName": "adminEmails",
+      "environmentVariableName": "adminEmails"
+    }
+  ],
+  "permissions": {
+    "api": {
+      "amplifytassel": [
+        "Query"
+      ]
+    }
+  }
+}

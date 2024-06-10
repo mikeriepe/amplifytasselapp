@@ -14,6 +14,7 @@ const ses = new AWS.SES({ apiVersion: '2010-12-01' });
 
 const GRAPHQL_ENDPOINT = process.env.API_AMPLIFYTASSEL_GRAPHQLAPIENDPOINTOUTPUT;
 const GRAPHQL_API_KEY = process.env.API_AMPLIFYTASSEL_GRAPHQLAPIKEYOUTPUT;
+const WEBSITE = 'slugmatch.app';
 
 const requestQuery = /* GraphQL */ `
   query RequestQuery($opportunityID: ID!, $roleID: ID!, $profileID: ID!) {
@@ -145,7 +146,7 @@ exports.handler = async (event) => {
 
 ${requestMessage}
 
-View the opportunity here: tassel.com/Opportunity/${opportunityID}`
+View the opportunity here: ${WEBSITE}/Opportunity/${opportunityID}`
         );
       }
       else if (oldImage.status && oldImage.status !== newImage.status) {
@@ -157,7 +158,7 @@ View the opportunity here: tassel.com/Opportunity/${opportunityID}`
             'You Have Been Approved For ' + opportunityName,
 `Your application for the role ${roleName} for the opportunity ${opportunityName} has been accepted.
 
-View the opportunity here: tassel.com/Opportunity/${opportunityID}
+View the opportunity here: ${WEBSITE}/Opportunity/${opportunityID}
 
 Have any questions? Email the organizer - ${creatorEmail}`
           );
@@ -170,7 +171,7 @@ Have any questions? Email the organizer - ${creatorEmail}`
             'You Have Been Rejected For ' + opportunityName,
 `Your application for the role of ${roleName} for the opportunity ${opportunityName} has been rejected.
 
-View the opportunity here: tassel.com/Opportunity/${opportunityID}
+View the opportunity here: ${WEBSITE}/Opportunity/${opportunityID}
 
 Have any questions? Email the organizer - ${creatorEmail}`
           );

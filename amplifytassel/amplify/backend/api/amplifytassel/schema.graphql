@@ -110,11 +110,38 @@ type Profile @model @auth(rules: [{allow: public}]) {
   Friends: [Friend] @hasMany(indexName: "byProfile", fields: ["id"])
   Chatrooms: [ChatRoom] @manyToMany(relationName: "ProfileChatRoom")
   Messages: [Message] @hasMany(indexName: "byProfile", fields: ["id"])
+  Analytics: ProfileAnalytics @hasOne
   InfoRequestChatroom: ChatRoom @hasOne
   linkedin: AWSURL
   dateOfBirth: AWSDate
   collegeAffiliation: String
   pronouns: String
+}
+
+type SiteAnalytics @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  monthlySignups: [Int]
+  dailySignups: [Int]
+  MonthlyPopularEvents: [String]
+  MonthlyPopularTags: [String]
+  monthlyUserTasselTime: Float
+  monthlyUserVolunteerTime: Float
+  monthlyUserApps: Int
+  monthlyNoShows: Int
+}
+
+type ProfileAnalytics @model @auth(rules: [{allow: public}]){
+  id: ID!
+  profileViews: [Int]
+  hoursSpentVolunteering: Int
+}
+
+type OpportunityAnalytics @model @auth(rules: [{allow: public}]){
+  id: ID!
+  recentApps: [Int]
+  apps: Int
+  PopularUserTags: [String]
+  appRate: Float
 }
 
 type Request @model @auth(rules: [{allow: public}]) {
@@ -161,6 +188,7 @@ type Opportunity @model @auth(rules: [{allow: public}]) {
   keywords: [Keyword] @manyToMany(relationName: "KeywordOpportunity")
   status: OpportunityStatus
   bannerKey: String
+  Analytics: OpportunityAnalytics @hasOne
 }
 
 enum ProfileStatus {
