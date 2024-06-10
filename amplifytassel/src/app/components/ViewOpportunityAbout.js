@@ -19,10 +19,12 @@ import useAuth from '../util/AuthContext';
 import {toast} from 'react-toastify';
 import Chip from '@mui/material/Chip';
 import { DataStore } from '@aws-amplify/datastore';
-import { Major, Request, Profile } from '../../models';
+import { Major, Request, Profile, OpportunityAnalytics} from '../../models';
 import useAnimation from '../util/AnimationContext';
 import { calculateIfUserLeveledUp } from '../util/PointsAddition';
 import { PointsAddition } from '../util/PointsAddition';
+import { useState } from 'react';
+
 
 /**
  * About tab for view opportunity
@@ -54,7 +56,7 @@ export default function ViewOpportunityAbout({
       <TagsCard
         tags={tags}
       />
-      {isCreator ? <GraphsCard testData={testData}></GraphsCard> : <></>}
+      {isCreator ? <GraphsCard></GraphsCard> : <></>}
     </>
   );
 };
@@ -148,15 +150,29 @@ function TagsCard({tags}) {
   );
 }
 
-function GraphsCard(testData) {
+function GraphsCard() {
+  /*
   const tags =  testData["testData"]["PopularUserTags"];
   const recentApps = testData["testData"]["RecentApps"];
   const appRate = testData["testData"]["AppRate"];
   const apps = testData["testData"]["Apps"];
+  */
 
+  const [opportunityAnalyticsData, setOpportunityAnalyticsData] = useState();
+  
+  const getOpportunityAnalyticsData = () => {
+    DataStore.query(opportunityAnalyticsData).then((res) => {
+      setOpportunityAnalyticsData(res);
+      console.log("here: ", res);
+    }).catch((err) => {
+      console.log(err);
+    });
+  }
+
+  const recentApps = opportunityAnalyticsData?.recentApps;
   const todaysDate = new Date();
   const xAxisData = [];
-  for (let i = 0; i < recentApps.length; i++){
+  for (let i = 0; i < recentApps?.length; i++){
     const dateToPush = new Date();
     dateToPush.setDate(todaysDate.getDate() - i)
     xAxisData.push(dateToPush);
@@ -175,7 +191,7 @@ function GraphsCard(testData) {
               Application Rate
               </Typography>
               <Typography variant="h4" component="div">
-                {appRate}
+                {opportunityAnalyticsData?.appRate}
               </Typography>
             </CardContent>
           </Card>
@@ -187,27 +203,17 @@ function GraphsCard(testData) {
               Total Applications
               </Typography>
               <Typography variant="h4" component="div">
-                {apps}
+                {opportunityAnalyticsData?.apps}
               </Typography>
             </CardContent>
           </Card>
         </Grid>
       </Grid>
-      <Typography style={{marginTop: "15px"}} variant="h6" component="div">
-          Popular Tags
-      </Typography>
-      <BarChart
-        series={[
-          { data: Object.values(tags) }
-        ]}
-        height={290}
-        xAxis={[{ data: Object.keys(tags), scaleType: 'band' }]}
-        margin={{ top: 10, bottom: 30, left: 40, right: 10 }}
-      />
       <Box>
         <Typography style={{marginTop: "15px"}} variant="h6" component="div">
           Recent Applications
         </Typography>
+        {recentApps ?
         <LineChart
         xAxis={[
           {
@@ -223,7 +229,7 @@ function GraphsCard(testData) {
           { data: recentApps },
         ]}
         height={400}
-      />
+      /> : <></>}
       </Box>
     </GraphsPaper>
   )
