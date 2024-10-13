@@ -10,6 +10,8 @@ import Toolbar from "@mui/material/Toolbar";
 import Tooltip from "@mui/material/Tooltip";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import EventIcon from "@mui/icons-material/Event";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import GridViewRoundedIcon from "@mui/icons-material/GridViewRounded";
@@ -22,12 +24,17 @@ import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import NotificationsRoundedIcon from "@mui/icons-material/NotificationsRounded";
 import SettingsIcon from "@mui/icons-material/Settings";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
-import UCSCIcon from "../assets/ucsc-logo.jpg"
+import UCSCIcon from "../assets/ucsc-logo.jpg";
 import Notification from "./Notification";
 import ThemedButton from "./ThemedButton";
 import useAuth from "../util/AuthContext";
 import * as Nav from "./NavBarComponents";
 import { Storage } from "aws-amplify";
+import { useTabIndex } from "./TabIndexContext";
+
+import Button from "@mui/material/Button";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 
 import { Auth } from "aws-amplify";
 
@@ -36,7 +43,7 @@ const LogoStyling = {
   width: "100%",
   bottom: 0,
   marginBottom: "65px",
-}
+};
 
 const LogoutStyling = {
   position: "absolute",
@@ -81,8 +88,9 @@ export default function NavBarLoggedIn() {
   const { userProfile, setLoadingAuth } = useAuth();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
-  const [tabIndex, setTabIndex] = useState(window.location.pathname);
+  const { tabIndex, setTabIndex } = useTabIndex();
   const [profilePicture, setProfilePicture] = useState(null);
+  const navigate = useNavigate();
 
   // Pages ---------------------------------------------------------------------
 
@@ -126,6 +134,22 @@ export default function NavBarLoggedIn() {
     />
   );
 
+  // Profile Drop Down Menu -------------------------------------------------------------
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const profOpen = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleProfileClick = () => {
+    handleClose(); // Close the menu
+    navigate("/myprofile"); // Navigate to /myprofile
+  };
+
   // Profile -------------------------------------------------------------------
 
   const downloadProfilePicture = async () => {
@@ -166,52 +190,57 @@ export default function NavBarLoggedIn() {
   };
 
   const handleTabClick = (index) => {
+    console.log(index);
     setTabIndex(index);
   };
 
-  const pagesToButtons = (pages) =>{
-    return <List>
-    {pages.map((arr) => {
-      const [label, route, icon] = arr;
-      return (
-        <Link key={label} to={route}>
-          <Tooltip title={label} placement='right'>
-            <ListItemButton
-              onClick={() => handleTabClick(route)}
-              sx={ListButtonStyling}
-            >
-              <ListItemIcon
-                sx={{
-                  ...ListIconStyling,
-                  mr: open ? 3 : 'auto',
-                  color: route === tabIndex ?
-                    'var(--primary-blue-main)' :
-                    'var(--tertiary-gray-main)',
-                }}
-              >
-                {icon}
-              </ListItemIcon>
-              <ListItemText
-                sx={{
-                  ...ListTextStyling,
-                  '.MuiTypography-root': {
-                    ...ListTextStyling['.MuiTypography-root'],
-                    'color': route === tabIndex ?
-                      'var(--primary-blue-main)' :
-                      'var(--tertiary-gray-main)',
-                  },
-                  'opacity': open ? 1 : 0,
-                }}
-              >
-                {label}
-              </ListItemText>
-            </ListItemButton>
-          </Tooltip>
-        </Link>
-      );
-    })}
-  </List>
-  }
+  const pagesToButtons = (pages) => {
+    return (
+      <List>
+        {pages.map((arr) => {
+          const [label, route, icon] = arr;
+          return (
+            <Link key={label} to={route}>
+              <Tooltip title={label} placement="right">
+                <ListItemButton
+                  onClick={() => handleTabClick(route)}
+                  sx={ListButtonStyling}
+                >
+                  <ListItemIcon
+                    sx={{
+                      ...ListIconStyling,
+                      mr: open ? 3 : "auto",
+                      color:
+                        route === tabIndex
+                          ? "var(--primary-blue-main)"
+                          : "var(--tertiary-gray-main)",
+                    }}
+                  >
+                    {icon}
+                  </ListItemIcon>
+                  <ListItemText
+                    sx={{
+                      ...ListTextStyling,
+                      ".MuiTypography-root": {
+                        ...ListTextStyling[".MuiTypography-root"],
+                        color:
+                          route === tabIndex
+                            ? "var(--primary-blue-main)"
+                            : "var(--tertiary-gray-main)",
+                      },
+                      opacity: open ? 1 : 0,
+                    }}
+                  >
+                    {label}
+                  </ListItemText>
+                </ListItemButton>
+              </Tooltip>
+            </Link>
+          );
+        })}
+      </List>
+    );
+  };
 
   useEffect(() => {
     setTabIndex(window.location.pathname);
@@ -243,6 +272,7 @@ export default function NavBarLoggedIn() {
           </IconButton>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
+            {/* Notification Icon */}
             <Tooltip title="Notifications">
               <IconButton
                 aria-label="show number of new notifications"
@@ -258,30 +288,51 @@ export default function NavBarLoggedIn() {
               </IconButton>
             </Tooltip>
             {/*{showNotification && renderNotification}*/}
-            <Link to="/myprofile">
-              <ThemedButton
-                startIcon={
-                  <Avatar
-                    src={profilePicture}
-                    alt="Remy Sharp"
-                    onError={handleError}
-                    style={{ marginRight: 5 }}
-                  />
-                }
-                color={"white"}
-                variant={"themed"}
-                style={{ borderRadius: 30, padding: 10 }}
-              >
-                {/* TODO: replace with userProfile's first name */}
-                <Box className="text-xbold text-lineheight-16 text-dark">
-                  <p>
-                    {/* {`${userProfile.firstname}`}
-                    &nbsp;
-                    {`${userProfile.lastname.charAt(0)}.`} */}
-                  </p>
-                </Box>
-              </ThemedButton>
-            </Link>
+            {/* Profile Icon */}
+
+            {/* <Tooltip title="Profile Options"></Tooltip> */}
+            <ThemedButton
+              startIcon={
+                <Avatar
+                  src={profilePicture}
+                  alt="Remy Sharp"
+                  onError={handleError}
+                  style={{ marginRight: -8, marginLeft: 4 }}
+                />
+              }
+              color={"white"}
+              variant={"themed"}
+              style={{ borderRadius: 30, padding: 10 }}
+              id="basic-button"
+              onClick={handleClick}
+            >
+              {/* TODO: replace with userProfile's first name */}
+              <Box className="text-xbold text-lineheight-16 text-dark">
+                {profOpen ? (
+                  <ExpandLessIcon className="icon-gray" />
+                ) : (
+                  <ExpandMoreIcon className="icon-gray" />
+                )}
+              </Box>
+            </ThemedButton>
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorEl}
+              open={profOpen}
+              onClose={handleClose}
+              MenuListProps={{
+                "aria-labelledby": "basic-button",
+              }}
+              sx={{
+                "&:hover": {
+                  backgroundColor: "transparent", // Remove hover background color
+                },
+              }}
+            >
+              <MenuItem onClick={handleProfileClick}>Profile</MenuItem>
+              <MenuItem onClick={handleClose}>My account</MenuItem>
+              <MenuItem onClick={handleLogout}>Logout</MenuItem>
+            </Menu>
           </Box>
         </Toolbar>
       </Nav.AppBarLoggedIn>
@@ -318,9 +369,16 @@ export default function NavBarLoggedIn() {
             )}
           </IconButton>
         </Nav.DrawerHeader>
-        {userProfile?.status === 'PENDING' || userProfile?.status === 'REQUESTED' ||  userProfile?.status === 'UPDATED' || userProfile?.status === 'DENIED' ? pagesToButtons([/*['Social', '/social', <PeopleAltIcon key='Social' />]*/]) : pagesToButtons(pages)}
-        <Box sx = {LogoStyling}>
-          <img src = {UCSCIcon}></img>
+        {userProfile?.status === "PENDING" ||
+        userProfile?.status === "REQUESTED" ||
+        userProfile?.status === "UPDATED" ||
+        userProfile?.status === "DENIED"
+          ? pagesToButtons([
+              /*['Social', '/social', <PeopleAltIcon key='Social' />]*/
+            ])
+          : pagesToButtons(pages)}
+        <Box sx={LogoStyling}>
+          <img src={UCSCIcon}></img>
         </Box>
         <Box sx={LogoutStyling}>
           <List>
