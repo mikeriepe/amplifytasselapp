@@ -1,75 +1,72 @@
-import React, {useEffect, useState} from 'react';
-import {styled} from '@mui/material/styles';
-import MuiBox from '@mui/material/Box';
-import AddRoundedIcon from '@mui/icons-material/AddRounded';
-import CompressedTabBar from '../components/CompressedTabBar';
-import OpportunitiesList from '../components/OpportunitiesList';
-import PageHeader from '../components/PageHeader';
-import useAuth from '../util/AuthContext';
-import OpportunityForm from '../components/OpportunityForm';
-import {Modal} from '@mui/material';
-import {toast} from 'react-toastify';
-import {useLocation} from 'react-router-dom';
-import { DataStore, Storage } from 'aws-amplify';
-import { Opportunity } from '../../models';
-import { Role } from '../../models';
-import { OpportunityStatus, Keyword } from '../../models';
-import { PointsAddition } from '../util/PointsAddition';
-import useAnimation from '../util/AnimationContext';
-import { calculateIfUserLeveledUp } from '../util/PointsAddition';
-import { v4 as uuidv4 } from 'uuid';
+import React, { useEffect, useState } from "react";
+import { styled } from "@mui/material/styles";
+import MuiBox from "@mui/material/Box";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import CompressedTabBar from "../components/CompressedTabBar";
+import OpportunitiesList from "../components/OpportunitiesList";
+import PageHeader from "../components/PageHeader";
+import useAuth from "../util/AuthContext";
+import OpportunityForm from "../components/OpportunityForm";
+import { Modal } from "@mui/material";
+import { toast } from "react-toastify";
+import { useLocation } from "react-router-dom";
+import { DataStore, Storage } from "aws-amplify";
+import { Opportunity } from "../../models";
+import { Role } from "../../models";
+import { OpportunityStatus, Keyword } from "../../models";
+import { PointsAddition } from "../util/PointsAddition";
+import useAnimation from "../util/AnimationContext";
+import { calculateIfUserLeveledUp } from "../util/PointsAddition";
+import { v4 as uuidv4 } from "uuid";
 
-
-const Page = styled((props) => (
-  <MuiBox {...props} />
-))(() => ({
-  display: 'flex',
-  flexDirection: 'column',
-  height: 'auto',
-  width: 'auto',
-  background: 'var(--background-primary)',
+const Page = styled((props) => <MuiBox {...props} />)(() => ({
+  display: "flex",
+  flexDirection: "column",
+  height: "auto",
+  width: "auto",
+  background: "var(--background-primary)",
 }));
 
 const AddButton = (props) => (
   <MuiBox
-    className='
+    className="
       flex-horizontal
       flex-flow-xlarge
       flex-align-center
       text-lineheight-16
       clickable
-    '
+    "
   >
     <h5
-      aria-label='Opportunities Create Opportunity'
-      className='text-small text-yellow'
+      aria-label="Opportunities Create Opportunity"
+      className="text-small text-yellow"
       style={{
         margin: 0,
-        width: '100px',
-        textAlign: 'right',
+        width: "100px",
+        textAlign: "right",
       }}
     >
       Create New Opportunity
     </h5>
     <MuiBox
       sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '40px',
-        width: '40px',
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "40px",
+        width: "40px",
         padding: 0,
-        background: 'var(--secondary-yellow-main)',
-        borderRadius: '5px',
+        background: "var(--secondary-yellow-main)",
+        borderRadius: "5px",
       }}
       {...props}
     >
       <AddRoundedIcon
         sx={{
-          height: '20px',
-          width: '20px',
-          stroke: 'white',
-          strokeWidth: '2px',
+          height: "20px",
+          width: "20px",
+          stroke: "white",
+          strokeWidth: "2px",
         }}
       />
     </MuiBox>
@@ -81,7 +78,7 @@ const AddButton = (props) => (
  * @return {JSX}
  */
 export default function FetchWrapper() {
-  const {userProfile} = useAuth();
+  const { userProfile } = useAuth();
   const [joinedOpportunities, setJoinedOpportunities] = useState([]);
   const [createdOpportunities, setCreatedOpportunities] = useState([]);
   const [pastOpportunities, setPastOpportunities] = useState([]);
@@ -92,112 +89,119 @@ export default function FetchWrapper() {
   const getAllKeywords = () => {
     console.log("Getting keywords...");
     DataStore.query(Keyword)
-    .then((res) => {
-      setAllKeywords(res);
-    })
-    .catch((err) => {
-      console.log(err);
-      alert('Error retrieving keywords');
-    });
-  }
+      .then((res) => {
+        setAllKeywords(res);
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("Error retrieving keywords");
+      });
+  };
 
   const getJoinedOpportunities = () => {
     console.log("Getting joined...");
     const currTime = new Date().toISOString();
-    DataStore.query(Opportunity, (o) => o.and(o => [
-      o.profilesJoined.profile.id.eq(userProfile.id),
-      o.endTime.gt(currTime)
-    ]))
-    .then((res) => {
-      setJoinedOpportunities(res);
-    })
-    .catch((err) => {
-      console.log(err);
-      alert('Error retrieving joined opportunities');
-    });
+    DataStore.query(Opportunity, (o) =>
+      o.and((o) => [
+        o.profilesJoined.profile.id.eq(userProfile.id),
+        o.endTime.gt(currTime),
+      ])
+    )
+      .then((res) => {
+        setJoinedOpportunities(res);
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("Error retrieving joined opportunities");
+      });
   };
 
   const getCreatedOpportunities = () => {
     console.log("Getting created...");
-      DataStore.query(Opportunity, o => o.profileID.eq(userProfile.id))
+    DataStore.query(Opportunity, (o) => o.profileID.eq(userProfile.id))
       .then((res) => {
         setCreatedOpportunities(res);
       })
       .catch((err) => {
         console.log(err);
-        alert('Error retrieving created opportunities');
+        alert("Error retrieving created opportunities");
       });
   };
 
   const getPastOpportunities = () => {
     console.log("Getting past...");
     const currTime = new Date().toISOString();
-    DataStore.query(Opportunity, (o) => o.and(o => [
-      o.profilesJoined.profile.id.eq(userProfile.id),
-      o.endTime.lt(currTime)
-    ]))
-    .then((res) => {
-      setPastOpportunities(res);
-    })
-    .catch((err) => {
-      console.log(err);
-      alert('Error retrieving past joined opportunities');
-    });
+    DataStore.query(Opportunity, (o) =>
+      o.and((o) => [
+        o.profilesJoined.profile.id.eq(userProfile.id),
+        o.endTime.lt(currTime),
+      ])
+    )
+      .then((res) => {
+        setPastOpportunities(res);
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("Error retrieving past joined opportunities");
+      });
   };
-  
+
   const getPendingOpportunities = () => {
     console.log("Getting pending...");
-    DataStore.query(Opportunity, (o) => o.and(o => [
-      o.Requests.profileID.eq(userProfile.id),
-      //o.Requests.status.eq('PENDING')
-    ]))
-    .then((res) => {
-      console.log(res);
-      const pendingOpps = [];
-      for (let i = 0; i < res.length; i++) {
-        const p = Promise.resolve(res[i].Requests.values);
-        p.then(value => {
-          for (let j = 0; j < value.length; j++) {
-            if (value[j].profileID === userProfile.id && value[j].status === 'PENDING') {
-              pendingOpps.push(res[i]);
+    DataStore.query(Opportunity, (o) =>
+      o.and((o) => [
+        o.Requests.profileID.eq(userProfile.id),
+        //o.Requests.status.eq('PENDING')
+      ])
+    )
+      .then((res) => {
+        console.log(res);
+        const pendingOpps = [];
+        for (let i = 0; i < res.length; i++) {
+          const p = Promise.resolve(res[i].Requests.values);
+          p.then((value) => {
+            for (let j = 0; j < value.length; j++) {
+              if (
+                value[j].profileID === userProfile.id &&
+                value[j].status === "PENDING"
+              ) {
+                pendingOpps.push(res[i]);
+              }
+            }
+          });
+        }
+        setPendingOpportunities(pendingOpps);
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("Error retrieving pending opportunities");
+      });
+  };
+
+  const getAllOpportunities = () => {
+    DataStore.query(Opportunity, (o) =>
+      o.and((o) => [o.status.eq("APPROVED"), o.profileID.ne(userProfile.id)])
+    )
+      .then((res) => {
+        var firstList = res;
+        DataStore.query(Opportunity, (o) =>
+          o.and((o) => [o.Requests.profileID.eq(userProfile.id)])
+        ).then((res) => {
+          firstList = firstList.filter((opp) => !res.includes(opp));
+          const timeBoxedList = [];
+          for (let i = 0; i < firstList.length; i++) {
+            if (new Date(firstList[i].startTime) > Date.now()) {
+              timeBoxedList.push(firstList[i]);
             }
           }
+          setAllOpportunities(timeBoxedList);
         });
-      }
-      setPendingOpportunities(pendingOpps);
-    })
-    .catch((err) => {
-      console.log(err);
-      alert('Error retrieving pending opportunities');
-    });
-};
-
-const getAllOpportunities = () => {
-  DataStore.query(Opportunity, (o) => o.and(o => [
-    o.status.eq('APPROVED'),
-    o.profileID.ne(userProfile.id),
-  ]))
-  .then((res) => {
-    var firstList = res;
-    DataStore.query(Opportunity, (o) => o.and(o => [
-      o.Requests.profileID.eq(userProfile.id)
-    ]))
-    .then((res) => {
-      firstList = firstList.filter((opp) => !res.includes(opp));
-      const timeBoxedList = [];
-      for (let i = 0; i < firstList.length; i++) {
-        if (new Date(firstList[i].startTime) > Date.now()) {
-          timeBoxedList.push(firstList[i]);
-        }
-      }
-      setAllOpportunities(timeBoxedList);
-    })
-  })
-  .catch((err) => {
-    console.log(err);
-    alert('Error retrieving opportunities');
-  });
-};
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("Error retrieving opportunities");
+      });
+  };
 
   useEffect(() => {
     getJoinedOpportunities();
@@ -210,13 +214,12 @@ const getAllOpportunities = () => {
 
   return (
     <>
-      {
-        joinedOpportunities &&
+      {joinedOpportunities &&
         createdOpportunities &&
         pastOpportunities &&
         pendingOpportunities &&
         allOpportunities &&
-        allKeywords &&
+        allKeywords && (
           <Opportunities
             getPendingOpportunities={getPendingOpportunities}
             joinedOpportunities={joinedOpportunities}
@@ -230,7 +233,7 @@ const getAllOpportunities = () => {
             allKeywords={allKeywords}
             getAllKeywords={getAllKeywords}
           />
-      }
+        )}
     </>
   );
 }
@@ -239,32 +242,33 @@ const getAllOpportunities = () => {
  * creates opportunities page
  * @return {HTML} opportunities page
  */
-function Opportunities({
-  joinedOpportunities,
-  createdOpportunities,
-  pastOpportunities,
-  pendingOpportunities,
-  allOpportunities,
-  allKeywords,
-  getPendingOpportunities,
-  getAllOpportunities,
-  getCreatedOpportunities,
-  getAllKeywords,
-  getJoinedOpportunities,
-}, props) {
-  const {userProfile, setUserProfile} = useAuth();
+function Opportunities(
+  {
+    joinedOpportunities,
+    createdOpportunities,
+    pastOpportunities,
+    pendingOpportunities,
+    allOpportunities,
+    allKeywords,
+    getPendingOpportunities,
+    getAllOpportunities,
+    getCreatedOpportunities,
+    getAllKeywords,
+    getJoinedOpportunities,
+  },
+  props
+) {
+  const { userProfile, setUserProfile } = useAuth();
   const location = useLocation();
-  const {
-    setShowConfettiAnimation,
-    setShowStarAnimation
-  } = useAnimation();
+  const { setShowConfettiAnimation, setShowStarAnimation } = useAnimation();
   //const keywords = await DataStore.query(Keyword);
   let defaultTab = null;
+  // Use if you want button take nav to specific opportunities tab
   if (location.state === null) {
     defaultTab = 0;
-  } else if (location.state.defaultTab === 'browse') {
-    defaultTab = 4;
-  } else if (location.state.defaultTab === 'upcoming') {
+  } else if (location.state.defaultTab === "browse") {
+    defaultTab = 0;
+  } else if (location.state.defaultTab === "upcoming") {
     defaultTab = 0;
   } else {
     defaultTab = 0;
@@ -275,80 +279,14 @@ function Opportunities({
   const [oppTypeFilter, setOppTypeFilter] = useState([]);
   const [orgTypeFilter, setOrgTypeFilter] = useState([]);
   const [showOppForm, setShowOppForm] = useState(false);
-  const [bKey, setBKey] = useState('');
+  // const [bKey, setBKey] = useState("");
   const tabs = [
     {
-      name: 'Upcoming',
-      component:
+      name: "Browse",
+      component: (
         <OpportunitiesList
-          key='upcoming'
-          type='upcoming'
-          opportunities={joinedOpportunities}
-          locationFilter={locationFilter}
-          setLocationFilter={setLocationFilter}
-          oppTypeFilter={oppTypeFilter}
-          setOppTypeFilter={setOppTypeFilter}
-          orgTypeFilter={orgTypeFilter}
-          setOrgTypeFilter={setOrgTypeFilter}
-          getJoinedOpportunities={getJoinedOpportunities}
-          getAllOpportunities={getAllOpportunities}
-        />,
-    },
-    {
-      name: 'Created',
-      component:
-        <OpportunitiesList
-          aria-label='Opportunities Tab Created'
-          key='created'
-          type='created'
-          opportunities={createdOpportunities}
-          locationFilter={locationFilter}
-          setLocationFilter={setLocationFilter}
-          oppTypeFilter={oppTypeFilter}
-          setOppTypeFilter={setOppTypeFilter}
-          orgTypeFilter={orgTypeFilter}
-          setOrgTypeFilter={setOrgTypeFilter}
-          getCreatedOpportunities={getCreatedOpportunities}
-        />,
-    },
-    {
-      name: 'Pending',
-      component:
-        <OpportunitiesList
-          key='pending'
-          type='pending'
-          opportunities={pendingOpportunities}
-          locationFilter={locationFilter}
-          setLocationFilter={setLocationFilter}
-          oppTypeFilter={oppTypeFilter}
-          setOppTypeFilter={setOppTypeFilter}
-          orgTypeFilter={orgTypeFilter}
-          setOrgTypeFilter={setOrgTypeFilter}
-          getPendingOpportunities={getPendingOpportunities}
-          getAllOpportunities={getAllOpportunities}
-        />,
-    },
-    {
-      name: 'Completed',
-      component:
-        <OpportunitiesList
-          key='completed'
-          type='completed'
-          opportunities={pastOpportunities}
-          locationFilter={locationFilter}
-          setLocationFilter={setLocationFilter}
-          oppTypeFilter={oppTypeFilter}
-          setOppTypeFilter={setOppTypeFilter}
-          orgTypeFilter={orgTypeFilter}
-          setOrgTypeFilter={setOrgTypeFilter}
-        />,
-    },
-    {
-      name: 'Browse',
-      component:
-        <OpportunitiesList
-          key='all'
-          type='all'
+          key="all"
+          type="all"
           opportunities={allOpportunities}
           locationFilter={locationFilter}
           setLocationFilter={setLocationFilter}
@@ -358,37 +296,109 @@ function Opportunities({
           setOrgTypeFilter={setOrgTypeFilter}
           getPendingOpportunities={getPendingOpportunities}
           getAllOpportunities={getAllOpportunities}
-        />,
+        />
+      ),
+    },
+    {
+      name: "Upcoming",
+      component: (
+        <OpportunitiesList
+          key="upcoming"
+          type="upcoming"
+          opportunities={joinedOpportunities}
+          locationFilter={locationFilter}
+          setLocationFilter={setLocationFilter}
+          oppTypeFilter={oppTypeFilter}
+          setOppTypeFilter={setOppTypeFilter}
+          orgTypeFilter={orgTypeFilter}
+          setOrgTypeFilter={setOrgTypeFilter}
+          getJoinedOpportunities={getJoinedOpportunities}
+          getAllOpportunities={getAllOpportunities}
+        />
+      ),
+    },
+    {
+      name: "Created",
+      component: (
+        <OpportunitiesList
+          aria-label="Opportunities Tab Created"
+          key="created"
+          type="created"
+          opportunities={createdOpportunities}
+          locationFilter={locationFilter}
+          setLocationFilter={setLocationFilter}
+          oppTypeFilter={oppTypeFilter}
+          setOppTypeFilter={setOppTypeFilter}
+          orgTypeFilter={orgTypeFilter}
+          setOrgTypeFilter={setOrgTypeFilter}
+          getCreatedOpportunities={getCreatedOpportunities}
+        />
+      ),
+    },
+    {
+      name: "Pending",
+      component: (
+        <OpportunitiesList
+          key="pending"
+          type="pending"
+          opportunities={pendingOpportunities}
+          locationFilter={locationFilter}
+          setLocationFilter={setLocationFilter}
+          oppTypeFilter={oppTypeFilter}
+          setOppTypeFilter={setOppTypeFilter}
+          orgTypeFilter={orgTypeFilter}
+          setOrgTypeFilter={setOrgTypeFilter}
+          getPendingOpportunities={getPendingOpportunities}
+          getAllOpportunities={getAllOpportunities}
+        />
+      ),
+    },
+    {
+      name: "Completed",
+      component: (
+        <OpportunitiesList
+          key="completed"
+          type="completed"
+          opportunities={pastOpportunities}
+          locationFilter={locationFilter}
+          setLocationFilter={setLocationFilter}
+          oppTypeFilter={oppTypeFilter}
+          setOppTypeFilter={setOppTypeFilter}
+          orgTypeFilter={orgTypeFilter}
+          setOrgTypeFilter={setOrgTypeFilter}
+        />
+      ),
     },
   ];
 
   const formValues = {
-    name: '',
-    isNewOpp : true,
-    locationType: 'in-person',
+    name: "",
+    isNewOpp: true,
+    locationType: "in-person",
     location: {
-      'address': '',
-      'state': '',
-      'city': '',
-      'zip': '',
+      address: "",
+      state: "",
+      city: "",
+      zip: "",
     },
-    recurringEventOptions: 'None',
-    frequencyOptions: '1',
-    sponsortype: 'user sponsor',
-    zoomLink: '',
+    recurringEventOptions: "None",
+    frequencyOptions: "1",
+    sponsortype: "user sponsor",
+    zoomLink: "",
     //organization: [],
-    description: '',
-    eventData: '',
+    description: "",
+    eventData: "",
     startdate: new Date(),
     enddate: new Date(),
     //organizationtype: '',
     //opportunitytype: '',
     starttime: new Date(),
     endtime: new Date(),
-    subject: '',
-    eventdata: '',
-    eventBanner: 'https://www.places4students.com/P4SFiles/sliders/119_ucsc-02-main-entrance-sign.jpg',
-    bannerKey: ''
+    subject: "",
+    eventdata: "",
+    eventBanner:
+      "https://www.places4students.com/P4SFiles/sliders/119_ucsc-02-main-entrance-sign.jpg",
+    bannerKey: "",
     //keywords: [allKeywords],
   };
 
@@ -410,153 +420,62 @@ function Opportunities({
       ...data,
     };
 
-    let toasterStr = '';
+    let toasterStr = "";
     const oldPoints = userProfile.points;
     const isLevelUp = calculateIfUserLeveledUp(oldPoints, 50);
     PointsAddition(50, userProfile.id, setUserProfile);
     if (isLevelUp) {
       // Display confetti animation
       setShowConfettiAnimation(true);
-      toasterStr = 'and you leveled up!';
+      toasterStr = "and you leveled up!";
     } else {
       // Display star animation
       setShowStarAnimation(true);
-      toasterStr = 'and you earned 50 points!';
+      toasterStr = "and you earned 50 points!";
     }
 
     function opportunityToDatabase(newOpportunity) {
       return new Promise((resolve, reject) => {
-        if(data.imgData != null) {
+        if (data.imgData != null) {
           Storage.put(uuidv4() + "-" + data.imgData.name, data.imgData, {
             contentType: data.imgData.type,
-          })
-          .then((res) => {
+          }).then((res) => {
             //setBKey(res.key);
             //console.log(bKey);
             Storage.get(res.key, {
-              level: 'public'
-            })
-            .then((res2) => {
+              level: "public",
+            }).then((res2) => {
               console.log("Object created...");
               console.log(newOpportunity);
-                  DataStore.save(
-                    new Opportunity({
-                    "zoomLink": newOpportunity.zoomLink,
-                    "organizations": [newOpportunity.organization],
-                    "description": newOpportunity.description,
-                    "eventBanner":  res2,
-                    "eventName": newOpportunity.name,
-                    "startTime": newOpportunity.startTime.toISOString(),
-                    "endTime": newOpportunity.endTime.toISOString(),
-                    "locationType": newOpportunity.locationType,
-                    "location": newOpportunity.location,
-                    "eventData": newOpportunity.eventdata,
-                    "subject": newOpportunity.subject,
-                    "preferences": [],
-                    "Roles": newOpportunity.roles,
-                    "Posts": newOpportunity.Posts,
-                    "Requests": newOpportunity.Requests,
-                    "profileID": newOpportunity.profileID,
-                    "profilesJoined": newOpportunity.profilesJoined,
-                    "keywords": newOpportunity.keywords,
-                    "status": newOpportunity.status,
-                    "bannerKey" : res.key
-                  })
-                )
+              DataStore.save(
+                new Opportunity({
+                  zoomLink: newOpportunity.zoomLink,
+                  organizations: [newOpportunity.organization],
+                  description: newOpportunity.description,
+                  eventBanner: res2,
+                  eventName: newOpportunity.name,
+                  startTime: newOpportunity.startTime.toISOString(),
+                  endTime: newOpportunity.endTime.toISOString(),
+                  locationType: newOpportunity.locationType,
+                  location: newOpportunity.location,
+                  eventData: newOpportunity.eventdata,
+                  subject: newOpportunity.subject,
+                  preferences: [],
+                  Roles: newOpportunity.roles,
+                  Posts: newOpportunity.Posts,
+                  Requests: newOpportunity.Requests,
+                  profileID: newOpportunity.profileID,
+                  profilesJoined: newOpportunity.profilesJoined,
+                  keywords: newOpportunity.keywords,
+                  status: newOpportunity.status,
+                  bannerKey: res.key,
+                })
+              )
                 .then((res) => {
                   console.log(res);
                   console.log("Saved...");
-                    toast.success(`Opportunity Created ${toasterStr}`, {
-                      position: 'top-right',
-                      autoClose: 5000,
-                      hideProgressBar: false,
-                      closeOnClick: true,
-                      pauseOnHover: true,
-                      draggable: true,
-                      progress: undefined,
-                    });
-                    
-                    handleModalClose();
-                    console.log("New roles: " + newOpportunity.roles.length);
-                      for (let i = 0; i < newOpportunity.roles.length; i++) {
-                        const newRole = {
-                          opportunityID: res.id,
-                          // keeping it null until it's fully implemented
-                          //tagid: 'c7e29de9-5b88-49fe-a3f5-750a3a62aee5',
-                          responsibility: '',
-                          description: '',
-                          isfilled: false,
-                          name: newOpportunity.roles[i],
-                          qualifications: [],
-                          capacity: 0,
-                          Majors: [],
-                          Profiles: [],
-                          Requests: []
-                        };
-                        DataStore.save(
-                          new Role({
-                          "name": newRole.name,
-                          "description": newRole.description,
-                          "isFilled": newRole.isfilled,
-                          "qualifications": newRole.qualifications,
-                          "Majors": newRole.Majors,
-                          "Profiles": newRole.Profiles,
-                          "opportunityID": newRole.opportunityID,
-                          "Requests": newRole.Requests,
-                          "capacity": newRole.capacity
-                        })
-                        )
-                        .then((third) => {
-                          console.log("Making new role...");
-                          console.log(third);
-                        })
-                    }
-                  console.log("Creating...");
-                })
-                .then(() => {
-                  getCreatedOpportunities();
-                  resolve("resolved1");
-                })
-            })
-            })
-        }
-        else {
-          Storage.get('sc.jpg', {
-            level: 'public'
-          })
-          .then((res) => {
-            console.log("Object created...");
-            console.log(newOpportunity);
-            console.log("test: ", newOpportunity.startTime, newOpportunity.endTime);
-                DataStore.save(
-                  new Opportunity({
-                  "zoomLink": newOpportunity.zoomLink,
-                  "organizations": [newOpportunity.organization],
-                  "description": newOpportunity.description,
-                  "eventBanner":  res,
-                  "eventName": newOpportunity.name,
-                  "startTime": newOpportunity.startTime.toISOString(),
-                  "endTime": newOpportunity.endTime.toISOString(),
-                  "locationType": newOpportunity.locationType,
-                  "location": newOpportunity.location,
-                  "eventData": newOpportunity.eventdata,
-                  "subject": newOpportunity.subject,
-                  "preferences": [],
-                  "Roles": newOpportunity.roles,
-                  "Posts": newOpportunity.Posts,
-                  "Requests": newOpportunity.Requests,
-                  "profileID": newOpportunity.profileID,
-                  "profilesJoined": newOpportunity.profilesJoined,
-                  "keywords": newOpportunity.keywords,
-                  "status": newOpportunity.status,
-                  "bannerKey" : 'sc.jpg'
-                })
-              )
-              .then((res) => {
-                console.log(res);
-                console.log("Saved...");
                   toast.success(`Opportunity Created ${toasterStr}`, {
-                    position: 'top-right',
+                    position: "top-right",
                     autoClose: 5000,
                     hideProgressBar: false,
                     closeOnClick: true,
@@ -564,67 +483,156 @@ function Opportunities({
                     draggable: true,
                     progress: undefined,
                   });
-                  
+
                   handleModalClose();
                   console.log("New roles: " + newOpportunity.roles.length);
-                    for (let i = 0; i < newOpportunity.roles.length; i++) {
-                      const newRole = {
-                        opportunityID: res.id,
-                        // keeping it null until it's fully implemented
-                        //tagid: 'c7e29de9-5b88-49fe-a3f5-750a3a62aee5',
-                        responsibility: '',
-                        description: '',
-                        isfilled: false,
-                        name: newOpportunity.roles[i],
-                        qualifications: [],
-                        capacity: 0,
-                        Majors: [],
-                        Profiles: [],
-                        Requests: []
-                      };
-                      DataStore.save(
-                        new Role({
-                        "name": newRole.name,
-                        "description": newRole.description,
-                        "isFilled": newRole.isfilled,
-                        "qualifications": newRole.qualifications,
-                        "Majors": newRole.Majors,
-                        "Profiles": newRole.Profiles,
-                        "opportunityID": newRole.opportunityID,
-                        "Requests": newRole.Requests,
-                        "capacity": newRole.capacity
+                  for (let i = 0; i < newOpportunity.roles.length; i++) {
+                    const newRole = {
+                      opportunityID: res.id,
+                      // keeping it null until it's fully implemented
+                      //tagid: 'c7e29de9-5b88-49fe-a3f5-750a3a62aee5',
+                      responsibility: "",
+                      description: "",
+                      isfilled: false,
+                      name: newOpportunity.roles[i],
+                      qualifications: [],
+                      capacity: 0,
+                      Majors: [],
+                      Profiles: [],
+                      Requests: [],
+                    };
+                    DataStore.save(
+                      new Role({
+                        name: newRole.name,
+                        description: newRole.description,
+                        isFilled: newRole.isfilled,
+                        qualifications: newRole.qualifications,
+                        Majors: newRole.Majors,
+                        Profiles: newRole.Profiles,
+                        opportunityID: newRole.opportunityID,
+                        Requests: newRole.Requests,
+                        capacity: newRole.capacity,
                       })
-                      )
-                      .then((third) => {
-                        console.log("Making new role...");
-                        console.log(third);
-                      })
+                    ).then((third) => {
+                      console.log("Making new role...");
+                      console.log(third);
+                    });
                   }
+                  console.log("Creating...");
+                })
+                .then(() => {
+                  getCreatedOpportunities();
+                  resolve("resolved1");
+                });
+            });
+          });
+        } else {
+          Storage.get("sc.jpg", {
+            level: "public",
+          }).then((res) => {
+            console.log("Object created...");
+            console.log(newOpportunity);
+            console.log(
+              "test: ",
+              newOpportunity.startTime,
+              newOpportunity.endTime
+            );
+            DataStore.save(
+              new Opportunity({
+                zoomLink: newOpportunity.zoomLink,
+                organizations: [newOpportunity.organization],
+                description: newOpportunity.description,
+                eventBanner: res,
+                eventName: newOpportunity.name,
+                startTime: newOpportunity.startTime.toISOString(),
+                endTime: newOpportunity.endTime.toISOString(),
+                locationType: newOpportunity.locationType,
+                location: newOpportunity.location,
+                eventData: newOpportunity.eventdata,
+                subject: newOpportunity.subject,
+                preferences: [],
+                Roles: newOpportunity.roles,
+                Posts: newOpportunity.Posts,
+                Requests: newOpportunity.Requests,
+                profileID: newOpportunity.profileID,
+                profilesJoined: newOpportunity.profilesJoined,
+                keywords: newOpportunity.keywords,
+                status: newOpportunity.status,
+                bannerKey: "sc.jpg",
+              })
+            )
+              .then((res) => {
+                console.log(res);
+                console.log("Saved...");
+                toast.success(`Opportunity Created ${toasterStr}`, {
+                  position: "top-right",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                });
+
+                handleModalClose();
+                console.log("New roles: " + newOpportunity.roles.length);
+                for (let i = 0; i < newOpportunity.roles.length; i++) {
+                  const newRole = {
+                    opportunityID: res.id,
+                    // keeping it null until it's fully implemented
+                    //tagid: 'c7e29de9-5b88-49fe-a3f5-750a3a62aee5',
+                    responsibility: "",
+                    description: "",
+                    isfilled: false,
+                    name: newOpportunity.roles[i],
+                    qualifications: [],
+                    capacity: 0,
+                    Majors: [],
+                    Profiles: [],
+                    Requests: [],
+                  };
+                  DataStore.save(
+                    new Role({
+                      name: newRole.name,
+                      description: newRole.description,
+                      isFilled: newRole.isfilled,
+                      qualifications: newRole.qualifications,
+                      Majors: newRole.Majors,
+                      Profiles: newRole.Profiles,
+                      opportunityID: newRole.opportunityID,
+                      Requests: newRole.Requests,
+                      capacity: newRole.capacity,
+                    })
+                  ).then((third) => {
+                    console.log("Making new role...");
+                    console.log(third);
+                  });
+                }
                 console.log("Creating...");
               })
               .then(() => {
                 getCreatedOpportunities();
                 resolve("resolved2");
-              })
-          })
+              });
+          });
         }
-      })
+      });
     }
 
     console.log("here:", newOpportunityObject);
     await opportunityToDatabase(newOpportunityObject);
-    if(newOpportunityObject.recurringEventOptions != "None"){
-      const freq = newOpportunityObject.frequencyOptions
+    if (newOpportunityObject.recurringEventOptions !== "None") {
+      const freq = newOpportunityObject.frequencyOptions;
       for (let i = 0; i < freq; i++) {
         const newStart = new Date(newOpportunityObject.startTime);
         const newEnd = new Date(newOpportunityObject.endTime);
-        if (newOpportunityObject.recurringEventOptions == "Weekly"){
+        if (newOpportunityObject.recurringEventOptions === "Weekly") {
           newStart.setDate(newStart.getDate() + 7);
           newEnd.setDate(newEnd.getDate() + 7);
-        } else if (newOpportunityObject.recurringEventOptions == "Biweekly") {
+        } else if (newOpportunityObject.recurringEventOptions === "Biweekly") {
           newStart.setDate(newStart.getDate() + 14);
           newEnd.setDate(newEnd.getDate() + 14);
-        } else if (newOpportunityObject.recurringEventOptions == "Monthly") {
+        } else if (newOpportunityObject.recurringEventOptions === "Monthly") {
           newStart.setMonth(newStart.getMonth() + 1);
           newEnd.setMonth(newEnd.getMonth() + 1);
         }
@@ -645,16 +653,16 @@ function Opportunities({
   return (
     <Page>
       <PageHeader
-        title='Opportunities'
-        subtitle='View and join opportunities'
+        title="Opportunities"
+        subtitle="View and join opportunities"
         tabs={<CompressedTabBar data={tabs} tab={tab} setTab={setTab} />}
-        components={<AddButton onClick={() => setShowOppForm(true)}/>}
+        components={<AddButton onClick={() => setShowOppForm(true)} />}
       />
       <Modal
         open={showOppForm}
         onBackdropClick={() => setShowOppForm(false)}
         onClose={() => setShowOppForm(false)}
-        sx={{overflow: 'scroll'}}
+        sx={{ overflow: "scroll" }}
       >
         <OpportunityForm
           onClose={handleModalClose}
@@ -665,4 +673,4 @@ function Opportunities({
       {tabs[tab].component}
     </Page>
   );
-};
+}

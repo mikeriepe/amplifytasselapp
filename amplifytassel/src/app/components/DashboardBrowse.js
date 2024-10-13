@@ -49,7 +49,7 @@ export default function DashboardBrowse() {
 
   const handleNavigate = () => {
     setTabIndex("/opportunities");
-    navigate("/opportunities", { state: { defaultTab: "browse" } });
+    navigate("/opportunities");
   };
   return (
     <Display>

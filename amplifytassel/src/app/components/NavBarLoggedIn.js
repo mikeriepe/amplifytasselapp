@@ -290,31 +290,32 @@ export default function NavBarLoggedIn() {
             {/*{showNotification && renderNotification}*/}
             {/* Profile Icon */}
 
-            {/* <Tooltip title="Profile Options"></Tooltip> */}
-            <ThemedButton
-              startIcon={
-                <Avatar
-                  src={profilePicture}
-                  alt="Remy Sharp"
-                  onError={handleError}
-                  style={{ marginRight: -8, marginLeft: 4 }}
-                />
-              }
-              color={"white"}
-              variant={"themed"}
-              style={{ borderRadius: 30, padding: 10 }}
-              id="basic-button"
-              onClick={handleClick}
-            >
-              {/* TODO: replace with userProfile's first name */}
-              <Box className="text-xbold text-lineheight-16 text-dark">
-                {profOpen ? (
-                  <ExpandLessIcon className="icon-gray" />
-                ) : (
-                  <ExpandMoreIcon className="icon-gray" />
-                )}
-              </Box>
-            </ThemedButton>
+            <Tooltip title="Profile Options">
+              <ThemedButton
+                startIcon={
+                  <Avatar
+                    src={profilePicture}
+                    alt="Remy Sharp"
+                    onError={handleError}
+                    style={{ marginRight: -8, marginLeft: 4 }}
+                  />
+                }
+                color={"white"}
+                variant={"themed"}
+                style={{ borderRadius: 30, padding: 10 }}
+                id="basic-button"
+                onClick={handleClick}
+              >
+                {/* TODO: replace with userProfile's first name */}
+                <Box className="text-xbold text-lineheight-16 text-dark">
+                  {profOpen ? (
+                    <ExpandLessIcon className="icon-gray" />
+                  ) : (
+                    <ExpandMoreIcon className="icon-gray" />
+                  )}
+                </Box>
+              </ThemedButton>
+            </Tooltip>
             <Menu
               id="basic-menu"
               anchorEl={anchorEl}
