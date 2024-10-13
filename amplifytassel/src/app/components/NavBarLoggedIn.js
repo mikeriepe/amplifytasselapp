@@ -325,14 +325,35 @@ export default function NavBarLoggedIn() {
               MenuListProps={{
                 "aria-labelledby": "basic-button",
               }}
+              PaperProps={{
+                style: {
+                  width: 150,
+                },
+              }}
               sx={{
                 "&:hover": {
                   backgroundColor: "transparent", // Remove hover background color
                 },
               }}
             >
-              <MenuItem onClick={handleProfileClick}>Profile</MenuItem>
-              <MenuItem onClick={handleLogout}>Logout</MenuItem>
+              <MenuItem
+                onClick={handleProfileClick}
+                sx={{
+                  justifyContent: "center",
+                  textAlign: "center",
+                }}
+              >
+                Profile
+              </MenuItem>
+              <MenuItem
+                onClick={handleLogout}
+                sx={{
+                  justifyContent: "center",
+                  textAlign: "center",
+                }}
+              >
+                Logout
+              </MenuItem>
             </Menu>
           </Box>
         </Toolbar>
