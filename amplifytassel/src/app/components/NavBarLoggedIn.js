@@ -24,6 +24,7 @@ import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import NotificationsRoundedIcon from "@mui/icons-material/NotificationsRounded";
 import SettingsIcon from "@mui/icons-material/Settings";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
+import SchoolIcon from "@mui/icons-material/School";
 import UCSCIcon from "../assets/ucsc-logo.jpg";
 import Notification from "./Notification";
 import ThemedButton from "./ThemedButton";
@@ -350,7 +351,7 @@ export default function NavBarLoggedIn() {
             }
           >
             <Box onClick={() => handleTabClick(0)} sx={BrandStyling}>
-              <StarRoundedIcon
+              <SchoolIcon
                 className="icon-yellow"
                 sx={{ mr: 3, transform: "scale(1.5)" }}
               />
