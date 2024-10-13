@@ -1,42 +1,42 @@
-import React from 'react';
-import Popover from '@mui/material/Popover';
-import List from '@mui/material/List';
-import NotificationItem from './NotificationItem';
-import useAuth from '../util/AuthContext';
-import {useEffect, useState} from 'react';
+import React from "react";
+import Popover from "@mui/material/Popover";
+import List from "@mui/material/List";
+import NotificationItem from "./NotificationItem";
+import useAuth from "../util/AuthContext";
+import { useEffect, useState } from "react";
 
 /**
  * Notification
  * Displays the notification popover
  * @return {HTML} notification
  */
-export default function Notification({props}) {
-  const {userProfile} = useAuth();
-  console.log('printing');
+export default function Notification({ props }) {
+  const { userProfile } = useAuth();
+  console.log("printing");
   console.log(userProfile);
   const [notifications, setNotifications] = useState(null);
 
   const getUserRequests = () => {
     fetch(`/api/getUserIncomingRequests/${userProfile.profileid}`)
-        .then((res) => {
-          if (!res.ok) {
-            throw res;
-          }
-          return res.json();
-        })
-        .then((json) => {
-          // console.log(json);
-          setNotifications(json);
-        })
-        .then(() => {
-          if (notifications) {
-            props.setNotificationCount(notifications.length);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          alert('Error retrieving notifications');
-        });
+      .then((res) => {
+        if (!res.ok) {
+          throw res;
+        }
+        return res.json();
+      })
+      .then((json) => {
+        // console.log(json);
+        setNotifications(json);
+      })
+      .then(() => {
+        if (notifications) {
+          props.setNotificationCount(notifications.length);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("Error retrieving notifications");
+      });
     // console.log('called getUserRequests()');
   };
 
@@ -57,27 +57,31 @@ export default function Notification({props}) {
         anchorEl={props.notificationAnchorEl}
         onClose={handleNotificationClose}
         anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
+          vertical: "bottom",
+          horizontal: "center",
         }}
         transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
+          vertical: "top",
+          horizontal: "right",
         }}
         PaperProps={{
-          style: {width: '25%'},
+          style: { width: "25%" },
         }}
       >
         <List
           sx={{
-            width: '100%', maxWidth: 400, bgcolor: 'background.paper',
-          }}>
-          {notifications && notifications.map((notification, index) => (
-            <NotificationItem
-              key={`notification-item-${index}`}
-              data={notification}
-            />
-          ))}
+            width: "100%",
+            maxWidth: 400,
+            bgcolor: "background.paper",
+          }}
+        >
+          {notifications &&
+            notifications.map((notification, index) => (
+              <NotificationItem
+                key={`notification-item-${index}`}
+                data={notification}
+              />
+            ))}
         </List>
       </Popover>
     </div>
