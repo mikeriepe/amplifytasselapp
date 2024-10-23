@@ -269,7 +269,7 @@ function Opportunities(
   } else if (location.state.defaultTab === "browse") {
     defaultTab = 0;
   } else if (location.state.defaultTab === "upcoming") {
-    defaultTab = 0;
+    defaultTab = 1;
   } else {
     defaultTab = 0;
   }

@@ -257,8 +257,7 @@ export default function NavBarLoggedIn() {
         position="fixed"
         open={open}
         sx={{
-          boxShadow: "0",
-          borderBottom: "0.5px solid rgba(0, 0, 0, 0.15)",
+          boxShadow: "0 .5px 2px #d1d1d1",
         }}
       >
         <Toolbar className="navbar-height">
@@ -327,7 +326,7 @@ export default function NavBarLoggedIn() {
               }}
               PaperProps={{
                 style: {
-                  width: 150,
+                  width: 100,
                 },
               }}
               sx={{

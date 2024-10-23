@@ -5,6 +5,7 @@ import { Grid } from "@mui/material";
 import useAuth from "../util/AuthContext";
 import DashboardHeader from "../components/DashboardHeader";
 import DashboardUpcoming from "../components/DashboardUpcoming";
+import DashboardNew from "../components/DashboardNew";
 import DashboardBrowse from "../components/DashboardBrowse";
 import DashboardCreate from "../components/DashboardCreate";
 import DashboardPendingReqs from "../components/DashboardPendingReqs";
@@ -18,6 +19,8 @@ const Page = styled((props) => <MuiBox {...props} />)(() => ({
   alignItems: "center",
   gap: "1em",
   marginBlock: "1em",
+  marginLeft: "2em",
+  marginRight: "2em",
 }));
 
 /**
@@ -46,6 +49,7 @@ export default function Dashboard() {
         <>
           <DashboardHeader data={userProfile} />
           <DashboardUpcoming data={userProfile} />
+          <DashboardNew data={userProfile} />
           <Grid
             container
             sx={{
