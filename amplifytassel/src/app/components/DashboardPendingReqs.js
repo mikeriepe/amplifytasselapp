@@ -54,34 +54,34 @@ export default function DashboardPendingReqs({
   const { userProfile } = useAuth();
   const [pendingOpps, setPendingOpps] = useState([]);
 
-  const getPendingOpportunities = () => {
-    DataStore.query(Opportunity, (o) =>
-      o.and((o) => [
-        o.Requests.profileID.eq(userProfile.id),
-        o.Requests.status.eq("PENDING"),
-      ])
-    )
-      .then((res) => {
-        const pendingOpp = [];
-        for (let i = 0; i < res.length; i++) {
-          const p = Promise.resolve(res[i].Requests.values);
-          p.then((value) => {
-            for (let j = 0; j < value.length; j++) {
-              if (
-                value[j].profileID === userProfile.id &&
-                value[j].status === "PENDING"
-              ) {
-                pendingOpp.push(res[i]);
-              }
-            }
-          });
-        }
-        setPendingOpps(pendingOpp);
-      })
-      .catch((err) => {
-        console.log(err);
-        alert("Error retrieving pending opportunities");
-      });
+  const getPendingOpportunities = async () => {
+    try {
+      const res = await DataStore.query(Opportunity, (o) =>
+        o.and((o) => [
+          o.Requests.profileID.eq(userProfile.id),
+          o.Requests.status.eq("PENDING"),
+        ])
+      );
+
+      // Filter pending opportunities directly
+      const pendingOpp = await Promise.all(
+        res.map(async (opportunity) => {
+          const values = await Promise.resolve(opportunity.Requests.values);
+          return values.some(
+            (value) =>
+              value.profileID === userProfile.id && value.status === "PENDING"
+          )
+            ? opportunity
+            : null;
+        })
+      );
+
+      // Filter out null values (non-pending opportunities)
+      setPendingOpps(pendingOpp.filter((opp) => opp !== null));
+    } catch (err) {
+      console.log(err);
+      alert("Error retrieving pending opportunities");
+    }
   };
 
   useEffect(() => {
