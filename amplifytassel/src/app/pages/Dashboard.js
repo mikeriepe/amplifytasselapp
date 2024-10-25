@@ -9,6 +9,7 @@ import DashboardNew from "../components/DashboardNew";
 import DashboardBrowse from "../components/DashboardBrowse";
 import DashboardCreate from "../components/DashboardCreate";
 import DashboardPendingReqs from "../components/DashboardPendingReqs";
+import DashboardYourEvents from "../components/DashboardYourEvents";
 
 import { DataStore } from "@aws-amplify/datastore";
 import { Opportunity } from "./../../models";
@@ -60,15 +61,26 @@ export default function Dashboard() {
               width: "calc(100% - 6em)",
               lineHeight: 1.5,
             }}
+            spacing={2}
+            justifyContent="space-between"
           >
-            <Grid item xs={6} md={3}>
-              <DashboardBrowse data={userProfile} />
-              <DashboardCreate
-                data={userProfile}
+            <Grid
+              item
+              xs={12}
+              md={5.9}
+              sx={{ display: "flex", flexDirection: "column", height: "100%" }}
+            >
+              <DashboardYourEvents
+                createdOpps={createdOpps}
                 getCreatedOpportunities={getCreatedOpportunities}
               />
             </Grid>
-            <Grid item xs={6} md={9}>
+            <Grid
+              item
+              xs={12}
+              md={5.9}
+              sx={{ display: "flex", flexDirection: "column", height: "100%" }}
+            >
               <DashboardPendingReqs
                 createdOpps={createdOpps}
                 getCreatedOpportunities={getCreatedOpportunities}

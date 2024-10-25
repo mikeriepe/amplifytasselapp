@@ -39,7 +39,7 @@ const CustomCard = ({ opportunity }) => {
 
   return (
     <Card
-      sx={{ maxWidth: 500, borderRadius: 4, boxShadow: 3 }}
+      sx={{ width: 500, borderRadius: 4, boxShadow: 3 }}
       className="clickable"
     >
       <CardActionArea

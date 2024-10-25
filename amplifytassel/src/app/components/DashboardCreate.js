@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
 import MuiBox from "@mui/material/Box";
-import Box from "@mui/material/Box";
 import MuiCard from "@mui/material/Card";
 import AddIcon from "@mui/icons-material/Add";
 import Button from "@mui/material/Button";
@@ -25,9 +24,6 @@ const Display = styled((props) => <MuiCard elevation={0} {...props} />)(() => ({
   justifyContent: "center",
   height: "auto",
   width: "100%",
-  background: "var(--primary-blue-main)",
-  boxShadow: "0px 4px 50px -15px rgba(0, 86, 166, 0.15)",
-  border: "0.5px solid rgba(0, 0, 0, 0.15)",
   borderRadius: "10px",
   marginTop: "1em",
 }));
@@ -302,37 +298,14 @@ export default function DashboardCreate({ getCreatedOpportunities }) {
       <Button
         onClick={() => setShowOppForm(true)}
         sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          height: "auto",
-          width: "100%",
-          background: "var(--primary-blue-main)",
-          boxShadow: "0px 4px 50px -15px rgba(0, 86, 166, 0.15)",
-          border: "0.5px solid rgba(0, 0, 0, 0.15)",
+          background: "var(--secondary-yellow-main)",
+          color: "white",
           borderRadius: "10px",
-          ":hover": { bgcolor: "var(--primary-blue-dark)", color: "white" },
+          ":hover": { bgcolor: "var(--secondary-yellow-dark)", color: "white" },
         }}
+        endIcon={<AddIcon />}
       >
-        <div aria-label="Dashboard Create Button">
-          <HeadingText>Create new Opportunities</HeadingText>
-        </div>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            borderRadius: "26px",
-            marginBottom: "1em",
-          }}
-        >
-          <AddIcon
-            sx={{
-              fontSize: "7em",
-              color: "white",
-            }}
-          />
-        </Box>
+        New
       </Button>
       <Modal
         open={showOppForm}

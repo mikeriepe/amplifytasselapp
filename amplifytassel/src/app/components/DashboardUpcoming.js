@@ -129,12 +129,20 @@ export default function DashboardUpcoming({ data }) {
             </div>
           </div>
           {numOpps > 0 ? (
-            <Grid container spacing={{ xs: 2, md: 3 }}>
+            <Grid container spacing={{ sm: 1, md: 2 }} alignItems="stretch">
               {displayOpps.map((opportunity, index) => (
-                <Grid item xs={2} sm={4} md={4} key={index}>
+                <Grid
+                  item
+                  xs={12}
+                  sm={12}
+                  md={4}
+                  key={index}
+                  sx={{ display: "flex" }}
+                >
                   <DashboardOppThumbnail
                     key={`opportunity-${index}`}
                     opportunity={opportunity}
+                    sx={{ flexGrow: 1 }}
                   />
                 </Grid>
               ))}

@@ -68,7 +68,6 @@ export default function DashboardNew({ data }) {
         DataStore.query(Opportunity, (o) =>
           o.and((o) => [o.Requests.profileID.eq(userProfile.id)])
         ).then((res) => {
-          firstList = firstList.filter((opp) => !res.includes(opp));
           const timeBoxedList = [];
           for (let i = 0; i < firstList.length; i++) {
             if (new Date(firstList[i].startTime) > Date.now()) {
@@ -137,12 +136,20 @@ export default function DashboardNew({ data }) {
             </div>
           </div>
           {numOpps > 0 ? (
-            <Grid container spacing={{ xs: 2, md: 3 }}>
+            <Grid container spacing={{ sm: 1, md: 2 }} alignItems="stretch">
               {displayOpps.map((opportunity, index) => (
-                <Grid item xs={2} sm={4} md={4} key={index}>
+                <Grid
+                  item
+                  xs={12}
+                  sm={12}
+                  md={4}
+                  key={index}
+                  sx={{ display: "flex" }}
+                >
                   <DashboardOppThumbnail
                     key={`opportunity-${index}`}
                     opportunity={opportunity}
+                    sx={{ flexGrow: 1 }}
                   />
                 </Grid>
               ))}
