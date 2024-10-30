@@ -13,6 +13,7 @@ import {
   createOppProfile,
   createUserProfile,
 } from "../util/ExtractInformation";
+import { Grid } from "@mui/material";
 
 const Page = styled((props) => <MuiBox {...props} />)(() => ({
   display: "flex",
@@ -312,7 +313,7 @@ export default function OpportunitiesList({
     <Page>
       <MuiBox className="flow-small" sx={{ flexGrow: 1 }}>
         <div
-          className="flex-horizontal flex-space-between"
+          className="flex-horizontal"
           style={{ width: "100%", marginBottom: "1em" }}
         >
           <TextField
@@ -324,6 +325,7 @@ export default function OpportunitiesList({
                 fontSize: "0.9rem",
                 backgroundColor: "white",
                 borderRadius: "10px",
+                marginRight: "1em",
               },
               startAdornment: (
                 <InputAdornment position="start">
@@ -340,33 +342,44 @@ export default function OpportunitiesList({
               },
             }}
           />
-          <ThemedDropdown
-            menuItems={["Recommended", "Alphabet", "Major"]}
-            sortSelection={handleDropdown}
-            value={dropdownSelect}
+          <div style={{ marginRight: "1em" }}>
+            <ThemedDropdown
+              menuItems={["Recommended", "Alphabet", "Major"]}
+              sortSelection={handleDropdown}
+              value={dropdownSelect}
+            />
+          </div>
+          <OpportunitiesFilters
+            locationFilter={locationFilter}
+            setLocationFilter={setLocationFilter}
+            oppTypeFilter={oppTypeFilter}
+            setOppTypeFilter={setOppTypeFilter}
+            orgTypeFilter={orgTypeFilter}
+            setOrgTypeFilter={setOrgTypeFilter}
           />
         </div>
-        {displayOpps.map((opportunity, index) => (
-          <OpportunitiesCard
-            // data-test-id={`opportunity-card-${opportunity.id}`}
-            key={`opportunity-${index}`}
-            type={type}
-            opportunity={opportunity}
-            getPendingOpportunities={getPendingOpportunities}
-            getCreatedOpportunities={getCreatedOpportunities}
-            getAllOpportunities={getAllOpportunities}
-            getJoinedOpportunities={getJoinedOpportunities}
-          />
-        ))}
+        <Grid container spacing={{ sm: 1, md: 2 }} alignItems="stretch">
+          {displayOpps.map((opportunity, index) => (
+            <Grid
+              item
+              xs={12}
+              sm={12}
+              md={4}
+              key={`opportunity-${index}`}
+              sx={{ display: "flex", padding: 2 }}
+            >
+              <OpportunitiesCard
+                type={type}
+                opportunity={opportunity}
+                getPendingOpportunities={getPendingOpportunities}
+                getCreatedOpportunities={getCreatedOpportunities}
+                getAllOpportunities={getAllOpportunities}
+                getJoinedOpportunities={getJoinedOpportunities}
+              />
+            </Grid>
+          ))}
+        </Grid>
       </MuiBox>
-      <OpportunitiesFilters
-        locationFilter={locationFilter}
-        setLocationFilter={setLocationFilter}
-        oppTypeFilter={oppTypeFilter}
-        setOppTypeFilter={setOppTypeFilter}
-        orgTypeFilter={orgTypeFilter}
-        setOrgTypeFilter={setOrgTypeFilter}
-      />
     </Page>
   );
 }

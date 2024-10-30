@@ -44,8 +44,8 @@ const Text = ({ children }, props) => (
 );
 
 /**
- * creates Dashboard upcoming events section
- * @return {HTML} Dashboard upcoming events component
+ * creates Dashboard Pending Requests section
+ * @return {HTML} Dashboard Pending Requests component
  */
 export default function DashboardPendingReqs({
   createdOpps,
@@ -108,10 +108,10 @@ export default function DashboardPendingReqs({
             className="text-lightgray text-bold ellipsis"
             aria-label="Dashboard Header Count"
           >
-            Pending requests for events you have applied for
+            Pending requests for Opportunities you have applied for
           </h5>
         </Text>
-        <div
+        {/* <div
           className="flex-space-between flex-align-center"
           style={{ visibility: "hidden" }}
         >
@@ -119,7 +119,7 @@ export default function DashboardPendingReqs({
             data={userProfile}
             getCreatedOpportunities={getCreatedOpportunities}
           />
-        </div>
+        </div> */}
       </div>
       <Box sx={{ width: "100%", margin: "auto" }}>
         <Box

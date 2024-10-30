@@ -29,47 +29,38 @@ const Page = styled((props) => <MuiBox {...props} />)(() => ({
 
 const AddButton = (props) => (
   <MuiBox
-    className="
-      flex-horizontal
-      flex-flow-xlarge
-      flex-align-center
-      text-lineheight-16
-      clickable
-    "
+    sx={{
+      display: "flex",
+      alignItems: "center",
+      cursor: "pointer",
+      justifyContent: "space-between",
+      height: "40px",
+      width: "200px",
+      cursor: "pointer",
+      padding: 2,
+      background: "var(--secondary-yellow-main)",
+      borderRadius: "5px",
+      "&:hover": { backgroundColor: "var(--secondary-yellow-dark)" },
+    }}
+    {...props}
   >
     <h5
       aria-label="Opportunities Create Opportunity"
-      className="text-small text-yellow"
+      className="text-small"
       style={{
-        margin: 0,
-        width: "100px",
-        textAlign: "right",
+        color: "white",
       }}
     >
       Create New Opportunity
     </h5>
-    <MuiBox
+    <AddRoundedIcon
       sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "40px",
-        width: "40px",
-        padding: 0,
-        background: "var(--secondary-yellow-main)",
-        borderRadius: "5px",
+        height: "20px",
+        width: "20px",
+        stroke: "white",
+        strokeWidth: "2px",
       }}
-      {...props}
-    >
-      <AddRoundedIcon
-        sx={{
-          height: "20px",
-          width: "20px",
-          stroke: "white",
-          strokeWidth: "2px",
-        }}
-      />
-    </MuiBox>
+    />
   </MuiBox>
 );
 

@@ -44,8 +44,8 @@ const Text = ({ children }, props) => (
 );
 
 /**
- * creates Dashboard upcoming events section
- * @return {HTML} Dashboard upcoming events component
+ * creates Dashboard your events section
+ * @return {HTML} Dashboard your events component
  */
 export default function DashboardYourEvents({
   createdOpps,
@@ -71,21 +71,21 @@ export default function DashboardYourEvents({
             className="text-dark ellipsis text-medium"
             aria-label="Dashboard Upcoming Section"
           >
-            Your Events
+            Your Opportunities
           </h2>
           <h5
             className="text-lightgray text-bold ellipsis"
             aria-label="Dashboard Header Count"
           >
-            Events you have created
+            Opportunities you have created
           </h5>
         </Text>
-        <div className="flex-space-between flex-align-center">
+        {/* <div className="flex-space-between flex-align-center">
           <DashboardCreate
             data={userProfile}
             getCreatedOpportunities={getCreatedOpportunities}
           />
-        </div>
+        </div> */}
       </div>
       <Box sx={{ width: "100%", margin: "auto" }}>
         <Box
@@ -99,6 +99,10 @@ export default function DashboardYourEvents({
             padding: 2,
           }}
         >
+          <DashboardCreate
+            data={userProfile}
+            getCreatedOpportunities={getCreatedOpportunities}
+          />
           {createdOpps.length === 0 ? (
             <Box
               sx={{
@@ -109,7 +113,7 @@ export default function DashboardYourEvents({
               }}
             >
               <Typography className="text-lightgray">
-                No Events Created
+                No Opportunities Created
               </Typography>
             </Box>
           ) : (

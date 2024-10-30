@@ -20,32 +20,12 @@ import { v4 as uuidv4 } from "uuid";
 
 const Display = styled((props) => <MuiCard elevation={0} {...props} />)(() => ({
   display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
-  height: "auto",
-  width: "100%",
-  borderRadius: "10px",
-  marginTop: "1em",
+  alignItems: "center",
+  cursor: "pointer",
+  justifyContent: "space-between",
+  "&:hover": { backgroundColor: "#f5f5f5" },
+  // borderBottom: "1px solid #e0e0e0",
 }));
-
-const HeadingText = ({ children }, props) => (
-  <MuiBox
-    sx={{
-      display: "flex",
-      flexGrow: 1,
-      flexDirection: "column",
-      height: "100%",
-      lineHeight: 1.5,
-      color: "white",
-      fontWeight: "bold",
-      fontSize: "1.2rem",
-      margin: "1em",
-    }}
-    {...props}
-  >
-    {children}
-  </MuiBox>
-);
 
 const formValues = {
   name: "",
@@ -298,14 +278,16 @@ export default function DashboardCreate({ getCreatedOpportunities }) {
       <Button
         onClick={() => setShowOppForm(true)}
         sx={{
-          background: "var(--secondary-yellow-main)",
           color: "white",
-          borderRadius: "10px",
-          ":hover": { bgcolor: "var(--secondary-yellow-dark)", color: "white" },
+          width: "100%",
+          height: "80px",
+          backgroundColor: "var(--info-lightblue-main)",
+          ":hover": { backgroundColor: "var(--primary-blue-dark)" },
+          // justifyContent: "left",
         }}
         endIcon={<AddIcon />}
       >
-        New
+        Create Opportunity
       </Button>
       <Modal
         open={showOppForm}

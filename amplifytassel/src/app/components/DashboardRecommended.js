@@ -50,10 +50,10 @@ const Text = ({ children }, props) => (
 );
 
 /**
- * creates Dashboard upcoming events section
- * @return {HTML} Dashboard upcoming events component
+ * creates Dashboard browse events section
+ * @return {HTML} Dashboard new events component
  */
-export default function DashboardNew({ data }) {
+export default function DashboardRecommended({ data }) {
   const { userProfile } = useAuth();
   const [loading, setLoading] = useState(true);
   const { tabIndex, setTabIndex } = useTabIndex();
@@ -120,8 +120,14 @@ export default function DashboardNew({ data }) {
                 className="text-dark ellipsis text-medium"
                 aria-label="Dashboard Upcoming Section"
               >
-                Browse Events
+                Recommended Opportunities
               </h2>
+              <h5
+                className="text-lightgray text-bold ellipsis"
+                aria-label="Dashboard Header Count"
+              >
+                Opportunities recommended for you
+              </h5>
             </Text>
             <div className="flex-space-between flex-align-center">
               <Link
@@ -161,7 +167,7 @@ export default function DashboardNew({ data }) {
                   className="text-light ellipsis text-medium"
                   aria-label="Dashboard Upcoming Section"
                 >
-                  No Current New Events
+                  No Current Recommended Opportunities
                 </h2>
               </Text>
             </Box>

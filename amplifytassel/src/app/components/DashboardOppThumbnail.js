@@ -4,6 +4,10 @@ import { styled } from "@mui/material/styles";
 import CardActionArea from "@mui/material/CardActionArea";
 import { Storage } from "aws-amplify";
 import { Card, CardContent, CardMedia, Typography, Box } from "@mui/material";
+import FmdGoodOutlinedIcon from "@mui/icons-material/FmdGoodOutlined";
+import DevicesOutlinedIcon from "@mui/icons-material/DevicesOutlined";
+import AccessibilityRoundedIcon from "@mui/icons-material/AccessibilityRounded";
+import EventNoteRoundedIcon from "@mui/icons-material/EventNoteRounded";
 
 const CustomCard = ({ opportunity }) => {
   const [banner, setBanner] = useState(null);
@@ -81,19 +85,64 @@ const CustomCard = ({ opportunity }) => {
             class="text-light text-lightgray title-margin"
             gutterBottom
           >
-            {opportunity.locationType}
+            <div className="flex-horizontal flex-flow-large flex-align-center">
+              <AccessibilityRoundedIcon sx={{ fontSize: "0.9rem" }} />
+              <p className="text-bold ellipsis">{opportunity.locationType}</p>
+            </div>
           </Typography>
           {/* Date and Location Information */}
           <Typography variant="body1" class="text-bold text-dark">
-            {formatDate(opportunity.startTime)}
+            <div className="flex-horizontal flex-flow-large flex-align-center">
+              <EventNoteRoundedIcon sx={{ fontSize: "0.9rem" }} />
+              <p className="text-bold ellipsis">
+                {formatDate(opportunity.startTime)}
+              </p>
+            </div>
           </Typography>
-          <Typography variant="body2" class="text-normal text-lightgray">
+          {opportunity.locationType &&
+            (opportunity.locationType === "in-person" ||
+              opportunity.locationType === "hybrid") && (
+              <div
+                className="
+                      flex-horizontal
+                      flex-flow-large
+                      flex-align-center
+                    "
+                style={{ marginRight: "0.25em", marginTop: "0.25em" }}
+              >
+                <FmdGoodOutlinedIcon sx={{ fontSize: "0.9rem" }} />
+                <p className="text-bold">
+                  {`
+                        ${opportunity.location.address}
+                        ${opportunity.location.city},
+                        ${opportunity.location.state}
+                        ${opportunity.location.zip}
+                      `}
+                </p>
+              </div>
+            )}
+          {opportunity.locationType &&
+            (opportunity.locationType === "remote" ||
+              opportunity.locationType === "hybrid") && (
+              <div
+                className="
+                      flex-horizontal
+                      flex-flow-large
+                      flex-align-center
+                    "
+                style={{ marginRight: "0.25em", marginTop: "0.25em" }}
+              >
+                <DevicesOutlinedIcon sx={{ fontSize: "0.9rem" }} />
+                <p className="text-bold">{opportunity.zoomLink}</p>
+              </div>
+            )}
+          {/* <Typography variant="body2" class="text-normal text-lightgray">
             {`
               ${opportunity.location?.address}
               ${opportunity.location?.city},
               ${opportunity.location?.state}
             `}
-          </Typography>
+          </Typography> */}
         </Box>
       </CardActionArea>
     </Card>

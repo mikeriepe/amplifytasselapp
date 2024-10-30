@@ -11,6 +11,8 @@ import { DataStore, Storage } from "aws-amplify";
 import { Request } from "./../../models";
 import MuiBox from "@mui/material/Box";
 import { Grid } from "@mui/material";
+import EventNoteRoundedIcon from "@mui/icons-material/EventNoteRounded";
+import AccessibilityRoundedIcon from "@mui/icons-material/AccessibilityRounded";
 
 export default function DashboardPendingOppCard({ opportunity }) {
   const [requests, setRequests] = useState([]);
@@ -115,15 +117,15 @@ export default function DashboardPendingOppCard({ opportunity }) {
       <MuiBox
         sx={{
           height: "45px",
-          width: "45px",
+          width: "150px",
           flexDirection: "row",
           justifyContent: "center",
           backgroundColor: "#ED4949",
           borderRadius: "1em",
           color: "#FFFFFF",
           letterSpacing: "-0.015em",
-          fontSize: "16px",
-          fontWeight: "700",
+          fontSize: "14px",
+          fontWeight: "600",
           lineHeight: "18px",
           margin: "auto",
           alignItems: "center",
@@ -180,14 +182,25 @@ export default function DashboardPendingOppCard({ opportunity }) {
             {opportunity?.eventName}
           </Typography>
           <Typography variant="body2" color="var(--text-gray)">
-            {formatDate(opportunity.startTime)}
-            <br />
-            {opportunity?.locationType}
+            <div className="flex-horizontal flex-flow-large flex-align-center">
+              <EventNoteRoundedIcon sx={{ fontSize: "0.9rem" }} />
+              <p className="text-bold ellipsis">
+                {formatDate(opportunity.startTime)}
+              </p>
+            </div>
+          </Typography>
+          <Typography variant="body2" color="var(--text-gray)">
+            <div className="flex-horizontal flex-flow-large flex-align-center">
+              <AccessibilityRoundedIcon sx={{ fontSize: "0.9rem" }} />
+              <p className="text-bold ellipsis">{opportunity.locationType}</p>
+            </div>
           </Typography>
         </CardContent>
       </Box>
       {requests.length ? (
-        <RequestsText sx={{ marginLeft: 4 }}>{requests.length}</RequestsText>
+        <RequestsText sx={{ marginLeft: 4 }}>
+          {requests.length} Pending Request{requests.length === 1 ? "" : "s"}
+        </RequestsText>
       ) : null}
     </ListItem>
   );

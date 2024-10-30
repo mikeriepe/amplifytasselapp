@@ -5,6 +5,9 @@ import MuiBox from "@mui/material/Box";
 import { useNavigate } from "react-router-dom";
 import Chip from "@mui/material/Chip";
 import { Storage } from "aws-amplify";
+import EventNoteRoundedIcon from "@mui/icons-material/EventNoteRounded";
+import AccessibilityRoundedIcon from "@mui/icons-material/AccessibilityRounded";
+
 import {
   CardContent,
   CardMedia,
@@ -142,9 +145,18 @@ export default function DashboardPendingReqCard({ opportunity }) {
             {opportunity?.eventName}
           </Typography>
           <Typography variant="body2" color="var(--text-gray)">
-            {formatDate(opportunity.startTime)}
-            <br />
-            {opportunity?.locationType}
+            <div className="flex-horizontal flex-flow-large flex-align-center">
+              <EventNoteRoundedIcon sx={{ fontSize: "0.9rem" }} />
+              <p className="text-bold ellipsis">
+                {formatDate(opportunity.startTime)}
+              </p>
+            </div>
+          </Typography>
+          <Typography variant="body2" color="var(--text-gray)">
+            <div className="flex-horizontal flex-flow-large flex-align-center">
+              <AccessibilityRoundedIcon sx={{ fontSize: "0.9rem" }} />
+              <p className="text-bold ellipsis">{opportunity.locationType}</p>
+            </div>
           </Typography>
         </CardContent>
       </Box>

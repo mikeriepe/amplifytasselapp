@@ -113,8 +113,14 @@ export default function DashboardUpcoming({ data }) {
                 className="text-dark ellipsis text-medium"
                 aria-label="Dashboard Upcoming Section"
               >
-                Upcoming Events
+                Upcoming Opportunities
               </h2>
+              <h5
+                className="text-lightgray text-bold ellipsis"
+                aria-label="Dashboard Header Count"
+              >
+                Your Opportunities that are coming up
+              </h5>
             </Text>
             <div className="flex-space-between flex-align-center">
               <Link
@@ -154,7 +160,7 @@ export default function DashboardUpcoming({ data }) {
                   className="text-light ellipsis text-medium"
                   aria-label="Dashboard Upcoming Section"
                 >
-                  No Current Upcoming Events
+                  No Current Upcoming Opportunities
                 </h2>
               </Text>
             </Box>
