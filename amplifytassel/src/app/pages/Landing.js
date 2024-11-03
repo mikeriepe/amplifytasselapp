@@ -3,8 +3,10 @@ import { Link } from "react-router-dom";
 import PersonIcon from "@mui/icons-material/Person";
 import ThemedButton from "../components/ThemedButton";
 import LandingVideo from "../assets/landing_video.mp4";
+
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box'
+
 import "../stylesheets/Landing.css";
 
 export default function Landing() {

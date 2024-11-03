@@ -31,7 +31,7 @@ export default function ProfileAbout({ data }) {
           <img
             style={{ height: "25px", marginRight: "10px" }}
             src={LinkedInLogo}
-          ></img>
+          alt="LinkedInLogo"></img>
           <Link target="_blank" to={data.linkedin}>
             {data.linkedin}
           </Link>

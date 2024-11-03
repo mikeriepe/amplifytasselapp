@@ -26,9 +26,11 @@ import {
 } from "../util/LevelsIndex.js";
 import LinearProgressWithLabel from "@mui/material/LinearProgress";
 import Typography from "@mui/material/Typography";
+
+
 import Tooltip from "@mui/material/Tooltip";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import MuiCard from "@mui/material/Card";
+import MuiCard from "@mui/material/Card"; 
 import PointsExplainationCard from "./PointsExplainationCard.js";
 
 import { DataStore } from "@aws-amplify/datastore";
@@ -257,8 +259,8 @@ export default function ProfileHeader({ data, editButton }) {
   const [profilePicture, setProfilePicture] = useState(null);
   const hiddenInputProfilePicture = React.useRef(null);
   const BANNER_FILE_SIZE_LIMIT = 2097152;
-  // ----
-  const { userProfile, setUserProfile } = useAuth();
+  // ---- Removed userProfile, as it wasn't being used or called
+  const { /*userProfile,*/ setUserProfile } = useAuth();
 
   const getProfilePictureKey = async () => {
     let user = await DataStore.query(Profile, (p) => p.id.eq(data.id));
@@ -353,7 +355,8 @@ export default function ProfileHeader({ data, editButton }) {
       console.error(error);
     }
   };
-
+  
+  // IGNORE THIS WARNING - Needed for proper functionality for updating major 
   useEffect(() => {
     extractMajors();
   }, []);
@@ -380,6 +383,7 @@ export default function ProfileHeader({ data, editButton }) {
     setSelectedProfileFile(file);
   };
 
+  // IGNORE WARNINGS
   useEffect(() => {
     getProfilePictureKey();
   }, []);
@@ -395,6 +399,7 @@ export default function ProfileHeader({ data, editButton }) {
     if (selectedProfileFile) {
       uploadFile();
     }
+    // IGNORE WARNING
   }, [selectedProfileFile]);
 
   let level = 1; // replace this with a dynamic value
