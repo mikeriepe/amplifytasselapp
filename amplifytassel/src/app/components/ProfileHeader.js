@@ -466,8 +466,8 @@ export default function ProfileHeader({ data, editButton }) {
               <h2
                 className="text-dark ellipsis"
                 aria-label="Profile Header Full Name"
-              >
-                {data.firstName + " " + data.lastName}
+              > 
+                {data.firstName + " " + data.lastName + " (" + data.username + ") "}
               </h2>
               <h5
                 className="text-bold text-blue ellipsis"
