@@ -467,7 +467,7 @@ export default function ProfileHeader({ data, editButton }) {
                 className="text-dark ellipsis"
                 aria-label="Profile Header Full Name"
               > 
-                {data.firstName + " " + data.lastName + " (" + data.username + ") "}
+                {data.firstName + " " + data.lastName + (data.username ? ` (${data.username})` : "")}
               </h2>
               <h5
                 className="text-bold text-blue ellipsis"
