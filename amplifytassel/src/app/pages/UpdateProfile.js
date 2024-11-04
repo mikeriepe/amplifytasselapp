@@ -104,6 +104,7 @@ export default function UpdateProfile() {
       linkedin: userProfile.linkedin,
       // Added by Kenny Losier 11/3/2024:
       username: userProfile.username,
+      college: userProfile.college,
     },
   });
 
@@ -150,6 +151,11 @@ export default function UpdateProfile() {
 
     // Check username - added by Kenny 11/3/2024
     if (userProfile.username === null && selctdVals[1].username !== null) {
+      pointsToBeAdded += 20;
+    }
+
+    // Check college - added by Kenny 11/3/2024
+    if (userProfile.college === null && selctdVals[1].college !== null) {
       pointsToBeAdded += 20;
     }
 
@@ -265,6 +271,7 @@ export default function UpdateProfile() {
         updated.about = values[1].about;
         updated.linkedin = values[1].linkedin;
         updated.username = values[1].username;
+        updated.college = values[1].college;
       })
     );
     res = await DataStore.query(Profile, userProfile.id);
@@ -298,6 +305,7 @@ export default function UpdateProfile() {
             keywords: keywords,
             linkedin: userProfile.linkedin,
             username: userProfile.username,
+            college: userProfile.college,
           },
         });
         DataStore.query(Keyword).then((keywordsAll) => {
@@ -437,6 +445,29 @@ export default function UpdateProfile() {
                     <div>
                       {totalMajors.length && <MultiSelect data={totalMajors} />}
                     </div>
+                  </div>
+                  <div
+                    className="grid-flow-small"
+                    aria-label={"Update Profile College"}
+                  >
+                    <p className="text-bold">
+                      College Affiliation
+                      {/* <Tooltip title="Fill out this field to get 10 points" arrow>
+                        <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
+                      </Tooltip> */}
+                    </p>
+                    <ThemedInput
+                      placeholder={"e.g., Cowell College"}
+                      type={"text"}
+                      index={"college"}
+                      step={1}
+                      fill={"college"}
+                      content={
+                        values[1].college === ""
+                          ? null
+                          : values[1].college
+                      }
+                    />
                   </div>
                   <div
                     className="grid-flow-small"

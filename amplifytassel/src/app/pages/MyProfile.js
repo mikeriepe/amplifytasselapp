@@ -15,6 +15,9 @@ import ProfileWork from "../components/ProfileWork";
 import ProfileVolunteer from "../components/ProfileVolunteer";
 import ProfileKeywords from "../components/ProfileKeywords";
 
+// Added by Kenny on 11/03/2024
+import ProfileCollege from "../components/ProfileCollege.js";
+
 import { Auth } from "aws-amplify";
 import { DataStore } from "@aws-amplify/datastore";
 import { Profile } from "../../models";
@@ -83,6 +86,7 @@ export default function MyProfile() {
           )}
           <ProfileHeader data={userProfile} editButton={true} />
           <ProfileSocials data={userProfile} />
+          <ProfileCollege data={userProfile} />
           <ProfileAbout data={userProfile} />
           <ProfileWork data={userProfile} />
           <ProfileVolunteer data={userProfile} />
