@@ -102,6 +102,8 @@ export default function UpdateProfile() {
       location: userProfile.location,
       about: userProfile.about,
       linkedin: userProfile.linkedin,
+      // Added by Kenny Losier 11/3/2024:
+      username: userProfile.username,
     },
   });
 
@@ -143,6 +145,11 @@ export default function UpdateProfile() {
 
     // Check location
     if (userProfile.location === null && selctdVals[1].location !== null) {
+      pointsToBeAdded += 20;
+    }
+
+    // Check username - added by Kenny 11/3/2024
+    if (userProfile.username === null && selctdVals[1].username !== null) {
       pointsToBeAdded += 20;
     }
 
@@ -257,6 +264,7 @@ export default function UpdateProfile() {
         updated.location = values[1].location;
         updated.about = values[1].about;
         updated.linkedin = values[1].linkedin;
+        updated.username = values[1].username;
       })
     );
     res = await DataStore.query(Profile, userProfile.id);
@@ -289,6 +297,7 @@ export default function UpdateProfile() {
             about: userProfile.about,
             keywords: keywords,
             linkedin: userProfile.linkedin,
+            username: userProfile.username,
           },
         });
         DataStore.query(Keyword).then((keywordsAll) => {
@@ -369,6 +378,29 @@ export default function UpdateProfile() {
                   <h2 className="text-normal">Update Profile</h2>
                 </div>
                 <div className="grid-flow-large" width="100%">
+                <div
+                    className="grid-flow-small"
+                    aria-label={"Update Profile Username"}
+                  >
+                    <p className="text-bold">
+                      Username
+                      {/* <Tooltip title="Fill out this field to get 10 points" arrow>
+                        <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
+                      </Tooltip> */}
+                    </p>
+                    <ThemedInput
+                      placeholder={"e.g., Bobsmith1"}
+                      type={"text"}
+                      index={"username"}
+                      step={1}
+                      fill={"username"}
+                      content={
+                        values[1].username === ""
+                          ? null
+                          : values[1].username
+                      }
+                    />
+                  </div>
                   <div
                     className="grid-flow-small"
                     aria-label={"Update Profile Grad Year"}
