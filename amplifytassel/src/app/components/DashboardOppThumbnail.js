@@ -1,101 +1,23 @@
-import React, {useState, useEffect} from 'react';
-import {Link as RouterLink} from 'react-router-dom';
-import {styled} from '@mui/material/styles';
-import CardActionArea from '@mui/material/CardActionArea';
-import MuiBox from '@mui/material/Box';
-import MuiCard from '@mui/material/Card';
-import { Storage } from 'aws-amplify';
+import React, { useState, useEffect } from "react";
+import { Link as RouterLink } from "react-router-dom";
+import { styled } from "@mui/material/styles";
+import CardActionArea from "@mui/material/CardActionArea";
+import { Storage } from "aws-amplify";
+import { Card, CardContent, CardMedia, Typography, Box } from "@mui/material";
+import FmdGoodOutlinedIcon from "@mui/icons-material/FmdGoodOutlined";
+import DevicesOutlinedIcon from "@mui/icons-material/DevicesOutlined";
+import AccessibilityRoundedIcon from "@mui/icons-material/AccessibilityRounded";
+import EventNoteRoundedIcon from "@mui/icons-material/EventNoteRounded";
 
-const Card = styled((props) => (
-  <MuiCard elevation={0} {...props} />
-))(() => ({
-  display: 'flex',
-  flexDirection: 'column',
-  height: 'auto',
-  width: '100%',
-  background: 'white',
-}));
-
-const Banner = ({image}, props) => {
-  return (
-    <MuiBox sx={{height: '130px',
-      width: '130px',
-      flexDirection: 'row',
-      justifyContent: 'center',
-    }} {...props}>
-      <img
-        src={image}
-        style={{
-          height: '100%',
-          width: '100%',
-          objectFit: 'cover',
-          border: '0.5px solid rgba(0, 0, 0, 0.15)',
-          borderRadius: '10px',
-        }}
-      />
-    </MuiBox>
-  );
-};
-
-const EventTitleText = ({children}, props) => (
-  <MuiBox
-    sx={{
-      display: 'flex',
-      flexGrow: 1,
-      flexDirection: 'column',
-      justifyContent: 'center',
-      height: '100%',
-      lineHeight: 1.5,
-      fontWeight: 'bold',
-      fontSize: '.9rem',
-      paddingLeft: '1.5em',
-      paddingTop: '.5em',
-      color: 'var(--secondary-yellow-main)',
-    }}
-    {...props}
-  >
-    {children}
-  </MuiBox>
-);
-
-const TimeText = ({children}, props) => (
-  <MuiBox
-    sx={{
-      display: 'flex',
-      flexGrow: 1,
-      flexDirection: 'column',
-      justifyContent: 'center',
-      height: '100%',
-      lineHeight: 1,
-      fontWeight: 'bold',
-      fontSize: '1rem',
-      paddingLeft: '1.5em',
-      paddingTop: '.5em',
-      paddingBottom: '2em',
-      paddingRight: '3em',
-      color: 'var(--tertiary-gray-dark)',
-    }}
-    {...props}
-  >
-    {children}
-  </MuiBox>
-);
-
-/**
- * @return {JSX}
- */
-export default function DashboardOppThumbnail({
-  opportunity,
-}) {
-
+const CustomCard = ({ opportunity }) => {
   const [banner, setBanner] = useState(null);
 
   const downloadFile = async () => {
     const img = await Storage.get(opportunity.bannerKey, {
-      level: "public"
+      level: "public",
     });
     setBanner(img);
-  }
+  };
 
   useEffect(() => {
     downloadFile();
@@ -103,14 +25,14 @@ export default function DashboardOppThumbnail({
 
   const formatDate = (startTime) => {
     const dateOptions = {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     };
 
     const timeOptions = {
-      hour: 'numeric',
-      minute: '2-digit',
+      hour: "numeric",
+      minute: "2-digit",
     };
 
     const convertDate = new Date(startTime).toLocaleDateString([], dateOptions);
@@ -120,30 +42,104 @@ export default function DashboardOppThumbnail({
   };
 
   return (
-    <>
-      {opportunity && (
-        <Card className='clickable'>
-          <CardActionArea
-            component={RouterLink}
-            to={`/Opportunity/${opportunity.id}`}
+    <Card
+      sx={{ width: "100%", borderRadius: 4, boxShadow: 3 }}
+      className="clickable"
+    >
+      <CardActionArea
+        component={RouterLink}
+        to={`/Opportunity/${opportunity.id}`}
+        sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}
+      >
+        {/* Image Placeholder */}
+        <CardMedia
+          component="img"
+          image={banner}
+          alt="Event Banner"
+          sx={{
+            width: { sm: 100, lg: 150 }, // Full width on small screens
+            height: { sm: 100, lg: 150 },
+            borderRadius: "8px",
+            margin: 2,
+          }}
+        />
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            flexGrow: 1,
+          }}
+        >
+          {/* Title */}
+          <Typography
+            variant="h5"
+            component="div"
+            class="text-medium text-dark text-xbold title-margin"
+            gutterBottom
           >
-            <div
-              className='flex-horizontal flex-align-center'
-              style={{padding: '1.5em'}}
-            >
-              <Banner image={banner} />
+            {opportunity.eventName}
+          </Typography>
+          {/* Subtitle or Extra Information */}
+          <Typography
+            variant="body2"
+            class="text-light text-lightgray title-margin"
+            gutterBottom
+          >
+            <div className="flex-horizontal flex-flow-large flex-align-center">
+              <AccessibilityRoundedIcon sx={{ fontSize: "0.9rem" }} />
+              <p className="text-bold ellipsis">{opportunity.locationType}</p>
             </div>
-            <EventTitleText className='text-bold'>
-              {`
-                ${opportunity.eventName}
-              `}
-            </EventTitleText>
-            <TimeText className='text-bold ellipsis'>
-              {formatDate(opportunity.startTime)}
-            </TimeText>
-          </CardActionArea>
-        </Card>
-      )}
-    </>
+          </Typography>
+          {/* Date and Location Information */}
+          <Typography variant="body1" class="text-bold text-dark">
+            <div className="flex-horizontal flex-flow-large flex-align-center">
+              <EventNoteRoundedIcon sx={{ fontSize: "0.9rem" }} />
+              <p className="text-bold ellipsis">
+                {formatDate(opportunity.startTime)}
+              </p>
+            </div>
+          </Typography>
+          {opportunity.locationType &&
+            (opportunity.locationType === "in-person" ||
+              opportunity.locationType === "hybrid") && (
+              <div
+                className="
+                      flex-horizontal
+                      flex-flow-large
+                      flex-align-center
+                    "
+                style={{ marginRight: "0.25em", marginTop: "0.25em" }}
+              >
+                <FmdGoodOutlinedIcon sx={{ fontSize: "0.9rem" }} />
+                <p className="text-bold">
+                  {`
+                        ${opportunity.location.address}
+                        ${opportunity.location.city},
+                        ${opportunity.location.state}
+                        ${opportunity.location.zip}
+                      `}
+                </p>
+              </div>
+            )}
+          {opportunity.locationType &&
+            (opportunity.locationType === "remote" ||
+              opportunity.locationType === "hybrid") && (
+              <div
+                className="
+                      flex-horizontal
+                      flex-flow-large
+                      flex-align-center
+                    "
+                style={{ marginRight: "0.25em", marginTop: "0.25em" }}
+              >
+                <DevicesOutlinedIcon sx={{ fontSize: "0.9rem" }} />
+                <p className="text-bold">{opportunity.zoomLink}</p>
+              </div>
+            )}
+        </Box>
+      </CardActionArea>
+    </Card>
   );
-}
+};
+
+export default CustomCard;

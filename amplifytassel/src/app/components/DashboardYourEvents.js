@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import MuiBox from "@mui/material/Box";
 import useAuth from "../util/AuthContext";
-
 import { Typography, Box, List } from "@mui/material";
+import DashboardPendingOppCard from "./DashboardPendingOppCard";
 import DashboardCreate from "../components/DashboardCreate";
-import DashboardPendingReqCard from "./DashboardPendingReqCard";
+
 import { DataStore } from "@aws-amplify/datastore";
 import { Opportunity } from "./../../models";
 
-const PendingSection = ({ children }, props) => (
+const EventsSection = ({ children }, props) => (
   <MuiBox
     className="grid-flow-large"
     sx={{
@@ -44,52 +44,21 @@ const Text = ({ children }, props) => (
 );
 
 /**
- * creates Dashboard Pending Requests section
- * @return {HTML} Dashboard Pending Requests component
+ * creates Dashboard your events section
+ * @return {HTML} Dashboard your events component
  */
-export default function DashboardPendingReqs({
+export default function DashboardYourEvents({
   createdOpps,
   getCreatedOpportunities,
 }) {
   const { userProfile } = useAuth();
-  const [pendingOpps, setPendingOpps] = useState([]);
-
-  const getPendingOpportunities = async () => {
-    try {
-      const res = await DataStore.query(Opportunity, (o) =>
-        o.and((o) => [
-          o.Requests.profileID.eq(userProfile.id),
-          o.Requests.status.eq("PENDING"),
-        ])
-      );
-
-      // Filter pending opportunities directly
-      const pendingOpp = await Promise.all(
-        res.map(async (opportunity) => {
-          const values = await Promise.resolve(opportunity.Requests.values);
-          return values.some(
-            (value) =>
-              value.profileID === userProfile.id && value.status === "PENDING"
-          )
-            ? opportunity
-            : null;
-        })
-      );
-
-      // Filter out null values (non-pending opportunities)
-      setPendingOpps(pendingOpp.filter((opp) => opp !== null));
-    } catch (err) {
-      console.log(err);
-      alert("Error retrieving pending opportunities");
-    }
-  };
 
   useEffect(() => {
-    getPendingOpportunities();
+    getCreatedOpportunities();
   }, []);
 
   return (
-    <PendingSection>
+    <EventsSection>
       <div
         className="flex-space-between flex-align-center"
         style={{
@@ -102,19 +71,16 @@ export default function DashboardPendingReqs({
             className="text-dark ellipsis text-medium"
             aria-label="Dashboard Upcoming Section"
           >
-            Pending Requests
+            Your Opportunities
           </h2>
           <h5
             className="text-lightgray text-bold ellipsis"
             aria-label="Dashboard Header Count"
           >
-            Pending requests for Opportunities you have applied for
+            Opportunities you have created
           </h5>
         </Text>
-        {/* <div
-          className="flex-space-between flex-align-center"
-          style={{ visibility: "hidden" }}
-        >
+        {/* <div className="flex-space-between flex-align-center">
           <DashboardCreate
             data={userProfile}
             getCreatedOpportunities={getCreatedOpportunities}
@@ -133,7 +99,11 @@ export default function DashboardPendingReqs({
             padding: 2,
           }}
         >
-          {pendingOpps.length === 0 ? (
+          <DashboardCreate
+            data={userProfile}
+            getCreatedOpportunities={getCreatedOpportunities}
+          />
+          {createdOpps.length === 0 ? (
             <Box
               sx={{
                 height: "100%",
@@ -143,17 +113,17 @@ export default function DashboardPendingReqs({
               }}
             >
               <Typography className="text-lightgray">
-                No Pending Requests
+                No Opportunities Created
               </Typography>
             </Box>
           ) : (
             <List sx={{ maxHeight: "100%", overflow: "auto" }}>
-              {pendingOpps
+              {createdOpps
                 .slice()
                 .sort((a, b) => a.eventName.localeCompare(b.eventName))
                 .map((opp, index) => {
                   return (
-                    <DashboardPendingReqCard
+                    <DashboardPendingOppCard
                       key={`opportunity-${index}`}
                       opportunity={opp}
                     />
@@ -163,6 +133,6 @@ export default function DashboardPendingReqs({
           )}
         </Box>
       </Box>
-    </PendingSection>
+    </EventsSection>
   );
 }

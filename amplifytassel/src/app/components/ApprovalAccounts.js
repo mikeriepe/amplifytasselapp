@@ -8,44 +8,50 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
 import MuiPaper from "@mui/material/Paper";
 import MuiAvatar from "@mui/material/Avatar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableCell from "@mui/material/TableCell";
-import TableSortLabel from "@mui/material/TableSortLabel";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import TableBody from "@mui/material/TableBody";
+import {
+  Grid,
+  Box,
+  CircularProgress,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  Checkbox,
+  TableBody,
+  TableSortLabel,
+} from "@mui/material";
 // import TableFooter from '@mui/material/TableFooter';
 // import TablePagination from '@mui/material/TablePagination';
 import Collapse from "@mui/material/Collapse";
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormGroup from '@mui/material/FormGroup';
-import MuiBox from '@mui/material/Box';
-import Tooltip from '@mui/material/Tooltip';
-import FilterListIcon from '@mui/icons-material/FilterList';
-import InputAdornment from '@mui/material/InputAdornment';
-import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
-import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormGroup from "@mui/material/FormGroup";
+import MuiBox from "@mui/material/Box";
+import Tooltip from "@mui/material/Tooltip";
+import FilterListIcon from "@mui/icons-material/FilterList";
+import InputAdornment from "@mui/material/InputAdornment";
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import ThemedButton from "./ThemedButton";
 import IconButton from "@mui/material/IconButton";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { profileStatusToColor } from "../util/ProfileStatus";
-import CircularProgress from "@mui/material/CircularProgress";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import { styled } from "@mui/material/styles";
 import { toast } from "react-toastify";
 import "../stylesheets/ApprovalTable.css";
-import { DataStore } from '@aws-amplify/datastore';
-import { Profile, ChatRoom } from './../../models';
-import { Storage } from 'aws-amplify';
-import { findExistingInfoChatRoom, createNewChatRoom } from '../util/SocialChatRooms';
-import useAuth from '../util/AuthContext';
-import { sendMessage } from '../util/SocialChat';
+import { DataStore } from "@aws-amplify/datastore";
+import { Profile, ChatRoom } from "./../../models";
+import { Storage } from "aws-amplify";
+import {
+  findExistingInfoChatRoom,
+  createNewChatRoom,
+} from "../util/SocialChatRooms";
+import useAuth from "../util/AuthContext";
+import { sendMessage } from "../util/SocialChat";
 import { List, ListItemText, ListItemButton } from "@mui/material";
 import EmailDialog from "./EmailDialog";
 
@@ -88,8 +94,41 @@ const Avatar = ({ image, handleAvatarClick, profileid }, props) => (
   />
 );
 
+const Text = ({ children }, props) => (
+  <MuiBox
+    sx={{
+      display: "flex",
+      flexGrow: 1,
+      flexDirection: "column",
+      justifyContent: "center",
+      height: "100%",
+      lineHeight: 1.5,
+    }}
+    {...props}
+  >
+    {children}
+  </MuiBox>
+);
+
+const TextRight = ({ children }, props) => (
+  <MuiBox
+    sx={{
+      display: "flex",
+      flexGrow: 1,
+      flexDirection: "column",
+      justifyContent: "center",
+      height: "100%",
+      lineHeight: 1.5,
+      marginLeft: "1rem",
+    }}
+    {...props}
+  >
+    {children}
+  </MuiBox>
+);
+
 const toastOptions = {
-  position: 'top-right',
+  position: "top-right",
   autoClose: 5000,
   hideProgressBar: false,
   closeOnClick: true,
@@ -212,34 +251,100 @@ export default function ApprovalAccounts() {
     approved: false,
     denied: false,
     pending: false,
-    search: '',
+    search: "",
   });
   const [openFilter, setOpenFilter] = useState(false);
 
+  // useEffect(() => {
+  //   const { admin, approved, denied, pending, search } = filters;
+  //   setDisplayAccounts(
+  //     accounts.filter((account) => {
+  //       try {
+  //         if (search !== "") {
+  //           let ok = false;
+  //           [
+  //             account.graduationYear,
+  //             account.email,
+  //             account.firstName + " " + account.lastName,
+  //           ].forEach((field) => {
+  //             if (typeof field !== "string") return;
+  //             if (field.toLowerCase().includes(search.toLowerCase())) ok = true;
+  //           });
+  //           if (!ok) return false;
+  //         }
+  //         if (!admin && !approved && !denied && !pending) return true;
+  //         if (!admin && account.status === "ADMIN") return false;
+  //         if (!approved && account.status === "APPROVED") return false;
+  //         if (!denied && account.status === "DENIED") return false;
+  //         if (!pending && account.status === "PENDING") return false;
+  //         return true;
+  //       } catch (error) {
+  //         console.error(error);
+  //         return false;
+  //       }
+  //     })
+  //   );
+  // }, [accounts, filters]);
+
+  const [displayPending, setDisplayPending] = useState([]);
+  const [displayApproved, setDisplayApproved] = useState([]);
+  const [displayDenied, setDisplayDenied] = useState([]);
+  const [displayAdmin, setDisplayAdmin] = useState([]);
+  const displays = [
+    displayPending,
+    displayApproved,
+    displayDenied,
+    displayAdmin,
+  ];
+  const titles = [
+    "Pending Accounts",
+    "Approved Accounts",
+    "Denied Accounts",
+    "Admin Accounts",
+  ];
+  const subtitles = [
+    "Accounts waiting for approval",
+    "Accounts that have been approved",
+    "Accounts that have been denied",
+    "Accounts that have admin privileges",
+  ];
+
   useEffect(() => {
-    const { admin, approved, denied, pending, search } = filters;
-    setDisplayAccounts(accounts.filter((account) => {
-      try {
-        if (search !== '') {
-          let ok = false;
-          [account.graduationYear, account.email, account.firstName + ' ' + account.lastName].forEach((field) => {
-            if (typeof field !== 'string') return;
-            if (field.toLowerCase().includes(search.toLowerCase())) ok = true;
-          });
-          if (!ok) return false;
-        }
-        if (!admin && !approved && !denied && !pending) return true;
-        if (!admin && account.status === 'ADMIN') return false;
-        if (!approved && account.status === 'APPROVED') return false;
-        if (!denied && account.status === 'DENIED') return false;
-        if (!pending && account.status === 'PENDING') return false;
-        return true;
-      }
-      catch (error) {
-        console.error(error);
-        return false;
-      }
-    }));
+    const { search } = filters;
+
+    const filterBySearch = (account) => {
+      if (search === "") return true;
+      return [
+        account.graduationYear,
+        account.email,
+        `${account.firstName} ${account.lastName}`,
+      ].some(
+        (field) =>
+          typeof field === "string" &&
+          field.toLowerCase().includes(search.toLowerCase())
+      );
+    };
+
+    setDisplayPending(
+      accounts.filter(
+        (account) => account.status === "PENDING" && filterBySearch(account)
+      )
+    );
+    setDisplayApproved(
+      accounts.filter(
+        (account) => account.status === "APPROVED" && filterBySearch(account)
+      )
+    );
+    setDisplayDenied(
+      accounts.filter(
+        (account) => account.status === "DENIED" && filterBySearch(account)
+      )
+    );
+    setDisplayAdmin(
+      accounts.filter(
+        (account) => account.status === "ADMIN" && filterBySearch(account)
+      )
+    );
   }, [accounts, filters]);
 
   const [selected, setSelected] = useState([]);
@@ -252,7 +357,7 @@ export default function ApprovalAccounts() {
   const [sortStatusOrder, setSortStatusOrder] = useState("");
   const [selectAllChecked, setSelectAllChecked] = useState(false);
 
-  const {userProfile} = useAuth();
+  const { userProfile } = useAuth();
 
   const handleDialogOpen = () => {
     setDialogOpen(true);
@@ -457,18 +562,21 @@ export default function ApprovalAccounts() {
         })
       )
         .then(async (res) => {
-        // console.log(res);
-        setSelected([]);
-        await new Promise(r => setTimeout(r, 300));
-        getAccounts('status', true);
-        // console.log(selected);
-        toast.success(`Account status updated`, toastOptions);
-      })
-      .catch((err) => {
-        console.log(err);
-        toast.error(err.log ?? err.msg ?? err.name ?? err.message, toastOptions);
-        // alert('Error approving profiles, please try again');
-      });
+          // console.log(res);
+          setSelected([]);
+          await new Promise((r) => setTimeout(r, 300));
+          getAccounts("status", true);
+          // console.log(selected);
+          toast.success(`Account status updated`, toastOptions);
+        })
+        .catch((err) => {
+          console.log(err);
+          toast.error(
+            err.log ?? err.msg ?? err.name ?? err.message,
+            toastOptions
+          );
+          // alert('Error approving profiles, please try again');
+        });
     }
   };
 
@@ -488,20 +596,23 @@ export default function ApprovalAccounts() {
       )
         .then(async (res) => {
           setSelected([]);
-          await new Promise(r => setTimeout(r, 300));
+          await new Promise((r) => setTimeout(r, 300));
           getAccounts("status", true);
           toast.success("Admin promoted successfully!", toastOptions);
         })
         .catch((err) => {
           console.log(err);
-          toast.error(err.log ?? err.msg ?? err.name ?? err.message, toastOptions);
+          toast.error(
+            err.log ?? err.msg ?? err.name ?? err.message,
+            toastOptions
+          );
           // alert("Error creating admin, please try again");
         });
     }
   };
 
   const handleDialogSubmit = () => {
-    const status = 'REQUESTED';
+    const status = "REQUESTED";
     const profiles = selected.map((email) => {
       const info = accounts.find((account) => account.email === email);
       return info;
@@ -514,36 +625,37 @@ export default function ApprovalAccounts() {
     for (let index = 0; index < profiles.length; index++) {
       const profile = profiles[index];
       DataStore.save(
-        Profile.copyOf(profile, updated => {
-          updated.status = status
-        }))
+        Profile.copyOf(profile, (updated) => {
+          updated.status = status;
+        })
+      )
         .then(async (res) => {
-        // console.log(res);
-        setDialogOpen(false);
-        getAccounts('status', true);
+          // console.log(res);
+          setDialogOpen(false);
+          getAccounts("status", true);
 
-        // Create a new chatroom if they don't have one attached, otherwise get the existing one - can be done without a special field for the time being.
-        const allChatRooms = await DataStore.query(ChatRoom);
-        
-        var chat = null //await findExistingInfoChatRoom(userProfile, selectedProfileIds, allChatRooms);
+          // Create a new chatroom if they don't have one attached, otherwise get the existing one - can be done without a special field for the time being.
+          const allChatRooms = await DataStore.query(ChatRoom);
 
-        if (chat === null){
-          // console.log("Selected:", selected);
-          chat = await createNewChatRoom(userProfile, selected);
-        }
+          var chat = null; //await findExistingInfoChatRoom(userProfile, selectedProfileIds, allChatRooms);
 
-        // console.log("Chatroom:", chat.id);
-        // console.log("User:", userProfile);
+          if (chat === null) {
+            // console.log("Selected:", selected);
+            chat = await createNewChatRoom(userProfile, selected);
+          }
 
-        // Create a new message in the chatroom with the infoRequest as text
-        await sendMessage(chat.id, userProfile, requestInfo);
-      })
-      .catch((err) => {
-        console.log(err);
-        alert('Error requesting info, please try again');
-      });
+          // console.log("Chatroom:", chat.id);
+          // console.log("User:", userProfile);
+
+          // Create a new message in the chatroom with the infoRequest as text
+          await sendMessage(chat.id, userProfile, requestInfo);
+        })
+        .catch((err) => {
+          console.log(err);
+          alert("Error requesting info, please try again");
+        });
     }
-    setRequestInfo('');
+    setRequestInfo("");
   };
 
   const handleSort = (rowId) => {
@@ -616,233 +728,171 @@ export default function ApprovalAccounts() {
 
   return (
     <Page>
-      <Card style={{ padding: ".5rem" }}>
-        <Toolbar>
-          <Box
-            aria-label="Account Actions"
-            flex={1}
-            flexDirection='row'
-            style={{
-              marginRight: "1rem"
-            }}
-          >
-            <ThemedButton
-              color={"green"}
-              variant={"gradient"}
-              type={"submit"}
-              style={{
-                fontSize: "0.875rem",
-                marginRight: ".5rem",
-              }}
-              onClick={handleStatusAction}
-            >
-              Approve
-            </ThemedButton>
-            <ThemedButton
-              color={"blue"}
-              variant={"themed"}
-              type={"submit"}
-              style={{
-                fontSize: "0.875rem",
-                marginRight: ".5rem",
-              }}
-              onClick={handleDialogOpen}
-            >
-              Request More Info
-            </ThemedButton>
-            <EmailDialog
-              emails={selected}
-              accounts={accounts}
-              profilePictures={profilePictures}
-              open={dialogOpen}
-              setClose={handleDialogClose}
-            />
-            {/*
-            <Dialog open={dialogOpen} onClose={handleDialogClose}>
-              <DialogTitle>Request More Info</DialogTitle>
-              <DialogContent>
-                <DialogContentText>
-                  Describe what other information you would like to get from the
-                  selected users.
-                </DialogContentText>
-                <TextField
-                  autoFocus
-                  margin="dense"
-                  id="name"
-                  label="Information"
-                  type="text"
-                  fullWidth
-                  variant="standard"
-                  onBlur={handleRequestInfo}
-                />
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={handleDialogClose}>Cancel</Button>
-                <Button onClick={handleDialogSubmit}>Send Requests</Button>
-              </DialogActions>
-            </Dialog>
-            */}
-            <ThemedButton
-              color={"gray"}
-              variant={"themed"}
-              type={"submit"}
-              style={{
-                fontSize: "0.875rem",
-                marginRight: ".5rem",
-              }}
-              onClick={handleStatusAction}
-            >
-              Deny
-            </ThemedButton>
-            <ThemedButton
-              color={"yellow"}
-              variant={"gradient"}
-              type={"submit"}
-              style={{
-                fontSize: "0.875rem",
-                marginRight: ".5rem",
-              }}
-              onClick={handleAdminPromotion}
-            >
-              Promote Admin
-            </ThemedButton>
-            <TextField
-              placeholder='Search'
-              size='small'
-              onChange={(e) => setFilters({...filters, search: e.target.value})}
-              InputProps={{
-                style: {
-                  fontSize: '0.9rem',
-                  backgroundColor: 'white',
-                  borderRadius: '10px',
-                },
-                startAdornment: (
-                  <InputAdornment position='start'>
-                    <SearchRoundedIcon color='tertiary' />
-                  </InputAdornment>
-                ),
-              }}
-              sx={{
-                'width': 'auto',
-                '& .MuiOutlinedInput-root': {
-                  '& fieldset': {
-                    borderColor: 'rgba(0, 0, 0, 0.15)',
-                  },
-                },
-              }}
-            />
-          </Box>
+      {/* Top Bar */}
+      <Box
+        aria-label="Account Actions"
+        flex={1}
+        flexDirection="row"
+        style={{
+          marginRight: "1rem",
+          marginTop: "0.5rem",
+        }}
+      >
+        <TextField
+          placeholder="Search"
+          size="small"
+          onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+          InputProps={{
+            style: {
+              fontSize: "0.9rem",
+              backgroundColor: "white",
+              borderRadius: "10px",
+            },
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchRoundedIcon color="tertiary" />
+              </InputAdornment>
+            ),
+          }}
+          sx={{
+            width: "auto",
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "rgba(0, 0, 0, 0.15)",
+              },
+              marginRight: "1rem",
+            },
+          }}
+        />
+      </Box>
 
-          <>
+      {/* Filter */}
+      {/* <>
             <MuiPaper
-              sx={{paddingLeft: '8px', height: openFilter ? undefined : '0px'}}
+              sx={{
+                paddingLeft: "8px",
+                height: openFilter ? undefined : "0px",
+              }}
             >
               <MuiBox
-                className='
+                className="
                 flex-space-between
                 flex-align-center
                 clickable
                 no-highlight
-                '
+                "
               >
-                <div className='flex-horizontal flow-tiny'>
-                  <Collapse in={openFilter} timeout='auto' unmountOnExit>
+                <div className="flex-horizontal flow-tiny">
+                  <Collapse in={openFilter} timeout="auto" unmountOnExit>
                     <FormGroup
-                      className='flex-horizontal flex-flow-small'
-                      sx={{paddingBlock: '8px'}}
+                      className="flex-horizontal flex-flow-small"
+                      sx={{ paddingBlock: "8px" }}
                     >
                       <FormControlLabel
-                        className='no-highlight'
+                        className="no-highlight"
                         control={
                           <Checkbox
-                            color='secondary'
-                            size='small'
-                            onChange={(event) => setFilters({...filters, admin: event.target.checked})}
+                            color="secondary"
+                            size="small"
+                            onChange={(event) =>
+                              setFilters({
+                                ...filters,
+                                admin: event.target.checked,
+                              })
+                            }
                             checked={filters.admin}
                             tabIndex={-1}
                             disableRipple
-                            sx={{paddingBlock: '1px'}}
-
+                            sx={{ paddingBlock: "1px" }}
                           />
                         }
-                        label={'Admin'}
+                        label={"Admin"}
                         componentsProps={{
                           typography: {
-                            fontSize: '0.8rem',
-                            fontWeight: '600',
-                            color: 'var(--text-disabled)',
+                            fontSize: "0.8rem",
+                            fontWeight: "600",
+                            color: "var(--text-disabled)",
                           },
                         }}
                       />
                       <FormControlLabel
-                        className='no-highlight'
+                        className="no-highlight"
                         control={
                           <Checkbox
-                            color='secondary'
-                            size='small'
+                            color="secondary"
+                            size="small"
                             onChange={(event) => {
-                              setFilters({...filters, approved: event.target.checked});
+                              setFilters({
+                                ...filters,
+                                approved: event.target.checked,
+                              });
                             }}
                             checked={filters.approved}
                             tabIndex={-1}
                             disableRipple
-                            sx={{paddingBlock: '1px'}}
+                            sx={{ paddingBlock: "1px" }}
                           />
                         }
-                        label={'Approved'}
+                        label={"Approved"}
                         componentsProps={{
                           typography: {
-                            fontSize: '0.8rem',
-                            fontWeight: '600',
-                            color: 'var(--text-disabled)',
+                            fontSize: "0.8rem",
+                            fontWeight: "600",
+                            color: "var(--text-disabled)",
                           },
                         }}
                       />
                       <FormControlLabel
-                        className='no-highlight'
+                        className="no-highlight"
                         control={
                           <Checkbox
-                            color='secondary'
-                            size='small'
+                            color="secondary"
+                            size="small"
                             onChange={(event) => {
-                              setFilters({...filters, denied: event.target.checked});
+                              setFilters({
+                                ...filters,
+                                denied: event.target.checked,
+                              });
                             }}
                             checked={filters.denied}
                             tabIndex={-1}
                             disableRipple
-                            sx={{paddingBlock: '1px'}}
+                            sx={{ paddingBlock: "1px" }}
                           />
                         }
-                        label={'Denied'}
+                        label={"Denied"}
                         componentsProps={{
                           typography: {
-                            fontSize: '0.8rem',
-                            fontWeight: '600',
-                            color: 'var(--text-disabled)',
+                            fontSize: "0.8rem",
+                            fontWeight: "600",
+                            color: "var(--text-disabled)",
                           },
                         }}
                       />
                       <FormControlLabel
-                        className='no-highlight'
+                        className="no-highlight"
                         control={
                           <Checkbox
-                            color='secondary'
-                            size='small'
+                            color="secondary"
+                            size="small"
                             onChange={(event) => {
-                              setFilters({...filters, pending: event.target.checked});
+                              setFilters({
+                                ...filters,
+                                pending: event.target.checked,
+                              });
                             }}
                             checked={filters.pending}
                             tabIndex={-1}
                             disableRipple
-                            sx={{paddingBlock: '1px'}}
+                            sx={{ paddingBlock: "1px" }}
                           />
                         }
-                        label={'Pending'}
+                        label={"Pending"}
                         componentsProps={{
                           typography: {
-                            fontSize: '0.8rem',
-                            fontWeight: '600',
-                            color: 'var(--text-disabled)',
+                            fontSize: "0.8rem",
+                            fontWeight: "600",
+                            color: "var(--text-disabled)",
                           },
                         }}
                       />
@@ -851,127 +901,257 @@ export default function ApprovalAccounts() {
                 </div>
               </MuiBox>
             </MuiPaper>
-            <Tooltip
-              title='Filter list'
-              flex={0}
-            >
+            <Tooltip title="Filter list" flex={0}>
               <IconButton onClick={() => setOpenFilter(!openFilter)}>
                 <FilterListIcon />
               </IconButton>
             </Tooltip>
-          </>
+          </> */}
 
-        </Toolbar>
-      </Card>
-      <Card>
-        {loading ? (
-          <Box sx={{ display: "flex" }} style={{ padding: "2rem" }}>
-            <CircularProgress />
-          </Box>
-        ) : (
-          <Table
-            style={{
-              backgroundColor: "white",
-            }}
-          >
-            <TableHead aria-label="Accounts Table Head">
-              <TableRow>
-                <TableCell padding="checkbox">
-                  {/* <Checkbox
-                    color='primary'
-                    data-testid="account-checkbox"
-                  // indeterminate={numSelected > 0 && numSelected < rowCount}
-                  // checked={rowCount > 0 && numSelected === rowCount}
-                  // onChange={onSelectAllClick}
-                  // inputProps={{
-                  //   'aria-label': 'select all desserts',
-                  // }}
-                  /> */}
-                  <Checkbox
-                    checked={selectAllChecked}
-                    onChange={handleSelectAll}
-                  />
-                </TableCell>
-                {/* This is the Column header for a dropdown icon next to each profile. */}
-                {/* To re-enable, uncomment this and the commented-out TableCell in the Row component. */}
-                {/* <TableCell padding="checkbox" /> */}
-                {headCells.map((headCell) => (
-                  <TableCell
-                    key={headCell.id}
-                    padding={headCell.disablePadding ? "none" : "normal"}
-                    // sortDirection={orderBy === headCell.id ? order : false}
-                    id="table-head-cell"
-                    onClick={() => handleSort(headCell.id)}
-                  >
-                    <TableSortLabel
-                      // active={orderBy === headCell.id}
-                      // onClick={handleSort(headCell.id)}
-                      /* eslint-disable-next-line max-len */
-                      direction={
-                        getArrowDirection(headCell.id) !== ""
-                          ? getArrowDirection(headCell.id)
-                          : "desc"
-                      }
-                    >
-                      {headCell.label}
-                      {/* {orderBy === headCell.id ? (
-                      <Box component='span' sx={visuallyHidden}>
-                        {order === 'desc' ?
-                        'sorted descending' : 'sorted ascending'}
-                      </Box>
-                    ) : null} */}
-                    </TableSortLabel>
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody aria-label="Accounts Table Body">
-              {displayAccounts.map((account) => {
-                return (
-                  <Row
-                    key={account.id}
-                    row={account}
-                    handleSelect={handleSelect}
-                    selectAllChecked={selectAllChecked}
-                    selected={selected}
-                  />
-                );
-              })}
-            </TableBody>
-            {/* TODO: footer with pagination and number selected */}
-            {/* <TableFooter>
-            <div
-              style={{
-                position: 'absolute',
-                padding: '1rem',
-                fontSize: '0.875rem',
-                color: 'primary',
+      {/* List Boxes */}
+      <Grid
+        container
+        spacing={2}
+        sx={{
+          height: "100%",
+          width: "100%",
+          lineHeight: 1.5,
+        }}
+        justifyContent="space-between"
+      >
+        {Array(4)
+          .fill()
+          .map((_, index) => (
+            <Grid
+              item
+              xs={12}
+              sm={12}
+              md={12}
+              lg={12}
+              xl={6}
+              key={index}
+              sx={{
+                display: "flex",
+                flex: 1,
+                flexDirection: "column",
+                height: "100%",
+                marginTop: "2em",
               }}
             >
-              0 rows selected
-            </div>
-            <TableRow>
-              <TablePagination
-                rowsPerPageOptions={[5, 10, 25, {label: 'All', value: -1}]}
-                colSpan={12}
-                count={50}
-                rowsPerPage={5}
-                page={0}
-                SelectProps={{
-                  inputProps: {
-                    'aria-label': 'rows per page',
-                  },
-                  native: true,
+              {/* Titles/Subtitles*/}
+              <div
+                className="flex-space-between flex-align-center"
+                style={{
+                  background: "var(--background-primary)",
+                  marginBottom: "1rem",
                 }}
-                // onPageChange={handleChangePage}
-                // onRowsPerPageChange={handleChangeRowsPerPage}
-                // ActionsComponent={TablePaginationActions}
-              />
-            </TableRow>
-          </TableFooter> */}
-          </Table>
-        )}
-      </Card>
+              >
+                {index % 2 === 0 && (
+                  <Text>
+                    <h2
+                      className="text-dark ellipsis text-medium"
+                      aria-label="Dashboard Upcoming Section"
+                    >
+                      {titles[index]}
+                    </h2>
+                    <h5
+                      className="text-lightgray text-bold ellipsis"
+                      aria-label="Dashboard Header Count"
+                    >
+                      {subtitles[index]}
+                    </h5>
+                  </Text>
+                )}
+                {index % 2 !== 0 && (
+                  <TextRight>
+                    <h2
+                      className="text-dark ellipsis text-medium"
+                      aria-label="Dashboard Upcoming Section"
+                    >
+                      {titles[index]}
+                    </h2>
+                    <h5
+                      className="text-lightgray text-bold ellipsis"
+                      aria-label="Dashboard Header Count"
+                    >
+                      {subtitles[index]}
+                    </h5>
+                  </TextRight>
+                )}
+
+                {/* Buttons */}
+                <div className="flex-space-between flex-align-center">
+                  {index === 0 && (
+                    <ThemedButton
+                      color={"blue"}
+                      variant={"themed"}
+                      type={"submit"}
+                      style={{
+                        fontSize: "0.875rem",
+                        marginRight: "1rem",
+                      }}
+                      onClick={handleDialogOpen}
+                    >
+                      Request More Info
+                    </ThemedButton>
+                  )}
+                  {index === 0 && (
+                    <EmailDialog
+                      emails={selected}
+                      accounts={accounts}
+                      profilePictures={profilePictures}
+                      open={dialogOpen}
+                      setClose={handleDialogClose}
+                    />
+                  )}
+                  {(index === 0 || index === 2) && (
+                    <ThemedButton
+                      color={"green"}
+                      variant={"gradient"}
+                      type={"submit"}
+                      style={{
+                        fontSize: "0.875rem",
+                        marginRight: index === 2 ? "1.5rem" : "1rem",
+                      }}
+                      onClick={handleStatusAction}
+                    >
+                      Approve
+                    </ThemedButton>
+                  )}
+                  {index === 0 && (
+                    <ThemedButton
+                      color={"red"}
+                      variant={"themed"}
+                      type={"submit"}
+                      style={{
+                        fontSize: "0.875rem",
+                        marginRight: "1.5rem",
+                      }}
+                      onClick={handleStatusAction}
+                    >
+                      Deny
+                    </ThemedButton>
+                  )}
+                  {index === 1 && (
+                    <ThemedButton
+                      color={"yellow"}
+                      variant={"gradient"}
+                      type={"submit"}
+                      style={{
+                        fontSize: "0.875rem",
+                        marginRight: "1rem",
+                      }}
+                      onClick={handleAdminPromotion}
+                    >
+                      Promote Admin
+                    </ThemedButton>
+                  )}
+
+                  {(index === 1 || index === 3) && (
+                    <ThemedButton
+                      color={"red"}
+                      variant={"themed"}
+                      type={"submit"}
+                      style={{
+                        fontSize: "0.875rem",
+                        marginRight: ".5rem",
+                      }}
+                      onClick={handleStatusAction}
+                    >
+                      Remove
+                    </ThemedButton>
+                  )}
+                </div>
+              </div>
+
+              {/* Boxes */}
+              <Card
+                sx={{
+                  height: 500,
+                  borderRadius: 3,
+                  boxShadow: 3,
+                  backgroundColor: "white",
+                  padding: 2,
+                  display: "flex",
+                  flexDirection: "column",
+                  marginRight: {
+                    xl: index % 2 === 0 ? "1rem" : "0",
+                  },
+                  marginLeft: {
+                    xl: index % 2 !== 0 ? "1rem" : "0",
+                  },
+                }}
+              >
+                {loading ? (
+                  <Box sx={{ display: "flex", padding: "2rem" }}>
+                    <CircularProgress />
+                  </Box>
+                ) : (
+                  <Box
+                    sx={{
+                      flex: 1,
+                      overflowY: "auto",
+                      maxHeight: "calc(100% - 16px)",
+                      borderRadius: 3,
+                    }}
+                  >
+                    <Table style={{ backgroundColor: "white" }}>
+                      <TableHead
+                        aria-label="Accounts Table Head"
+                        sx={{
+                          position: "sticky",
+                          top: 0,
+                          zIndex: 1,
+                          backgroundColor: "white",
+                          borderBottom: "2px solid rgba(0, 0, 0, 0.15)",
+                        }}
+                      >
+                        <TableRow>
+                          <TableCell padding="checkbox">
+                            <Checkbox
+                              checked={selectAllChecked}
+                              onChange={handleSelectAll}
+                            />
+                          </TableCell>
+                          {headCells.map((headCell) => (
+                            <TableCell
+                              key={headCell.id}
+                              padding={
+                                headCell.disablePadding ? "none" : "normal"
+                              }
+                              onClick={() => handleSort(headCell.id)}
+                            >
+                              <TableSortLabel
+                                direction={
+                                  getArrowDirection(headCell.id) !== ""
+                                    ? getArrowDirection(headCell.id)
+                                    : "desc"
+                                }
+                              >
+                                {headCell.label}
+                              </TableSortLabel>
+                            </TableCell>
+                          ))}
+                        </TableRow>
+                      </TableHead>
+                      <TableBody aria-label="Accounts Table Body">
+                        {displays[index].map((account) => (
+                          <Row
+                            key={account.id}
+                            row={account}
+                            handleSelect={handleSelect}
+                            selectAllChecked={selectAllChecked}
+                            selected={selected}
+                          />
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </Box>
+                )}
+              </Card>
+            </Grid>
+          ))}
+      </Grid>
     </Page>
   );
 }

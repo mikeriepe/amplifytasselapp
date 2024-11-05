@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
 import MuiBox from "@mui/material/Box";
-import Box from "@mui/material/Box";
 import MuiCard from "@mui/material/Card";
 import AddIcon from "@mui/icons-material/Add";
 import Button from "@mui/material/Button";
@@ -21,35 +20,12 @@ import { v4 as uuidv4 } from "uuid";
 
 const Display = styled((props) => <MuiCard elevation={0} {...props} />)(() => ({
   display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
-  height: "auto",
-  width: "100%",
-  background: "var(--primary-blue-main)",
-  boxShadow: "0px 4px 50px -15px rgba(0, 86, 166, 0.15)",
-  border: "0.5px solid rgba(0, 0, 0, 0.15)",
-  borderRadius: "10px",
-  marginTop: "1em",
+  alignItems: "center",
+  cursor: "pointer",
+  justifyContent: "space-between",
+  "&:hover": { backgroundColor: "#f5f5f5" },
+  // borderBottom: "1px solid #e0e0e0",
 }));
-
-const HeadingText = ({ children }, props) => (
-  <MuiBox
-    sx={{
-      display: "flex",
-      flexGrow: 1,
-      flexDirection: "column",
-      height: "100%",
-      lineHeight: 1.5,
-      color: "white",
-      fontWeight: "bold",
-      fontSize: "1.2rem",
-      margin: "1em",
-    }}
-    {...props}
-  >
-    {children}
-  </MuiBox>
-);
 
 const formValues = {
   name: "",
@@ -302,37 +278,20 @@ export default function DashboardCreate({ getCreatedOpportunities }) {
       <Button
         onClick={() => setShowOppForm(true)}
         sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          height: "auto",
+          color: "var(--info-lightblue-main)",
           width: "100%",
-          background: "var(--primary-blue-main)",
-          boxShadow: "0px 4px 50px -15px rgba(0, 86, 166, 0.15)",
-          border: "0.5px solid rgba(0, 0, 0, 0.15)",
-          borderRadius: "10px",
-          ":hover": { bgcolor: "var(--primary-blue-dark)", color: "white" },
+          height: "80px",
+          // backgroundColor: "var(--info-lightblue-main)",
+          border: "1px solid var(--info-lightblue-main)",
+          ":hover": {
+            backgroundColor: "var(--info-lightblue-main)",
+            color: "white",
+          },
+          // justifyContent: "left",
         }}
+        endIcon={<AddIcon />}
       >
-        <div aria-label="Dashboard Create Button">
-          <HeadingText>Create new Opportunities</HeadingText>
-        </div>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            borderRadius: "26px",
-            marginBottom: "1em",
-          }}
-        >
-          <AddIcon
-            sx={{
-              fontSize: "7em",
-              color: "white",
-            }}
-          />
-        </Box>
+        Create Opportunity
       </Button>
       <Modal
         open={showOppForm}

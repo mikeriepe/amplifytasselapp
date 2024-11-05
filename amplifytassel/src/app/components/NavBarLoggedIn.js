@@ -257,8 +257,7 @@ export default function NavBarLoggedIn() {
         position="fixed"
         open={open}
         sx={{
-          boxShadow: "0",
-          borderBottom: "0.5px solid rgba(0, 0, 0, 0.15)",
+          boxShadow: "0 .5px 2px #d1d1d1",
         }}
       >
         <Toolbar className="navbar-height">
@@ -325,14 +324,35 @@ export default function NavBarLoggedIn() {
               MenuListProps={{
                 "aria-labelledby": "basic-button",
               }}
+              PaperProps={{
+                style: {
+                  width: 100,
+                },
+              }}
               sx={{
                 "&:hover": {
                   backgroundColor: "transparent", // Remove hover background color
                 },
               }}
             >
-              <MenuItem onClick={handleProfileClick}>Profile</MenuItem>
-              <MenuItem onClick={handleLogout}>Logout</MenuItem>
+              <MenuItem
+                onClick={handleProfileClick}
+                sx={{
+                  justifyContent: "center",
+                  textAlign: "center",
+                }}
+              >
+                Profile
+              </MenuItem>
+              <MenuItem
+                onClick={handleLogout}
+                sx={{
+                  justifyContent: "center",
+                  textAlign: "center",
+                }}
+              >
+                Logout
+              </MenuItem>
             </Menu>
           </Box>
         </Toolbar>

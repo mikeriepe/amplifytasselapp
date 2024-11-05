@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import MuiBox from "@mui/material/Box";
-import useAuth from "../util/AuthContext";
+import useAuth from "../util/AuthContext.js";
 import { Link } from "react-router-dom";
 import { Grid } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 
-import DashboardOppThumbnail from "./DashboardOppThumbnail";
+import DashboardOppThumbnail from "./DashboardOppThumbnail.js";
 
 import { DataStore } from "@aws-amplify/datastore";
-import { Opportunity } from "./../../models";
+import { Opportunity } from "../../models/index.js";
 import { useTabIndex } from "./TabIndexContext.js";
 
 const UpcomingSection = ({ children }, props) => (
@@ -50,47 +50,54 @@ const Text = ({ children }, props) => (
 );
 
 /**
- * creates Dashboard upcoming events section
- * @return {HTML} Dashboard upcoming events component
+ * creates Dashboard browse events section
+ * @return {HTML} Dashboard new events component
  */
-export default function DashboardUpcoming({ data }) {
+export default function DashboardRecommended({ data }) {
   const { userProfile } = useAuth();
-  const [joinedOpportunities, setJoinedOpportunities] = useState([]);
   const [loading, setLoading] = useState(true);
   const { tabIndex, setTabIndex } = useTabIndex();
+  const [allOpportunities, setAllOpportunities] = useState([]);
 
-  const getJoinedOpportunities = () => {
-    const currTime = new Date().toISOString();
+  const getAllOpportunities = () => {
     DataStore.query(Opportunity, (o) =>
-      o.and((o) => [
-        o.profilesJoined.profile.id.eq(userProfile.id),
-        o.endTime.gt(currTime),
-      ])
+      o.and((o) => [o.status.eq("APPROVED"), o.profileID.ne(userProfile.id)])
     )
       .then((res) => {
-        setJoinedOpportunities(res);
-        setLoading(false);
+        var firstList = res;
+        DataStore.query(Opportunity, (o) =>
+          o.and((o) => [o.Requests.profileID.eq(userProfile.id)])
+        ).then((res) => {
+          const timeBoxedList = [];
+          for (let i = 0; i < firstList.length; i++) {
+            if (new Date(firstList[i].startTime) > Date.now()) {
+              timeBoxedList.push(firstList[i]);
+            }
+          }
+          setAllOpportunities(timeBoxedList);
+          setLoading(false);
+        });
       })
       .catch((err) => {
-        alert("Error retrieving joined opportunities");
         console.log(err);
+        alert("Error retrieving opportunities");
       });
   };
 
   useEffect(() => {
-    getJoinedOpportunities();
+    getAllOpportunities();
   }, []);
 
-  const numOpps = joinedOpportunities.length;
+  const numOpps = allOpportunities.length;
   const linkText = "View More";
 
   let displayOpps = [];
   if (numOpps > 3) {
     for (let i = 0; i < 3; i++) {
-      displayOpps.push(joinedOpportunities[i]);
+      displayOpps.push(allOpportunities[i]);
     }
   } else {
-    displayOpps = joinedOpportunities;
+    displayOpps = allOpportunities;
   }
 
   return (
@@ -113,13 +120,13 @@ export default function DashboardUpcoming({ data }) {
                 className="text-dark ellipsis text-medium"
                 aria-label="Dashboard Upcoming Section"
               >
-                Upcoming Opportunities
+                Recommended Opportunities
               </h2>
               <h5
                 className="text-lightgray text-bold ellipsis"
                 aria-label="Dashboard Header Count"
               >
-                Your Opportunities that are coming up
+                Opportunities recommended for you
               </h5>
             </Text>
             <div className="flex-space-between flex-align-center">
@@ -127,7 +134,7 @@ export default function DashboardUpcoming({ data }) {
                 className="text-bold text-blue ellipsis text-small
             hover-highlight-link"
                 to="/opportunities"
-                state={{ defaultTab: "upcoming" }}
+                state={{ defaultTab: "browse" }}
                 onClick={() => setTabIndex("/opportunities")}
               >
                 {linkText}
@@ -160,7 +167,7 @@ export default function DashboardUpcoming({ data }) {
                   className="text-light ellipsis text-medium"
                   aria-label="Dashboard Upcoming Section"
                 >
-                  No Current Upcoming Opportunities
+                  No Current Recommended Opportunities
                 </h2>
               </Text>
             </Box>
