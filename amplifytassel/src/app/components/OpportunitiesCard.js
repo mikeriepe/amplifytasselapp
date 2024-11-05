@@ -765,13 +765,13 @@ export default function OpportunitiesCard({
           sx={{ width: 500, borderRadius: 4, boxShadow: 3 }}
           className="clickable"
         >
-          <CardActionArea
-            component={RouterLink}
-            to={`/Opportunity/${opportunity.id}`}
+          <div
+            className="flex-space-between flex-align-center"
+            style={{ padding: "1.5em" }}
           >
-            <div
-              className="flex-space-between flex-align-center"
-              style={{ padding: "1.5em" }}
+            <CardActionArea
+              component={RouterLink}
+              to={`/Opportunity/${opportunity.id}`}
             >
               <MuiBox>
                 <h4
@@ -796,143 +796,142 @@ export default function OpportunitiesCard({
                   </p>
                 </div>
               </MuiBox>
-              <div className="flex-flow-large" style={{ marginLeft: "50px" }}>
-                {(type === "upcoming" ||
-                  type === "created" ||
-                  type === "pending") && (
-                  <Box>
-                    <OutlinedIconButton
-                      type={type}
-                      opportunityid={opportunity.id}
-                      profileid={userProfile.id}
-                      getPendingOpportunities={getPendingOpportunities}
-                      getAllOpportunities={getAllOpportunities}
-                      getJoinedOpportunities={getJoinedOpportunities}
-                      onClick={
-                        type === "created" ? handleDeleteModalOpen : null
-                      }
-                    >
-                      <CloseRoundedIcon
-                        aria-label={`Delete ${opportunity.eventName}`}
-                        sx={{
-                          height: "20px",
-                          width: "20px",
-                          color: "var(--error-red-main)",
-                          stroke: "var(--error-red-main)",
-                          strokeWidth: "2px",
-                        }}
-                      />
-                    </OutlinedIconButton>
-                    {/* DELETE OPP MODAL */}
-                    <Modal
-                      open={showDeleteForm}
-                      onBackdropClick={handleDeleteModalClose}
-                      onClose={handleDeleteModalClose}
+            </CardActionArea>
+            <div className="flex-flow-large" style={{ marginLeft: "50px" }}>
+              {(type === "upcoming" ||
+                type === "created" ||
+                type === "pending") && (
+                <Box>
+                  <OutlinedIconButton
+                    type={type}
+                    opportunityid={opportunity.id}
+                    profileid={userProfile.id}
+                    getPendingOpportunities={getPendingOpportunities}
+                    getAllOpportunities={getAllOpportunities}
+                    getJoinedOpportunities={getJoinedOpportunities}
+                    onClick={type === "created" ? handleDeleteModalOpen : null}
+                  >
+                    <CloseRoundedIcon
+                      aria-label={`Delete ${opportunity.eventName}`}
                       sx={{
-                        overflow: "scroll",
+                        height: "20px",
+                        width: "20px",
+                        color: "var(--error-red-main)",
+                        stroke: "var(--error-red-main)",
+                        strokeWidth: "2px",
+                      }}
+                    />
+                  </OutlinedIconButton>
+                  {/* DELETE OPP MODAL */}
+                  <Modal
+                    open={showDeleteForm}
+                    onBackdropClick={handleDeleteModalClose}
+                    onClose={handleDeleteModalClose}
+                    sx={{
+                      overflow: "scroll",
+                      display: "grid",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Paper
+                      sx={{
+                        backgroundColor: "rgb(240, 240, 240)",
+                        zIndex: "10",
+                        boxShadow: "-3px 5px 8px 0px rgba(84, 84, 84, 0.81)",
+                        borderRadius: "10px",
+                        margin: "3rem",
+                        padding: "2rem",
                         display: "grid",
+                        gridGap: "5px",
                         justifyContent: "center",
+                        height: "fit-content",
                       }}
                     >
-                      <Paper
+                      <Box>
+                        Are you sure you would like to delete{" "}
+                        {opportunity.eventName}?
+                      </Box>
+                      <Box
                         sx={{
-                          backgroundColor: "rgb(240, 240, 240)",
-                          zIndex: "10",
-                          boxShadow: "-3px 5px 8px 0px rgba(84, 84, 84, 0.81)",
-                          borderRadius: "10px",
-                          margin: "3rem",
-                          padding: "2rem",
                           display: "grid",
-                          gridGap: "5px",
-                          justifyContent: "center",
-                          height: "fit-content",
+                          gridAutoFlow: "column",
+                          gridGap: "10px",
                         }}
                       >
-                        <Box>
-                          Are you sure you would like to delete{" "}
-                          {opportunity.eventName}?
-                        </Box>
-                        <Box
+                        <ThemedButton
+                          color={"blue"}
+                          variant={"themed"}
+                          onClick={handleDeleteModalClose}
                           sx={{
-                            display: "grid",
-                            gridAutoFlow: "column",
-                            gridGap: "10px",
+                            height: "fit-content",
                           }}
                         >
-                          <ThemedButton
-                            color={"blue"}
-                            variant={"themed"}
-                            onClick={handleDeleteModalClose}
-                            sx={{
-                              height: "fit-content",
-                            }}
-                          >
-                            Back
-                          </ThemedButton>
-                          <ThemedButton
-                            aria-label={"Delete Opp"}
-                            color={"gray"}
-                            variant={"cancel"}
-                            onClick={() => handleDeleteOpp(opportunity)}
-                            sx={{
-                              height: "fit-content",
-                            }}
-                          >
-                            Delete
-                          </ThemedButton>
-                        </Box>
-                      </Paper>
-                    </Modal>
-                  </Box>
-                )}
-                {type === "created" && (
-                  <Box>
-                    <OutlinedIconButton
-                      type={type}
-                      onClick={handleOppModalOpen}
-                    >
-                      <EditRoundedIcon
-                        data-test-id={`Edit Opportunity Form ${opportunity.id}`}
-                        sx={{
-                          height: "20px",
-                          width: "20px",
-                          color: "var(--tertiary-gray-main)",
-                        }}
-                      />
-                    </OutlinedIconButton>
-                    {/* EDIT OPP FORM */}
-                    <Modal
-                      aria-label={"Opportunity Form"}
-                      open={showOppForm}
-                      onBackdropClick={() => setShowOppForm(false)}
-                      onClose={() => setShowOppForm(false)}
-                      sx={{ overflow: "scroll" }}
-                    >
-                      <OpportunityForm
-                        onClose={handleOppModalClose}
-                        defaultValues={editOppFormValues}
-                        onSubmit={handleEditOpp}
-                      />
-                    </Modal>
-                  </Box>
-                )}
+                          Back
+                        </ThemedButton>
+                        <ThemedButton
+                          aria-label={"Delete Opp"}
+                          color={"gray"}
+                          variant={"cancel"}
+                          onClick={() => handleDeleteOpp(opportunity)}
+                          sx={{
+                            height: "fit-content",
+                          }}
+                        >
+                          Delete
+                        </ThemedButton>
+                      </Box>
+                    </Paper>
+                  </Modal>
+                </Box>
+              )}
+              {type === "created" && (
+                <Box>
+                  <OutlinedIconButton type={type} onClick={handleOppModalOpen}>
+                    <EditRoundedIcon
+                      data-test-id={`Edit Opportunity Form ${opportunity.id}`}
+                      sx={{
+                        height: "20px",
+                        width: "20px",
+                        color: "var(--tertiary-gray-main)",
+                      }}
+                    />
+                  </OutlinedIconButton>
+                  {/* EDIT OPP FORM */}
+                  <Modal
+                    aria-label={"Opportunity Form"}
+                    open={showOppForm}
+                    onBackdropClick={() => setShowOppForm(false)}
+                    onClose={() => setShowOppForm(false)}
+                    sx={{ overflow: "scroll" }}
+                  >
+                    <OpportunityForm
+                      onClose={handleOppModalClose}
+                      defaultValues={editOppFormValues}
+                      onSubmit={handleEditOpp}
+                    />
+                  </Modal>
+                </Box>
+              )}
 
-                {/* Apply button */}
-                {type === "all" && (
-                  <OutlinedButton handleModalOpen={handleReqModalOpen}>
-                    <p
-                      className="text-xbold text-white"
-                      aria-label={`Apply ${opportunity.eventName}`}
-                    >
-                      Apply
-                    </p>
-                  </OutlinedButton>
-                )}
-              </div>
+              {/* Apply button */}
+              {type === "all" && (
+                <OutlinedButton handleModalOpen={handleReqModalOpen}>
+                  <p
+                    className="text-xbold text-white"
+                    aria-label={`Apply ${opportunity.eventName}`}
+                  >
+                    Apply
+                  </p>
+                </OutlinedButton>
+              )}
             </div>
+          </div>
 
-            {/* Lower card area */}
-
+          {/* Lower card area */}
+          <CardActionArea
+            component={RouterLink}
+            to={`/Opportunity/${opportunity.id}`}
+          >
             <Divider sx={{ borderBottom: "0.5px solid rgba(0, 0, 0, 0.15)" }} />
             <div
               className="flex-horizontal flex-align-center "

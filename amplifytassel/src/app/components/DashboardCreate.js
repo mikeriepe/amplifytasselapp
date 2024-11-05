@@ -278,11 +278,15 @@ export default function DashboardCreate({ getCreatedOpportunities }) {
       <Button
         onClick={() => setShowOppForm(true)}
         sx={{
-          color: "white",
+          color: "var(--info-lightblue-main)",
           width: "100%",
           height: "80px",
-          backgroundColor: "var(--info-lightblue-main)",
-          ":hover": { backgroundColor: "var(--primary-blue-dark)" },
+          // backgroundColor: "var(--info-lightblue-main)",
+          border: "1px solid var(--info-lightblue-main)",
+          ":hover": {
+            backgroundColor: "var(--info-lightblue-main)",
+            color: "white",
+          },
           // justifyContent: "left",
         }}
         endIcon={<AddIcon />}

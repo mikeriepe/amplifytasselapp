@@ -43,7 +43,7 @@ const CustomCard = ({ opportunity }) => {
 
   return (
     <Card
-      sx={{ width: 500, borderRadius: 4, boxShadow: 3 }}
+      sx={{ width: "100%", borderRadius: 4, boxShadow: 3 }}
       className="clickable"
     >
       <CardActionArea
@@ -57,8 +57,8 @@ const CustomCard = ({ opportunity }) => {
           image={banner}
           alt="Event Banner"
           sx={{
-            width: 150,
-            height: 150,
+            width: { sm: 100, lg: 150 }, // Full width on small screens
+            height: { sm: 100, lg: 150 },
             borderRadius: "8px",
             margin: 2,
           }}
@@ -136,13 +136,6 @@ const CustomCard = ({ opportunity }) => {
                 <p className="text-bold">{opportunity.zoomLink}</p>
               </div>
             )}
-          {/* <Typography variant="body2" class="text-normal text-lightgray">
-            {`
-              ${opportunity.location?.address}
-              ${opportunity.location?.city},
-              ${opportunity.location?.state}
-            `}
-          </Typography> */}
         </Box>
       </CardActionArea>
     </Card>
