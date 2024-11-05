@@ -8,6 +8,7 @@ import ProfileWork from "../components/ProfileWork";
 import ProfileVolunteer from "../components/ProfileVolunteer";
 import ProfileKeywords from "../components/ProfileKeywords";
 import ProfileSocials from "../components/ProfileSocials";
+import ProfileCollege from "../components/ProfileCollege";
 import { DataStore } from "@aws-amplify/datastore";
 import { Profile } from "../../models";
 
@@ -47,6 +48,7 @@ export default function ViewProfile() {
         <>
           <ProfileHeader data={profile} editButton={false} />
           <ProfileSocials data={profile} />
+          <ProfileCollege data={profile} />
           <ProfileAbout data={profile} />
           <ProfileWork data={profile} />
           <ProfileVolunteer data={profile} />

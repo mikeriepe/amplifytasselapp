@@ -304,7 +304,7 @@ export default function Signup() {
               Grow your connection with the UCSC community!
             </h3>
             <div className="flow-tiny">
-              <img src={SignupBanner} />
+              <img src={SignupBanner} alt="SignUpBanner"/>
             </div>
           </div>
           <Box className="card-content padding-64">

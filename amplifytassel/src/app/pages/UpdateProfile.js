@@ -102,6 +102,9 @@ export default function UpdateProfile() {
       location: userProfile.location,
       about: userProfile.about,
       linkedin: userProfile.linkedin,
+      // Added by Kenny Losier 11/3/2024:
+      username: userProfile.username,
+      college: userProfile.college,
     },
   });
 
@@ -143,6 +146,16 @@ export default function UpdateProfile() {
 
     // Check location
     if (userProfile.location === null && selctdVals[1].location !== null) {
+      pointsToBeAdded += 20;
+    }
+
+    // Check username - added by Kenny 11/3/2024
+    if (userProfile.username === null && selctdVals[1].username !== null) {
+      pointsToBeAdded += 20;
+    }
+
+    // Check college - added by Kenny 11/3/2024
+    if (userProfile.college === null && selctdVals[1].college !== null) {
       pointsToBeAdded += 20;
     }
 
@@ -257,6 +270,8 @@ export default function UpdateProfile() {
         updated.location = values[1].location;
         updated.about = values[1].about;
         updated.linkedin = values[1].linkedin;
+        updated.username = values[1].username;
+        updated.college = values[1].college;
       })
     );
     res = await DataStore.query(Profile, userProfile.id);
@@ -289,6 +304,8 @@ export default function UpdateProfile() {
             about: userProfile.about,
             keywords: keywords,
             linkedin: userProfile.linkedin,
+            username: userProfile.username,
+            college: userProfile.college,
           },
         });
         DataStore.query(Keyword).then((keywordsAll) => {
@@ -369,6 +386,29 @@ export default function UpdateProfile() {
                   <h2 className="text-normal">Update Profile</h2>
                 </div>
                 <div className="grid-flow-large" width="100%">
+                <div
+                    className="grid-flow-small"
+                    aria-label={"Update Profile Username"}
+                  >
+                    <p className="text-bold">
+                      Username
+                      {/* <Tooltip title="Fill out this field to get 10 points" arrow>
+                        <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
+                      </Tooltip> */}
+                    </p>
+                    <ThemedInput
+                      placeholder={"e.g., Bobsmith1"}
+                      type={"text"}
+                      index={"username"}
+                      step={1}
+                      fill={"username"}
+                      content={
+                        values[1].username === ""
+                          ? null
+                          : values[1].username
+                      }
+                    />
+                  </div>
                   <div
                     className="grid-flow-small"
                     aria-label={"Update Profile Grad Year"}
@@ -405,6 +445,29 @@ export default function UpdateProfile() {
                     <div>
                       {totalMajors.length && <MultiSelect data={totalMajors} />}
                     </div>
+                  </div>
+                  <div
+                    className="grid-flow-small"
+                    aria-label={"Update Profile College"}
+                  >
+                    <p className="text-bold">
+                      College Affiliation
+                      {/* <Tooltip title="Fill out this field to get 10 points" arrow>
+                        <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
+                      </Tooltip> */}
+                    </p>
+                    <ThemedInput
+                      placeholder={"e.g., Cowell College"}
+                      type={"text"}
+                      index={"college"}
+                      step={1}
+                      fill={"college"}
+                      content={
+                        values[1].college === ""
+                          ? null
+                          : values[1].college
+                      }
+                    />
                   </div>
                   <div
                     className="grid-flow-small"
