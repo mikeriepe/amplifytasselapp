@@ -80,6 +80,16 @@ const OutlinedIconButton = ({ children }, props) => (
   </ButtonBase>
 );
 
+const toastOptions = {
+  position: "top-right",
+  autoClose: 5000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+};
+
 /**
  * updates Profile Calendar
  * @return {HTML} Update Profile component
@@ -345,8 +355,25 @@ export default function UpdateProfile() {
   }, []);
 
   const handleSubmit = async (e) => {
-    await updateProfile();
-    navigate("/myProfile");
+    e.preventDefault(); // Prevent the default form behavior
+
+    // Validate required fields
+    if (!values[1].username.trim()) {
+      toast.error(`Username year is required`, toastOptions);
+      return;
+    }
+
+    if (!values[1].graduationYear.trim()) {
+      toast.error(`Gradutaion is required`, toastOptions);
+      return;
+    }
+
+    try {
+      await updateProfile();
+      navigate("/myProfile");
+    } catch (error) {
+      toast.error(`Failed to update profile`, toastOptions);
+    }
   };
 
   return (
@@ -386,7 +413,7 @@ export default function UpdateProfile() {
                   <h2 className="text-normal">Update Profile</h2>
                 </div>
                 <div className="grid-flow-large" width="100%">
-                <div
+                  <div
                     className="grid-flow-small"
                     aria-label={"Update Profile Username"}
                   >
@@ -402,10 +429,16 @@ export default function UpdateProfile() {
                       index={"username"}
                       step={1}
                       fill={"username"}
-                      content={
-                        values[1].username === ""
-                          ? null
-                          : values[1].username
+                      content={values[1].username}
+                      required={true}
+                      onChange={(e) =>
+                        setValues((prevValues) => ({
+                          ...prevValues,
+                          1: {
+                            ...prevValues[1],
+                            username: e.target.value,
+                          },
+                        }))
                       }
                     />
                   </div>
@@ -429,6 +462,16 @@ export default function UpdateProfile() {
                         values[1].graduationYear === ""
                           ? null
                           : values[1].graduationYear
+                      }
+                      required={true} // Make the input required
+                      onChange={(e) =>
+                        setValues((prevValues) => ({
+                          ...prevValues,
+                          1: {
+                            ...prevValues[1],
+                            graduationYear: e.target.value,
+                          },
+                        }))
                       }
                     />
                   </div>
@@ -463,9 +506,7 @@ export default function UpdateProfile() {
                       step={1}
                       fill={"college"}
                       content={
-                        values[1].college === ""
-                          ? null
-                          : values[1].college
+                        values[1].college === "" ? null : values[1].college
                       }
                     />
                   </div>
@@ -727,7 +768,7 @@ export default function UpdateProfile() {
                       aria-label="Next step button"
                       color={"yellow"}
                       variant={"themed"}
-                      onClick={(e) => handleSubmit(e)}
+                      onClick={handleSubmit}
                     >
                       Save
                     </ThemedButton>
