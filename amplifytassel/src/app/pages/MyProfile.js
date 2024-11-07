@@ -18,6 +18,9 @@ import ProfileKeywords from "../components/ProfileKeywords";
 // Added by Kenny on 11/03/2024
 import ProfileCollege from "../components/ProfileCollege.js";
 
+// Added by Kenny on 11/06/2024
+import ProfileOrganization from "../components/ProfileOrganization.js"
+
 import { Auth } from "aws-amplify";
 import { DataStore } from "@aws-amplify/datastore";
 import { Profile } from "../../models";
@@ -91,6 +94,7 @@ export default function MyProfile() {
           <ProfileWork data={userProfile} />
           <ProfileVolunteer data={userProfile} />
           <ProfileKeywords data={userProfile} />
+          <ProfileOrganization data={userProfile} />
           <Button
             onClick={handleDeactivateAccount}
             aria-label="Profile Deactivate Account"

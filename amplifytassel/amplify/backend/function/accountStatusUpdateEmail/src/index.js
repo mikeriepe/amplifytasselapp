@@ -2,6 +2,7 @@ const AWS = require('aws-sdk');
 AWS.config.region = process.env.AWS_REGION;
 
 const ses = new AWS.SES({ apiVersion: '2010-12-01' });
+const WEBSITE = 'slugmatch.app';
 
 
 /**
@@ -24,7 +25,7 @@ exports.handler = async (event) => {
             'Your Account Has Been Approved',
 `Your Tassel account has been approved.
 
-View your profile here: tassel.com/myprofile
+View your profile here: ${WEBSITE}/myprofile
 
 Have any questions? Contact us at tasselsupport@gmail.com.`
           );
@@ -36,7 +37,7 @@ Have any questions? Contact us at tasselsupport@gmail.com.`
             'Your Account Has Been Denied',
 `Your Tassel account has been denied.
 
-View your profile here: tassel.com/myprofile
+View your profile here: ${WEBSITE}/myprofile
 
 Have any questions? Contact us at tasselsupport@gmail.com.`
           );
@@ -48,7 +49,7 @@ Have any questions? Contact us at tasselsupport@gmail.com.`
             'You Have Been Promoted To Admin',
 `Your Tassel account has been promoted to Admin.
 
-View your profile here: tassel.com/myprofile
+View your profile here: ${WEBSITE}/myprofile
 
 Have any questions? Contact us at tasselsupport@gmail.com.`
           );
