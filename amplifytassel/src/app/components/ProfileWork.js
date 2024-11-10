@@ -22,6 +22,7 @@ const Work = styled((props) => (
  * @return {HTML} Profile component
  */
 export default function ProfileWork({data}) {
+  // Unused
   // useEffect(() => {
   //   console.log('gothere2');
   //   console.log(data);

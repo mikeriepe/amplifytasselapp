@@ -21,6 +21,12 @@ import WorkExperienceDeleteModal from "../components/WorkExperienceDeleteModal";
 import VolunteerExperienceForm from "../components/VolunteerExperienceForm";
 import VolunteerExperienceDeleteModal from "../components/VolunteerExperienceDeleteModal";
 import VolunteerExperienceList from "../components/VolunteerExperienceList";
+
+// Added by Kenny on 11/3/2024
+import OrganizationExperienceForm from "../components/OrganizationExperienceForm";
+import OrganizationExperienceDeleteModal from "../components/OrganizationExperienceDeleteModal";
+import OrganizationExperienceList from "../components/OrganizationExperienceList";
+
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import Tooltip from "@mui/material/Tooltip";
@@ -102,6 +108,11 @@ export default function UpdateProfile() {
   const [showVolunteerForm, setShowVolunteerForm] = useState(false);
   const [showDeleteVolunteerModal, setShowDeleteVolunteerModal] =
     useState(false);
+  
+  // Added by Kenny for Organization/Club Activity - 11/3/2024
+  const [showOrganizationForm, setShowOrganizationForm] = useState(false);
+  const [showDeleteOrganizationModal, setShowDeleteOrganizationModal] = useState(false);
+  
   const [selectedMajors, setSelectedMajors] = useState([]);
   const [totalMajors, setTotalMajors] = useState([]);
   const [selectedKeywords, setSelectedKeywords] = useState([]);
@@ -630,6 +641,57 @@ export default function UpdateProfile() {
                     >
                       <p
                         className="text-bold"
+                        aria-label={"Update Profile Organization"}
+                      >
+                        Organization/Club Activity
+                        {/* <Tooltip title="Fill out this field to get 10 points" arrow>
+                        <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
+                      </Tooltip> */}
+                      </p>
+                      <div className="flex-space-between flex-align-center">
+                        {
+                          <OutlinedIconButton>
+                            <RemoveIcon
+                              aria-label={"Remove Organization"}
+                              sx={{
+                                height: "20px",
+                                width: "20px",
+                                color: "var(--text-gray)",
+                                stroke: "var(--text-gray)",
+                                strokeWidth: "2px",
+                              }}
+                              onClick={() => setShowDeleteOrganizationModal(true)}
+                            />
+                          </OutlinedIconButton>
+                        }
+                        {
+                          <OutlinedIconButton>
+                            <AddIcon
+                              aria-label={"Add Organization"}
+                              sx={{
+                                height: "20px",
+                                width: "20px",
+                                color: "var(--text-gray)",
+                                stroke: "var(--text-gray)",
+                                strokeWidth: "2px",
+                              }}
+                              onClick={() => setShowOrganizationForm(true)}
+                            />
+                          </OutlinedIconButton>
+                        }
+                      </div>
+                    </div>
+                    <OrganizationExperienceList
+                      organizationExperience={userProfile.organizationExperience}
+                    />
+                  </div>
+                  <div className="grid-flow-small">
+                    <div
+                      className="flex-space-between flex-align-center"
+                      style={{ background: "var(--background-primary)" }}
+                    >
+                      <p
+                        className="text-bold"
                         aria-label={"Update Profile Volunteer Experience"}
                       >
                         Volunteer Experience
@@ -793,6 +855,22 @@ export default function UpdateProfile() {
       >
         <WorkExperienceDeleteModal
           onClose={() => setShowDeleteModal(!showDeleteModal)}
+        />
+      </Modal>
+      <Modal
+        open={showOrganizationForm}
+        onBackdropClick={() => setShowOrganizationForm(false)}
+        onClose={() => setShowOrganizationForm(false)}
+      >
+        <OrganizationExperienceForm onClose={() => setShowOrganizationForm(!showOrganizationForm)} />
+      </Modal>
+      <Modal
+        open={showDeleteOrganizationModal}
+        onBackdropClick={() => setShowDeleteOrganizationModal(false)}
+        onClose={() => setShowDeleteOrganizationModal(false)}
+      >
+        <OrganizationExperienceDeleteModal
+          onClose={() => setShowDeleteOrganizationModal(!showDeleteOrganizationModal)}
         />
       </Modal>
       <Modal
