@@ -148,6 +148,7 @@ export default function NavBarLoggedIn() {
 
   const handleProfileClick = () => {
     handleClose(); // Close the menu
+    setTabIndex("");
     navigate("/myprofile"); // Navigate to /myprofile
   };
 
@@ -191,7 +192,7 @@ export default function NavBarLoggedIn() {
   };
 
   const handleTabClick = (index) => {
-    console.log(index);
+    // console.log(index);
     setTabIndex(index);
   };
 
@@ -272,8 +273,8 @@ export default function NavBarLoggedIn() {
           </IconButton>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            {/* Notification Icon */}
-            <Tooltip title="Notifications">
+            {/* Notification Icon. Currently not functional*/}
+            {/* <Tooltip title="Notifications">
               <IconButton
                 aria-label="show number of new notifications"
                 aria-controls={notificationId}
@@ -286,7 +287,7 @@ export default function NavBarLoggedIn() {
                   <NotificationsRoundedIcon className="icon-gray" />
                 </Badge>
               </IconButton>
-            </Tooltip>
+            </Tooltip> */}
             {/*{showNotification && renderNotification}*/}
             {/* Profile Icon */}
 
@@ -335,6 +336,7 @@ export default function NavBarLoggedIn() {
                 },
               }}
             >
+              {/* Profile drop down menu items */}
               <MenuItem
                 onClick={handleProfileClick}
                 sx={{
@@ -369,7 +371,7 @@ export default function NavBarLoggedIn() {
                 : "/dashboard"
             }
           >
-            <Box onClick={() => handleTabClick(0)} sx={BrandStyling}>
+            <Box onClick={() => handleTabClick("/dashboard")} sx={BrandStyling}>
               <SchoolIcon
                 className="icon-yellow"
                 sx={{ mr: 3, transform: "scale(1.5)" }}
