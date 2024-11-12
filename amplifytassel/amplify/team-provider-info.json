@@ -34,7 +34,6 @@
           "s3Key": "amplify-builds/requestStatusUpdateEmail-4957545a6b3438374b5a-build.zip"
         },
         "dailySummaryEmail": {
-          "adminEmails": "dawichan@ucsc.edu",
           "deploymentBucketName": "amplify-amplifytassel-dev-233440-deployment",
           "s3Key": "amplify-builds/dailySummaryEmail-6e6c32534c6f59557769-build.zip"
         }

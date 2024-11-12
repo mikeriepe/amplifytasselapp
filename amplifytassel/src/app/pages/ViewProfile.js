@@ -9,6 +9,7 @@ import ProfileVolunteer from "../components/ProfileVolunteer";
 import ProfileKeywords from "../components/ProfileKeywords";
 import ProfileSocials from "../components/ProfileSocials";
 import ProfileCollege from "../components/ProfileCollege";
+import ProfileOrganization from "../components/ProfileOrganization";
 import { DataStore } from "@aws-amplify/datastore";
 import { Profile } from "../../models";
 
@@ -53,6 +54,7 @@ export default function ViewProfile() {
           <ProfileWork data={profile} />
           <ProfileVolunteer data={profile} />
           <ProfileKeywords data={profile} />
+          <ProfileOrganization data={profile} />
         </>
       )}
     </Page>
