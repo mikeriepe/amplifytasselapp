@@ -14,6 +14,7 @@ const ses = new AWS.SES({ apiVersion: '2010-12-01' });
 
 const GRAPHQL_ENDPOINT = process.env.API_AMPLIFYTASSEL_GRAPHQLAPIENDPOINTOUTPUT;
 const GRAPHQL_API_KEY = process.env.API_AMPLIFYTASSEL_GRAPHQLAPIKEYOUTPUT;
+const WEBSITE = 'slugmatch.app';
 
 const profileQuery = /* GraphQL */ `
   query ProfileQuery($profileID: ID!) {
@@ -74,7 +75,7 @@ exports.handler = async (event) => {
           `Your Opportunity ${name} Was Created`,
 `Your opportunity ${name} is pending approval from Tassel administrators.
 
-View your opportunity here: tassel.com/Opportunity/${id}
+View your opportunity here: ${WEBSITE}/Opportunity/${id}
 
 Have any questions? Contact us at tasselsupport@gmail.com.`
         );
@@ -88,7 +89,7 @@ Have any questions? Contact us at tasselsupport@gmail.com.`
             `Your Opportunity ${name} Has Been Approved`,
 `Your opportunity ${name} has been approved.
 
-View your opportunity here: tassel.com/Opportunity/${id}
+View your opportunity here: ${WEBSITE}/Opportunity/${id}
 
 Have any questions? Contact us at tasselsupport@gmail.com.`
           );
@@ -100,7 +101,7 @@ Have any questions? Contact us at tasselsupport@gmail.com.`
             `Your Opportunity ${name} Has Been Denied`,
 `Your opportunity ${name} has been denied.
 
-View your opportunity here: tassel.com/Opportunity/${id}
+View your opportunity here: ${WEBSITE}/Opportunity/${id}
 
 Have any questions? Contact us at tasselsupport@gmail.com.`
           );
