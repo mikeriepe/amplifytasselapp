@@ -340,6 +340,10 @@ a:active {
 .padding-64 {
   padding: 4rem;
 }
+
+.padding-32 {
+  padding: 2rem;
+}
 .label {
   display: inline-block;
   padding: 5px;
