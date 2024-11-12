@@ -84,6 +84,22 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
+    "dailySummaryEmail": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput",
+            "GraphQLAPIKeyOutput"
+          ],
+          "category": "api",
+          "resourceName": "amplifytassel"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "opportunityStatusUpdateEmail": {
       "build": true,
       "dependsOn": [
@@ -155,6 +171,30 @@
         {
           "category": "function",
           "resourceName": "amplifytasselPostConfirmation"
+        }
+      ]
+    },
+    "AMPLIFY_function_dailySummaryEmail_adminEmails": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "dailySummaryEmail"
+        }
+      ]
+    },
+    "AMPLIFY_function_dailySummaryEmail_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "dailySummaryEmail"
+        }
+      ]
+    },
+    "AMPLIFY_function_dailySummaryEmail_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "dailySummaryEmail"
         }
       ]
     },

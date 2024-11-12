@@ -19,19 +19,24 @@
       "function": {
         "accountStatusUpdateEmail": {
           "deploymentBucketName": "amplify-amplifytassel-dev-233440-deployment",
-          "s3Key": "amplify-builds/accountStatusUpdateEmail-48472f4c426567513342-build.zip"
+          "s3Key": "amplify-builds/accountStatusUpdateEmail-4b694c564b7853715433-build.zip"
         },
         "amplifytasselPostConfirmation": {
           "deploymentBucketName": "amplify-amplifytassel-dev-233440-deployment",
-          "s3Key": "amplify-builds/amplifytasselPostConfirmation-346e4656756265784b74-build.zip"
+          "s3Key": "amplify-builds/amplifytasselPostConfirmation-525a524b786d39356342-build.zip"
         },
         "opportunityStatusUpdateEmail": {
           "deploymentBucketName": "amplify-amplifytassel-dev-233440-deployment",
-          "s3Key": "amplify-builds/opportunityStatusUpdateEmail-4a7952502f524e377833-build.zip"
+          "s3Key": "amplify-builds/opportunityStatusUpdateEmail-5053595561714764676d-build.zip"
         },
         "requestStatusUpdateEmail": {
           "deploymentBucketName": "amplify-amplifytassel-dev-233440-deployment",
-          "s3Key": "amplify-builds/requestStatusUpdateEmail-4b39363846516a4b374c-build.zip"
+          "s3Key": "amplify-builds/requestStatusUpdateEmail-4957545a6b3438374b5a-build.zip"
+        },
+        "dailySummaryEmail": {
+          "adminEmails": "dawichan@ucsc.edu",
+          "deploymentBucketName": "amplify-amplifytassel-dev-233440-deployment",
+          "s3Key": "amplify-builds/dailySummaryEmail-6e6c32534c6f59557769-build.zip"
         }
       },
       "storage": {
