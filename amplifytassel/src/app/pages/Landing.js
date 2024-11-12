@@ -16,14 +16,14 @@ export default function Landing() {
     >
       <div className="image-container">
         <h1 className="ACmmTitle text-italic" id="landingTitle">
-          Connecting alumni with
+          Stay Connected with
           <br></br>
-          their alma mater
+          Your Alma Mater
         </h1>
         <h2 className="secondaryTitle">
-          Find or host volunteering opportunities to
+          Discover ways to get involved, give back, and
           <br></br>
-          get alumni involved
+          stay close to your university community.
         </h2>
         <Link to="/signup">
           <ThemedButton
@@ -39,53 +39,49 @@ export default function Landing() {
       <div className="info-section">
         <div className="text-content">
           <h4 className="section-header1">How it works</h4>
-          <h3 className="section-header">
-            Join opportunities that <br></br> need alumni volunteers
-          </h3>
+          <h3 className="section-header">Join Alumni Opportunities</h3>
           <p className="section-subtitle">
-            View all the current opportunities that <br></br> need volunteers
-            and apply to join.
+            Discover current opportunities where alumni volunteers are needed.
+            Browse and apply to make an impact.
           </p>
         </div>
         <div className="image-content">
           <img src={sample1} alt="Caregiver with child" />
-          <p className="image-description">
+          <p className="image-description text-italic">
             View all posted opportunities and find one to get involved in. Send
-            a rquest to joing or leave a comment.
+            a request to join or leave a comment.
           </p>
         </div>
       </div>
       <div className="info-section">
         <div className="text-content">
-          <h3 className="section-header">
-            Post an opportunity that <br></br>needs volunteers
-          </h3>
+          <h3 className="section-header">Post Opportunities for Alumni</h3>
           <p className="section-subtitle">
-            Post your opportunity for other<br></br> alumni to see and apply to.
+            Create and share opportunities to engage fellow alumni. Find the
+            perfect volunteers for your initiative.
           </p>
         </div>
         <div className="image-content">
           <img src={sample2} alt="Caregiver with child" />
-          <p className="image-description">
+          <p className="image-description text-italic">
             Need alumni for an opportunity you're hosting? Post an opportunity
-            and find alumni that want to get involved.
+            and connect with alumni eager to get involved.{" "}
           </p>
         </div>
       </div>
       <div className="info-section">
         <div className="text-content">
-          <h3 className="section-header">Earn XP</h3>
+          <h3 className="section-header">Earn Experience Points (XP)</h3>
           <p className="section-subtitle">
-            When you volunteer, you earn xp points <br></br>and unlock new
-            levels to your account.
+            Earn XP each time you volunteer and level up your profile. Unlock
+            achievements as you give back.
           </p>
         </div>
         <div className="image-content">
           <img src={level} alt="Level" />
-          <p className="image-description">
-            Your level shows on your account and shows how involved you are with
-            your alma mater. Only certain levels can take part in certain
-            opportunities.
+          <p className="image-description text-italic">
+            Your level is displayed on your profile, reflecting your involvement
+            with your alma mater. Higher levels unlock exclusive opportunities.
           </p>
         </div>
       </div>

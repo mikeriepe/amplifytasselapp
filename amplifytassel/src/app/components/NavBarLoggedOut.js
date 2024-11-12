@@ -37,6 +37,27 @@ export default function NavBarLoggedOut() {
             alignItems: "center",
           }}
         >
+          {/* Left Aligned Image Box */}
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              marginLeft: {
+                xs: "0rem",
+                sm: "1rem",
+                md: "2rem",
+                lg: "4rem",
+                xl: "8rem",
+              },
+            }}
+          >
+            <img
+              src={require("../assets/ucsc-logo.jpg")}
+              alt="UCSC Logo"
+              style={{ height: "50px", width: "auto" }}
+            />
+          </Box>
+
           {/* Left Spacer Box to Push Brand to Center */}
           <Box sx={{ flexGrow: 1 }} />
 
@@ -69,6 +90,7 @@ export default function NavBarLoggedOut() {
           {/* Right Aligned Buttons */}
           <Box
             sx={{
+              display: { xs: "none", sm: "flex" },
               marginRight: { xs: "0", sm: "5%", md: "5%", lg: "5%", xl: "6%" },
             }}
           >
