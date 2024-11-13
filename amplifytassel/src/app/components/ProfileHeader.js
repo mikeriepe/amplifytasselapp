@@ -53,6 +53,7 @@ const Header = styled((props) => <MuiPaper elevation={0} {...props} />)(() => ({
   boxShadow: "0px 4px 50px -15px rgba(0, 86, 166, 0.15)",
   border: "0.5px solid rgba(0, 0, 0, 0.15)",
   borderRadius: "10px",
+  marginTop: "-1em",
 }));
 
 const Content = ({ children }, props) => (
@@ -100,6 +101,7 @@ const Text = ({ children }, props) => (
       justifyContent: "center",
       height: "100%",
       lineHeight: 1.5,
+      marginTop: "-1em",
     }}
     {...props}
   >
@@ -107,7 +109,7 @@ const Text = ({ children }, props) => (
   </MuiBox>
 );
 
-const ITEM_HEIGHT = 48;
+const ITEM_HEIGHT = 32;
 
 const MoreIcon = ({
   anchorEl,
@@ -124,7 +126,8 @@ const MoreIcon = ({
       flexGrow: 1,
       flexDirection: "column",
       justifyContent: "center",
-      height: "75%",
+      height: "100%",
+      position: "relative",
     }}
   >
     <IconButton
@@ -134,8 +137,19 @@ const MoreIcon = ({
       aria-expanded={open ? "true" : undefined}
       aria-haspopup="true"
       onClick={handleClick}
+      sx={{
+        //marginTop: "1em", // Adjust to 50px if you want it further down
+        position: "relative",
+        top: "12.5px", // Adjust this value to control how far down the icon appears
+        right: "1em", // Adjust this as needed for horizontal alignment
+        transform: "translateY(5%)", // Fine-tune vertical alignment if needed
+      }}
     >
-      <MoreHorizIcon fontSize="large" />
+      <MoreHorizIcon fontSize="large" 
+        sx={{
+          fontSize: "3rem", // Makes it 1.5 times bigger (default size for "large" is 1.5rem)
+        }}
+      />
     </IconButton>
     <Menu
       id="long-menu"
@@ -185,7 +199,7 @@ const Level = ({ level }) => (
       maxWidth: "5vw",
       minWidth: "50px",
       height: "auto",
-      marginTop: "2.5em",
+      marginTop: "2em",
     }}
     //  403x403
   >
@@ -217,7 +231,7 @@ const XPBar = ({ progress, pointsToNextLevel }) => (
       display: "flex",
       alignItems: "center",
       marginLeft: "1em",
-      marginTop: "3em",
+      marginTop: "1.5em",
     }}
   >
     <div
@@ -521,6 +535,7 @@ export default function ProfileHeader({ data, editButton }) {
                     display: "flex",
                     alignItems: "center",
                     flex: 1,
+                    //topMargin: "3em",
                   }}
                 >
                   <MoreIcon
@@ -569,7 +584,8 @@ export default function ProfileHeader({ data, editButton }) {
                   type={"submit"}
                   style={{
                     fontSize: "0.875rem",
-                    marginRight: "1.5em"
+                    marginRight: "1.5em",
+                    marginTop: "1em"
                   }}
                   onClick={() => setDialogOpen(true)}
                 >
