@@ -370,12 +370,17 @@ export default function UpdateProfile() {
 
     // Validate required fields
     if (!values[1].username.trim()) {
-      toast.error(`Username year is required`, toastOptions);
+      toast.error(`Username is required`, toastOptions);
+      return;
+    }
+
+    if (values[1].username.length > 10) {
+      toast.error(`Username is too long`, toastOptions);
       return;
     }
 
     if (!values[1].graduationYear.trim()) {
-      toast.error(`Gradutaion is required`, toastOptions);
+      toast.error(`Gradutaion Year is required`, toastOptions);
       return;
     }
 
@@ -442,16 +447,32 @@ export default function UpdateProfile() {
                       fill={"username"}
                       content={values[1].username}
                       required={true}
-                      onChange={(e) =>
-                        setValues((prevValues) => ({
+                      onChange={(e) => {
+                        /*setValues((prevValues) => ({
                           ...prevValues,
                           1: {
                             ...prevValues[1],
                             username: e.target.value,
                           },
                         }))
-                      }
+                      }*/ // Added below to ensure a character limit //
+                        const newValue = values[1].username.slice(0, 10);
+                        if (newValue.length <= 10) {
+                          setValues((prevValues) => ({
+                            ...prevValues,
+                            1: {
+                              ...prevValues[1],
+                              username: newValue,
+                            },
+                          }));
+                        }
+                      }}
                     />
+                    {values[1].username && values[1].username.length > 10 && (
+                      <p className="text-warning" style={{ color: "red", fontSize: "small" }}>
+                        Usernames are limited to a maximum of 10 characters
+                      </p>
+                    )}
                   </div>
                   <div
                     className="grid-flow-small"
