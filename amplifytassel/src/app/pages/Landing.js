@@ -1,14 +1,38 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import ThemedButton from "../components/ThemedButton";
 import VolunteerImage from "../assets/Volunteer.jpeg";
 import level from "../assets/level10-icon.png";
 import sample1 from "../assets/sample1.PNG";
 import sample2 from "../assets/sample2.jpg";
+import React, { useRef, useState, useEffect } from "react";
+import { Button, Box } from "@mui/material";
+import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
 
 import "../stylesheets/Landing.css";
 
 export default function Landing() {
+  const targetContainerRef = useRef(null);
+  const [showLearnMore, setShowLearnMore] = useState(true);
+
+  // Function to handle scroll event
+  const handleScroll = () => {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    setShowLearnMore(scrollTop === 0); // Show button only when scrolled to top
+  };
+
+  // Attach scroll event listener
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Scroll function for the button
+  const handleScrollToContainer = () => {
+    if (targetContainerRef.current) {
+      targetContainerRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <div
       className="Landing"
@@ -36,7 +60,30 @@ export default function Landing() {
           </ThemedButton>
         </Link>
       </div>
-      <div className="info-section">
+
+      {/* "Learn More" Button - only visible when at the top */}
+      {showLearnMore && (
+        <Box position="fixed" bottom={0} width="100%" textAlign="center">
+          <Button
+            variant="contained"
+            onClick={handleScrollToContainer}
+            endIcon={<KeyboardDoubleArrowDownIcon />}
+            sx={{
+              color: "black",
+              backgroundColor: "white",
+              borderRadius: "50px",
+              marginBottom: "1rem",
+              "&:hover": {
+                backgroundColor: "#f0f0f5",
+              },
+            }}
+          >
+            Learn More
+          </Button>
+        </Box>
+      )}
+
+      <div className="info-section" ref={targetContainerRef}>
         <div className="text-content">
           <h4 className="section-header1">How it works</h4>
           <h3 className="section-header">Join Alumni Opportunities</h3>
