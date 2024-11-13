@@ -185,6 +185,7 @@ const Level = ({ level }) => (
       maxWidth: "5vw",
       minWidth: "50px",
       height: "auto",
+      marginTop: "2.5em",
     }}
     //  403x403
   >
@@ -223,19 +224,19 @@ const XPBar = ({ progress, pointsToNextLevel }) => (
       className="flex"
       style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
     >
-      <LinearProgressWithLabel
-        variant="determinate"
-        value={progress}
-        sx={{ height: 15, width: "150px" }}
-      />
       <div style={{ display: "flex", justifyContent: "center" }}>
         <Typography
           variant="caption"
-          sx={{ marginTop: "0.5em", fontSize: "0.8rem" }}
+          sx={{ /*marginTop: "0.5em",*/ fontSize: "1rem" }}
         >
           XP to next level: {pointsToNextLevel}
         </Typography>
       </div>
+      <LinearProgressWithLabel
+        variant="determinate"
+        value={progress}
+        sx={{ height: 20, width: "160px" }}
+      />
     </div>
   </MuiBox>
 );
@@ -488,7 +489,7 @@ export default function ProfileHeader({ data, editButton }) {
                 {data.location}
               </p>
             </Text>
-            <Level level={level} sx={{ flex: 1 }} />
+            <Level level={level} /*sx={{ flex: 1}} *//>
             <Box
               sx={{
                 display: { xs: "none", sm: "none", md: "none", lg: "flex" },
@@ -501,7 +502,7 @@ export default function ProfileHeader({ data, editButton }) {
                 <XPBar
                   progress={xpBarPercentage}
                   pointsToNextLevel={pointsToNextLevel}
-                  sx={{ flex: 1 }}
+                  //sx={{ flex: 1 }}
                 />
               )}
               {editButton && (
