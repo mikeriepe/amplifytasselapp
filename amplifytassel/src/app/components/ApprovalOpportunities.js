@@ -23,6 +23,7 @@ import MuiBox from "@mui/material/Box";
 import Tooltip from "@mui/material/Tooltip";
 import ThemedButton from "./ThemedButton";
 import IconButton from "@mui/material/IconButton";
+import { Tabs, Tab } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import {
@@ -252,104 +253,43 @@ export default function ApprovalOpportunities() {
   const [filters, setFilters] = useState({
     approved: false,
     denied: false,
-    pending: false,
+    pending: true,
     showPast: false,
     search: "",
   });
+  const [selectedTab, setSelectedTab] = useState(0);
   const [openFilter, setOpenFilter] = useState(false);
 
-  const [displayPending, setDisplayPending] = useState([]);
-  const [displayApproved, setDisplayApproved] = useState([]);
-  const [displayDenied, setDisplayDenied] = useState([]);
-  const [displayPast, setDisplayPast] = useState([]);
-  const displays = [
-    displayPending,
-    displayApproved,
-    displayDenied,
-    displayPast,
-  ];
-  const titles = [
-    "Pending Opportunities",
-    "Approved Opportunities",
-    "Denied Opportunities",
-    "Completed Opportunities",
-  ];
-  const subtitles = [
-    "Opportunities waiting for approval",
-    "Opportunities that have been approved",
-    "Opportunities that have been denied",
-    "Opportunities that have expired",
-  ];
-
   useEffect(() => {
-    const { search } = filters;
-
-    const filterBySearch = (opportunity) => {
-      if (search === "") return true;
-      return [opportunity.eventName, opportunity.description].some(
-        (field) =>
-          typeof field === "string" &&
-          field.toLowerCase().includes(search.toLowerCase())
-      );
-    };
-
-    setDisplayPending(
-      opps.filter(
-        (opportunity) =>
-          opportunity.status === "PENDING" && filterBySearch(opportunity)
-      )
-    );
-    setDisplayApproved(
-      opps.filter(
-        (opportunity) =>
-          opportunity.status === "APPROVED" && filterBySearch(opportunity)
-      )
-    );
-    setDisplayDenied(
-      opps.filter(
-        (opportunity) =>
-          opportunity.status === "DENIED" && filterBySearch(opportunity)
-      )
-    );
-    setDisplayPast(
-      opps.filter(
-        (opportunity) =>
-          moment(opportunity.endTime).isBefore(moment()) &&
-          filterBySearch(opportunity)
-      )
+    const { approved, denied, pending, showPast, search } = filters;
+    setDisplayOpps(
+      opps.filter((opportunity) => {
+        try {
+          if (search !== "") {
+            let ok = false;
+            [opportunity.eventName, opportunity.description].forEach(
+              (field) => {
+                if (typeof field !== "string") return;
+                if (field.toLowerCase().includes(search.toLowerCase()))
+                  ok = true;
+              }
+            );
+            if (!ok) return false;
+          }
+          if (!showPast && moment(opportunity.endTime).isBefore(moment()))
+            return false;
+          if (!approved && !denied && !pending) return true;
+          if (!approved && opportunity.status === "APPROVED") return false;
+          if (!denied && opportunity.status === "DENIED") return false;
+          if (!pending && opportunity.status === "PENDING") return false;
+          return true;
+        } catch (error) {
+          console.error(error);
+          return false;
+        }
+      })
     );
   }, [opps, filters]);
-
-  // useEffect(() => {
-  //   const { approved, denied, pending, showPast, search } = filters;
-  //   setDisplayOpps(
-  //     opps.filter((opportunity) => {
-  //       try {
-  //         if (search !== "") {
-  //           let ok = false;
-  //           [opportunity.eventName, opportunity.description].forEach(
-  //             (field) => {
-  //               if (typeof field !== "string") return;
-  //               if (field.toLowerCase().includes(search.toLowerCase()))
-  //                 ok = true;
-  //             }
-  //           );
-  //           if (!ok) return false;
-  //         }
-  //         if (!showPast && moment(opportunity.endTime).isBefore(moment()))
-  //           return false;
-  //         if (!approved && !denied && !pending) return true;
-  //         if (!approved && opportunity.status === "APPROVED") return false;
-  //         if (!denied && opportunity.status === "DENIED") return false;
-  //         if (!pending && opportunity.status === "PENDING") return false;
-  //         return true;
-  //       } catch (error) {
-  //         console.error(error);
-  //         return false;
-  //       }
-  //     })
-  //   );
-  // }, [opps, filters]);
 
   const [profiles, setProfiles] = useState([]);
   const [selected, setSelected] = useState([]);
@@ -372,6 +312,63 @@ export default function ApprovalOpportunities() {
 
   const handleDialogClose = () => {
     setDialogOpen(false);
+  };
+
+  // Function to handle tab changes
+  const handleTabChange = (event, newValue) => {
+    setSelectedTab(newValue);
+    // Update filters based on selected tab while preserving `search` and other fields
+    switch (newValue) {
+      case 0: // Pending
+        setFilters({
+          ...filters,
+          pending: true,
+          approved: false,
+          denied: false,
+          showPast: false,
+        });
+
+        break;
+      case 1: // Approved
+        setFilters({
+          ...filters,
+          approved: true,
+          pending: false,
+          denied: false,
+          showPast: false,
+        });
+
+        break;
+      case 2: // Denied
+        setFilters({
+          ...filters,
+          denied: true,
+          approved: false,
+          pending: false,
+          showPast: false,
+        });
+
+        break;
+      case 3: // Completed
+        setFilters({
+          ...filters,
+          showPast: true,
+          approved: false,
+          denied: false,
+          pending: false,
+        });
+        break;
+      default:
+        setFilters(filters);
+    }
+  };
+
+  // Handle search input change without affecting other filter properties
+  const handleSearchChange = (e) => {
+    setFilters({
+      ...filters,
+      search: e.target.value,
+    });
   };
 
   const handleRequestInfo = (e) => {
@@ -834,254 +831,210 @@ export default function ApprovalOpportunities() {
 
   return (
     <Page>
-      <Box
-        aria-label="Opportunity Actions"
-        flex={1}
-        flexDirection="row"
-        style={{
-          marginRight: "1rem",
-          marginTop: "0.5rem",
-        }}
-      >
-        {/*
-            <Dialog open={dialogOpen} onClose={handleDialogClose}>
-              <DialogTitle>Request More Info</DialogTitle>
-              <DialogContent>
-                <DialogContentText>
-                  Describe what other information you would like to get from the
-                  selected users.
-                </DialogContentText>
-                <TextField
-                  autoFocus
-                  margin="dense"
-                  id="name"
-                  label="Information"
-                  type="text"
-                  fullWidth
-                  variant="standard"
-                  onBlur={handleRequestInfo}
-                />
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={handleDialogClose}>Cancel</Button>
-                <Button onClick={handleDialogSubmit}>Send Requests</Button>
-              </DialogActions>
-            </Dialog>
-            */}
-
-        <TextField
-          placeholder="Search"
-          size="small"
-          onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-          InputProps={{
-            style: {
-              fontSize: "0.9rem",
-              backgroundColor: "white",
-              borderRadius: "10px",
-            },
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchRoundedIcon color="tertiary" />
-              </InputAdornment>
-            ),
-          }}
-          sx={{
-            width: "auto",
-            "& .MuiOutlinedInput-root": {
-              "& fieldset": {
-                borderColor: "rgba(0, 0, 0, 0.15)",
-              },
-            },
-          }}
-        />
-      </Box>
-
-      {/* Filter */}
-      {/* <>
-            <MuiPaper
+      <Card style={{ padding: ".5rem" }}>
+        <Toolbar>
+          <Box
+            aria-label="Opportunity Actions"
+            display="flex"
+            justifyContent="space-between"
+            width="100%"
+          >
+            {/* Left-aligned Tabs */}
+            <Box
               sx={{
-                paddingLeft: "8px",
-                height: openFilter ? undefined : "0px",
+                display: "flex",
+                alignItems: "center",
               }}
             >
-              <MuiBox
-                className="
-                flex-space-between
-                flex-align-center
-                clickable
-                no-highlight
-                "
+              <Tabs
+                aria-label="Tabs"
+                value={selectedTab}
+                onChange={handleTabChange}
+                indicatorColor="primary"
+                sx={{
+                  ".MuiTabs-indicator": {
+                    height: "4px",
+                    bottom: "4px",
+                  },
+                  height: "auto",
+                }}
               >
-                <div className="flex-horizontal flow-tiny">
-                  <Collapse in={openFilter} timeout="auto" unmountOnExit>
-                    <FormGroup
-                      className="flex-horizontal flex-flow-small"
-                      sx={{ paddingBlock: "8px" }}
-                    >
-                      <FormControlLabel
-                        className="no-highlight"
-                        control={
-                          <Checkbox
-                            color="secondary"
-                            size="small"
-                            onChange={(event) => {
-                              setFilters({
-                                ...filters,
-                                approved: event.target.checked,
-                              });
-                            }}
-                            checked={filters.approved}
-                            tabIndex={-1}
-                            disableRipple
-                            sx={{ paddingBlock: "1px" }}
-                          />
-                        }
-                        label={"Approved"}
-                        componentsProps={{
-                          typography: {
-                            fontSize: "0.8rem",
-                            fontWeight: "600",
-                            color: "var(--text-disabled)",
-                          },
-                        }}
-                      />
-                      <FormControlLabel
-                        className="no-highlight"
-                        control={
-                          <Checkbox
-                            color="secondary"
-                            size="small"
-                            onChange={(event) => {
-                              setFilters({
-                                ...filters,
-                                denied: event.target.checked,
-                              });
-                            }}
-                            checked={filters.denied}
-                            tabIndex={-1}
-                            disableRipple
-                            sx={{ paddingBlock: "1px" }}
-                          />
-                        }
-                        label={"Denied"}
-                        componentsProps={{
-                          typography: {
-                            fontSize: "0.8rem",
-                            fontWeight: "600",
-                            color: "var(--text-disabled)",
-                          },
-                        }}
-                      />
-                      <FormControlLabel
-                        className="no-highlight"
-                        control={
-                          <Checkbox
-                            color="secondary"
-                            size="small"
-                            onChange={(event) => {
-                              setFilters({
-                                ...filters,
-                                pending: event.target.checked,
-                              });
-                            }}
-                            checked={filters.pending}
-                            tabIndex={-1}
-                            disableRipple
-                            sx={{ paddingBlock: "1px" }}
-                          />
-                        }
-                        label={"Pending"}
-                        componentsProps={{
-                          typography: {
-                            fontSize: "0.8rem",
-                            fontWeight: "600",
-                            color: "var(--text-disabled)",
-                          },
-                        }}
-                      />
-                      <FormControlLabel
-                        className="no-highlight"
-                        control={
-                          <Checkbox
-                            color="secondary"
-                            size="small"
-                            onChange={(event) => {
-                              setFilters({
-                                ...filters,
-                                showPast: event.target.checked,
-                              });
-                            }}
-                            checked={filters.showPast}
-                            tabIndex={-1}
-                            disableRipple
-                            sx={{ paddingBlock: "1px" }}
-                          />
-                        }
-                        label={"Show Completed Opportunities"}
-                        componentsProps={{
-                          typography: {
-                            fontSize: "0.8rem",
-                            fontWeight: "600",
-                            color: "var(--text-disabled)",
-                          },
-                        }}
-                      />
-                    </FormGroup>
-                  </Collapse>
-                </div>
-              </MuiBox>
-            </MuiPaper>
-            <Tooltip title="Filter list" flex={0}>
-              <IconButton onClick={() => setOpenFilter(!openFilter)}>
-                <FilterListIcon />
-              </IconButton>
-            </Tooltip>
-          </> */}
+                <Tooltip title="View Pending Opportunities" arrow>
+                  <Tab
+                    label="Pending"
+                    sx={{
+                      "&:hover": {
+                        color: "#00c2ff",
+                      },
+                    }}
+                  />
+                </Tooltip>
+                <Tooltip title="View Approved Opportunities" arrow>
+                  <Tab
+                    label="Approved"
+                    sx={{
+                      "&:hover": {
+                        color: "#00c2ff",
+                      },
+                    }}
+                  />
+                </Tooltip>
+                <Tooltip title="View Denied Opportunities" arrow>
+                  <Tab
+                    label="Denied"
+                    sx={{
+                      "&:hover": {
+                        color: "#00c2ff",
+                      },
+                    }}
+                  />
+                </Tooltip>
+                <Tooltip title="View Completed Opportunities" arrow>
+                  <Tab
+                    label="Completed"
+                    sx={{
+                      "&:hover": {
+                        color: "#00c2ff",
+                      },
+                    }}
+                  />
+                </Tooltip>
+              </Tabs>
+            </Box>
 
-      {/* <Card>
+            {/* Right-aligned Buttons and Search */}
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: "1rem",
+              }}
+            >
+              <ThemedButton
+                color="blue"
+                variant="themed"
+                type="submit"
+                style={{ fontSize: "0.875rem" }}
+                onClick={handleDialogOpen}
+              >
+                Request More Info
+              </ThemedButton>
+
+              <EmailDialog
+                emails={selectedEmails}
+                accounts={profiles}
+                profilePictures={profilePictures}
+                open={dialogOpen}
+                setClose={handleDialogClose}
+              />
+
+              <ThemedButton
+                color="green"
+                variant="gradient"
+                type="submit"
+                style={{ fontSize: "0.875rem" }}
+                onClick={handleStatusAction}
+              >
+                Approve
+              </ThemedButton>
+
+              <ThemedButton
+                color="red"
+                variant="themed"
+                type="submit"
+                style={{ fontSize: "0.875rem" }}
+                onClick={handleStatusAction}
+              >
+                Deny
+              </ThemedButton>
+
+              <TextField
+                placeholder="Search"
+                size="small"
+                value={filters.search}
+                onChange={handleSearchChange}
+                InputProps={{
+                  style: {
+                    fontSize: "0.9rem",
+                    backgroundColor: "white",
+                    borderRadius: "10px",
+                  },
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchRoundedIcon color="tertiary" />
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{
+                  width: "auto",
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: "rgba(0, 0, 0, 0.15)",
+                    },
+                  },
+                }}
+              />
+            </Box>
+          </Box>
+        </Toolbar>
+      </Card>
+
+      <Card
+        sx={{
+          height: 500,
+          borderRadius: 3,
+          boxShadow: 3,
+          backgroundColor: "white",
+          padding: 2,
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+        }}
+      >
         {loading ? (
           <Box sx={{ display: "flex" }} style={{ padding: "2rem" }}>
             <CircularProgress />
           </Box>
         ) : (
-          <Table
-            style={{
-              backgroundColor: "white",
+          <Box
+            sx={{
+              flex: 1,
+              overflowY: "auto",
+              maxHeight: "calc(100% - 16px)",
+              borderRadius: 3,
+              overflowX: "auto", // Allow horizontal scrolling on mobile
             }}
           >
-            <TableHead aria-label="Opportunities Table Head">
-              <TableRow>
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    checked={selectAllChecked}
-                    onChange={handleSelectAll}
-                  />
-                </TableCell>
-
-                {headCells.map((headCell) => (
-                  <TableCell
-                    key={headCell.id}
-                    padding={headCell.disablePadding ? "none" : "normal"}
-                    // sortDirection={orderBy === headCell.id ? order : false}
-                    id="table-head-cell"
-                    onClick={() => handleSort(headCell.id)}
-                  >
-                    <TableSortLabel
-                      direction={
-                        getArrowDirection(headCell.id) !== ""
-                          ? getArrowDirection(headCell.id)
-                          : "desc"
-                      }
-                    >
-                      {headCell.label}
-                    </TableSortLabel>
+            <Table style={{ backgroundColor: "white", minWidth: 650 }}>
+              <TableHead aria-label="Opportunities Table Head">
+                <TableRow>
+                  <TableCell padding="checkbox">
+                    <Checkbox
+                      checked={selectAllChecked}
+                      onChange={handleSelectAll}
+                    />
                   </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody aria-label="Opportunities Table Body">
-              {displayOpps.map((opp) => {
-                return (
+                  {headCells.map((headCell) => (
+                    <TableCell
+                      key={headCell.id}
+                      padding={headCell.disablePadding ? "none" : "normal"}
+                      onClick={() => handleSort(headCell.id)}
+                    >
+                      <TableSortLabel
+                        direction={
+                          getArrowDirection(headCell.id) !== ""
+                            ? getArrowDirection(headCell.id)
+                            : "desc"
+                        }
+                      >
+                        {headCell.label}
+                      </TableSortLabel>
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody aria-label="Opportunities Table Body">
+                {displayOpps.map((opp) => (
                   <Row
                     key={opp.id}
                     row={opp}
@@ -1093,203 +1046,12 @@ export default function ApprovalOpportunities() {
                     selected={selected}
                     profilePictures={profilePictures}
                   />
-                );
-              })}
-            </TableBody>
-          </Table>
+                ))}
+              </TableBody>
+            </Table>
+          </Box>
         )}
-      </Card> */}
-
-      {Array(4)
-        .fill()
-        .map((_, index) => (
-          <Grid
-            item
-            xs={12}
-            sm={12}
-            md={6}
-            lg={6}
-            xl={6}
-            key={index}
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              height: "100%",
-              marginTop: "2em",
-            }}
-          >
-            {/* Titles/Subtitles */}
-            <div
-              className="flex-space-between flex-align-center"
-              style={{
-                background: "var(--background-primary)",
-                marginBottom: "1rem",
-              }}
-            >
-              <Text>
-                <h2
-                  className="text-dark ellipsis text-medium"
-                  aria-label="Dashboard Upcoming Section"
-                >
-                  {titles[index]}
-                </h2>
-                <h5
-                  className="text-lightgray text-bold ellipsis"
-                  aria-label="Dashboard Header Count"
-                >
-                  {subtitles[index]}
-                </h5>
-              </Text>
-
-              {/* Buttons */}
-              <div className="flex-space-between flex-align-center">
-                {index === 0 && (
-                  <ThemedButton
-                    color={"blue"}
-                    variant={"themed"}
-                    type={"submit"}
-                    style={{
-                      fontSize: "0.875rem",
-                      marginRight: "1rem",
-                    }}
-                    onClick={handleDialogOpen}
-                  >
-                    Request More Info
-                  </ThemedButton>
-                )}
-                {index === 0 && (
-                  <EmailDialog
-                    emails={selectedEmails}
-                    accounts={profiles}
-                    profilePictures={profilePictures}
-                    open={dialogOpen}
-                    setClose={handleDialogClose}
-                  />
-                )}
-                {(index === 0 || index === 2) && (
-                  <ThemedButton
-                    color={"green"}
-                    variant={"gradient"}
-                    type={"submit"}
-                    style={{
-                      fontSize: "0.875rem",
-                      marginRight: index === 2 ? ".5rem" : "1rem",
-                    }}
-                    onClick={handleStatusAction}
-                  >
-                    Approve
-                  </ThemedButton>
-                )}
-                {index === 0 && (
-                  <ThemedButton
-                    color={"red"}
-                    variant={"themed"}
-                    type={"submit"}
-                    style={{
-                      fontSize: "0.875rem",
-                      marginRight: ".5rem",
-                    }}
-                    onClick={handleStatusAction}
-                  >
-                    Deny
-                  </ThemedButton>
-                )}
-
-                {index === 1 && (
-                  <ThemedButton
-                    color={"red"}
-                    variant={"themed"}
-                    type={"submit"}
-                    style={{
-                      fontSize: "0.875rem",
-                      marginRight: ".5rem",
-                    }}
-                    onClick={handleStatusAction}
-                  >
-                    Remove
-                  </ThemedButton>
-                )}
-              </div>
-            </div>
-
-            {/* Boxes */}
-            <Card
-              sx={{
-                height: 500,
-                borderRadius: 3,
-                boxShadow: 3,
-                backgroundColor: "white",
-                padding: 2,
-                display: "flex",
-                flexDirection: "column",
-                overflow: "hidden",
-              }}
-            >
-              {loading ? (
-                <Box sx={{ display: "flex", padding: "2rem" }}>
-                  <CircularProgress />
-                </Box>
-              ) : (
-                <Box
-                  sx={{
-                    flex: 1,
-                    overflowY: "auto",
-                    maxHeight: "calc(100% - 16px)",
-                    borderRadius: 3,
-                    overflowX: "auto", // Allow horizontal scrolling on mobile
-                  }}
-                >
-                  <Table style={{ backgroundColor: "white", minWidth: 650 }}>
-                    <TableHead aria-label="Opportunities Table Head">
-                      <TableRow>
-                        <TableCell padding="checkbox">
-                          <Checkbox
-                            checked={selectAllChecked}
-                            onChange={handleSelectAll}
-                          />
-                        </TableCell>
-                        {headCells.map((headCell) => (
-                          <TableCell
-                            key={headCell.id}
-                            padding={
-                              headCell.disablePadding ? "none" : "normal"
-                            }
-                            onClick={() => handleSort(headCell.id)}
-                          >
-                            <TableSortLabel
-                              direction={
-                                getArrowDirection(headCell.id) !== ""
-                                  ? getArrowDirection(headCell.id)
-                                  : "desc"
-                              }
-                            >
-                              {headCell.label}
-                            </TableSortLabel>
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    </TableHead>
-                    <TableBody aria-label="Opportunities Table Body">
-                      {displays[index].map((opp) => (
-                        <Row
-                          key={opp.id}
-                          row={opp}
-                          profile={profiles.find(
-                            (profile) => profile.id === opp.profileID
-                          )}
-                          handleSelect={handleSelect}
-                          selectAllChecked={selectAllChecked}
-                          selected={selected}
-                          profilePictures={profilePictures}
-                        />
-                      ))}
-                    </TableBody>
-                  </Table>
-                </Box>
-              )}
-            </Card>
-          </Grid>
-        ))}
+      </Card>
     </Page>
   );
 }

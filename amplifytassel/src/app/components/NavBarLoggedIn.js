@@ -31,7 +31,7 @@ import ThemedButton from "./ThemedButton";
 import useAuth from "../util/AuthContext";
 import * as Nav from "./NavBarComponents";
 import { Storage } from "aws-amplify";
-import { useTabIndex } from "./TabIndexContext";
+// import { useTabIndex } from "./TabIndexContext";
 
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
@@ -89,7 +89,7 @@ export default function NavBarLoggedIn() {
   const { userProfile, setLoadingAuth } = useAuth();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
-  const { tabIndex, setTabIndex } = useTabIndex();
+  const [tabIndex, setTabIndex] = useState(window.location.pathname);
   const [profilePicture, setProfilePicture] = useState(null);
   const navigate = useNavigate();
 

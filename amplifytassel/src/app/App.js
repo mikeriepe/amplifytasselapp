@@ -24,7 +24,6 @@ import AnimationStarFlying from "./components/AnimationStarFlying";
 import AnimationConfetti from "./components/AnimationConfetti";
 import Progress from "./components/Progress";
 import { Auth } from "aws-amplify";
-import { TabIndexProvider } from "./components/TabIndexContext";
 
 import useAuth from "./util/AuthContext";
 import { Amplify } from "aws-amplify";
@@ -86,7 +85,7 @@ const LoggedInLayout = (props) => {
  */
 const LoggedOutLayout = (props) => {
   const { user } = props;
-  if (user) return <Navigate to="/dashboard" replace />;
+  if (user) return <Navigate to="/myprofile" replace />;
   return <Outlet />;
 };
 
@@ -131,67 +130,65 @@ const App = () => {
 
   return (
     <Box sx={{ display: "flex" }}>
-      <TabIndexProvider>
-        <ToastContainer />
-        {!loadingAuth && user ? <NavBarLoggedIn /> : <NavBarLoggedOut />}
-        <Box component="main" sx={{ flexGrow: 1, marginTop: "70px" }}>
-          <Routes>
-            {/* Routes only accessible if you are logged out */}
-            <Route element={<LoggedOutLayout user={user} />}>
-              <Route path="/" element={<Landing />} />
-              <Route path="/landing" element={<Landing />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-            </Route>
-            {/* Routes only accessible if you are logged in */}
-            <Route
-              element={<LoggedInLayout loadingAuth={loadingAuth} user={user} />}
-            >
-              <Route path="/myprofile" element={<MyProfile />} />
-              <Route path="/updateprofile" element={<UpdateProfile />} />
-              <Route path="/social" element={<Socials />} />
-              <Route path="/social/:chatroomid" element={<ViewMessages />} />
-            </Route>
-            {/* Routes only accessible if you are approved or an admin */}
-            <Route
-              element={
-                <ApprovedLayout
-                  loadingAuth={loadingAuth}
-                  user={user}
-                  userProfile={userProfile}
-                />
-              }
-            >
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/opportunities" element={<Opportunities />} />
-              <Route
-                path="/opportunity/:opportunityid"
-                element={<ViewOpportunity />}
+      <ToastContainer />
+      {!loadingAuth && user ? <NavBarLoggedIn /> : <NavBarLoggedOut />}
+      <Box component="main" sx={{ flexGrow: 1, marginTop: "70px" }}>
+        <Routes>
+          {/* Routes only accessible if you are logged out */}
+          <Route element={<LoggedOutLayout user={user} />}>
+            <Route path="/" element={<Landing />} />
+            <Route path="/landing" element={<Landing />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+          </Route>
+          {/* Routes only accessible if you are logged in */}
+          <Route
+            element={<LoggedInLayout loadingAuth={loadingAuth} user={user} />}
+          >
+            <Route path="/myprofile" element={<MyProfile />} />
+            <Route path="/updateprofile" element={<UpdateProfile />} />
+            <Route path="/social" element={<Socials />} />
+            <Route path="/social/:chatroomid" element={<ViewMessages />} />
+          </Route>
+          {/* Routes only accessible if you are approved or an admin */}
+          <Route
+            element={
+              <ApprovedLayout
+                loadingAuth={loadingAuth}
+                user={user}
+                userProfile={userProfile}
               />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="/profile/:profileid" element={<ViewProfile />} />
-            </Route>
-            {/* Routes only accessible if you are an admin */}
+            }
+          >
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/opportunities" element={<Opportunities />} />
             <Route
-              element={
-                <AdminLayout
-                  loadingAuth={loadingAuth}
-                  user={user}
-                  userProfile={userProfile}
-                />
-              }
-            >
-              <Route path="/approvals" element={<Approvals />} />
-            </Route>
-          </Routes>
-        </Box>
-        {showStarAnimation && (
-          <AnimationStarFlying setVisible={setShowStarAnimation} />
-        )}
-        {showConfettiAnimation && (
-          <AnimationConfetti setVisible={setShowConfettiAnimation} />
-        )}
-      </TabIndexProvider>
+              path="/opportunity/:opportunityid"
+              element={<ViewOpportunity />}
+            />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/profile/:profileid" element={<ViewProfile />} />
+          </Route>
+          {/* Routes only accessible if you are an admin */}
+          <Route
+            element={
+              <AdminLayout
+                loadingAuth={loadingAuth}
+                user={user}
+                userProfile={userProfile}
+              />
+            }
+          >
+            <Route path="/approvals" element={<Approvals />} />
+          </Route>
+        </Routes>
+      </Box>
+      {showStarAnimation && (
+        <AnimationStarFlying setVisible={setShowStarAnimation} />
+      )}
+      {showConfettiAnimation && (
+        <AnimationConfetti setVisible={setShowConfettiAnimation} />
+      )}
     </Box>
   );
 };
