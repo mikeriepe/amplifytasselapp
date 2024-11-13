@@ -54,11 +54,11 @@ const OutlinedIconButton = ({children}, props) => (
 );
 
 /**
- * VolunteerExperienceDeleteModal
- * VolunteerExperienceDeleteModal
- * Displays form to collect data for new Volunteer Experience
+ * OrganizationExperienceDeleteModal
+ * OrganizationExperienceDeleteModal
+ * Displays form to collect data for new Organization Experience
  * @param {Function} onClose
- * @return {HTML} VolunteerExperienceDeleteModal component
+ * @return {HTML} OrganizationExperienceDeleteModal component
  */
 export default function OrganizationExperienceDeleteModal({onClose}) {
   const {userProfile, setUserProfile} = useAuth();

@@ -53,8 +53,8 @@ export default function ViewProfile() {
           <ProfileAbout data={profile} />
           <ProfileWork data={profile} />
           <ProfileVolunteer data={profile} />
-          <ProfileKeywords data={profile} />
           <ProfileOrganization data={profile} />
+          <ProfileKeywords data={profile} />
         </>
       )}
     </Page>

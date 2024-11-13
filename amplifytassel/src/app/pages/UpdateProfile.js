@@ -455,6 +455,20 @@ export default function UpdateProfile() {
                   </div>
                   <div
                     className="grid-flow-small"
+                    aria-label={"Update Profile Major"}
+                  >
+                    <p className="text-bold">
+                      Major
+                      {/* <Tooltip title="Fill out this field to get 10 points" arrow>
+                        <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
+                      </Tooltip> */}
+                    </p>
+                    <div>
+                      {totalMajors.length && <MultiSelect data={totalMajors} />}
+                    </div>
+                  </div>
+                  <div
+                    className="grid-flow-small"
                     aria-label={"Update Profile Grad Year"}
                   >
                     <p className="text-bold">
@@ -483,41 +497,6 @@ export default function UpdateProfile() {
                             graduationYear: e.target.value,
                           },
                         }))
-                      }
-                    />
-                  </div>
-                  <div
-                    className="grid-flow-small"
-                    aria-label={"Update Profile Major"}
-                  >
-                    <p className="text-bold">
-                      Major
-                      {/* <Tooltip title="Fill out this field to get 10 points" arrow>
-                        <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
-                      </Tooltip> */}
-                    </p>
-                    <div>
-                      {totalMajors.length && <MultiSelect data={totalMajors} />}
-                    </div>
-                  </div>
-                  <div
-                    className="grid-flow-small"
-                    aria-label={"Update Profile College"}
-                  >
-                    <p className="text-bold">
-                      College Affiliation
-                      {/* <Tooltip title="Fill out this field to get 10 points" arrow>
-                        <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
-                      </Tooltip> */}
-                    </p>
-                    <ThemedInput
-                      placeholder={"e.g., Cowell College"}
-                      type={"text"}
-                      index={"college"}
-                      step={1}
-                      fill={"college"}
-                      content={
-                        values[1].college === "" ? null : values[1].college
                       }
                     />
                   </div>
@@ -561,6 +540,27 @@ export default function UpdateProfile() {
                       fill={"linkedin"}
                       content={
                         values[1].linkedin === "" ? null : values[1].linkedin
+                      }
+                    />
+                  </div>
+                  <div
+                    className="grid-flow-small"
+                    aria-label={"Update Profile College"}
+                  >
+                    <p className="text-bold">
+                      College Affiliation
+                      {/* <Tooltip title="Fill out this field to get 10 points" arrow>
+                        <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
+                      </Tooltip> */}
+                    </p>
+                    <ThemedInput
+                      placeholder={"e.g., Cowell College"}
+                      type={"text"}
+                      index={"college"}
+                      step={1}
+                      fill={"college"}
+                      content={
+                        values[1].college === "" ? null : values[1].college
                       }
                     />
                   </div>
@@ -641,57 +641,6 @@ export default function UpdateProfile() {
                     >
                       <p
                         className="text-bold"
-                        aria-label={"Update Profile Organization"}
-                      >
-                        Organization/Club Activity
-                        {/* <Tooltip title="Fill out this field to get 10 points" arrow>
-                        <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
-                      </Tooltip> */}
-                      </p>
-                      <div className="flex-space-between flex-align-center">
-                        {
-                          <OutlinedIconButton>
-                            <RemoveIcon
-                              aria-label={"Remove Organization"}
-                              sx={{
-                                height: "20px",
-                                width: "20px",
-                                color: "var(--text-gray)",
-                                stroke: "var(--text-gray)",
-                                strokeWidth: "2px",
-                              }}
-                              onClick={() => setShowDeleteOrganizationModal(true)}
-                            />
-                          </OutlinedIconButton>
-                        }
-                        {
-                          <OutlinedIconButton>
-                            <AddIcon
-                              aria-label={"Add Organization"}
-                              sx={{
-                                height: "20px",
-                                width: "20px",
-                                color: "var(--text-gray)",
-                                stroke: "var(--text-gray)",
-                                strokeWidth: "2px",
-                              }}
-                              onClick={() => setShowOrganizationForm(true)}
-                            />
-                          </OutlinedIconButton>
-                        }
-                      </div>
-                    </div>
-                    <OrganizationExperienceList
-                      organizationExperience={userProfile.organizationExperience}
-                    />
-                  </div>
-                  <div className="grid-flow-small">
-                    <div
-                      className="flex-space-between flex-align-center"
-                      style={{ background: "var(--background-primary)" }}
-                    >
-                      <p
-                        className="text-bold"
                         aria-label={"Update Profile Volunteer Experience"}
                       >
                         Volunteer Experience
@@ -734,6 +683,57 @@ export default function UpdateProfile() {
                     </div>
                     <VolunteerExperienceList
                       volunteerExperience={userProfile.volunteerExperience}
+                    />
+                  </div>
+                  <div className="grid-flow-small">
+                    <div
+                      className="flex-space-between flex-align-center"
+                      style={{ background: "var(--background-primary)" }}
+                    >
+                      <p
+                        className="text-bold"
+                        aria-label={"Update Profile Organization"}
+                      >
+                        Organization/Club Activity
+                        {/* <Tooltip title="Fill out this field to get 10 points" arrow>
+                        <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
+                      </Tooltip> */}
+                      </p>
+                      <div className="flex-space-between flex-align-center">
+                        {
+                          <OutlinedIconButton>
+                            <RemoveIcon
+                              aria-label={"Remove Organization"}
+                              sx={{
+                                height: "20px",
+                                width: "20px",
+                                color: "var(--text-gray)",
+                                stroke: "var(--text-gray)",
+                                strokeWidth: "2px",
+                              }}
+                              onClick={() => setShowDeleteOrganizationModal(true)}
+                            />
+                          </OutlinedIconButton>
+                        }
+                        {
+                          <OutlinedIconButton>
+                            <AddIcon
+                              aria-label={"Add Organization"}
+                              sx={{
+                                height: "20px",
+                                width: "20px",
+                                color: "var(--text-gray)",
+                                stroke: "var(--text-gray)",
+                                strokeWidth: "2px",
+                              }}
+                              onClick={() => setShowOrganizationForm(true)}
+                            />
+                          </OutlinedIconButton>
+                        }
+                      </div>
+                    </div>
+                    <OrganizationExperienceList
+                      organizationExperience={userProfile.organizationExperience}
                     />
                   </div>
                   <div className="grid-flow-small">
