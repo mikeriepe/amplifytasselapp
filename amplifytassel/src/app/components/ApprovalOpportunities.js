@@ -258,13 +258,13 @@ export default function ApprovalOpportunities() {
     search: "",
   });
   const [selectedTab, setSelectedTab] = useState(0);
-  const [openFilter, setOpenFilter] = useState(false);
 
   useEffect(() => {
     const { approved, denied, pending, showPast, search } = filters;
     setDisplayOpps(
       opps.filter((opportunity) => {
         try {
+          // Search filter
           if (search !== "") {
             let ok = false;
             [opportunity.eventName, opportunity.description].forEach(
@@ -276,12 +276,20 @@ export default function ApprovalOpportunities() {
             );
             if (!ok) return false;
           }
-          if (!showPast && moment(opportunity.endTime).isBefore(moment()))
-            return false;
+
+          // Past and future opportunities filter based on showPast
+          const isPastOpportunity = moment(opportunity.endTime).isBefore(
+            moment()
+          );
+          if (showPast && !isPastOpportunity) return false; // show only past opportunities when showPast is true
+          if (!showPast && isPastOpportunity) return false; // show only future opportunities when showPast is false
+
+          // Status filters
           if (!approved && !denied && !pending) return true;
           if (!approved && opportunity.status === "APPROVED") return false;
           if (!denied && opportunity.status === "DENIED") return false;
           if (!pending && opportunity.status === "PENDING") return false;
+
           return true;
         } catch (error) {
           console.error(error);
@@ -910,15 +918,17 @@ export default function ApprovalOpportunities() {
                 gap: "1rem",
               }}
             >
-              <ThemedButton
-                color="blue"
-                variant="themed"
-                type="submit"
-                style={{ fontSize: "0.875rem" }}
-                onClick={handleDialogOpen}
-              >
-                Request More Info
-              </ThemedButton>
+              {selectedTab === 0 && (
+                <ThemedButton
+                  color="blue"
+                  variant="themed"
+                  type="submit"
+                  style={{ fontSize: "0.875rem" }}
+                  onClick={handleDialogOpen}
+                >
+                  Request More Info
+                </ThemedButton>
+              )}
 
               <EmailDialog
                 emails={selectedEmails}
@@ -928,25 +938,29 @@ export default function ApprovalOpportunities() {
                 setClose={handleDialogClose}
               />
 
-              <ThemedButton
-                color="green"
-                variant="gradient"
-                type="submit"
-                style={{ fontSize: "0.875rem" }}
-                onClick={handleStatusAction}
-              >
-                Approve
-              </ThemedButton>
+              {(selectedTab === 0 || selectedTab === 2) && (
+                <ThemedButton
+                  color="green"
+                  variant="gradient"
+                  type="submit"
+                  style={{ fontSize: "0.875rem" }}
+                  onClick={handleStatusAction}
+                >
+                  Approve
+                </ThemedButton>
+              )}
 
-              <ThemedButton
-                color="red"
-                variant="themed"
-                type="submit"
-                style={{ fontSize: "0.875rem" }}
-                onClick={handleStatusAction}
-              >
-                Deny
-              </ThemedButton>
+              {(selectedTab === 0 || selectedTab === 1) && (
+                <ThemedButton
+                  color="red"
+                  variant="themed"
+                  type="submit"
+                  style={{ fontSize: "0.875rem" }}
+                  onClick={handleStatusAction}
+                >
+                  {selectedTab === 0 ? "Deny" : "Remove"}
+                </ThemedButton>
+              )}
 
               <TextField
                 placeholder="Search"
