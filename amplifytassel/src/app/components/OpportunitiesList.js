@@ -51,6 +51,9 @@ export default function OpportunitiesList({
   const [dropdownSelect, setDropdownSelect] = useState("Major");
   const { userProfile } = useAuth();
 
+  // Filter Sorting - Ascending & Descending Order
+  const [isAscending, setIsAscending] = useState(true);
+  useEffect(() => {applyFilters();}, [isAscending]);  
   const handleDropdown = (dropdown) => {
     console.log(dropdown);
     setDropdownSelect(dropdown);
@@ -163,29 +166,32 @@ export default function OpportunitiesList({
 
   const handleSort = async (opps) => {
     let sortedOpps;
+    /*if (dropdownSelect === "Alphabet") {
+      sortedOpps = opps.sort((a, b) => a.eventName.localeCompare(b.eventName));*/
+    
+    // Functionality for Filter Sorting - Ascending/Descending
     if (dropdownSelect === "Alphabet") {
-      sortedOpps = opps.sort((a, b) => a.eventName.localeCompare(b.eventName));
+      sortedOpps = opps.sort((a, b) => {
+        const comparison = a.eventName.localeCompare(b.eventName);
+        return isAscending ? comparison : -comparison;
+      });
     } else if (dropdownSelect === "Major") {
       sortedOpps = opps.sort((a, b) =>
-        (a.subject ? a.subject : "zzz").localeCompare(
-          b.subject ? b.subject : "zzz"
-        )
+        (a.subject ? a.subject : "zzz").localeCompare(b.subject ? b.subject : "zzz")
       );
+      // Functionality for Filter Sorting - Ascending/Descending
     } else if (dropdownSelect === "Date") {
         sortedOpps = opps.sort((a, b) => {
           // Use startTime for primary sorting; fall back to endTime if startTimes are equal
           const startA = a.startTime ? new Date(a.startTime) : new Date("9999-12-31"); // Default far-future date if missing
           const startB = b.startTime ? new Date(b.startTime) : new Date("9999-12-31");
 
-          // Sort primarily by startTime
-          if (startA - startB !== 0) {
-            return startA - startB;
-          }
-
           // If startTime is the same, sort by endTime
           const endA = a.endTime ? new Date(a.endTime) : new Date("9999-12-31");
           const endB = b.endTime ? new Date(b.endTime) : new Date("9999-12-31");
-          return endA - endB;
+          const comparison = startA - startB || endA - endB;
+          return isAscending ? comparison : -comparison;
+          //return endA - endB;
         });
     } else if (dropdownSelect === "Recommended") {
       const oppFields = { events: [] };
@@ -361,6 +367,28 @@ export default function OpportunitiesList({
               },
             }}
           />
+          <div style={{ marginRight: "1em" }}> 
+            {/* Filtering - Ascending/Descending */
+            (dropdownSelect === "Alphabet" || dropdownSelect === "Date") && (
+              <button
+                onClick={() => setIsAscending((prev) => !prev)}
+                style={{
+                  marginLeft: "0.5em",
+                  padding: "0.5em",
+                  border: "none",
+                  backgroundColor: "transparent",
+                  //borderRadius: "5px",
+                  cursor: "pointer",
+                }}
+              >
+                {isAscending ? (
+                  <svg fill="#000000" height="20px" width="20px" version="1.1" id="XMLID_227_" xmlns="http://www.w3.org/2000/svg" /*xmlns:xlink="http://www.w3.org/1999/xlink"*/ viewBox="0 0 24 24" /*xml:space="preserve"*/><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="ascend"> <g> <path d="M24,24H11v-2h13V24z M8,24H6V4.1L1.7,7.7L0.4,6.2L7,0.7l6.5,5.5l-1.3,1.5L8,4.1V24L8,24z M22,20H11v-2h11V20z M20,16h-9 v-2h9V16z M18,12h-7v-2h7V12z"></path> </g> </g> </g></svg>
+                ) : (
+                  <svg fill="#000000" height="20px" width="20px" version="1.1" id="XMLID_226_" xmlns="http://www.w3.org/2000/svg" /*xmlns:xlink="http://www.w3.org/1999/xlink"*/ viewBox="0 0 24 24" /*xml:space="preserve"*/><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="descend"> <g> <path d="M7,23.3l-6.6-5.5l1.3-1.5L6,19.9V0h2v19.9l4.5-3.6l1.3,1.5L7,23.3z M18,14h-7v-2h7C18,12,18,14,18,14z M20,10h-9V8h9 C20,8,20,10,20,10z M22,6H11V4h11C22,4,22,6,22,6z M24,2H11V0h13V2z"></path> </g> </g> </g></svg>
+                )}
+              </button>
+            )}
+          </div>
           <div style={{ marginRight: "1em" }}>
             <ThemedDropdown
               menuItems={["Recommended", "Alphabet", "Major", "Date"]}
