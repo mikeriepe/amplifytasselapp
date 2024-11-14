@@ -17,11 +17,11 @@ import { DataStore } from 'aws-amplify';
 import { Profile } from '../../models';
 
 /**
- * VolunteerExperienceEditModal
- * VolunteerExperienceEditModal
- * Displays form to collect data for new Volunteer Experience
+ * OrganizationExperienceEditModal
+ * OrganizationExperienceEditModal
+ * Displays form to collect data for new Organization Experience
  * @param {Function} onClose
- * @return {HTML} VolunteerExperienceEditModal component
+ * @return {HTML} OrganizationExperienceEditModal component
  */
 export default function VolunteerExperienceEditModal({onClose, index}) {
   const {userProfile, setUserProfile} = useAuth();
@@ -86,7 +86,7 @@ export default function VolunteerExperienceEditModal({onClose, index}) {
     };
     
     // userProfile.volunteerExperience[index] = newVolunteerExperience;
-    console.log('gothere69');
+    //console.log('gothere69');
     let profile = await DataStore.query(Profile, userProfile.id);
     await DataStore.save(Profile.copyOf(profile, updated => {
       updated.organizationExperience[index] = newOrganizationExperience;
@@ -105,7 +105,7 @@ export default function VolunteerExperienceEditModal({onClose, index}) {
   };
 
   const onSubmit = async (data) => {
-    // updateVolunteerExperience(data);
+    // updateOrganizationExperience(data);
     await updateProfile(data);
     onClose();
   };

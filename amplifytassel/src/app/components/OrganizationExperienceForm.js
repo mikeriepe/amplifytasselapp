@@ -234,7 +234,7 @@ export default function OrganizationExperienceForm({onClose}) {
           marginBottom: '10px',
         }}
       >
-        Add New Organization Experience
+        Add New Organization/Club Activity
       </StepLabel>
 
       <Box

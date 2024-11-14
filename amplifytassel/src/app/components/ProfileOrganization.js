@@ -24,7 +24,7 @@ const Organization = styled((props) => (
 export default function ProfileOrganization({data}) {
   return (
     <Organization>
-      <h4 className='text-dark'>Organization Experience</h4>
+      <h4 className='text-dark'>Organization/Club Activity</h4>
       <div className='flow-medium' aria-label='Profile Organization Experience'>
         {data?.organizationExperience && data.organizationExperience.length >0 ? Object.keys(data?.organizationExperience).map((org, index) => (
           <div key={`organization-experience-${index}`}>
