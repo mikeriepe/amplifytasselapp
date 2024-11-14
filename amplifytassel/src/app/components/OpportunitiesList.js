@@ -14,6 +14,9 @@ import {
   createUserProfile,
 } from "../util/ExtractInformation";
 import { Grid } from "@mui/material";
+import { date } from "yup";
+import { DateInput } from "./DateInput";
+
 
 const Page = styled((props) => <MuiBox {...props} />)(() => ({
   display: "flex",
@@ -168,6 +171,22 @@ export default function OpportunitiesList({
           b.subject ? b.subject : "zzz"
         )
       );
+    } else if (dropdownSelect === "Date") {
+        sortedOpps = opps.sort((a, b) => {
+          // Use startTime for primary sorting; fall back to endTime if startTimes are equal
+          const startA = a.startTime ? new Date(a.startTime) : new Date("9999-12-31"); // Default far-future date if missing
+          const startB = b.startTime ? new Date(b.startTime) : new Date("9999-12-31");
+
+          // Sort primarily by startTime
+          if (startA - startB !== 0) {
+            return startA - startB;
+          }
+
+          // If startTime is the same, sort by endTime
+          const endA = a.endTime ? new Date(a.endTime) : new Date("9999-12-31");
+          const endB = b.endTime ? new Date(b.endTime) : new Date("9999-12-31");
+          return endA - endB;
+        });
     } else if (dropdownSelect === "Recommended") {
       const oppFields = { events: [] };
       const userFields = { users: [] };
@@ -344,7 +363,7 @@ export default function OpportunitiesList({
           />
           <div style={{ marginRight: "1em" }}>
             <ThemedDropdown
-              menuItems={["Recommended", "Alphabet", "Major"]}
+              menuItems={["Recommended", "Alphabet", "Major", "Date"]}
               sortSelection={handleDropdown}
               value={dropdownSelect}
             />
