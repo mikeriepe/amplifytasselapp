@@ -47,7 +47,7 @@ const AdminLayout = (props) => {
   if (loadingAuth) return <Progress />;
   if (!user) return <Navigate to="/login" replace />;
   if (userProfile?.status === "ADMIN") return <Outlet />;
-  return <Navigate to="/myprofile" replace />;
+  return <Navigate to="/dashboard" replace />;
 };
 
 /**
@@ -63,7 +63,7 @@ const ApprovedLayout = (props) => {
   if (!user) return <Navigate to="/login" replace />;
   if (userProfile?.status === "ADMIN" || userProfile?.status === "APPROVED")
     return <Outlet />;
-  return <Navigate to="/myprofile" replace />;
+  return <Navigate to="/dashboard" replace />;
 };
 
 /**
@@ -86,7 +86,7 @@ const LoggedInLayout = (props) => {
  */
 const LoggedOutLayout = (props) => {
   const { user } = props;
-  if (user) return <Navigate to="/myprofile" replace />;
+  if (user) return <Navigate to="/dashboard" replace />;
   return <Outlet />;
 };
 

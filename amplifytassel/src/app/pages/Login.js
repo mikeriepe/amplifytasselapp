@@ -112,7 +112,6 @@ export default function Login() {
               console.log("new password completed!");
               console.log("login worked!");
               toast.success("Login Success", toastOptions);
-              navigate("/dashboard");
             })
             .catch((e) => {
               console.error(e);
@@ -127,7 +126,6 @@ export default function Login() {
           // console.log(JSON.stringify(user));
           try {
             toast.success("Login Success", toastOptions);
-            navigate("/dashboard");
           } catch (e) {
             console.error(e);
           }
