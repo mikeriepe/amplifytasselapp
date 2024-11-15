@@ -10,7 +10,7 @@ import DashboardOppThumbnail from "./DashboardOppThumbnail";
 
 import { DataStore } from "@aws-amplify/datastore";
 import { Opportunity } from "./../../models";
-// import { useTabIndex } from "./TabIndexContext.js";
+import { useTabIndex } from "./TabIndexContext.js";
 
 const UpcomingSection = ({ children }, props) => (
   <MuiBox
@@ -57,7 +57,7 @@ export default function DashboardUpcoming({ data }) {
   const { userProfile } = useAuth();
   const [joinedOpportunities, setJoinedOpportunities] = useState([]);
   const [loading, setLoading] = useState(true);
-  // const { tabIndex, setTabIndex } = useTabIndex();
+  const { tabIndex, setTabIndex } = useTabIndex();
 
   const getJoinedOpportunities = () => {
     const currTime = new Date().toISOString();
@@ -128,7 +128,7 @@ export default function DashboardUpcoming({ data }) {
             hover-highlight-link"
                 to="/opportunities"
                 state={{ defaultTab: "upcoming" }}
-                // onClick={() => setTabIndex("/opportunities")}
+                onClick={() => setTabIndex("/opportunities")}
               >
                 {linkText}
               </Link>

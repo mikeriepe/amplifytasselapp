@@ -6,7 +6,7 @@ import Box from "@mui/material/Box";
 import MuiCard from "@mui/material/Card";
 import SearchIcon from "@mui/icons-material/Search";
 import Button from "@mui/material/Button";
-// import { useTabIndex } from "./TabIndexContext.js";
+import { useTabIndex } from "./TabIndexContext.js";
 
 const Display = styled((props) => <MuiCard elevation={0} {...props} />)(() => ({
   display: "flex",
@@ -44,11 +44,11 @@ const HeadingText = ({ children }, props) => (
  * @return {HTML} Dashboard header component
  */
 export default function DashboardBrowse() {
-  // const { tabIndex, setTabIndex } = useTabIndex();
+  const { tabIndex, setTabIndex } = useTabIndex();
   const navigate = useNavigate();
 
   const handleNavigate = () => {
-    // setTabIndex("/opportunities");
+    setTabIndex("/opportunities");
     navigate("/opportunities");
   };
   return (
