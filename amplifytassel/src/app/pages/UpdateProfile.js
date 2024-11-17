@@ -381,7 +381,7 @@ export default function UpdateProfile() {
       return;
     }
 
-    if (values[1].username.length > 10) {
+    if (values[1].username.length > 20) {
       toast.error(`Username is too long`, toastOptions);
       return;
     }
@@ -516,8 +516,8 @@ export default function UpdateProfile() {
                           },
                         }))
                       }*/ // Added below to ensure a character limit //
-                        const newValue = values[1].username.slice(0, 10);
-                        if (newValue.length <= 10) {
+                        const newValue = values[1].username.slice(0, 20);
+                        if (newValue.length <= 20) {
                           setValues((prevValues) => ({
                             ...prevValues,
                             1: {
@@ -528,9 +528,9 @@ export default function UpdateProfile() {
                         }
                       }}
                     />
-                    {values[1].username && values[1].username.length > 10 && (
+                    {values[1].username && values[1].username.length > 20 && (
                       <p className="text-warning" style={{ color: "red", fontSize: "small" }}>
-                        Usernames are limited to a maximum of 10 characters
+                        Usernames are limited to a maximum of 20 characters
                       </p>
                     )}
                   </div>
