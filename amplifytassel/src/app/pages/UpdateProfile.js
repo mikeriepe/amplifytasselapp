@@ -21,6 +21,7 @@ import WorkExperienceDeleteModal from "../components/WorkExperienceDeleteModal";
 import VolunteerExperienceForm from "../components/VolunteerExperienceForm";
 import VolunteerExperienceDeleteModal from "../components/VolunteerExperienceDeleteModal";
 import VolunteerExperienceList from "../components/VolunteerExperienceList";
+import ProfileBanner from "../components/ProfileBanner";
 
 // Added by Kenny on 11/3/2024
 import OrganizationExperienceForm from "../components/OrganizationExperienceForm";
@@ -126,6 +127,8 @@ export default function UpdateProfile() {
       // Added by Kenny Losier 11/3/2024:
       username: userProfile.username,
       college: userProfile.college,
+      firstName: userProfile.firstName || "",
+      lastName: userProfile.lastName || "",
     },
   });
 
@@ -293,6 +296,8 @@ export default function UpdateProfile() {
         updated.linkedin = values[1].linkedin;
         updated.username = values[1].username;
         updated.college = values[1].college;
+        updated.firstName = values[1].firstName;
+        updated.lastName = values[1].lastName;
       })
     );
     res = await DataStore.query(Profile, userProfile.id);
@@ -327,6 +332,8 @@ export default function UpdateProfile() {
             linkedin: userProfile.linkedin,
             username: userProfile.username,
             college: userProfile.college,
+            firstName: userProfile.firstName,
+            lastName: userProfile.lastName,
           },
         });
         DataStore.query(Keyword).then((keywordsAll) => {
@@ -429,6 +436,59 @@ export default function UpdateProfile() {
                   <h2 className="text-normal">Update Profile</h2>
                 </div>
                 <div className="grid-flow-large" width="100%">
+                  <div
+                    className="flex-horizontal flex-space-between"
+                    aria-label={"Update Profile Real Name"}
+                    style={{ marginTop: "1em", display: "flex", gap: "1em", width: "100%" }}
+                    >
+                  <div style={{ flex: "1" }}>
+                    <p className="text-bold">
+                      Real First Name
+                      {/* <Tooltip title="Fill out this field to get 10 points" arrow>
+                        <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
+                      </Tooltip> */}
+                    </p>
+                    <ThemedInput
+                      placeholder={"First Name"}
+                      type={"text"}
+                      index={"firstName"}
+                      step={1}
+                      fill={"firstName"}
+                      content={values[1].firstName}
+                      required={true} // Make the input required
+                      onChange={(e) =>
+                        setValues((prevValues) => ({
+                          ...prevValues,
+                          1: {
+                            ...prevValues[1],
+                            firstName: e.target.value,
+                          },
+                        }))
+                      }
+                    />
+                  </div>
+                  <div style = {{ flex: "1" }}>
+                    <p className="text-bold">Real Last Name</p>
+                    <ThemedInput
+                      placeholder={"Last Name"}
+                      type={"text"}
+                      index={"lastName"}
+                      step={1}
+                      fill={"lastName"}
+                      content={values[1].lastName}
+                      required={true}
+                      onChange={(e) =>
+                        setValues((prevValues) => ({
+                          ...prevValues,
+                          1: {
+                            ...prevValues[1],
+                            lastName: e.target.value,
+                          },
+                        }))
+                      }
+                    />
+                  </div>
+                  </div>
                   <div
                     className="grid-flow-small"
                     aria-label={"Update Profile Username"}
