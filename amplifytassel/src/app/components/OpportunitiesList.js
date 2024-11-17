@@ -53,11 +53,22 @@ export default function OpportunitiesList({
 
   // Filter Sorting - Ascending & Descending Order
   const [isAscending, setIsAscending] = useState(true);
+  const [sortMessage, setSortMessage] = useState("");
   useEffect(() => {applyFilters();}, [isAscending]);  
   const handleDropdown = (dropdown) => {
-    console.log(dropdown);
     setDropdownSelect(dropdown);
   };
+
+  useEffect(() => {
+    if (dropdownSelect === "Date") {
+      setSortMessage(isAscending ? "Most Recent First" : "Least Recent First");
+    } else if (dropdownSelect === "Alphabet") {
+      setSortMessage(isAscending ? "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0A-Z" : "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Z-A");
+    } else {
+      setSortMessage(""); // Clear message if not sorting by Date or Alphabet
+    }
+  }, [dropdownSelect, isAscending]);
+
   // Component first renders
   useEffect(() => {
     console.log("Initializing display opps to", opportunities);
@@ -379,6 +390,7 @@ export default function OpportunitiesList({
                   backgroundColor: "transparent",
                   //borderRadius: "5px",
                   cursor: "pointer",
+                  display: "block",
                 }}
               >
                 {isAscending ? (
@@ -388,8 +400,12 @@ export default function OpportunitiesList({
                 )}
               </button>
             )}
+            {/* Display the message below the dropdown */}
+            <p style={{ fontSize: "0.5em", marginTop: "-0.25em", color: "#666", /*whiteSpace: "nowrap",*/ textAlign: "center" }}>
+              {sortMessage}
+            </p>  
           </div>
-          <div style={{ marginRight: "1em" }}>
+          <div style={{ display: "flex", marginRight: "1em" }}>
             <ThemedDropdown
               menuItems={["Recommended", "Alphabet", "Major", "Date"]}
               sortSelection={handleDropdown}
