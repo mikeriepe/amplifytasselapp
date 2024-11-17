@@ -283,6 +283,7 @@ export default function OpportunitiesList({
       setDisplayOpps(searchData);
       return;
     }
+    
     const fuse = new Fuse(searchData, {
       // more parameters can be added for search
       keys: ["eventName", "description"],
