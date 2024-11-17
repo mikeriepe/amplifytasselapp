@@ -1,19 +1,12 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 import MuiPaper from "@mui/material/Paper";
 import MuiAvatar from "@mui/material/Avatar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Paper";
 import {
-  Grid,
   Box,
   CircularProgress,
   Table,
@@ -23,21 +16,15 @@ import {
   Checkbox,
   TableBody,
   TableSortLabel,
+  Tabs,
+  Tab,
 } from "@mui/material";
-// import TableFooter from '@mui/material/TableFooter';
-// import TablePagination from '@mui/material/TablePagination';
 import Collapse from "@mui/material/Collapse";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormGroup from "@mui/material/FormGroup";
 import MuiBox from "@mui/material/Box";
 import Tooltip from "@mui/material/Tooltip";
-import FilterListIcon from "@mui/icons-material/FilterList";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import ThemedButton from "./ThemedButton";
-import IconButton from "@mui/material/IconButton";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { profileStatusToColor } from "../util/ProfileStatus";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import { styled } from "@mui/material/styles";
@@ -46,13 +33,9 @@ import "../stylesheets/ApprovalTable.css";
 import { DataStore } from "@aws-amplify/datastore";
 import { Profile, ChatRoom } from "./../../models";
 import { Storage } from "aws-amplify";
-import {
-  findExistingInfoChatRoom,
-  createNewChatRoom,
-} from "../util/SocialChatRooms";
+import { createNewChatRoom } from "../util/SocialChatRooms";
 import useAuth from "../util/AuthContext";
 import { sendMessage } from "../util/SocialChat";
-import { List, ListItemText, ListItemButton } from "@mui/material";
 import EmailDialog from "./EmailDialog";
 
 const Page = styled((props) => <Box {...props} />)(() => ({
@@ -250,10 +233,11 @@ export default function ApprovalAccounts() {
     admin: false,
     approved: false,
     denied: false,
-    pending: false,
+    pending: true,
     search: "",
   });
   const [openFilter, setOpenFilter] = useState(false);
+  const [selectedTab, setSelectedTab] = useState(0);
 
   // useEffect(() => {
   //   const { admin, approved, denied, pending, search } = filters;
@@ -310,40 +294,33 @@ export default function ApprovalAccounts() {
   ];
 
   useEffect(() => {
-    const { search } = filters;
-
-    const filterBySearch = (account) => {
-      if (search === "") return true;
-      return [
-        account.graduationYear,
-        account.email,
-        `${account.firstName} ${account.lastName}`,
-      ].some(
-        (field) =>
-          typeof field === "string" &&
-          field.toLowerCase().includes(search.toLowerCase())
-      );
-    };
-
-    setDisplayPending(
-      accounts.filter(
-        (account) => account.status === "PENDING" && filterBySearch(account)
-      )
-    );
-    setDisplayApproved(
-      accounts.filter(
-        (account) => account.status === "APPROVED" && filterBySearch(account)
-      )
-    );
-    setDisplayDenied(
-      accounts.filter(
-        (account) => account.status === "DENIED" && filterBySearch(account)
-      )
-    );
-    setDisplayAdmin(
-      accounts.filter(
-        (account) => account.status === "ADMIN" && filterBySearch(account)
-      )
+    const { admin, approved, denied, pending, search } = filters;
+    setDisplayAccounts(
+      accounts.filter((account) => {
+        try {
+          if (search !== "") {
+            let ok = false;
+            [
+              account.graduationYear,
+              account.email,
+              account.firstName + " " + account.lastName,
+            ].forEach((field) => {
+              if (typeof field !== "string") return;
+              if (field.toLowerCase().includes(search.toLowerCase())) ok = true;
+            });
+            if (!ok) return false;
+          }
+          if (!admin && !approved && !denied && !pending) return true;
+          if (!admin && account.status === "ADMIN") return false;
+          if (!approved && account.status === "APPROVED") return false;
+          if (!denied && account.status === "DENIED") return false;
+          if (!pending && account.status === "PENDING") return false;
+          return true;
+        } catch (error) {
+          console.error(error);
+          return false;
+        }
+      })
     );
   }, [accounts, filters]);
 
@@ -365,6 +342,63 @@ export default function ApprovalAccounts() {
 
   const handleDialogClose = () => {
     setDialogOpen(false);
+  };
+
+  // Function to handle tab changes
+  const handleTabChange = (event, newValue) => {
+    setSelectedTab(newValue);
+    // Update filters based on selected tab while preserving `search` and other fields
+    switch (newValue) {
+      case 0: // Pending
+        setFilters({
+          ...filters,
+          pending: true,
+          approved: false,
+          denied: false,
+          admin: false,
+        });
+
+        break;
+      case 1: // Approved
+        setFilters({
+          ...filters,
+          approved: true,
+          pending: false,
+          denied: false,
+          admin: false,
+        });
+
+        break;
+      case 2: // Denied
+        setFilters({
+          ...filters,
+          denied: true,
+          approved: false,
+          pending: false,
+          admin: false,
+        });
+
+        break;
+      case 3: // Admin
+        setFilters({
+          ...filters,
+          admin: true,
+          approved: false,
+          denied: false,
+          pending: false,
+        });
+        break;
+      default:
+        setFilters(filters);
+    }
+  };
+
+  // Handle search input change without affecting other filter properties
+  const handleSearchChange = (e) => {
+    setFilters({
+      ...filters,
+      search: e.target.value,
+    });
   };
 
   const handleRequestInfo = (e) => {
@@ -729,258 +763,175 @@ export default function ApprovalAccounts() {
   return (
     <Page>
       {/* Top Bar */}
-      <Box
-        aria-label="Account Actions"
-        flex={1}
-        flexDirection="row"
-        style={{
-          marginRight: "1rem",
-          marginTop: "0.5rem",
-        }}
-      >
-        <TextField
-          placeholder="Search"
-          size="small"
-          onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-          InputProps={{
-            style: {
-              fontSize: "0.9rem",
-              backgroundColor: "white",
-              borderRadius: "10px",
-            },
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchRoundedIcon color="tertiary" />
-              </InputAdornment>
-            ),
-          }}
-          sx={{
-            width: "auto",
-            "& .MuiOutlinedInput-root": {
-              "& fieldset": {
-                borderColor: "rgba(0, 0, 0, 0.15)",
-              },
-              marginRight: "1rem",
-            },
-          }}
-        />
-      </Box>
-
-      {/* Filter */}
-      {/* <>
-            <MuiPaper
-              sx={{
-                paddingLeft: "8px",
-                height: openFilter ? undefined : "0px",
-              }}
-            >
-              <MuiBox
-                className="
-                flex-space-between
-                flex-align-center
-                clickable
-                no-highlight
-                "
-              >
-                <div className="flex-horizontal flow-tiny">
-                  <Collapse in={openFilter} timeout="auto" unmountOnExit>
-                    <FormGroup
-                      className="flex-horizontal flex-flow-small"
-                      sx={{ paddingBlock: "8px" }}
-                    >
-                      <FormControlLabel
-                        className="no-highlight"
-                        control={
-                          <Checkbox
-                            color="secondary"
-                            size="small"
-                            onChange={(event) =>
-                              setFilters({
-                                ...filters,
-                                admin: event.target.checked,
-                              })
-                            }
-                            checked={filters.admin}
-                            tabIndex={-1}
-                            disableRipple
-                            sx={{ paddingBlock: "1px" }}
-                          />
-                        }
-                        label={"Admin"}
-                        componentsProps={{
-                          typography: {
-                            fontSize: "0.8rem",
-                            fontWeight: "600",
-                            color: "var(--text-disabled)",
-                          },
-                        }}
-                      />
-                      <FormControlLabel
-                        className="no-highlight"
-                        control={
-                          <Checkbox
-                            color="secondary"
-                            size="small"
-                            onChange={(event) => {
-                              setFilters({
-                                ...filters,
-                                approved: event.target.checked,
-                              });
-                            }}
-                            checked={filters.approved}
-                            tabIndex={-1}
-                            disableRipple
-                            sx={{ paddingBlock: "1px" }}
-                          />
-                        }
-                        label={"Approved"}
-                        componentsProps={{
-                          typography: {
-                            fontSize: "0.8rem",
-                            fontWeight: "600",
-                            color: "var(--text-disabled)",
-                          },
-                        }}
-                      />
-                      <FormControlLabel
-                        className="no-highlight"
-                        control={
-                          <Checkbox
-                            color="secondary"
-                            size="small"
-                            onChange={(event) => {
-                              setFilters({
-                                ...filters,
-                                denied: event.target.checked,
-                              });
-                            }}
-                            checked={filters.denied}
-                            tabIndex={-1}
-                            disableRipple
-                            sx={{ paddingBlock: "1px" }}
-                          />
-                        }
-                        label={"Denied"}
-                        componentsProps={{
-                          typography: {
-                            fontSize: "0.8rem",
-                            fontWeight: "600",
-                            color: "var(--text-disabled)",
-                          },
-                        }}
-                      />
-                      <FormControlLabel
-                        className="no-highlight"
-                        control={
-                          <Checkbox
-                            color="secondary"
-                            size="small"
-                            onChange={(event) => {
-                              setFilters({
-                                ...filters,
-                                pending: event.target.checked,
-                              });
-                            }}
-                            checked={filters.pending}
-                            tabIndex={-1}
-                            disableRipple
-                            sx={{ paddingBlock: "1px" }}
-                          />
-                        }
-                        label={"Pending"}
-                        componentsProps={{
-                          typography: {
-                            fontSize: "0.8rem",
-                            fontWeight: "600",
-                            color: "var(--text-disabled)",
-                          },
-                        }}
-                      />
-                    </FormGroup>
-                  </Collapse>
-                </div>
-              </MuiBox>
-            </MuiPaper>
-            <Tooltip title="Filter list" flex={0}>
-              <IconButton onClick={() => setOpenFilter(!openFilter)}>
-                <FilterListIcon />
-              </IconButton>
-            </Tooltip>
-          </> */}
-
-      {/* List Boxes */}
-      <Grid
-        container
-        spacing={2}
-        sx={{
-          height: "100%",
-          width: "100%",
-          lineHeight: 1.5,
-        }}
-        justifyContent="space-between"
-      >
-        {Array(4)
-          .fill()
-          .map((_, index) => (
-            <Grid
-              item
-              xs={12}
-              sm={12}
-              md={12}
-              lg={12}
-              xl={6}
-              key={index}
+      <Card style={{ padding: ".5rem" }}>
+        <Toolbar>
+          <Box
+            aria-label="Opportunity Actions"
+            display="flex"
+            justifyContent="space-between"
+            width="100%"
+          >
+            {/* Left-aligned Tabs */}
+            <Box
               sx={{
                 display: "flex",
-                flex: 1,
-                flexDirection: "column",
-                height: "100%",
-                marginTop: "2em",
+                alignItems: "center",
               }}
             >
-              {/* Titles/Subtitles*/}
-              <div
-                className="flex-space-between flex-align-center"
-                style={{
-                  background: "var(--background-primary)",
-                  marginBottom: "1rem",
+              <Tabs
+                aria-label="Tabs"
+                value={selectedTab}
+                onChange={handleTabChange}
+                indicatorColor="primary"
+                sx={{
+                  ".MuiTabs-indicator": {
+                    height: "4px",
+                    bottom: "4px",
+                  },
+                  height: "auto",
                 }}
               >
-                {index % 2 === 0 && (
-                  <Text>
-                    <h2
-                      className="text-dark ellipsis text-medium"
-                      aria-label="Dashboard Upcoming Section"
-                    >
-                      {titles[index]}
-                    </h2>
-                    <h5
-                      className="text-lightgray text-bold ellipsis"
-                      aria-label="Dashboard Header Count"
-                    >
-                      {subtitles[index]}
-                    </h5>
-                  </Text>
-                )}
-                {index % 2 !== 0 && (
-                  <TextRight>
-                    <h2
-                      className="text-dark ellipsis text-medium"
-                      aria-label="Dashboard Upcoming Section"
-                    >
-                      {titles[index]}
-                    </h2>
-                    <h5
-                      className="text-lightgray text-bold ellipsis"
-                      aria-label="Dashboard Header Count"
-                    >
-                      {subtitles[index]}
-                    </h5>
-                  </TextRight>
-                )}
+                <Tooltip title="View Pending Accounts" arrow>
+                  <Tab
+                    label="Pending"
+                    sx={{
+                      "&:hover": {
+                        color: "#00c2ff",
+                      },
+                    }}
+                  />
+                </Tooltip>
+                <Tooltip title="View Approved Accounts" arrow>
+                  <Tab
+                    label="Approved"
+                    sx={{
+                      "&:hover": {
+                        color: "#00c2ff",
+                      },
+                    }}
+                  />
+                </Tooltip>
+                <Tooltip title="View Denied Accounts" arrow>
+                  <Tab
+                    label="Denied"
+                    sx={{
+                      "&:hover": {
+                        color: "#00c2ff",
+                      },
+                    }}
+                  />
+                </Tooltip>
+                <Tooltip title="View Admin Accounts" arrow>
+                  <Tab
+                    label="Admin"
+                    sx={{
+                      "&:hover": {
+                        color: "#00c2ff",
+                      },
+                    }}
+                  />
+                </Tooltip>
+              </Tabs>
+            </Box>
 
-                {/* Buttons */}
-                <div className="flex-space-between flex-align-center">
+            {/* Right-aligned Buttons and Search */}
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: "1rem",
+              }}
+            >
+              {selectedTab === 0 && (
+                <ThemedButton
+                  color={"blue"}
+                  variant={"themed"}
+                  type={"submit"}
+                  style={{
+                    fontSize: "0.875rem",
+                  }}
+                  onClick={handleDialogOpen}
+                >
+                  Request More Info
+                </ThemedButton>
+              )}
+
+              <EmailDialog
+                emails={selected}
+                accounts={accounts}
+                profilePictures={profilePictures}
+                open={dialogOpen}
+                setClose={handleDialogClose}
+              />
+              {(selectedTab === 0 || selectedTab === 2) && (
+                <ThemedButton
+                  color="green"
+                  variant="gradient"
+                  type="submit"
+                  style={{ fontSize: "0.875rem" }}
+                  onClick={handleStatusAction}
+                >
+                  Approve
+                </ThemedButton>
+              )}
+
+              {selectedTab === 1 && (
+                <ThemedButton
+                  color={"yellow"}
+                  variant={"gradient"}
+                  type={"submit"}
+                  style={{
+                    fontSize: "0.875rem",
+                  }}
+                  onClick={handleAdminPromotion}
+                >
+                  Promote Admin
+                </ThemedButton>
+              )}
+
+              {selectedTab !== 2 && (
+                <ThemedButton
+                  color="red"
+                  variant="themed"
+                  type="submit"
+                  style={{ fontSize: "0.875rem" }}
+                  onClick={handleStatusAction}
+                >
+                  {selectedTab === 0 ? "Deny" : "Remove"}
+                </ThemedButton>
+              )}
+
+              <TextField
+                placeholder="Search"
+                size="small"
+                value={filters.search}
+                onChange={handleSearchChange}
+                InputProps={{
+                  style: {
+                    fontSize: "0.9rem",
+                    backgroundColor: "white",
+                    borderRadius: "10px",
+                  },
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchRoundedIcon color="tertiary" />
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{
+                  width: "auto",
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: "rgba(0, 0, 0, 0.15)",
+                    },
+                  },
+                }}
+              />
+            </Box>
+          </Box>
+
+          {/* Buttons */}
+          {/* <div className="flex-space-between flex-align-center">
                   {index === 0 && (
                     <ThemedButton
                       color={"blue"}
@@ -1061,97 +1012,87 @@ export default function ApprovalAccounts() {
                       Remove
                     </ThemedButton>
                   )}
-                </div>
-              </div>
+                </div>  */}
+        </Toolbar>
+      </Card>
 
-              {/* Boxes */}
-              <Card
+      <Card
+        sx={{
+          height: 500,
+          borderRadius: 3,
+          boxShadow: 3,
+          backgroundColor: "white",
+          padding: 2,
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+        }}
+      >
+        {loading ? (
+          <Box sx={{ display: "flex", padding: "2rem" }}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <Box
+            sx={{
+              flex: 1,
+              overflowY: "auto",
+              maxHeight: "calc(100% - 16px)",
+              borderRadius: 3,
+            }}
+          >
+            <Table style={{ backgroundColor: "white" }}>
+              <TableHead
+                aria-label="Accounts Table Head"
                 sx={{
-                  height: 500,
-                  borderRadius: 3,
-                  boxShadow: 3,
+                  position: "sticky",
+                  top: 0,
+                  zIndex: 1,
                   backgroundColor: "white",
-                  padding: 2,
-                  display: "flex",
-                  flexDirection: "column",
-                  marginRight: {
-                    xl: index % 2 === 0 ? "1rem" : "0",
-                  },
-                  marginLeft: {
-                    xl: index % 2 !== 0 ? "1rem" : "0",
-                  },
+                  borderBottom: "2px solid rgba(0, 0, 0, 0.15)",
                 }}
               >
-                {loading ? (
-                  <Box sx={{ display: "flex", padding: "2rem" }}>
-                    <CircularProgress />
-                  </Box>
-                ) : (
-                  <Box
-                    sx={{
-                      flex: 1,
-                      overflowY: "auto",
-                      maxHeight: "calc(100% - 16px)",
-                      borderRadius: 3,
-                    }}
-                  >
-                    <Table style={{ backgroundColor: "white" }}>
-                      <TableHead
-                        aria-label="Accounts Table Head"
-                        sx={{
-                          position: "sticky",
-                          top: 0,
-                          zIndex: 1,
-                          backgroundColor: "white",
-                          borderBottom: "2px solid rgba(0, 0, 0, 0.15)",
-                        }}
+                <TableRow>
+                  <TableCell padding="checkbox">
+                    <Checkbox
+                      checked={selectAllChecked}
+                      onChange={handleSelectAll}
+                    />
+                  </TableCell>
+                  {headCells.map((headCell) => (
+                    <TableCell
+                      key={headCell.id}
+                      padding={headCell.disablePadding ? "none" : "normal"}
+                      onClick={() => handleSort(headCell.id)}
+                    >
+                      <TableSortLabel
+                        direction={
+                          getArrowDirection(headCell.id) !== ""
+                            ? getArrowDirection(headCell.id)
+                            : "desc"
+                        }
                       >
-                        <TableRow>
-                          <TableCell padding="checkbox">
-                            <Checkbox
-                              checked={selectAllChecked}
-                              onChange={handleSelectAll}
-                            />
-                          </TableCell>
-                          {headCells.map((headCell) => (
-                            <TableCell
-                              key={headCell.id}
-                              padding={
-                                headCell.disablePadding ? "none" : "normal"
-                              }
-                              onClick={() => handleSort(headCell.id)}
-                            >
-                              <TableSortLabel
-                                direction={
-                                  getArrowDirection(headCell.id) !== ""
-                                    ? getArrowDirection(headCell.id)
-                                    : "desc"
-                                }
-                              >
-                                {headCell.label}
-                              </TableSortLabel>
-                            </TableCell>
-                          ))}
-                        </TableRow>
-                      </TableHead>
-                      <TableBody aria-label="Accounts Table Body">
-                        {displays[index].map((account) => (
-                          <Row
-                            key={account.id}
-                            row={account}
-                            handleSelect={handleSelect}
-                            selectAllChecked={selectAllChecked}
-                            selected={selected}
-                          />
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </Box>
-                )}
-              </Card>
-            </Grid>
-          ))}
-      </Grid>
+                        {headCell.label}
+                      </TableSortLabel>
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody aria-label="Accounts Table Body">
+                {displayAccounts.map((account) => (
+                  <Row
+                    key={account.id}
+                    row={account}
+                    handleSelect={handleSelect}
+                    selectAllChecked={selectAllChecked}
+                    selected={selected}
+                  />
+                ))}
+              </TableBody>
+            </Table>
+          </Box>
+        )}
+      </Card>
     </Page>
   );
 }
