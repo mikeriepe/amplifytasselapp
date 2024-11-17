@@ -35,7 +35,8 @@
         },
         "dailySummaryEmail": {
           "deploymentBucketName": "amplify-amplifytassel-dev-233440-deployment",
-          "s3Key": "amplify-builds/dailySummaryEmail-6e6c32534c6f59557769-build.zip"
+          "s3Key": "amplify-builds/dailySummaryEmail-5547696a6f52696c7266-build.zip",
+          "adminEmails": ""
         }
       },
       "storage": {
