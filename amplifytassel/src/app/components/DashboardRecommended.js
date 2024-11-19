@@ -1,16 +1,10 @@
-import React, { useEffect, useState } from "react";
-import MuiBox from "@mui/material/Box";
-import useAuth from "../util/AuthContext.js";
+import React from "react";
+import { useRecommendations } from "../context/RecommendationsContext";
 import { Link } from "react-router-dom";
-import { Grid } from "@mui/material";
-import CircularProgress from "@mui/material/CircularProgress";
-import Box from "@mui/material/Box";
-
-import DashboardOppThumbnail from "./DashboardOppThumbnail.js";
-
-import { DataStore } from "@aws-amplify/datastore";
-import { Opportunity } from "../../models/index.js";
-import { useTabIndex } from "./TabIndexContext.js";
+import { Grid, CircularProgress, Box } from "@mui/material";
+import DashboardOppThumbnail from "./DashboardOppThumbnail";
+import MuiBox from "@mui/material/Box";
+import { useTabIndex } from "../context/TabIndexContext";
 
 const UpcomingSection = ({ children }, props) => (
   <MuiBox
@@ -49,56 +43,11 @@ const Text = ({ children }, props) => (
   </MuiBox>
 );
 
-/**
- * creates Dashboard browse events section
- * @return {HTML} Dashboard new events component
- */
-export default function DashboardRecommended({ data }) {
-  const { userProfile } = useAuth();
-  const [loading, setLoading] = useState(true);
+export default function DashboardRecommended() {
+  const { recommendedOpps, loading } = useRecommendations(); // Access global recommendations
   const { tabIndex, setTabIndex } = useTabIndex();
-  const [allOpportunities, setAllOpportunities] = useState([]);
 
-  const getAllOpportunities = () => {
-    DataStore.query(Opportunity, (o) =>
-      o.and((o) => [o.status.eq("APPROVED"), o.profileID.ne(userProfile.id)])
-    )
-      .then((res) => {
-        var firstList = res;
-        DataStore.query(Opportunity, (o) =>
-          o.and((o) => [o.Requests.profileID.eq(userProfile.id)])
-        ).then((res) => {
-          const timeBoxedList = [];
-          for (let i = 0; i < firstList.length; i++) {
-            if (new Date(firstList[i].startTime) > Date.now()) {
-              timeBoxedList.push(firstList[i]);
-            }
-          }
-          setAllOpportunities(timeBoxedList);
-          setLoading(false);
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-        alert("Error retrieving opportunities");
-      });
-  };
-
-  useEffect(() => {
-    getAllOpportunities();
-  }, []);
-
-  const numOpps = allOpportunities.length;
   const linkText = "View More";
-
-  let displayOpps = [];
-  if (numOpps > 3) {
-    for (let i = 0; i < 3; i++) {
-      displayOpps.push(allOpportunities[i]);
-    }
-  } else {
-    displayOpps = allOpportunities;
-  }
 
   return (
     <>
@@ -131,8 +80,7 @@ export default function DashboardRecommended({ data }) {
             </Text>
             <div className="flex-space-between flex-align-center">
               <Link
-                className="text-bold text-blue ellipsis text-small
-            hover-highlight-link"
+                className="text-bold text-blue ellipsis text-small hover-highlight-link"
                 to="/opportunities"
                 state={{ defaultTab: "browse" }}
                 onClick={() => setTabIndex("/opportunities")}
@@ -141,9 +89,9 @@ export default function DashboardRecommended({ data }) {
               </Link>
             </div>
           </div>
-          {numOpps > 0 ? (
+          {recommendedOpps.length > 0 ? (
             <Grid container spacing={{ sm: 1, md: 2 }} alignItems="stretch">
-              {displayOpps.map((opportunity, index) => (
+              {recommendedOpps.slice(0, 3).map((opportunity, index) => (
                 <Grid
                   item
                   xs={12}
