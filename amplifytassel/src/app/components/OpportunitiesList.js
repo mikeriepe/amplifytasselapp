@@ -50,13 +50,31 @@ export default function OpportunitiesList({
 
   // Filter Sorting - Ascending & Descending Order
   const [isAscending, setIsAscending] = useState(true);
+  const [sortMessage, setSortMessage] = useState("");
+  useEffect(() => {
+    applyFilters();
+  }, [isAscending]);
   useEffect(() => {
     applyFilters();
   }, [isAscending]);
   const handleDropdown = (dropdown) => {
-    console.log(dropdown);
     setDropdownSelect(dropdown);
   };
+
+  useEffect(() => {
+    if (dropdownSelect === "Date") {
+      setSortMessage(isAscending ? "Most Recent First" : "Least Recent First");
+    } else if (dropdownSelect === "Alphabet") {
+      setSortMessage(
+        isAscending
+          ? "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0A-Z"
+          : "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Z-A"
+      );
+    } else {
+      setSortMessage(""); // Clear message if not sorting by Date or Alphabet
+    }
+  }, [dropdownSelect, isAscending]);
+
   // Component first renders
   useEffect(() => {
     console.log("Initializing display opps to", opportunities);
@@ -135,6 +153,7 @@ export default function OpportunitiesList({
       setDisplayOpps(searchData);
       return;
     }
+
     const fuse = new Fuse(searchData, {
       // more parameters can be added for search
       keys: ["eventName", "description"],
@@ -190,167 +209,162 @@ export default function OpportunitiesList({
     searchOpportunity(search, filteredOpps);
   };
   return (
-    <>
-      {loading ? (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "100vh",
-            width: "100vw",
-          }}
+    <Page>
+      <MuiBox className="flow-small" sx={{ flexGrow: 1 }}>
+        <div
+          className="flex-horizontal"
+          style={{ width: "100%", marginBottom: "1em" }}
         >
-          <CircularProgress size={80} />
-        </Box>
-      ) : (
-        <Page>
-          <MuiBox className="flow-small" sx={{ flexGrow: 1 }}>
-            <div
-              className="flex-horizontal"
-              style={{ width: "100%", marginBottom: "1em" }}
-            >
-              <TextField
-                placeholder="Search"
-                size="small"
-                onChange={(e) => setSearch(e.target.value)}
-                InputProps={{
-                  style: {
-                    fontSize: "0.9rem",
-                    backgroundColor: "white",
-                    borderRadius: "10px",
-                    marginRight: "1em",
-                  },
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SearchRoundedIcon color="tertiary" />
-                    </InputAdornment>
-                  ),
-                }}
-                sx={{
-                  width: "auto",
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": {
-                      borderColor: "rgba(0, 0, 0, 0.15)",
-                    },
-                  },
-                }}
-              />
-              <div style={{ marginRight: "1em" }}>
-                {
-                  /* Filtering - Ascending/Descending */
-                  (dropdownSelect === "Alphabet" ||
-                    dropdownSelect === "Date") && (
-                    <button
-                      onClick={() => setIsAscending((prev) => !prev)}
-                      style={{
-                        marginLeft: "0.5em",
-                        padding: "0.5em",
-                        border: "none",
-                        backgroundColor: "transparent",
-                        //borderRadius: "5px",
-                        cursor: "pointer",
-                      }}
-                    >
-                      {isAscending ? (
-                        <svg
-                          fill="#000000"
-                          height="20px"
-                          width="20px"
-                          version="1.1"
-                          id="XMLID_227_"
-                          xmlns="http://www.w3.org/2000/svg"
-                          /*xmlns:xlink="http://www.w3.org/1999/xlink"*/ viewBox="0 0 24 24" /*xml:space="preserve"*/
-                        >
-                          <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-                          <g
-                            id="SVGRepo_tracerCarrier"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          ></g>
-                          <g id="SVGRepo_iconCarrier">
-                            {" "}
-                            <g id="ascend">
-                              {" "}
-                              <g>
-                                {" "}
-                                <path d="M24,24H11v-2h13V24z M8,24H6V4.1L1.7,7.7L0.4,6.2L7,0.7l6.5,5.5l-1.3,1.5L8,4.1V24L8,24z M22,20H11v-2h11V20z M20,16h-9 v-2h9V16z M18,12h-7v-2h7V12z"></path>{" "}
-                              </g>{" "}
-                            </g>{" "}
-                          </g>
-                        </svg>
-                      ) : (
-                        <svg
-                          fill="#000000"
-                          height="20px"
-                          width="20px"
-                          version="1.1"
-                          id="XMLID_226_"
-                          xmlns="http://www.w3.org/2000/svg"
-                          /*xmlns:xlink="http://www.w3.org/1999/xlink"*/ viewBox="0 0 24 24" /*xml:space="preserve"*/
-                        >
-                          <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-                          <g
-                            id="SVGRepo_tracerCarrier"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          ></g>
-                          <g id="SVGRepo_iconCarrier">
-                            {" "}
-                            <g id="descend">
-                              {" "}
-                              <g>
-                                {" "}
-                                <path d="M7,23.3l-6.6-5.5l1.3-1.5L6,19.9V0h2v19.9l4.5-3.6l1.3,1.5L7,23.3z M18,14h-7v-2h7C18,12,18,14,18,14z M20,10h-9V8h9 C20,8,20,10,20,10z M22,6H11V4h11C22,4,22,6,22,6z M24,2H11V0h13V2z"></path>{" "}
-                              </g>{" "}
-                            </g>{" "}
-                          </g>
-                        </svg>
-                      )}
-                    </button>
-                  )
-                }
-              </div>
-              <div style={{ marginRight: "1em" }}>
-                <ThemedDropdown
-                  menuItems={["Recommended", "Alphabet", "Major", "Date"]}
-                  sortSelection={handleDropdown}
-                  value={dropdownSelect}
-                />
-              </div>
-              <OpportunitiesFilters
-                locationFilter={locationFilter}
-                setLocationFilter={setLocationFilter}
-                oppTypeFilter={oppTypeFilter}
-                setOppTypeFilter={setOppTypeFilter}
-                orgTypeFilter={orgTypeFilter}
-                setOrgTypeFilter={setOrgTypeFilter}
-              />
-            </div>
-            <Grid container spacing={{ sm: 1, md: 2 }} alignItems="stretch">
-              {displayOpps.map((opportunity, index) => (
-                <Grid
-                  item
-                  xs={12}
-                  sm={12}
-                  md={4}
-                  key={`opportunity-${index}`}
-                  sx={{ display: "flex", padding: 2 }}
+          <TextField
+            placeholder="Search"
+            size="small"
+            onChange={(e) => setSearch(e.target.value)}
+            InputProps={{
+              style: {
+                fontSize: "0.9rem",
+                backgroundColor: "white",
+                borderRadius: "10px",
+                marginRight: "1em",
+              },
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchRoundedIcon color="tertiary" />
+                </InputAdornment>
+              ),
+            }}
+            sx={{
+              width: "auto",
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "rgba(0, 0, 0, 0.15)",
+                },
+              },
+            }}
+          />
+          <div style={{ marginRight: "1em" }}>
+            {
+              /* Filtering - Ascending/Descending */
+              (dropdownSelect === "Alphabet" || dropdownSelect === "Date") && (
+                <button
+                  onClick={() => setIsAscending((prev) => !prev)}
+                  style={{
+                    marginLeft: "0.5em",
+                    padding: "0.5em",
+                    border: "none",
+                    backgroundColor: "transparent",
+                    //borderRadius: "5px",
+                    cursor: "pointer",
+                    display: "block",
+                  }}
                 >
-                  <OpportunitiesCard
-                    type={type}
-                    opportunity={opportunity}
-                    getPendingOpportunities={getPendingOpportunities}
-                    getCreatedOpportunities={getCreatedOpportunities}
-                    getAllOpportunities={getAllOpportunities}
-                    getJoinedOpportunities={getJoinedOpportunities}
-                  />
-                </Grid>
-              ))}
+                  {isAscending ? (
+                    <svg
+                      fill="#000000"
+                      height="20px"
+                      width="20px"
+                      version="1.1"
+                      id="XMLID_227_"
+                      xmlns="http://www.w3.org/2000/svg"
+                      /*xmlns:xlink="http://www.w3.org/1999/xlink"*/ viewBox="0 0 24 24" /*xml:space="preserve"*/
+                    >
+                      <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                      <g
+                        id="SVGRepo_tracerCarrier"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      ></g>
+                      <g id="SVGRepo_iconCarrier">
+                        {" "}
+                        <g id="ascend">
+                          {" "}
+                          <g>
+                            {" "}
+                            <path d="M24,24H11v-2h13V24z M8,24H6V4.1L1.7,7.7L0.4,6.2L7,0.7l6.5,5.5l-1.3,1.5L8,4.1V24L8,24z M22,20H11v-2h11V20z M20,16h-9 v-2h9V16z M18,12h-7v-2h7V12z"></path>{" "}
+                          </g>{" "}
+                        </g>{" "}
+                      </g>
+                    </svg>
+                  ) : (
+                    <svg
+                      fill="#000000"
+                      height="20px"
+                      width="20px"
+                      version="1.1"
+                      id="XMLID_226_"
+                      xmlns="http://www.w3.org/2000/svg"
+                      /*xmlns:xlink="http://www.w3.org/1999/xlink"*/ viewBox="0 0 24 24" /*xml:space="preserve"*/
+                    >
+                      <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                      <g
+                        id="SVGRepo_tracerCarrier"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      ></g>
+                      <g id="SVGRepo_iconCarrier">
+                        {" "}
+                        <g id="descend">
+                          {" "}
+                          <g>
+                            {" "}
+                            <path d="M7,23.3l-6.6-5.5l1.3-1.5L6,19.9V0h2v19.9l4.5-3.6l1.3,1.5L7,23.3z M18,14h-7v-2h7C18,12,18,14,18,14z M20,10h-9V8h9 C20,8,20,10,20,10z M22,6H11V4h11C22,4,22,6,22,6z M24,2H11V0h13V2z"></path>{" "}
+                          </g>{" "}
+                        </g>{" "}
+                      </g>
+                    </svg>
+                  )}
+                </button>
+              )
+            }
+            {/* Display the message below the dropdown */}
+            <p
+              style={{
+                fontSize: "0.5em",
+                marginTop: "-0.25em",
+                color: "#666",
+                /*whiteSpace: "nowrap",*/ textAlign: "center",
+              }}
+            >
+              {sortMessage}
+            </p>
+          </div>
+          <div style={{ display: "flex", marginRight: "1em" }}>
+            <ThemedDropdown
+              menuItems={["Recommended", "Alphabet", "Major", "Date"]}
+              sortSelection={handleDropdown}
+              value={dropdownSelect}
+            />
+          </div>
+          <OpportunitiesFilters
+            locationFilter={locationFilter}
+            setLocationFilter={setLocationFilter}
+            oppTypeFilter={oppTypeFilter}
+            setOppTypeFilter={setOppTypeFilter}
+            orgTypeFilter={orgTypeFilter}
+            setOrgTypeFilter={setOrgTypeFilter}
+          />
+        </div>
+        <Grid container spacing={{ sm: 1, md: 2 }} alignItems="stretch">
+          {displayOpps.map((opportunity, index) => (
+            <Grid
+              item
+              xs={12}
+              sm={12}
+              md={4}
+              key={`opportunity-${index}`}
+              sx={{ display: "flex", padding: 2 }}
+            >
+              <OpportunitiesCard
+                type={type}
+                opportunity={opportunity}
+                getPendingOpportunities={getPendingOpportunities}
+                getCreatedOpportunities={getCreatedOpportunities}
+                getAllOpportunities={getAllOpportunities}
+                getJoinedOpportunities={getJoinedOpportunities}
+              />
             </Grid>
-          </MuiBox>
-        </Page>
-      )}
-    </>
+          ))}
+        </Grid>
+      </MuiBox>
+    </Page>
   );
 }

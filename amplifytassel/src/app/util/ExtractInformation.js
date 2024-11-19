@@ -59,7 +59,11 @@ export const createUserProfile = async (user) => {
   const profileVolunteerExp = (await user?.volunteerExperience)
     ? await user?.volunteerExperience
     : "";
+  const profileOrganizationExp = (await user?.organizationExperience)
+    ? await user?.organizationExperience
+    : "";
   const workExp = (await user?.experience) ? await user?.experience : [];
+  const profileCollege = (await user?.college) ? await user?.college : "";
   const id = await user.id;
   const firstName = await user?.firstName;
   const lastName = await user?.lastName;
@@ -67,8 +71,12 @@ export const createUserProfile = async (user) => {
   const userFields = {};
   userFields["id"] = id;
   userFields["description"] = profileAbout;
+  userFields["college"] = profileCollege;
   userFields["volunteerExp"] = user?.volunteerExperience
     ? profileVolunteerExp.map((exp) => exp.description).toString()
+    : "";
+  userFields["organizationExp"] = user?.organizationExperience
+    ? profileOrganizationExp.map((exp) => exp.description).toString()
     : "";
   userFields["workExp"] = workExp.map((exp) => exp.description).toString();
   userFields["tags"] = await extractUserKeywords(user);
