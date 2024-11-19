@@ -7,16 +7,12 @@ import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import OpportunitiesCard from "./OpportunitiesCard";
 import OpportunitiesFilters from "./OpportunitiesFilters";
 import ThemedDropdown from "./ThemedDropdown";
+import { CircularProgress, Box } from "@mui/material";
 import Fuse from "fuse.js";
 import useAuth from "../util/AuthContext";
-import {
-  createOppProfile,
-  createUserProfile,
-} from "../util/ExtractInformation";
 import { Grid } from "@mui/material";
-import { date } from "yup";
-import { DateInput } from "./DateInput";
-
+import { handleSort } from "../util/RecommendationAlgorithm";
+import { useRecommendations } from "../context/RecommendationsContext";
 
 const Page = styled((props) => <MuiBox {...props} />)(() => ({
   display: "flex",
@@ -49,12 +45,18 @@ export default function OpportunitiesList({
   const [displayOpps, setDisplayOpps] = useState([]);
   const [search, setSearch] = useState("");
   const [dropdownSelect, setDropdownSelect] = useState("Major");
+  const { recommendedOpps, loading } = useRecommendations();
   const { userProfile } = useAuth();
 
   // Filter Sorting - Ascending & Descending Order
   const [isAscending, setIsAscending] = useState(true);
   const [sortMessage, setSortMessage] = useState("");
-  useEffect(() => {applyFilters();}, [isAscending]);  
+  useEffect(() => {
+    applyFilters();
+  }, [isAscending]);
+  useEffect(() => {
+    applyFilters();
+  }, [isAscending]);
   const handleDropdown = (dropdown) => {
     setDropdownSelect(dropdown);
   };
@@ -63,7 +65,11 @@ export default function OpportunitiesList({
     if (dropdownSelect === "Date") {
       setSortMessage(isAscending ? "Most Recent First" : "Least Recent First");
     } else if (dropdownSelect === "Alphabet") {
-      setSortMessage(isAscending ? "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0A-Z" : "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Z-A");
+      setSortMessage(
+        isAscending
+          ? "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0A-Z"
+          : "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Z-A"
+      );
     } else {
       setSortMessage(""); // Clear message if not sorting by Date or Alphabet
     }
@@ -136,143 +142,7 @@ export default function OpportunitiesList({
       }, 0);
     });
   };
-  // Function to sort the opportunities based on the custom order
-  function sortOpportunitiesByCustomOrder(opportunities, order) {
-    const opportunityMap = new Map();
 
-    // Create a map of opportunities keyed by their ID for quick access
-    opportunities.forEach((opportunity) => {
-      opportunityMap.set(opportunity.id, opportunity);
-    });
-    let sortedOpportunities = [];
-    //console.log("hello");
-    order.forEach((id) => {
-      let opp = opportunityMap.get(id);
-      sortedOpportunities.push(opp);
-    });
-    // Create a new sorted array based on the custom order
-    //const sortedOpportunities = order.map(id => opportunityMap.get(id)).filter(Boolean);
-    return sortedOpportunities;
-  }
-
-  // Call lambda function to get matching recommendations
-  const fetchOpportunities = async (mergedJSON) => {
-    try {
-      const url =
-        "https://2vx9se0n7e.execute-api.us-west-1.amazonaws.com/default/recommendation-engine";
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json", // Specify the content type as JSON
-        },
-        body: JSON.stringify(mergedJSON),
-      });
-
-      const data = await response.json();
-      return data["order"];
-    } catch (error) {
-      console.error("Could not fetch opportunities: ", error);
-    }
-  };
-
-  const handleSort = async (opps) => {
-    let sortedOpps;
-    /*if (dropdownSelect === "Alphabet") {
-      sortedOpps = opps.sort((a, b) => a.eventName.localeCompare(b.eventName));*/
-    
-    // Functionality for Filter Sorting - Ascending/Descending
-    if (dropdownSelect === "Alphabet") {
-      sortedOpps = opps.sort((a, b) => {
-        const comparison = a.eventName.localeCompare(b.eventName);
-        return isAscending ? comparison : -comparison;
-      });
-    } else if (dropdownSelect === "Major") {
-      sortedOpps = opps.sort((a, b) =>
-        (a.subject ? a.subject : "zzz").localeCompare(b.subject ? b.subject : "zzz")
-      );
-      // Functionality for Filter Sorting - Ascending/Descending
-    } else if (dropdownSelect === "Date") {
-        sortedOpps = opps.sort((a, b) => {
-          // Use startTime for primary sorting; fall back to endTime if startTimes are equal
-          const startA = a.startTime ? new Date(a.startTime) : new Date("9999-12-31"); // Default far-future date if missing
-          const startB = b.startTime ? new Date(b.startTime) : new Date("9999-12-31");
-
-          // If startTime is the same, sort by endTime
-          const endA = a.endTime ? new Date(a.endTime) : new Date("9999-12-31");
-          const endB = b.endTime ? new Date(b.endTime) : new Date("9999-12-31");
-          const comparison = startA - startB || endA - endB;
-          return isAscending ? comparison : -comparison;
-          //return endA - endB;
-        });
-    } else if (dropdownSelect === "Recommended") {
-      const oppFields = { events: [] };
-      const userFields = { users: [] };
-      let num = -1;
-      for await (const [index, opp] of opps.entries()) {
-        num++;
-        oppFields.events[num] = {};
-        try {
-          const oppProfile = createOppProfile(opp);
-          var profileRetrieved = true;
-          oppProfile
-            .then(
-              // eslint-disable-next-line no-loop-func
-              (oppProfileRes) => {
-                oppFields.events[num] = oppProfileRes;
-              }
-            )
-            .catch(
-              // eslint-disable-next-line no-loop-func
-              () => {
-                num--;
-                profileRetrieved = false;
-              }
-            );
-
-          if (!profileRetrieved) {
-            continue;
-          }
-
-          oppFields.events[num] = await oppProfile;
-          console.log("oppFields:", oppFields);
-        } catch (error) {
-          console.error("Error fetching keywords:", error);
-          return 0;
-        }
-      }
-
-      //Fetch user profile data
-      console.log(userProfile);
-
-      userFields.users[0] = await createUserProfile(userProfile);
-
-      console.log("userFields:", userFields);
-
-      console.log("oppFields:", oppFields);
-
-      // Merge JSON objects
-      // send this JSON to flask endpoint
-      const mergedJSON = Object.assign({}, userFields, oppFields);
-
-      //console.log(mergedJSON);
-      const orderOfOpps = await fetchOpportunities(mergedJSON);
-      console.log("orderOfOpps", orderOfOpps);
-      sortedOpps = sortOpportunitiesByCustomOrder(opps, orderOfOpps);
-
-      /*
-        const oppsWithCommonKeywords = [];
-        for await (const opp of opps) {
-          const commonKeywords = await calcNumMatchKeywords(opp);
-          oppsWithCommonKeywords.push({ opp, commonKeywords });
-        }
-
-        sortedOpps = oppsWithCommonKeywords.sort((a, b) => b.commonKeywords - a.commonKeywords)
-        .map(({ opp }) => opp);
-        */
-    }
-
-    return sortedOpps;
-  };
   // Fuzzy search on given searchData
   // If the search bar is empty, the searchData is all the opps
   // Function is called at the end of applyFilters() with the
@@ -283,7 +153,7 @@ export default function OpportunitiesList({
       setDisplayOpps(searchData);
       return;
     }
-    
+
     const fuse = new Fuse(searchData, {
       // more parameters can be added for search
       keys: ["eventName", "description"],
@@ -304,48 +174,40 @@ export default function OpportunitiesList({
   };
 
   const applyFilters = async () => {
-    // Set all filters to lowercase for comparison
-    const locationFilterLower = locationFilter.map((filter) => {
-      return filter.toLowerCase();
-    });
+    // Filter opportunities based on location, opportunity type, and organization type
+    const locationFilterLower = locationFilter.map((filter) =>
+      filter.toLowerCase()
+    );
 
-    const oppTypeFilterLower = oppTypeFilter.map((filter) => {
-      return filter.toLowerCase();
-    });
-
-    const orgTypeFilterLower = orgTypeFilter.map((filter) => {
-      return filter.toLowerCase();
-    });
-
-    // Filter opportunities and store in displayOpps
     const copyOpps = opportunities.filter((opp) => {
       const location =
-        locationFilterLower.length == 0
+        locationFilterLower.length === 0
           ? true
           : opp.locationType
-          ? locationFilterLower.indexOf(opp.locationType.toLowerCase()) > -1
+          ? locationFilterLower.includes(opp.locationType.toLowerCase())
           : false;
-      /*
-      const oppType = oppTypeFilter.length == 0 ?
-        true :
-        opp.opportunitytype ?
-        oppTypeFilterLower.indexOf(opp.opportunitytype.toLowerCase()) > -1 :
-        false;
-      const orgType = orgTypeFilter.length == 0 ?
-        true :
-        opp.organizationtype ?
-        orgTypeFilterLower.indexOf(opp.organizationtype.toLowerCase()) > -1 :
-        false;
-      */
-      return location; //&& oppType && orgType;
+
+      return location;
     });
 
-    // setDisplayOpps(copyOpps);
-    const filteredOpps = await handleSort(copyOpps);
-    // searches the filtered opp list
+    // Apply sorting logic
+    let filteredOpps;
+    if (dropdownSelect === "Recommended") {
+      // Use cached recommendations for "Recommended"
+      filteredOpps = recommendedOpps;
+    } else {
+      // Use sorting logic for other dropdown selections
+      filteredOpps = await handleSort(
+        copyOpps,
+        userProfile,
+        dropdownSelect,
+        isAscending
+      );
+    }
+
+    // Apply search filter
     searchOpportunity(search, filteredOpps);
   };
-
   return (
     <Page>
       <MuiBox className="flow-small" sx={{ flexGrow: 1 }}>
@@ -379,32 +241,91 @@ export default function OpportunitiesList({
               },
             }}
           />
-          <div style={{ marginRight: "1em" }}> 
-            {/* Filtering - Ascending/Descending */
-            (dropdownSelect === "Alphabet" || dropdownSelect === "Date") && (
-              <button
-                onClick={() => setIsAscending((prev) => !prev)}
-                style={{
-                  marginLeft: "0.5em",
-                  padding: "0.5em",
-                  border: "none",
-                  backgroundColor: "transparent",
-                  //borderRadius: "5px",
-                  cursor: "pointer",
-                  display: "block",
-                }}
-              >
-                {isAscending ? (
-                  <svg fill="#000000" height="20px" width="20px" version="1.1" id="XMLID_227_" xmlns="http://www.w3.org/2000/svg" /*xmlns:xlink="http://www.w3.org/1999/xlink"*/ viewBox="0 0 24 24" /*xml:space="preserve"*/><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="ascend"> <g> <path d="M24,24H11v-2h13V24z M8,24H6V4.1L1.7,7.7L0.4,6.2L7,0.7l6.5,5.5l-1.3,1.5L8,4.1V24L8,24z M22,20H11v-2h11V20z M20,16h-9 v-2h9V16z M18,12h-7v-2h7V12z"></path> </g> </g> </g></svg>
-                ) : (
-                  <svg fill="#000000" height="20px" width="20px" version="1.1" id="XMLID_226_" xmlns="http://www.w3.org/2000/svg" /*xmlns:xlink="http://www.w3.org/1999/xlink"*/ viewBox="0 0 24 24" /*xml:space="preserve"*/><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="descend"> <g> <path d="M7,23.3l-6.6-5.5l1.3-1.5L6,19.9V0h2v19.9l4.5-3.6l1.3,1.5L7,23.3z M18,14h-7v-2h7C18,12,18,14,18,14z M20,10h-9V8h9 C20,8,20,10,20,10z M22,6H11V4h11C22,4,22,6,22,6z M24,2H11V0h13V2z"></path> </g> </g> </g></svg>
-                )}
-              </button>
-            )}
+          <div style={{ marginRight: "1em" }}>
+            {
+              /* Filtering - Ascending/Descending */
+              (dropdownSelect === "Alphabet" || dropdownSelect === "Date") && (
+                <button
+                  onClick={() => setIsAscending((prev) => !prev)}
+                  style={{
+                    marginLeft: "0.5em",
+                    padding: "0.5em",
+                    border: "none",
+                    backgroundColor: "transparent",
+                    //borderRadius: "5px",
+                    cursor: "pointer",
+                    display: "block",
+                  }}
+                >
+                  {isAscending ? (
+                    <svg
+                      fill="#000000"
+                      height="20px"
+                      width="20px"
+                      version="1.1"
+                      id="XMLID_227_"
+                      xmlns="http://www.w3.org/2000/svg"
+                      /*xmlns:xlink="http://www.w3.org/1999/xlink"*/ viewBox="0 0 24 24" /*xml:space="preserve"*/
+                    >
+                      <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                      <g
+                        id="SVGRepo_tracerCarrier"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      ></g>
+                      <g id="SVGRepo_iconCarrier">
+                        {" "}
+                        <g id="ascend">
+                          {" "}
+                          <g>
+                            {" "}
+                            <path d="M24,24H11v-2h13V24z M8,24H6V4.1L1.7,7.7L0.4,6.2L7,0.7l6.5,5.5l-1.3,1.5L8,4.1V24L8,24z M22,20H11v-2h11V20z M20,16h-9 v-2h9V16z M18,12h-7v-2h7V12z"></path>{" "}
+                          </g>{" "}
+                        </g>{" "}
+                      </g>
+                    </svg>
+                  ) : (
+                    <svg
+                      fill="#000000"
+                      height="20px"
+                      width="20px"
+                      version="1.1"
+                      id="XMLID_226_"
+                      xmlns="http://www.w3.org/2000/svg"
+                      /*xmlns:xlink="http://www.w3.org/1999/xlink"*/ viewBox="0 0 24 24" /*xml:space="preserve"*/
+                    >
+                      <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                      <g
+                        id="SVGRepo_tracerCarrier"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      ></g>
+                      <g id="SVGRepo_iconCarrier">
+                        {" "}
+                        <g id="descend">
+                          {" "}
+                          <g>
+                            {" "}
+                            <path d="M7,23.3l-6.6-5.5l1.3-1.5L6,19.9V0h2v19.9l4.5-3.6l1.3,1.5L7,23.3z M18,14h-7v-2h7C18,12,18,14,18,14z M20,10h-9V8h9 C20,8,20,10,20,10z M22,6H11V4h11C22,4,22,6,22,6z M24,2H11V0h13V2z"></path>{" "}
+                          </g>{" "}
+                        </g>{" "}
+                      </g>
+                    </svg>
+                  )}
+                </button>
+              )
+            }
             {/* Display the message below the dropdown */}
-            <p style={{ fontSize: "0.5em", marginTop: "-0.25em", color: "#666", /*whiteSpace: "nowrap",*/ textAlign: "center" }}>
+            <p
+              style={{
+                fontSize: "0.5em",
+                marginTop: "-0.25em",
+                color: "#666",
+                /*whiteSpace: "nowrap",*/ textAlign: "center",
+              }}
+            >
               {sortMessage}
-            </p>  
+            </p>
           </div>
           <div style={{ display: "flex", marginRight: "1em" }}>
             <ThemedDropdown

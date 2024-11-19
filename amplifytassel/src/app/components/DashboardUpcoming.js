@@ -10,7 +10,7 @@ import DashboardOppThumbnail from "./DashboardOppThumbnail";
 
 import { DataStore } from "@aws-amplify/datastore";
 import { Opportunity } from "./../../models";
-import { useTabIndex } from "./TabIndexContext.js";
+import { useTabIndex } from "../context/TabIndexContext.js";
 
 const UpcomingSection = ({ children }, props) => (
   <MuiBox

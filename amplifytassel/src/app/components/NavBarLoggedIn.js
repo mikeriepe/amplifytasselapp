@@ -31,7 +31,7 @@ import ThemedButton from "./ThemedButton";
 import useAuth from "../util/AuthContext";
 import * as Nav from "./NavBarComponents";
 import { Storage } from "aws-amplify";
-import { useTabIndex } from "./TabIndexContext";
+import { useTabIndex } from "../context/TabIndexContext.js";
 
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
