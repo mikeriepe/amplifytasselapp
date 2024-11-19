@@ -1,86 +1,79 @@
 const extractOppKeywords = async (opp) => {
   try {
-    // Ensure value is resolved properly before using it
-    const value = await opp?.keywords?.values; // Await the promise here
-
-    if (!Array.isArray(value)) {
-      console.warn("Expected array for keywords.values but got:", value);
-      return []; // Return empty array if value is not an array
+    const value = await Promise.resolve(opp?.keywords?.values);
+    const keywordNames = [];
+    for (let i = 0; i < value.length; i++) {
+      const k = await Promise.resolve(value[i].keyword);
+      keywordNames.push(k.name);
     }
-
-    const keywordNames = value
-      .map((v) => v.keyword?.name) // Safely access keyword names
-      .filter(Boolean); // Remove undefined or null entries
-
-    return keywordNames.sort(); // Sort and return the keywords
+    keywordNames.sort();
+    //setUserKeywords(keywordNames);
+    return keywordNames;
   } catch (error) {
-    console.error("Error in extractOppKeywords:", error);
-    return []; // Return empty array on error
+    console.error(error);
   }
 };
 
 const extractUserKeywords = async (userProfile) => {
   try {
-    // Ensure value is resolved properly before using it
-    const value = await userProfile?.keywords?.values; // Await the promise here
-
-    if (!Array.isArray(value)) {
-      console.warn("Expected array for keywords.values but got:", value);
-      return []; // Return empty array if value is not an array
+    const value = await Promise.resolve(userProfile?.keywords?.values);
+    const keywordNames = [];
+    for (let i = 0; i < value.length; i++) {
+      const k = await Promise.resolve(value[i].keyword);
+      keywordNames.push(k.name);
     }
-
-    const keywordNames = value
-      .map((v) => v.keyword?.name) // Safely access keyword names
-      .filter(Boolean); // Remove undefined or null entries
-
-    return keywordNames.sort(); // Sort and return the keywords
+    keywordNames.sort();
+    //setUserKeywords(keywordNames);
+    return keywordNames;
   } catch (error) {
-    console.error("Error in extractUserKeywords:", error);
-    return []; // Return empty array on error
+    console.error(error);
   }
 };
 
 export const createOppProfile = async (opp) => {
-  try {
-    const oppFields = {
-      eventID: opp?.id || "",
-      eventName: opp?.eventName || "",
-      description: opp?.description || "",
-      eventData: opp?.eventData || "",
-      subject: opp?.subject || "",
-      tags: (await extractOppKeywords(opp)) || "",
-    };
+  const eventID = await opp?.id;
+  const eventName = await opp?.eventName;
+  const descEvent = await opp?.description;
+  const eventData = await opp?.eventData;
+  const prefs = await opp?.preferences?.values;
+  const sub = await opp?.subject;
+  const tags = await extractOppKeywords(await opp);
 
-    if (!oppFields.description && !oppFields.eventData && !oppFields.subject) {
-      throw new Error("Failed to retrieve one or more fields.");
-    }
-
-    return oppFields;
-  } catch (error) {
-    console.error("Error in createOppProfile:", error);
-    throw error;
+  const oppFields = {};
+  if (descEvent === null && eventData == null && prefs == null && sub == null) {
+    return Promise.reject("Failed to retrieve one or more fields.");
   }
+
+  oppFields["eventID"] = eventID ? eventID : "";
+  oppFields["eventName"] = eventName ? eventName : "";
+  oppFields["description"] = descEvent ? descEvent : "";
+  oppFields["eventData"] = eventData ? eventData : "";
+  oppFields["subject"] = sub ? sub : "";
+  oppFields["tags"] = tags ? tags : "";
+
+  return oppFields;
 };
 
 export const createUserProfile = async (user) => {
-  try {
-    const userFields = {
-      id: user?.id || "",
-      description: user?.about || "",
-      volunteerExp: user?.volunteerExperience
-        ? user.volunteerExperience.map((exp) => exp.description).join(", ")
-        : "",
-      workExp: user?.experience
-        ? user.experience.map((exp) => exp.description).join(", ")
-        : "",
-      tags: (await extractUserKeywords(user)) || [],
-      firstName: user?.firstName || "",
-      lastName: user?.lastName || "",
-    };
+  const profileAbout = (await user?.about) ? await user?.about : "";
+  const profileVolunteerExp = (await user?.volunteerExperience)
+    ? await user?.volunteerExperience
+    : "";
+  const workExp = (await user?.experience) ? await user?.experience : [];
+  const id = await user.id;
+  const firstName = await user?.firstName;
+  const lastName = await user?.lastName;
 
-    return userFields;
-  } catch (error) {
-    console.error("Error in createUserProfile:", error);
-    throw error;
-  }
+  const userFields = {};
+  userFields["id"] = id;
+  userFields["description"] = profileAbout;
+  userFields["volunteerExp"] = user?.volunteerExperience
+    ? profileVolunteerExp.map((exp) => exp.description).toString()
+    : "";
+  userFields["workExp"] = workExp.map((exp) => exp.description).toString();
+  userFields["tags"] = await extractUserKeywords(user);
+  userFields["firstName"] = firstName;
+  userFields["lastName"] = lastName;
+
+  return userFields;
 };
