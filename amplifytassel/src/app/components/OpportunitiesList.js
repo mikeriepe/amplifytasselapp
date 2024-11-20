@@ -7,10 +7,10 @@ import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import OpportunitiesCard from "./OpportunitiesCard";
 import OpportunitiesFilters from "./OpportunitiesFilters";
 import ThemedDropdown from "./ThemedDropdown";
-import { CircularProgress, Box } from "@mui/material";
+import { Tooltip } from "@mui/material";
 import Fuse from "fuse.js";
 import useAuth from "../util/AuthContext";
-import { Grid } from "@mui/material";
+import { Grid, CircularProgress } from "@mui/material";
 import { handleSort } from "../util/RecommendationAlgorithm";
 import { useRecommendations } from "../context/RecommendationsContext";
 
@@ -65,11 +65,7 @@ export default function OpportunitiesList({
     if (dropdownSelect === "Date") {
       setSortMessage(isAscending ? "Most Recent First" : "Least Recent First");
     } else if (dropdownSelect === "Alphabet") {
-      setSortMessage(
-        isAscending
-          ? "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0A-Z"
-          : "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0Z-A"
-      );
+      setSortMessage(isAscending ? "A-Z" : "Z-A");
     } else {
       setSortMessage(""); // Clear message if not sorting by Date or Alphabet
     }
@@ -174,7 +170,7 @@ export default function OpportunitiesList({
   };
 
   const applyFilters = async () => {
-    // Filter opportunities based on location, opportunity type, and organization type
+    // Filter opportunities based on location
     const locationFilterLower = locationFilter.map((filter) =>
       filter.toLowerCase()
     );
@@ -193,8 +189,18 @@ export default function OpportunitiesList({
     // Apply sorting logic
     let filteredOpps;
     if (dropdownSelect === "Recommended") {
-      // Use cached recommendations for "Recommended"
-      filteredOpps = recommendedOpps;
+      if (recommendedOpps && recommendedOpps.length > 0) {
+        // Use cached recommendations if available
+        filteredOpps = recommendedOpps;
+      } else {
+        // Re-run recommendation algorithm if recommendations are empty
+        filteredOpps = await handleSort(
+          copyOpps,
+          userProfile,
+          dropdownSelect,
+          isAscending
+        );
+      }
     } else {
       // Use sorting logic for other dropdown selections
       filteredOpps = await handleSort(
@@ -208,6 +214,7 @@ export default function OpportunitiesList({
     // Apply search filter
     searchOpportunity(search, filteredOpps);
   };
+
   return (
     <Page>
       <MuiBox className="flow-small" sx={{ flexGrow: 1 }}>
@@ -245,87 +252,78 @@ export default function OpportunitiesList({
             {
               /* Filtering - Ascending/Descending */
               (dropdownSelect === "Alphabet" || dropdownSelect === "Date") && (
-                <button
-                  onClick={() => setIsAscending((prev) => !prev)}
-                  style={{
-                    marginLeft: "0.5em",
-                    padding: "0.5em",
-                    border: "none",
-                    backgroundColor: "transparent",
-                    //borderRadius: "5px",
-                    cursor: "pointer",
-                    display: "block",
-                  }}
-                >
-                  {isAscending ? (
-                    <svg
-                      fill="#000000"
-                      height="20px"
-                      width="20px"
-                      version="1.1"
-                      id="XMLID_227_"
-                      xmlns="http://www.w3.org/2000/svg"
-                      /*xmlns:xlink="http://www.w3.org/1999/xlink"*/ viewBox="0 0 24 24" /*xml:space="preserve"*/
-                    >
-                      <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                      <g
-                        id="SVGRepo_tracerCarrier"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      ></g>
-                      <g id="SVGRepo_iconCarrier">
-                        {" "}
-                        <g id="ascend">
+                <Tooltip title={sortMessage}>
+                  <button
+                    onClick={() => setIsAscending((prev) => !prev)}
+                    style={{
+                      marginLeft: "0.5em",
+                      padding: "0.5em",
+                      border: "none",
+                      backgroundColor: "transparent",
+                      //borderRadius: "5px",
+                      cursor: "pointer",
+                      display: "block",
+                    }}
+                  >
+                    {isAscending ? (
+                      <svg
+                        fill="#000000"
+                        height="20px"
+                        width="20px"
+                        version="1.1"
+                        id="XMLID_227_"
+                        xmlns="http://www.w3.org/2000/svg"
+                        /*xmlns:xlink="http://www.w3.org/1999/xlink"*/ viewBox="0 0 24 24" /*xml:space="preserve"*/
+                      >
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                        <g
+                          id="SVGRepo_tracerCarrier"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        ></g>
+                        <g id="SVGRepo_iconCarrier">
                           {" "}
-                          <g>
+                          <g id="ascend">
                             {" "}
-                            <path d="M24,24H11v-2h13V24z M8,24H6V4.1L1.7,7.7L0.4,6.2L7,0.7l6.5,5.5l-1.3,1.5L8,4.1V24L8,24z M22,20H11v-2h11V20z M20,16h-9 v-2h9V16z M18,12h-7v-2h7V12z"></path>{" "}
+                            <g>
+                              {" "}
+                              <path d="M24,24H11v-2h13V24z M8,24H6V4.1L1.7,7.7L0.4,6.2L7,0.7l6.5,5.5l-1.3,1.5L8,4.1V24L8,24z M22,20H11v-2h11V20z M20,16h-9 v-2h9V16z M18,12h-7v-2h7V12z"></path>{" "}
+                            </g>{" "}
                           </g>{" "}
-                        </g>{" "}
-                      </g>
-                    </svg>
-                  ) : (
-                    <svg
-                      fill="#000000"
-                      height="20px"
-                      width="20px"
-                      version="1.1"
-                      id="XMLID_226_"
-                      xmlns="http://www.w3.org/2000/svg"
-                      /*xmlns:xlink="http://www.w3.org/1999/xlink"*/ viewBox="0 0 24 24" /*xml:space="preserve"*/
-                    >
-                      <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                      <g
-                        id="SVGRepo_tracerCarrier"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      ></g>
-                      <g id="SVGRepo_iconCarrier">
-                        {" "}
-                        <g id="descend">
+                        </g>
+                      </svg>
+                    ) : (
+                      <svg
+                        fill="#000000"
+                        height="20px"
+                        width="20px"
+                        version="1.1"
+                        id="XMLID_226_"
+                        xmlns="http://www.w3.org/2000/svg"
+                        /*xmlns:xlink="http://www.w3.org/1999/xlink"*/ viewBox="0 0 24 24" /*xml:space="preserve"*/
+                      >
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                        <g
+                          id="SVGRepo_tracerCarrier"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        ></g>
+                        <g id="SVGRepo_iconCarrier">
                           {" "}
-                          <g>
+                          <g id="descend">
                             {" "}
-                            <path d="M7,23.3l-6.6-5.5l1.3-1.5L6,19.9V0h2v19.9l4.5-3.6l1.3,1.5L7,23.3z M18,14h-7v-2h7C18,12,18,14,18,14z M20,10h-9V8h9 C20,8,20,10,20,10z M22,6H11V4h11C22,4,22,6,22,6z M24,2H11V0h13V2z"></path>{" "}
+                            <g>
+                              {" "}
+                              <path d="M7,23.3l-6.6-5.5l1.3-1.5L6,19.9V0h2v19.9l4.5-3.6l1.3,1.5L7,23.3z M18,14h-7v-2h7C18,12,18,14,18,14z M20,10h-9V8h9 C20,8,20,10,20,10z M22,6H11V4h11C22,4,22,6,22,6z M24,2H11V0h13V2z"></path>{" "}
+                            </g>{" "}
                           </g>{" "}
-                        </g>{" "}
-                      </g>
-                    </svg>
-                  )}
-                </button>
+                        </g>
+                      </svg>
+                    )}
+                  </button>
+                </Tooltip>
               )
             }
-            {/* Display the message below the dropdown */}
-            <p
-              style={{
-                fontSize: "0.5em",
-                marginTop: "-0.25em",
-                color: "#666",
-                /*whiteSpace: "nowrap",*/ textAlign: "center",
-              }}
-            >
-              {sortMessage}
-            </p>
           </div>
           <div style={{ display: "flex", marginRight: "1em" }}>
             <ThemedDropdown
@@ -343,27 +341,45 @@ export default function OpportunitiesList({
             setOrgTypeFilter={setOrgTypeFilter}
           />
         </div>
-        <Grid container spacing={{ sm: 1, md: 2 }} alignItems="stretch">
-          {displayOpps.map((opportunity, index) => (
-            <Grid
-              item
-              xs={12}
-              sm={12}
-              md={4}
-              key={`opportunity-${index}`}
-              sx={{ display: "flex", padding: 2 }}
-            >
-              <OpportunitiesCard
-                type={type}
-                opportunity={opportunity}
-                getPendingOpportunities={getPendingOpportunities}
-                getCreatedOpportunities={getCreatedOpportunities}
-                getAllOpportunities={getAllOpportunities}
-                getJoinedOpportunities={getJoinedOpportunities}
-              />
-            </Grid>
-          ))}
-        </Grid>
+        {loading && dropdownSelect === "Recommended" ? (
+          <MuiBox
+            sx={{
+              display: "flex",
+              justifyContent: "center", // Horizontally center
+              alignItems: "center", // Vertically center
+              height: "100vh", // Full viewport height
+            }}
+          >
+            <CircularProgress
+              sx={{
+                width: "80px !important", // Make the spinner larger
+                height: "80px !important",
+              }}
+            />
+          </MuiBox>
+        ) : (
+          <Grid container spacing={{ sm: 1, md: 2 }} alignItems="stretch">
+            {displayOpps.map((opportunity, index) => (
+              <Grid
+                item
+                xs={12}
+                sm={12}
+                md={4}
+                key={`opportunity-${index}`}
+                sx={{ display: "flex", padding: 2 }}
+              >
+                <OpportunitiesCard
+                  type={type}
+                  opportunity={opportunity}
+                  getPendingOpportunities={getPendingOpportunities}
+                  getCreatedOpportunities={getCreatedOpportunities}
+                  getAllOpportunities={getAllOpportunities}
+                  getJoinedOpportunities={getJoinedOpportunities}
+                />
+              </Grid>
+            ))}
+          </Grid>
+        )}
       </MuiBox>
     </Page>
   );

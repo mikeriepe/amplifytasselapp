@@ -9,14 +9,13 @@ import MuiBox from "@mui/material/Box";
 import MuiCard from "@mui/material/Card";
 import { toast } from "react-toastify";
 import AccessibilityRoundedIcon from "@mui/icons-material/AccessibilityRounded";
-import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import DevicesOutlinedIcon from "@mui/icons-material/DevicesOutlined";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import EventNoteRoundedIcon from "@mui/icons-material/EventNoteRounded";
 import FmdGoodOutlinedIcon from "@mui/icons-material/FmdGoodOutlined";
 import TimerOutlinedIcon from "@mui/icons-material/TimerOutlined";
-import { Modal } from "@mui/material";
+import { Modal, Tooltip } from "@mui/material";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 
@@ -811,16 +810,18 @@ export default function OpportunitiesCard({
                     getJoinedOpportunities={getJoinedOpportunities}
                     onClick={type === "created" ? handleDeleteModalOpen : null}
                   >
-                    <CloseRoundedIcon
-                      aria-label={`Delete ${opportunity.eventName}`}
-                      sx={{
-                        height: "20px",
-                        width: "20px",
-                        color: "var(--error-red-main)",
-                        stroke: "var(--error-red-main)",
-                        strokeWidth: "2px",
-                      }}
-                    />
+                    <Tooltip title="Delete">
+                      <CloseRoundedIcon
+                        aria-label={`Delete ${opportunity.eventName}`}
+                        sx={{
+                          height: "20px",
+                          width: "20px",
+                          color: "var(--error-red-main)",
+                          stroke: "var(--error-red-main)",
+                          strokeWidth: "2px",
+                        }}
+                      />
+                    </Tooltip>
                   </OutlinedIconButton>
                   {/* DELETE OPP MODAL */}
                   <Modal
@@ -887,14 +888,16 @@ export default function OpportunitiesCard({
               {type === "created" && (
                 <Box>
                   <OutlinedIconButton type={type} onClick={handleOppModalOpen}>
-                    <EditRoundedIcon
-                      data-test-id={`Edit Opportunity Form ${opportunity.id}`}
-                      sx={{
-                        height: "20px",
-                        width: "20px",
-                        color: "var(--tertiary-gray-main)",
-                      }}
-                    />
+                    <Tooltip title="Edit">
+                      <EditRoundedIcon
+                        data-test-id={`Edit Opportunity Form ${opportunity.id}`}
+                        sx={{
+                          height: "20px",
+                          width: "20px",
+                          color: "var(--tertiary-gray-main)",
+                        }}
+                      />
+                    </Tooltip>
                   </OutlinedIconButton>
                   {/* EDIT OPP FORM */}
                   <Modal

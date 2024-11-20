@@ -330,7 +330,7 @@ a:active {
 }
 
 .hover-highlight-link:hover {
-  color: var(--secondary-yellow-main);
+  color: var(--primary-blue-dark);
 }
 
 .navbar-height {
