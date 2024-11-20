@@ -55,18 +55,20 @@ export const handleSort = async (
     return sortedOpps;
   } else if (dropdownSelect === "Date") {
     sortedOpps = opps.sort((a, b) => {
+      // Use startTime for primary sorting; fall back to endTime if startTimes are equal
       const startA = a.startTime
         ? new Date(a.startTime)
-        : new Date("9999-12-31");
+        : new Date("9999-12-31"); // Default far-future date if missing
       const startB = b.startTime
-        ? new Date(a.startTime)
+        ? new Date(b.startTime)
         : new Date("9999-12-31");
 
+      // If startTime is the same, sort by endTime
       const endA = a.endTime ? new Date(a.endTime) : new Date("9999-12-31");
-      const endB = b.endTime ? new Date(a.endTime) : new Date("9999-12-31");
-
+      const endB = b.endTime ? new Date(b.endTime) : new Date("9999-12-31");
       const comparison = startA - startB || endA - endB;
       return isAscending ? comparison : -comparison;
+      //return endA - endB;
     });
     return sortedOpps;
   } else if (dropdownSelect === "Recommended") {

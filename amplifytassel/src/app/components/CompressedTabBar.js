@@ -1,6 +1,6 @@
 // import React, {useState} from 'react';
 import React from "react";
-import { Tabs, Tab } from "@mui/material";
+import { Tabs, Tab, Tooltip } from "@mui/material";
 
 /**
  * Creates reusable tab bar
@@ -55,14 +55,16 @@ export default function CompressedTabBar({ data, tab, setTab, type }) {
         }}
       >
         {data.filter(Boolean).map((object) => (
-          <Tab
-            aria-label={`Opportunities Tab ${object.name}`}
-            key={`tab-id-${Math.random()}`}
-            data-test-id={object.name}
-            label={object.name}
-            sx={TabStyles}
-            disableRipple
-          />
+          <Tooltip title={object.description} enterDelay={500}>
+            <Tab
+              aria-label={`Opportunities Tab ${object.name}`}
+              key={`tab-id-${Math.random()}`}
+              data-test-id={object.name}
+              label={object.name}
+              sx={TabStyles}
+              disableRipple
+            />
+          </Tooltip>
         ))}
       </Tabs>
     </div>

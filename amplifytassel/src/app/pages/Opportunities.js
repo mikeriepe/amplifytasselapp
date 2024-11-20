@@ -274,6 +274,7 @@ function Opportunities(
   const tabs = [
     {
       name: "Browse",
+      description: "Browse available opportunities",
       component: (
         <OpportunitiesList
           key="all"
@@ -292,6 +293,7 @@ function Opportunities(
     },
     {
       name: "Upcoming",
+      description: "Browse your upcoming opportunities",
       component: (
         <OpportunitiesList
           key="upcoming"
@@ -310,6 +312,7 @@ function Opportunities(
     },
     {
       name: "Created",
+      description: "See opportunities you created",
       component: (
         <OpportunitiesList
           aria-label="Opportunities Tab Created"
@@ -328,6 +331,7 @@ function Opportunities(
     },
     {
       name: "Pending",
+      description: "Your pending applications",
       component: (
         <OpportunitiesList
           key="pending"
@@ -346,6 +350,7 @@ function Opportunities(
     },
     {
       name: "Completed",
+      description: "Opportunities you joined that have completed",
       component: (
         <OpportunitiesList
           key="completed"

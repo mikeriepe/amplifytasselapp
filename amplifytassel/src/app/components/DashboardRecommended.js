@@ -50,45 +50,57 @@ export default function DashboardRecommended() {
   const linkText = "View More";
 
   return (
-    <>
+    <UpcomingSection className="grid-flow-large">
+      <div
+        className="flex-space-between flex-align-center"
+        style={{
+          background: "var(--background-primary)",
+          marginBottom: "1rem",
+        }}
+      >
+        <Text>
+          <h2
+            className="text-dark ellipsis text-medium"
+            aria-label="Dashboard Upcoming Section"
+          >
+            Recommended Opportunities
+          </h2>
+          <h5
+            className="text-lightgray text-bold ellipsis"
+            aria-label="Dashboard Header Count"
+          >
+            Opportunities recommended for you
+          </h5>
+        </Text>
+        <div className="flex-space-between flex-align-center">
+          <Link
+            className="text-bold text-blue ellipsis text-small hover-highlight-link"
+            to="/opportunities"
+            state={{ defaultTab: "browse" }}
+            onClick={() => setTabIndex("/opportunities")}
+          >
+            {linkText}
+          </Link>
+        </div>
+      </div>
       {loading ? (
-        <Box sx={{ display: "flex" }} style={{ padding: "2rem" }}>
-          <CircularProgress />
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+          style={{ padding: "2rem" }}
+        >
+          <CircularProgress
+            sx={{
+              width: "80px !important", // Make the spinner larger
+              height: "80px !important",
+            }}
+          />
         </Box>
       ) : (
-        <UpcomingSection className="grid-flow-large">
-          <div
-            className="flex-space-between flex-align-center"
-            style={{
-              background: "var(--background-primary)",
-              marginBottom: "1rem",
-            }}
-          >
-            <Text>
-              <h2
-                className="text-dark ellipsis text-medium"
-                aria-label="Dashboard Upcoming Section"
-              >
-                Recommended Opportunities
-              </h2>
-              <h5
-                className="text-lightgray text-bold ellipsis"
-                aria-label="Dashboard Header Count"
-              >
-                Opportunities recommended for you
-              </h5>
-            </Text>
-            <div className="flex-space-between flex-align-center">
-              <Link
-                className="text-bold text-blue ellipsis text-small hover-highlight-link"
-                to="/opportunities"
-                state={{ defaultTab: "browse" }}
-                onClick={() => setTabIndex("/opportunities")}
-              >
-                {linkText}
-              </Link>
-            </div>
-          </div>
+        <div>
           {recommendedOpps.length > 0 ? (
             <Grid container spacing={{ sm: 1, md: 2 }} alignItems="stretch">
               {recommendedOpps.slice(0, 3).map((opportunity, index) => (
@@ -120,8 +132,8 @@ export default function DashboardRecommended() {
               </Text>
             </Box>
           )}
-        </UpcomingSection>
+        </div>
       )}
-    </>
+    </UpcomingSection>
   );
 }
