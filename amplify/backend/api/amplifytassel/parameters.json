@@ -3,5 +3,5 @@
   "DynamoDBBillingMode": "PAY_PER_REQUEST",
   "DynamoDBEnableServerSideEncryption": false,
   "AuthModeLastUpdated": "2023-04-11T17:47:32.241Z",
-  "CreateAPIKey": 1
+  "APIKeyExpirationEpoch": 1763603343
 }
