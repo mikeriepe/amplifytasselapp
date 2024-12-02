@@ -681,11 +681,38 @@ export const onCreateProfile = /* GraphQL */ `
         startedAt
         __typename
       }
+      Analytics {
+        id
+        profileViews
+        hoursSpentVolunteering
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      InfoRequestChatroom {
+        id
+        ChatName
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      linkedin
+      dateOfBirth
+      collegeAffiliation
+      pronouns
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      profileAnalyticsId
+      profileInfoRequestChatroomId
       __typename
     }
   }
@@ -794,11 +821,38 @@ export const onUpdateProfile = /* GraphQL */ `
         startedAt
         __typename
       }
+      Analytics {
+        id
+        profileViews
+        hoursSpentVolunteering
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      InfoRequestChatroom {
+        id
+        ChatName
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      linkedin
+      dateOfBirth
+      collegeAffiliation
+      pronouns
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      profileAnalyticsId
+      profileInfoRequestChatroomId
       __typename
     }
   }
@@ -907,6 +961,210 @@ export const onDeleteProfile = /* GraphQL */ `
         startedAt
         __typename
       }
+      Analytics {
+        id
+        profileViews
+        hoursSpentVolunteering
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      InfoRequestChatroom {
+        id
+        ChatName
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      linkedin
+      dateOfBirth
+      collegeAffiliation
+      pronouns
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      profileAnalyticsId
+      profileInfoRequestChatroomId
+      __typename
+    }
+  }
+`;
+export const onCreateSiteAnalytics = /* GraphQL */ `
+  subscription OnCreateSiteAnalytics(
+    $filter: ModelSubscriptionSiteAnalyticsFilterInput
+  ) {
+    onCreateSiteAnalytics(filter: $filter) {
+      id
+      monthlySignups
+      dailySignups
+      MonthlyPopularEvents
+      MonthlyPopularTags
+      monthlyUserTasselTime
+      monthlyUserVolunteerTime
+      monthlyUserApps
+      monthlyNoShows
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateSiteAnalytics = /* GraphQL */ `
+  subscription OnUpdateSiteAnalytics(
+    $filter: ModelSubscriptionSiteAnalyticsFilterInput
+  ) {
+    onUpdateSiteAnalytics(filter: $filter) {
+      id
+      monthlySignups
+      dailySignups
+      MonthlyPopularEvents
+      MonthlyPopularTags
+      monthlyUserTasselTime
+      monthlyUserVolunteerTime
+      monthlyUserApps
+      monthlyNoShows
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const onDeleteSiteAnalytics = /* GraphQL */ `
+  subscription OnDeleteSiteAnalytics(
+    $filter: ModelSubscriptionSiteAnalyticsFilterInput
+  ) {
+    onDeleteSiteAnalytics(filter: $filter) {
+      id
+      monthlySignups
+      dailySignups
+      MonthlyPopularEvents
+      MonthlyPopularTags
+      monthlyUserTasselTime
+      monthlyUserVolunteerTime
+      monthlyUserApps
+      monthlyNoShows
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const onCreateProfileAnalytics = /* GraphQL */ `
+  subscription OnCreateProfileAnalytics(
+    $filter: ModelSubscriptionProfileAnalyticsFilterInput
+  ) {
+    onCreateProfileAnalytics(filter: $filter) {
+      id
+      profileViews
+      hoursSpentVolunteering
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateProfileAnalytics = /* GraphQL */ `
+  subscription OnUpdateProfileAnalytics(
+    $filter: ModelSubscriptionProfileAnalyticsFilterInput
+  ) {
+    onUpdateProfileAnalytics(filter: $filter) {
+      id
+      profileViews
+      hoursSpentVolunteering
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const onDeleteProfileAnalytics = /* GraphQL */ `
+  subscription OnDeleteProfileAnalytics(
+    $filter: ModelSubscriptionProfileAnalyticsFilterInput
+  ) {
+    onDeleteProfileAnalytics(filter: $filter) {
+      id
+      profileViews
+      hoursSpentVolunteering
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const onCreateOpportunityAnalytics = /* GraphQL */ `
+  subscription OnCreateOpportunityAnalytics(
+    $filter: ModelSubscriptionOpportunityAnalyticsFilterInput
+  ) {
+    onCreateOpportunityAnalytics(filter: $filter) {
+      id
+      recentApps
+      apps
+      PopularUserTags
+      appRate
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateOpportunityAnalytics = /* GraphQL */ `
+  subscription OnUpdateOpportunityAnalytics(
+    $filter: ModelSubscriptionOpportunityAnalyticsFilterInput
+  ) {
+    onUpdateOpportunityAnalytics(filter: $filter) {
+      id
+      recentApps
+      apps
+      PopularUserTags
+      appRate
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const onDeleteOpportunityAnalytics = /* GraphQL */ `
+  subscription OnDeleteOpportunityAnalytics(
+    $filter: ModelSubscriptionOpportunityAnalyticsFilterInput
+  ) {
+    onDeleteOpportunityAnalytics(filter: $filter) {
+      id
+      recentApps
+      apps
+      PopularUserTags
+      appRate
       createdAt
       updatedAt
       _version
@@ -1100,11 +1358,25 @@ export const onCreateOpportunity = /* GraphQL */ `
       }
       status
       bannerKey
+      Analytics {
+        id
+        recentApps
+        apps
+        PopularUserTags
+        appRate
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      opportunityAnalyticsId
       __typename
     }
   }
@@ -1161,11 +1433,25 @@ export const onUpdateOpportunity = /* GraphQL */ `
       }
       status
       bannerKey
+      Analytics {
+        id
+        recentApps
+        apps
+        PopularUserTags
+        appRate
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      opportunityAnalyticsId
       __typename
     }
   }
@@ -1222,11 +1508,25 @@ export const onDeleteOpportunity = /* GraphQL */ `
       }
       status
       bannerKey
+      Analytics {
+        id
+        recentApps
+        apps
+        PopularUserTags
+        appRate
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      opportunityAnalyticsId
       __typename
     }
   }
@@ -1312,11 +1612,17 @@ export const onCreateProfileChatRoom = /* GraphQL */ `
         infoResponse
         banner
         points
+        linkedin
+        dateOfBirth
+        collegeAffiliation
+        pronouns
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        profileAnalyticsId
+        profileInfoRequestChatroomId
         __typename
       }
       createdAt
@@ -1364,11 +1670,17 @@ export const onUpdateProfileChatRoom = /* GraphQL */ `
         infoResponse
         banner
         points
+        linkedin
+        dateOfBirth
+        collegeAffiliation
+        pronouns
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        profileAnalyticsId
+        profileInfoRequestChatroomId
         __typename
       }
       createdAt
@@ -1416,11 +1728,17 @@ export const onDeleteProfileChatRoom = /* GraphQL */ `
         infoResponse
         banner
         points
+        linkedin
+        dateOfBirth
+        collegeAffiliation
+        pronouns
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        profileAnalyticsId
+        profileInfoRequestChatroomId
         __typename
       }
       createdAt
@@ -1468,11 +1786,17 @@ export const onCreateKeywordProfile = /* GraphQL */ `
         infoResponse
         banner
         points
+        linkedin
+        dateOfBirth
+        collegeAffiliation
+        pronouns
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        profileAnalyticsId
+        profileInfoRequestChatroomId
         __typename
       }
       createdAt
@@ -1520,11 +1844,17 @@ export const onUpdateKeywordProfile = /* GraphQL */ `
         infoResponse
         banner
         points
+        linkedin
+        dateOfBirth
+        collegeAffiliation
+        pronouns
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        profileAnalyticsId
+        profileInfoRequestChatroomId
         __typename
       }
       createdAt
@@ -1572,11 +1902,17 @@ export const onDeleteKeywordProfile = /* GraphQL */ `
         infoResponse
         banner
         points
+        linkedin
+        dateOfBirth
+        collegeAffiliation
+        pronouns
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        profileAnalyticsId
+        profileInfoRequestChatroomId
         __typename
       }
       createdAt
@@ -1627,6 +1963,7 @@ export const onCreateKeywordOpportunity = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
+        opportunityAnalyticsId
         __typename
       }
       createdAt
@@ -1677,6 +2014,7 @@ export const onUpdateKeywordOpportunity = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
+        opportunityAnalyticsId
         __typename
       }
       createdAt
@@ -1727,6 +2065,7 @@ export const onDeleteKeywordOpportunity = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
+        opportunityAnalyticsId
         __typename
       }
       createdAt
@@ -1905,11 +2244,17 @@ export const onCreateProfileRole = /* GraphQL */ `
         infoResponse
         banner
         points
+        linkedin
+        dateOfBirth
+        collegeAffiliation
+        pronouns
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        profileAnalyticsId
+        profileInfoRequestChatroomId
         __typename
       }
       createdAt
@@ -1962,11 +2307,17 @@ export const onUpdateProfileRole = /* GraphQL */ `
         infoResponse
         banner
         points
+        linkedin
+        dateOfBirth
+        collegeAffiliation
+        pronouns
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        profileAnalyticsId
+        profileInfoRequestChatroomId
         __typename
       }
       createdAt
@@ -2019,11 +2370,17 @@ export const onDeleteProfileRole = /* GraphQL */ `
         infoResponse
         banner
         points
+        linkedin
+        dateOfBirth
+        collegeAffiliation
+        pronouns
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        profileAnalyticsId
+        profileInfoRequestChatroomId
         __typename
       }
       createdAt
@@ -2071,11 +2428,17 @@ export const onCreateProfileMajor = /* GraphQL */ `
         infoResponse
         banner
         points
+        linkedin
+        dateOfBirth
+        collegeAffiliation
+        pronouns
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        profileAnalyticsId
+        profileInfoRequestChatroomId
         __typename
       }
       createdAt
@@ -2123,11 +2486,17 @@ export const onUpdateProfileMajor = /* GraphQL */ `
         infoResponse
         banner
         points
+        linkedin
+        dateOfBirth
+        collegeAffiliation
+        pronouns
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        profileAnalyticsId
+        profileInfoRequestChatroomId
         __typename
       }
       createdAt
@@ -2175,11 +2544,17 @@ export const onDeleteProfileMajor = /* GraphQL */ `
         infoResponse
         banner
         points
+        linkedin
+        dateOfBirth
+        collegeAffiliation
+        pronouns
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        profileAnalyticsId
+        profileInfoRequestChatroomId
         __typename
       }
       createdAt
@@ -2217,11 +2592,17 @@ export const onCreateOpportunityProfile = /* GraphQL */ `
         infoResponse
         banner
         points
+        linkedin
+        dateOfBirth
+        collegeAffiliation
+        pronouns
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        profileAnalyticsId
+        profileInfoRequestChatroomId
         __typename
       }
       opportunity {
@@ -2245,6 +2626,7 @@ export const onCreateOpportunityProfile = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
+        opportunityAnalyticsId
         __typename
       }
       createdAt
@@ -2282,11 +2664,17 @@ export const onUpdateOpportunityProfile = /* GraphQL */ `
         infoResponse
         banner
         points
+        linkedin
+        dateOfBirth
+        collegeAffiliation
+        pronouns
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        profileAnalyticsId
+        profileInfoRequestChatroomId
         __typename
       }
       opportunity {
@@ -2310,6 +2698,7 @@ export const onUpdateOpportunityProfile = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
+        opportunityAnalyticsId
         __typename
       }
       createdAt
@@ -2347,11 +2736,17 @@ export const onDeleteOpportunityProfile = /* GraphQL */ `
         infoResponse
         banner
         points
+        linkedin
+        dateOfBirth
+        collegeAffiliation
+        pronouns
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        profileAnalyticsId
+        profileInfoRequestChatroomId
         __typename
       }
       opportunity {
@@ -2375,6 +2770,7 @@ export const onDeleteOpportunityProfile = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
+        opportunityAnalyticsId
         __typename
       }
       createdAt

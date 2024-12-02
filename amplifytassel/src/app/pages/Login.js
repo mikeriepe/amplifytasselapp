@@ -313,9 +313,11 @@ function LoginForm({
   isInputBad,
   isLoginDisabled,
 }) {
-  const [keepLoggedIn, setKeepLoggedIn] = useState(
-    () => localStorage.getItem("rememberUser") === "true"
-  );
+  // const [keepLoggedIn, setKeepLoggedIn] = useState(
+  //   () => localStorage.getItem("rememberUser") === "true"
+  // );
+
+  const [keepLoggedIn, setKeepLoggedIn] = useState(true);
 
   const navigate = useNavigate();
 
@@ -402,7 +404,8 @@ function LoginForm({
                 disableRipple
                 checked={keepLoggedIn}
                 onChange={(e) => {
-                  setKeepLoggedIn(e.target.checked);
+                  setKeepLoggedIn(true); // Keep logged in for testing reasons
+                  // setKeepLoggedIn(e.target.checked);
                   localStorage.setItem(
                     "keepLoggedIn",
                     e.target.checked ? "true" : "false"

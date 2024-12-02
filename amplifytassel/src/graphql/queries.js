@@ -1031,11 +1031,38 @@ export const getProfile = /* GraphQL */ `
         startedAt
         __typename
       }
+      Analytics {
+        id
+        profileViews
+        hoursSpentVolunteering
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      InfoRequestChatroom {
+        id
+        ChatName
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      linkedin
+      dateOfBirth
+      collegeAffiliation
+      pronouns
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      profileAnalyticsId
+      profileInfoRequestChatroomId
       __typename
     }
   }
@@ -1065,11 +1092,17 @@ export const listProfiles = /* GraphQL */ `
         infoResponse
         banner
         points
+        linkedin
+        dateOfBirth
+        collegeAffiliation
+        pronouns
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        profileAnalyticsId
+        profileInfoRequestChatroomId
         __typename
       }
       nextToken
@@ -1109,6 +1142,251 @@ export const syncProfiles = /* GraphQL */ `
         infoResponse
         banner
         points
+        linkedin
+        dateOfBirth
+        collegeAffiliation
+        pronouns
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        profileAnalyticsId
+        profileInfoRequestChatroomId
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const getSiteAnalytics = /* GraphQL */ `
+  query GetSiteAnalytics($id: ID!) {
+    getSiteAnalytics(id: $id) {
+      id
+      monthlySignups
+      dailySignups
+      MonthlyPopularEvents
+      MonthlyPopularTags
+      monthlyUserTasselTime
+      monthlyUserVolunteerTime
+      monthlyUserApps
+      monthlyNoShows
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const listSiteAnalytics = /* GraphQL */ `
+  query ListSiteAnalytics(
+    $filter: ModelSiteAnalyticsFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listSiteAnalytics(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        monthlySignups
+        dailySignups
+        MonthlyPopularEvents
+        MonthlyPopularTags
+        monthlyUserTasselTime
+        monthlyUserVolunteerTime
+        monthlyUserApps
+        monthlyNoShows
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const syncSiteAnalytics = /* GraphQL */ `
+  query SyncSiteAnalytics(
+    $filter: ModelSiteAnalyticsFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncSiteAnalytics(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
+      items {
+        id
+        monthlySignups
+        dailySignups
+        MonthlyPopularEvents
+        MonthlyPopularTags
+        monthlyUserTasselTime
+        monthlyUserVolunteerTime
+        monthlyUserApps
+        monthlyNoShows
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const getProfileAnalytics = /* GraphQL */ `
+  query GetProfileAnalytics($id: ID!) {
+    getProfileAnalytics(id: $id) {
+      id
+      profileViews
+      hoursSpentVolunteering
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const listProfileAnalytics = /* GraphQL */ `
+  query ListProfileAnalytics(
+    $filter: ModelProfileAnalyticsFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listProfileAnalytics(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        profileViews
+        hoursSpentVolunteering
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const syncProfileAnalytics = /* GraphQL */ `
+  query SyncProfileAnalytics(
+    $filter: ModelProfileAnalyticsFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncProfileAnalytics(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
+      items {
+        id
+        profileViews
+        hoursSpentVolunteering
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const getOpportunityAnalytics = /* GraphQL */ `
+  query GetOpportunityAnalytics($id: ID!) {
+    getOpportunityAnalytics(id: $id) {
+      id
+      recentApps
+      apps
+      PopularUserTags
+      appRate
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+  }
+`;
+export const listOpportunityAnalytics = /* GraphQL */ `
+  query ListOpportunityAnalytics(
+    $filter: ModelOpportunityAnalyticsFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listOpportunityAnalytics(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        recentApps
+        apps
+        PopularUserTags
+        appRate
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+  }
+`;
+export const syncOpportunityAnalytics = /* GraphQL */ `
+  query SyncOpportunityAnalytics(
+    $filter: ModelOpportunityAnalyticsFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncOpportunityAnalytics(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
+      items {
+        id
+        recentApps
+        apps
+        PopularUserTags
+        appRate
         createdAt
         updatedAt
         _version
@@ -1526,11 +1804,25 @@ export const getOpportunity = /* GraphQL */ `
       }
       status
       bannerKey
+      Analytics {
+        id
+        recentApps
+        apps
+        PopularUserTags
+        appRate
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      opportunityAnalyticsId
       __typename
     }
   }
@@ -1563,6 +1855,7 @@ export const listOpportunities = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
+        opportunityAnalyticsId
         __typename
       }
       nextToken
@@ -1605,6 +1898,7 @@ export const syncOpportunities = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
+        opportunityAnalyticsId
         __typename
       }
       nextToken
@@ -1649,6 +1943,7 @@ export const opportunitiesByProfileID = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
+        opportunityAnalyticsId
         __typename
       }
       nextToken
@@ -1760,11 +2055,17 @@ export const getProfileChatRoom = /* GraphQL */ `
         infoResponse
         banner
         points
+        linkedin
+        dateOfBirth
+        collegeAffiliation
+        pronouns
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        profileAnalyticsId
+        profileInfoRequestChatroomId
         __typename
       }
       createdAt
@@ -1932,11 +2233,17 @@ export const getKeywordProfile = /* GraphQL */ `
         infoResponse
         banner
         points
+        linkedin
+        dateOfBirth
+        collegeAffiliation
+        pronouns
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        profileAnalyticsId
+        profileInfoRequestChatroomId
         __typename
       }
       createdAt
@@ -2103,6 +2410,7 @@ export const getKeywordOpportunity = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
+        opportunityAnalyticsId
         __typename
       }
       createdAt
@@ -2433,11 +2741,17 @@ export const getProfileRole = /* GraphQL */ `
         infoResponse
         banner
         points
+        linkedin
+        dateOfBirth
+        collegeAffiliation
+        pronouns
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        profileAnalyticsId
+        profileInfoRequestChatroomId
         __typename
       }
       createdAt
@@ -2601,11 +2915,17 @@ export const getProfileMajor = /* GraphQL */ `
         infoResponse
         banner
         points
+        linkedin
+        dateOfBirth
+        collegeAffiliation
+        pronouns
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        profileAnalyticsId
+        profileInfoRequestChatroomId
         __typename
       }
       createdAt
@@ -2759,11 +3079,17 @@ export const getOpportunityProfile = /* GraphQL */ `
         infoResponse
         banner
         points
+        linkedin
+        dateOfBirth
+        collegeAffiliation
+        pronouns
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        profileAnalyticsId
+        profileInfoRequestChatroomId
         __typename
       }
       opportunity {
@@ -2787,6 +3113,7 @@ export const getOpportunityProfile = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
+        opportunityAnalyticsId
         __typename
       }
       createdAt
