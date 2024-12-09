@@ -40,14 +40,14 @@ export default function Landing() {
     >
       <div className="image-container">
         <h1 className="ACmmTitle text-italic" id="landingTitle">
-          Stay Connected with
+          Bringing Alumni, Students,
           <br></br>
-          Your Alma Mater
+          and Staff Together
         </h1>
         <h2 className="secondaryTitle">
-          Discover ways to get involved, give back, and
+          Create opportunities, share events, and connect alumni,
           <br></br>
-          stay close to your university community.
+          students, and staff like never before.
         </h2>
         <Link to="/signup">
           <ThemedButton

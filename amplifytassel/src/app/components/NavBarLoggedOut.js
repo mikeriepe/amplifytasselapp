@@ -82,7 +82,7 @@ export default function NavBarLoggedOut() {
                 className="text-italic text-yellow"
                 style={{ display: "block" }}
               >
-                Tassel
+                SlugMatch
               </h1>
             </Box>
           </Link>
