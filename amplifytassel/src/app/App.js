@@ -8,6 +8,7 @@ import NavBarLoggedOut from "./components/NavBarLoggedOut";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
+import Help from "./pages/Help";
 import Approvals from "./pages/Approvals";
 import UpdateProfile from "./pages/UpdateProfile";
 import NavBarLoggedIn from "./components/NavBarLoggedIn";
@@ -172,6 +173,7 @@ const App = () => {
                   path="/opportunity/:opportunityid"
                   element={<ViewOpportunity />}
                 />
+                <Route path="/help" element={<Help />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/profile/:profileid" element={<ViewProfile />} />
               </Route>

@@ -21,6 +21,7 @@ import ListItemText from "@mui/material/ListItemText";
 import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
 import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import NotificationsRoundedIcon from "@mui/icons-material/NotificationsRounded";
 import SettingsIcon from "@mui/icons-material/Settings";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
@@ -98,6 +99,7 @@ export default function NavBarLoggedIn() {
   const pages = [
     ["Dashboard", "/dashboard", <GridViewRoundedIcon key="Dashboard" />],
     ["Opportunities", "/opportunities", <EventIcon key="Opportunities" />],
+    ["Help", "/help", <HelpOutlineIcon key="help" />],
   ];
   /* Settings and Social page deleted here, put back in array if needed back
   To re-add Social page, also un-comment line 321
@@ -380,7 +382,7 @@ export default function NavBarLoggedIn() {
                 className="text-italic text-yellow"
                 style={{ display: "block", opacity: open ? 1 : 0 }}
               >
-                Tassel
+                SlugMatch
               </h3>
             </Box>
           </Link>
