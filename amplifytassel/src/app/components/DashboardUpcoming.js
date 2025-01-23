@@ -10,7 +10,7 @@ import DashboardOppThumbnail from "./DashboardOppThumbnail";
 
 import { DataStore } from "@aws-amplify/datastore";
 import { Opportunity } from "./../../models";
-import { useTabIndex } from "./TabIndexContext.js";
+import { useTabIndex } from "../context/TabIndexContext.js";
 
 const UpcomingSection = ({ children }, props) => (
   <MuiBox
@@ -82,7 +82,7 @@ export default function DashboardUpcoming({ data }) {
   }, []);
 
   const numOpps = joinedOpportunities.length;
-  const linkText = "See all Upcoming Events >>";
+  const linkText = "View More";
 
   let displayOpps = [];
   if (numOpps > 3) {
@@ -103,15 +103,24 @@ export default function DashboardUpcoming({ data }) {
         <UpcomingSection className="grid-flow-large">
           <div
             className="flex-space-between flex-align-center"
-            style={{ background: "var(--text-white)" }}
+            style={{
+              background: "var(--background-primary)",
+              marginBottom: "1rem",
+            }}
           >
             <Text>
               <h2
                 className="text-dark ellipsis text-medium"
                 aria-label="Dashboard Upcoming Section"
               >
-                Upcoming Events
+                Upcoming Opportunities
               </h2>
+              <h5
+                className="text-lightgray text-bold ellipsis"
+                aria-label="Dashboard Header Count"
+              >
+                Your Opportunities that are coming up
+              </h5>
             </Text>
             <div className="flex-space-between flex-align-center">
               <Link
@@ -126,18 +135,35 @@ export default function DashboardUpcoming({ data }) {
             </div>
           </div>
           {numOpps > 0 ? (
-            <Grid container spacing={{ xs: 2, md: 3 }}>
+            <Grid container spacing={{ sm: 1, md: 2 }} alignItems="stretch">
               {displayOpps.map((opportunity, index) => (
-                <Grid item xs={2} sm={4} md={4} key={index}>
+                <Grid
+                  item
+                  xs={12}
+                  sm={12}
+                  md={4}
+                  key={index}
+                  sx={{ display: "flex" }}
+                >
                   <DashboardOppThumbnail
                     key={`opportunity-${index}`}
                     opportunity={opportunity}
+                    sx={{ flexGrow: 1 }}
                   />
                 </Grid>
               ))}
             </Grid>
           ) : (
-            <h5 className="text-bold ellipsis">Explore more events below!</h5>
+            <Box sx={{ display: "flex" }} style={{ padding: "2rem" }}>
+              <Text>
+                <h2
+                  className="text-light ellipsis text-medium"
+                  aria-label="Dashboard Upcoming Section"
+                >
+                  No Current Upcoming Opportunities
+                </h2>
+              </Text>
+            </Box>
           )}
         </UpcomingSection>
       )}

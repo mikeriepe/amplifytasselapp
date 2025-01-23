@@ -21,6 +21,13 @@ import WorkExperienceDeleteModal from "../components/WorkExperienceDeleteModal";
 import VolunteerExperienceForm from "../components/VolunteerExperienceForm";
 import VolunteerExperienceDeleteModal from "../components/VolunteerExperienceDeleteModal";
 import VolunteerExperienceList from "../components/VolunteerExperienceList";
+import ProfileBanner from "../components/ProfileBanner";
+
+// Added by Kenny on 11/3/2024
+import OrganizationExperienceForm from "../components/OrganizationExperienceForm";
+import OrganizationExperienceDeleteModal from "../components/OrganizationExperienceDeleteModal";
+import OrganizationExperienceList from "../components/OrganizationExperienceList";
+
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import Tooltip from "@mui/material/Tooltip";
@@ -80,6 +87,16 @@ const OutlinedIconButton = ({ children }, props) => (
   </ButtonBase>
 );
 
+const toastOptions = {
+  position: "top-right",
+  autoClose: 5000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+};
+
 /**
  * updates Profile Calendar
  * @return {HTML} Update Profile component
@@ -92,6 +109,11 @@ export default function UpdateProfile() {
   const [showVolunteerForm, setShowVolunteerForm] = useState(false);
   const [showDeleteVolunteerModal, setShowDeleteVolunteerModal] =
     useState(false);
+  
+  // Added by Kenny for Organization/Club Activity - 11/3/2024
+  const [showOrganizationForm, setShowOrganizationForm] = useState(false);
+  const [showDeleteOrganizationModal, setShowDeleteOrganizationModal] = useState(false);
+  
   const [selectedMajors, setSelectedMajors] = useState([]);
   const [totalMajors, setTotalMajors] = useState([]);
   const [selectedKeywords, setSelectedKeywords] = useState([]);
@@ -104,6 +126,9 @@ export default function UpdateProfile() {
       linkedin: userProfile.linkedin,
       // Added by Kenny Losier 11/3/2024:
       username: userProfile.username,
+      college: userProfile.college,
+      firstName: userProfile.firstName || "",
+      lastName: userProfile.lastName || "",
     },
   });
 
@@ -150,6 +175,11 @@ export default function UpdateProfile() {
 
     // Check username - added by Kenny 11/3/2024
     if (userProfile.username === null && selctdVals[1].username !== null) {
+      pointsToBeAdded += 20;
+    }
+
+    // Check college - added by Kenny 11/3/2024
+    if (userProfile.college === null && selctdVals[1].college !== null) {
       pointsToBeAdded += 20;
     }
 
@@ -265,6 +295,9 @@ export default function UpdateProfile() {
         updated.about = values[1].about;
         updated.linkedin = values[1].linkedin;
         updated.username = values[1].username;
+        updated.college = values[1].college;
+        updated.firstName = values[1].firstName;
+        updated.lastName = values[1].lastName;
       })
     );
     res = await DataStore.query(Profile, userProfile.id);
@@ -298,6 +331,9 @@ export default function UpdateProfile() {
             keywords: keywords,
             linkedin: userProfile.linkedin,
             username: userProfile.username,
+            college: userProfile.college,
+            firstName: userProfile.firstName,
+            lastName: userProfile.lastName,
           },
         });
         DataStore.query(Keyword).then((keywordsAll) => {
@@ -337,8 +373,30 @@ export default function UpdateProfile() {
   }, []);
 
   const handleSubmit = async (e) => {
-    await updateProfile();
-    navigate("/myProfile");
+    e.preventDefault(); // Prevent the default form behavior
+
+    // Validate required fields
+    if (!values[1].username.trim()) {
+      toast.error(`Username is required`, toastOptions);
+      return;
+    }
+
+    if (values[1].username.length > 20) {
+      toast.error(`Username is too long`, toastOptions);
+      return;
+    }
+
+    if (!values[1].graduationYear.trim()) {
+      toast.error(`Gradutaion Year is required`, toastOptions);
+      return;
+    }
+
+    try {
+      await updateProfile();
+      navigate("/myProfile");
+    } catch (error) {
+      toast.error(`Failed to update profile`, toastOptions);
+    }
   };
 
   return (
@@ -378,7 +436,60 @@ export default function UpdateProfile() {
                   <h2 className="text-normal">Update Profile</h2>
                 </div>
                 <div className="grid-flow-large" width="100%">
-                <div
+                  <div
+                    className="flex-horizontal flex-space-between"
+                    aria-label={"Update Profile Real Name"}
+                    style={{ marginTop: "1em", display: "flex", gap: "1em", width: "100%" }}
+                    >
+                  <div style={{ flex: "1" }}>
+                    <p className="text-bold">
+                      Real First Name
+                      {/* <Tooltip title="Fill out this field to get 10 points" arrow>
+                        <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
+                      </Tooltip> */}
+                    </p>
+                    <ThemedInput
+                      placeholder={"First Name"}
+                      type={"text"}
+                      index={"firstName"}
+                      step={1}
+                      fill={"firstName"}
+                      content={values[1].firstName}
+                      required={true} // Make the input required
+                      onChange={(e) =>
+                        setValues((prevValues) => ({
+                          ...prevValues,
+                          1: {
+                            ...prevValues[1],
+                            firstName: e.target.value,
+                          },
+                        }))
+                      }
+                    />
+                  </div>
+                  <div style = {{ flex: "1" }}>
+                    <p className="text-bold">Real Last Name</p>
+                    <ThemedInput
+                      placeholder={"Last Name"}
+                      type={"text"}
+                      index={"lastName"}
+                      step={1}
+                      fill={"lastName"}
+                      content={values[1].lastName}
+                      required={true}
+                      onChange={(e) =>
+                        setValues((prevValues) => ({
+                          ...prevValues,
+                          1: {
+                            ...prevValues[1],
+                            lastName: e.target.value,
+                          },
+                        }))
+                      }
+                    />
+                  </div>
+                  </div>
+                  <div
                     className="grid-flow-small"
                     aria-label={"Update Profile Username"}
                   >
@@ -394,12 +505,48 @@ export default function UpdateProfile() {
                       index={"username"}
                       step={1}
                       fill={"username"}
-                      content={
-                        values[1].username === ""
-                          ? null
-                          : values[1].username
-                      }
+                      content={values[1].username}
+                      required={true}
+                      onChange={(e) => {
+                        /*setValues((prevValues) => ({
+                          ...prevValues,
+                          1: {
+                            ...prevValues[1],
+                            username: e.target.value,
+                          },
+                        }))
+                      }*/ // Added below to ensure a character limit //
+                        const newValue = values[1].username.slice(0, 20);
+                        if (newValue.length <= 20) {
+                          setValues((prevValues) => ({
+                            ...prevValues,
+                            1: {
+                              ...prevValues[1],
+                              username: newValue,
+                            },
+                          }));
+                        }
+                      }}
                     />
+                    {values[1].username && values[1].username.length > 20 && (
+                      <p className="text-warning" style={{ color: "red", fontSize: "small" }}>
+                        Usernames are limited to a maximum of 20 characters
+                      </p>
+                    )}
+                  </div>
+                  <div
+                    className="grid-flow-small"
+                    aria-label={"Update Profile Major"}
+                  >
+                    <p className="text-bold">
+                      Major
+                      {/* <Tooltip title="Fill out this field to get 10 points" arrow>
+                        <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
+                      </Tooltip> */}
+                    </p>
+                    <div>
+                      {totalMajors.length && <MultiSelect data={totalMajors} />}
+                    </div>
                   </div>
                   <div
                     className="grid-flow-small"
@@ -422,21 +569,17 @@ export default function UpdateProfile() {
                           ? null
                           : values[1].graduationYear
                       }
+                      required={true} // Make the input required
+                      onChange={(e) =>
+                        setValues((prevValues) => ({
+                          ...prevValues,
+                          1: {
+                            ...prevValues[1],
+                            graduationYear: e.target.value,
+                          },
+                        }))
+                      }
                     />
-                  </div>
-                  <div
-                    className="grid-flow-small"
-                    aria-label={"Update Profile Major"}
-                  >
-                    <p className="text-bold">
-                      Major
-                      {/* <Tooltip title="Fill out this field to get 10 points" arrow>
-                        <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
-                      </Tooltip> */}
-                    </p>
-                    <div>
-                      {totalMajors.length && <MultiSelect data={totalMajors} />}
-                    </div>
                   </div>
                   <div
                     className="grid-flow-small"
@@ -478,6 +621,27 @@ export default function UpdateProfile() {
                       fill={"linkedin"}
                       content={
                         values[1].linkedin === "" ? null : values[1].linkedin
+                      }
+                    />
+                  </div>
+                  <div
+                    className="grid-flow-small"
+                    aria-label={"Update Profile College"}
+                  >
+                    <p className="text-bold">
+                      College Affiliation
+                      {/* <Tooltip title="Fill out this field to get 10 points" arrow>
+                        <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
+                      </Tooltip> */}
+                    </p>
+                    <ThemedInput
+                      placeholder={"e.g., Cowell College"}
+                      type={"text"}
+                      index={"college"}
+                      step={1}
+                      fill={"college"}
+                      content={
+                        values[1].college === "" ? null : values[1].college
                       }
                     />
                   </div>
@@ -609,6 +773,57 @@ export default function UpdateProfile() {
                     >
                       <p
                         className="text-bold"
+                        aria-label={"Update Profile Organization"}
+                      >
+                        Organization/Club Activity
+                        {/* <Tooltip title="Fill out this field to get 10 points" arrow>
+                        <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
+                      </Tooltip> */}
+                      </p>
+                      <div className="flex-space-between flex-align-center">
+                        {
+                          <OutlinedIconButton>
+                            <RemoveIcon
+                              aria-label={"Remove Organization"}
+                              sx={{
+                                height: "20px",
+                                width: "20px",
+                                color: "var(--text-gray)",
+                                stroke: "var(--text-gray)",
+                                strokeWidth: "2px",
+                              }}
+                              onClick={() => setShowDeleteOrganizationModal(true)}
+                            />
+                          </OutlinedIconButton>
+                        }
+                        {
+                          <OutlinedIconButton>
+                            <AddIcon
+                              aria-label={"Add Organization"}
+                              sx={{
+                                height: "20px",
+                                width: "20px",
+                                color: "var(--text-gray)",
+                                stroke: "var(--text-gray)",
+                                strokeWidth: "2px",
+                              }}
+                              onClick={() => setShowOrganizationForm(true)}
+                            />
+                          </OutlinedIconButton>
+                        }
+                      </div>
+                    </div>
+                    <OrganizationExperienceList
+                      organizationExperience={userProfile.organizationExperience}
+                    />
+                  </div>
+                  <div className="grid-flow-small">
+                    <div
+                      className="flex-space-between flex-align-center"
+                      style={{ background: "var(--background-primary)" }}
+                    >
+                      <p
+                        className="text-bold"
                         aria-label={"Update Profile Interests"}
                       >
                         Interests
@@ -696,7 +911,7 @@ export default function UpdateProfile() {
                       aria-label="Next step button"
                       color={"yellow"}
                       variant={"themed"}
-                      onClick={(e) => handleSubmit(e)}
+                      onClick={handleSubmit}
                     >
                       Save
                     </ThemedButton>
@@ -721,6 +936,22 @@ export default function UpdateProfile() {
       >
         <WorkExperienceDeleteModal
           onClose={() => setShowDeleteModal(!showDeleteModal)}
+        />
+      </Modal>
+      <Modal
+        open={showOrganizationForm}
+        onBackdropClick={() => setShowOrganizationForm(false)}
+        onClose={() => setShowOrganizationForm(false)}
+      >
+        <OrganizationExperienceForm onClose={() => setShowOrganizationForm(!showOrganizationForm)} />
+      </Modal>
+      <Modal
+        open={showDeleteOrganizationModal}
+        onBackdropClick={() => setShowDeleteOrganizationModal(false)}
+        onClose={() => setShowDeleteOrganizationModal(false)}
+      >
+        <OrganizationExperienceDeleteModal
+          onClose={() => setShowDeleteOrganizationModal(!showDeleteOrganizationModal)}
         />
       </Modal>
       <Modal

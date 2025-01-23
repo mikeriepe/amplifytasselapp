@@ -21,6 +21,7 @@ import ListItemText from "@mui/material/ListItemText";
 import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
 import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import NotificationsRoundedIcon from "@mui/icons-material/NotificationsRounded";
 import SettingsIcon from "@mui/icons-material/Settings";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
@@ -31,7 +32,7 @@ import ThemedButton from "./ThemedButton";
 import useAuth from "../util/AuthContext";
 import * as Nav from "./NavBarComponents";
 import { Storage } from "aws-amplify";
-import { useTabIndex } from "./TabIndexContext";
+import { useTabIndex } from "../context/TabIndexContext.js";
 
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
@@ -98,6 +99,7 @@ export default function NavBarLoggedIn() {
   const pages = [
     ["Dashboard", "/dashboard", <GridViewRoundedIcon key="Dashboard" />],
     ["Opportunities", "/opportunities", <EventIcon key="Opportunities" />],
+    ["Help", "/help", <HelpOutlineIcon key="help" />],
   ];
   /* Settings and Social page deleted here, put back in array if needed back
   To re-add Social page, also un-comment line 321
@@ -148,6 +150,7 @@ export default function NavBarLoggedIn() {
 
   const handleProfileClick = () => {
     handleClose(); // Close the menu
+    setTabIndex("");
     navigate("/myprofile"); // Navigate to /myprofile
   };
 
@@ -191,7 +194,7 @@ export default function NavBarLoggedIn() {
   };
 
   const handleTabClick = (index) => {
-    console.log(index);
+    // console.log(index);
     setTabIndex(index);
   };
 
@@ -257,8 +260,7 @@ export default function NavBarLoggedIn() {
         position="fixed"
         open={open}
         sx={{
-          boxShadow: "0",
-          borderBottom: "0.5px solid rgba(0, 0, 0, 0.15)",
+          boxShadow: "0 .5px 2px #d1d1d1",
         }}
       >
         <Toolbar className="navbar-height">
@@ -273,8 +275,8 @@ export default function NavBarLoggedIn() {
           </IconButton>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            {/* Notification Icon */}
-            <Tooltip title="Notifications">
+            {/* Notification Icon. Currently not functional*/}
+            {/* <Tooltip title="Notifications">
               <IconButton
                 aria-label="show number of new notifications"
                 aria-controls={notificationId}
@@ -287,7 +289,7 @@ export default function NavBarLoggedIn() {
                   <NotificationsRoundedIcon className="icon-gray" />
                 </Badge>
               </IconButton>
-            </Tooltip>
+            </Tooltip> */}
             {/*{showNotification && renderNotification}*/}
             {/* Profile Icon */}
 
@@ -325,14 +327,36 @@ export default function NavBarLoggedIn() {
               MenuListProps={{
                 "aria-labelledby": "basic-button",
               }}
+              PaperProps={{
+                style: {
+                  width: 100,
+                },
+              }}
               sx={{
                 "&:hover": {
                   backgroundColor: "transparent", // Remove hover background color
                 },
               }}
             >
-              <MenuItem onClick={handleProfileClick}>Profile</MenuItem>
-              <MenuItem onClick={handleLogout}>Logout</MenuItem>
+              {/* Profile drop down menu items */}
+              <MenuItem
+                onClick={handleProfileClick}
+                sx={{
+                  justifyContent: "center",
+                  textAlign: "center",
+                }}
+              >
+                Profile
+              </MenuItem>
+              <MenuItem
+                onClick={handleLogout}
+                sx={{
+                  justifyContent: "center",
+                  textAlign: "center",
+                }}
+              >
+                Logout
+              </MenuItem>
             </Menu>
           </Box>
         </Toolbar>
@@ -349,7 +373,7 @@ export default function NavBarLoggedIn() {
                 : "/dashboard"
             }
           >
-            <Box onClick={() => handleTabClick(0)} sx={BrandStyling}>
+            <Box onClick={() => handleTabClick("/dashboard")} sx={BrandStyling}>
               <SchoolIcon
                 className="icon-yellow"
                 sx={{ mr: 3, transform: "scale(1.5)" }}
@@ -358,7 +382,7 @@ export default function NavBarLoggedIn() {
                 className="text-italic text-yellow"
                 style={{ display: "block", opacity: open ? 1 : 0 }}
               >
-                Tassel
+                SlugMatch
               </h3>
             </Box>
           </Link>

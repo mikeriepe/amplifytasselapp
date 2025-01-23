@@ -276,7 +276,7 @@ export default function Signup() {
     Auth.confirmSignUp(values[2].useremail, values[3].verifycode)
       .then(() => {
         setIsVerifying(false);
-        toast.success('Email verified!', toastOptions);
+        toast.success("Email verified!", toastOptions);
         navigate("/login");
       })
       .catch((err) => {
@@ -297,14 +297,14 @@ export default function Signup() {
 
   return (
     <InputContext.Provider value={[values, setValues, errors]}>
-      <Box className="page" aria-label="Signup form">
+      <Box className="page" aria-label="Signup form" sx={{ marginTop: "1rem" }}>
         <Paper className="card" elevation={0} sx={PaperStyling}>
-          <div className="card-banner flow-small padding-64">
+          <div className="card-banner flow-small padding-32">
             <h3 className="text-xbold text-white">
               Grow your connection with the UCSC community!
             </h3>
             <div className="flow-tiny">
-              <img src={SignupBanner} alt="SignUpBanner"/>
+              <img src={SignupBanner} alt="SignUpBanner" />
             </div>
           </div>
           <Box className="card-content padding-64">

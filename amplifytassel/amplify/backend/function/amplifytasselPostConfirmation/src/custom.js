@@ -2,6 +2,7 @@ const AWS = require('aws-sdk');
 AWS.config.region = process.env.AWS_REGION;
 
 const ses = new AWS.SES({ apiVersion: '2010-12-01' });
+const WEBSITE = 'slugmatch.app';
 
 /**
  * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
@@ -21,7 +22,7 @@ exports.handler = async (event, context) => {
 
 Your account is pending approval from a Tassel administrator.
 
-In the meantime, you can update your profile so we can verify your identity: tassel.com/myprofile
+In the meantime, you can update your profile so we can verify your identity: ${WEBSITE}/myprofile
 
 Need help? Contact us at tasselsupport@gmail.com.`
       );
