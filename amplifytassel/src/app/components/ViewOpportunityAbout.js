@@ -7,7 +7,7 @@ import MuiAccordionDetails from '@mui/material/AccordionDetails';
 import MuiPaper from '@mui/material/Paper';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import ThemedButton from './ThemedButton';
-import RequestModal from './RequestOpportunityModal';
+import RequestModal from './CustomComponents/RequestOpportunityModal';
 import useAuth from '../util/AuthContext';
 import {toast} from 'react-toastify';
 import Chip from '@mui/material/Chip';

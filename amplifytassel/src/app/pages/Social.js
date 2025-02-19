@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import MuiBox from '@mui/material/Box';
 import {styled} from '@mui/material/styles';
-import PageHeader from '../components/PageHeader';
-import CompressedTabBar from '../components/CompressedTabBar';
+import PageHeader from '../components/CustomComponents/PageHeader';
+import CompressedTabBar from '../components/CustomComponents/CompressedTabBar';
 import SocialUsers from '../components/SocialUsers'
 import SocialFriends from '../components/SocialFriends'
 import SocialIncomingRequests from '../components/SocialIncomingRequests';

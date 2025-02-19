@@ -9,9 +9,9 @@ import {toast} from 'react-toastify';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 
-import {TextInput2} from './TextInput2';
-import {DateInput2} from './DateInput2';
-import {CheckboxInput2} from './CheckboxInput2';
+import {TextInput2} from './Forms/TextInput2';
+import {DateInput2} from './Forms/DateInput2';
+import {CheckboxInput2} from './Forms/CheckboxInput2';
 import ThemedButton from '../components/ThemedButton';
 import useAuth from '../util/AuthContext';
 import useAnimation from '../util/AnimationContext';

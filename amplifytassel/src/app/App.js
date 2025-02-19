@@ -23,7 +23,7 @@ import MyProfile from "./pages/MyProfile";
 import ViewProfile from "./pages/ViewProfile";
 import AnimationStarFlying from "./components/AnimationStarFlying";
 import AnimationConfetti from "./components/AnimationConfetti";
-import Progress from "./components/Progress";
+import Progress from "./components/CustomComponents/Progress";
 import { Auth } from "aws-amplify";
 import { TabIndexProvider } from "./context/TabIndexContext";
 import { RecommendationsProvider } from "./context/RecommendationsContext";

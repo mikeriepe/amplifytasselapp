@@ -29,7 +29,7 @@ import MuiPaper from '@mui/material/Paper';
 import {styled} from '@mui/material/styles';
 import { DataStore } from '@aws-amplify/datastore';
 import { Request, ProfileRole, OpportunityProfile, Profile, Role } from '../../models';
-import EmailDialog from './EmailDialog';
+import EmailDialog from './CustomComponents/EmailDialog';
 import { Storage } from 'aws-amplify';
 
 

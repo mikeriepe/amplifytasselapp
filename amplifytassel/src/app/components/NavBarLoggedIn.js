@@ -27,7 +27,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import SchoolIcon from "@mui/icons-material/School";
 import UCSCIcon from "../assets/ucsc-logo.jpg";
-import Notification from "./Notification";
+import Notification from "./CustomComponents/Notification";
 import ThemedButton from "./ThemedButton";
 import useAuth from "../util/AuthContext";
 import * as Nav from "./NavBarComponents";

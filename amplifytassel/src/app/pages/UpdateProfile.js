@@ -9,7 +9,7 @@ import useAuth from "../util/AuthContext";
 import ThemedInput from "../components/ThemedInput";
 import ThemedButton from "../components/ThemedButton";
 import { InputContext } from "../components/ThemedInput";
-import { MultiSelectContext } from "../components/MultiSelect";
+import { MultiSelectContext } from "../components/CustomComponents/MultiSelect";
 import { Link } from "react-router-dom";
 import WorkExperienceList from "../components/WorkExperienceList";
 import ThemedDropdown from "../components/ThemedDropdown";
@@ -46,7 +46,7 @@ import {
   Major,
   ProfileMajor,
 } from "../../models";
-import MultiSelect from "../components/MultiSelect";
+import MultiSelect from "../components/CustomComponents/MultiSelect";
 import { Dataset } from "@mui/icons-material";
 import { PointsAddition } from "../util/PointsAddition";
 
