@@ -10,7 +10,7 @@ import {toast} from 'react-toastify';
 import {TextInput2} from './TextInput2';
 import {DateInput2} from './DateInput2';
 import {CheckboxInput2} from './CheckboxInput2';
-import ThemedButton from './ThemedButton';
+import ThemedButton from './Themed/ThemedButton';
 import useAuth from '../util/AuthContext';
 import { DataStore } from 'aws-amplify';
 import { Profile } from '../../models';

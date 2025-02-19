@@ -18,7 +18,7 @@ import TableBody from '@mui/material/TableBody';
 import InputAdornment from '@mui/material/InputAdornment';
 import Collapse from '@mui/material/Collapse';
 import Checkbox from '@mui/material/Checkbox';
-import ThemedButton from './ThemedButton';
+import ThemedButton from './Themed/ThemedButton';
 import IconButton from '@mui/material/IconButton';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';

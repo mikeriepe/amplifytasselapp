@@ -4,7 +4,7 @@ import { styled } from "@mui/material/styles";
 import MuiBox from "@mui/material/Box";
 import CompressedTabBar from "../components/CompressedTabBar";
 import PageHeader from "../components/PageHeader";
-import ThemedButton from "../components/ThemedButton";
+import ThemedButton from "../components/Themed/ThemedButton";
 import ButtonBase from "@mui/material/ButtonBase";
 import ViewOpportunityAbout from "../components/ViewOpportunityAbout";
 import ViewOpportunityForums from "../components/ViewOpportunityForums";

@@ -18,7 +18,7 @@ import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import ThemedButton from './ThemedButton';
+import ThemedButton from './Themed/ThemedButton';
 import ViewOpportunityRequestCard from './ViewOpportunityRequestCard';
 import {toast} from 'react-toastify';
 import Collapse from '@mui/material/Collapse';

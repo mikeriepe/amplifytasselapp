@@ -28,7 +28,7 @@ import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import SchoolIcon from "@mui/icons-material/School";
 import UCSCIcon from "../assets/ucsc-logo.jpg";
 import Notification from "./Notification";
-import ThemedButton from "./ThemedButton";
+import ThemedButton from "./Themed/ThemedButton.js";
 import useAuth from "../util/AuthContext";
 import * as Nav from "./NavBarComponents";
 import { Storage } from "aws-amplify";

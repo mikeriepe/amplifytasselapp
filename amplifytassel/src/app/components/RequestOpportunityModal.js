@@ -1,7 +1,7 @@
 import React from 'react';
 import Modal from '@mui/material/Modal';
 import Paper from '@mui/material/Paper';
-import ThemedButton from './ThemedButton';
+import ThemedButton from './Themed/ThemedButton';
 
 
 /**

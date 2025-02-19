@@ -22,7 +22,7 @@ import Paper from "@mui/material/Paper";
 import useAuth from "../util/AuthContext";
 import RequestModal from "./RequestOpportunityModal";
 import OpportunityForm from "./OpportunityForm";
-import ThemedButton from "./ThemedButton";
+import ThemedButton from "./Themed/ThemedButton";
 import { PointsAddition } from "../util/PointsAddition";
 import { DataStore } from "aws-amplify";
 import {
