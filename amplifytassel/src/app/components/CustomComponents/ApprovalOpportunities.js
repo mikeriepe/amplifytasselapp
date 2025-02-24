@@ -21,7 +21,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormGroup from "@mui/material/FormGroup";
 import MuiBox from "@mui/material/Box";
 import Tooltip from "@mui/material/Tooltip";
-import ThemedButton from "../ThemedButton";
+import ThemedButton from "../Themed/ThemedButton";
 import IconButton from "@mui/material/IconButton";
 import { Tabs, Tab } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";

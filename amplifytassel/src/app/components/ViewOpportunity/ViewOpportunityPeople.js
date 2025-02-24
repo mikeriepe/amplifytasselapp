@@ -1,8 +1,8 @@
 import { DataStore } from "aws-amplify";
-import ViewOpportunityPeopleCard from "../components/ViewOpportunityPeopleCard";
+import ViewOpportunityPeopleCard from "./ViewOpportunityPeopleCard";
 import { useState, useEffect } from 'react';
-import {Profile} from './../../models';
-import {createUserProfile, createOppProfile} from '../util/ExtractInformation'
+import {Profile} from './../../../models';
+import {createUserProfile, createOppProfile} from '../../util/ExtractInformation'
 import Grid from '@mui/material/Grid'; // Grid version 1
 
 // Call lambda function to get matching recommendations

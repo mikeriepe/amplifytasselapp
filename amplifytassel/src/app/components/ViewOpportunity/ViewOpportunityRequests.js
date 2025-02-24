@@ -18,7 +18,7 @@ import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import ThemedButton from './ThemedButton';
+import ThemedButton from '../Themed/ThemedButton';
 import ViewOpportunityRequestCard from './ViewOpportunityRequestCard';
 import {toast} from 'react-toastify';
 import Collapse from '@mui/material/Collapse';
@@ -28,8 +28,8 @@ import MuiBox from '@mui/material/Box';
 import MuiPaper from '@mui/material/Paper';
 import {styled} from '@mui/material/styles';
 import { DataStore } from '@aws-amplify/datastore';
-import { Request, ProfileRole, OpportunityProfile, Profile, Role } from '../../models';
-import EmailDialog from './CustomComponents/EmailDialog';
+import { Request, ProfileRole, OpportunityProfile, Profile, Role } from '../../../models';
+import EmailDialog from '../CustomComponents/EmailDialog';
 import { Storage } from 'aws-amplify';
 
 

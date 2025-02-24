@@ -12,7 +12,7 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import { DataStore } from '@aws-amplify/datastore';
-import { Profile, Role } from '../../models';
+import { Profile, Role } from '../../../models';
 import { Storage } from 'aws-amplify';
 
 

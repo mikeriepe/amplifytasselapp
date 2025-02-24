@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { InputContext } from "../components/ThemedInput";
+import { InputContext } from "../components/Themed/ThemedInput";
 import Box from "@mui/material/Box";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Paper from "@mui/material/Paper";
-import ThemedButton from "../components/ThemedButton";
-import ThemedInput from "../components/ThemedInput";
+import ThemedButton from "../components/Themed/ThemedButton";
+import ThemedInput from "../components/Themed/ThemedInput";
 import LoginBanner from "../assets/sammy-ocean.png";
 import useAuth from "../util/AuthContext";
 import "../stylesheets/LoginSignup.css";

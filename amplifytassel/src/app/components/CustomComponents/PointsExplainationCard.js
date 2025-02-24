@@ -3,7 +3,7 @@ import React from 'react';
 import MuiBox from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import {styled} from '@mui/material/styles';
-import ThemedButton from '../ThemedButton';
+import ThemedButton from '../Themed/ThemedButton';
 import MuiCard from '@mui/material/Card';
 
 const Card = styled((props) => (

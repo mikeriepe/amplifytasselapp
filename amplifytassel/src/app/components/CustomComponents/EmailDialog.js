@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dialog, DialogActions, DialogContent, List, ListItemButton, ListItemText } from '@mui/material';
 import MuiAvatar from "@mui/material/Avatar";
-import ThemedButton from '../ThemedButton';
+import ThemedButton from '../Themed/ThemedButton';
 import { toast } from "react-toastify";
 
 const Avatar = ({ image }, props) => (

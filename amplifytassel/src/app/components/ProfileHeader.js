@@ -43,7 +43,7 @@ import {
   calculateXpBarPercentage,
   calculatePointsToNextLevel,
 } from "../util/PointsAddition.js";
-import ThemedButton from "./ThemedButton.js";
+import ThemedButton from "./Themed/ThemedButton.js";
 import EmailDialog from "./CustomComponents/EmailDialog.js";
 
 const Header = styled((props) => <MuiPaper elevation={0} {...props} />)(() => ({

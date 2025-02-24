@@ -2,7 +2,7 @@ import * as React from "react";
 import MuiBox from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 import Divider from "@mui/material/Divider";
-import ThemedButton from "../components/ThemedButton";
+import ThemedButton from "../components/Themed/ThemedButton";
 
 const Page = styled((props) => <MuiBox {...props} />)(() => ({
   display: "flex",

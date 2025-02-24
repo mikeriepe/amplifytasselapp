@@ -7,11 +7,11 @@ import MuiAvatar from '@mui/material/Avatar';
 import MuiPaper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
-import ForumsNewPost from './ForumsNewPost';
-import ForumsPost from './ForumsPost';
-import useAuth from '../util/AuthContext';
+import ForumsNewPost from '../ForumsNewPost';
+import ForumsPost from '../ForumsPost';
+import useAuth from '../../util/AuthContext';
 import { DataStore } from '@aws-amplify/datastore';
-import { Post, Comment, Profile } from '../../models';
+import { Post, Comment, Profile } from '../../../models';
 import { Storage } from 'aws-amplify';
 
 

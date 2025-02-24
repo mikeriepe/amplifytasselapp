@@ -24,7 +24,7 @@ import MuiBox from "@mui/material/Box";
 import Tooltip from "@mui/material/Tooltip";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-import ThemedButton from "../ThemedButton";
+import ThemedButton from "../Themed/ThemedButton";
 import { profileStatusToColor } from "../../util/ProfileStatus";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import { styled } from "@mui/material/styles";
