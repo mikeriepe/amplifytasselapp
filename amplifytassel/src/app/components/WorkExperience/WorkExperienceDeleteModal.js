@@ -5,13 +5,13 @@ import Paper from '@mui/material/Paper';
 import {styled} from '@mui/material/styles';
 import {toast} from 'react-toastify';
 
-import ThemedButton from './Themed/ThemedButton';
-import useAuth from '../util/AuthContext';
+import ThemedButton from '../Themed/ThemedButton';
+import useAuth from '../../util/AuthContext';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import ButtonBase from '@mui/material/ButtonBase';
 import MuiCard from '@mui/material/Card';
-import { Profile } from '../../models';
 import { DataStore } from 'aws-amplify';
+import { Profile } from '../../../models';
 
 const Card = styled((props) => (
   <MuiCard elevation={0} {...props} />
@@ -54,30 +54,30 @@ const OutlinedIconButton = ({children}, props) => (
 );
 
 /**
- * VolunteerExperienceDeleteModal
- * VolunteerExperienceDeleteModal
- * Displays form to collect data for new Volunteer Experience
+ * WorkExperienceDeleteModal
+ * WorkExperienceDeleteModal
+ * Displays form to collect data for new Work Experience
  * @param {Function} onClose
- * @return {HTML} VolunteerExperienceDeleteModal component
+ * @return {HTML} WorkExperienceDeleteModal component
  */
-export default function VolunteerExperienceDeleteModal({onClose}) {
+export default function WorkExperienceDeleteModal({onClose}) {
   const {userProfile, setUserProfile} = useAuth();
 
   const updateProfile = (index) => {
     console.log('updateProfile');
-    const volunteerExperienceObj = [...(userProfile.volunteerExperience)];
-    volunteerExperienceObj.splice(index, 1);
+    const experienceObj = [...(userProfile.experience)];
+    experienceObj.splice(index, 1);
 
     DataStore.query(Profile, userProfile.id)
       .then((profile) => {
-        console.log(JSON.stringify(profile.volunteerExperience[index]));
+        console.log(JSON.stringify(profile.experience[index]));
         DataStore.save(Profile.copyOf(profile, updated => {
-          updated.volunteerExperience = volunteerExperienceObj;
+          updated.experience = experienceObj;
         }))
           .then(() => {
             console.log('experience updated');
             const userProfileCpy = {...userProfile};
-            userProfileCpy.volunteerExperience = volunteerExperienceObj;
+            userProfileCpy.experience = experienceObj;
             setUserProfile(userProfileCpy);
             toast.success('Account updated', {
               position: 'top-right',
@@ -93,44 +93,45 @@ export default function VolunteerExperienceDeleteModal({onClose}) {
       .catch((err) => {
         console.log(err);
       });
-    console.log('updateProfile called');
+    return;
   };
 
-  const jobTitleList = userProfile.volunteerExperience.map((job, index)=>{
-    return <Card className='clickable' key = {index}>
-      <div
-        className='flex-space-between flex-align-center'
-        style={{padding: '5px', background: 'var(--background-primary)'}}
-      >
-        <MuiBox>
-          <div>
-            <h5>{job.title}</h5>
-            <p className='text-bold text-blue'>
-              {job.company}</p>
+  const jobTitleList = userProfile.experience.map((job, index) => {
+    return (
+      <Card className='clickable' key={index}>
+        <div
+          className='flex-space-between flex-align-center'
+          style={{ padding: '5px', background: 'var(--background-primary)' }}
+        >
+          <MuiBox>
+            <div>
+              <h5>{job.title}</h5>
+              <p className='text-bold text-blue'>
+                {job.company}</p>
+            </div>
+          </MuiBox>
+          <div className='flex-flow-large' style={{ marginLeft: '50px' }}>
+            {(
+              <OutlinedIconButton>
+                <CloseRoundedIcon
+                  sx={{
+                    height: '20px',
+                    width: '20px',
+                    color: 'var(--error-red-main)',
+                    stroke: 'var(--error-red-main)',
+                    strokeWidth: '2px',
+                  }}
+                  onClick={() => {
+                    updateProfile(index);
+                    onClose();
+                  }}
+                />
+              </OutlinedIconButton>
+            )}
           </div>
-        </MuiBox>
-        <div className='flex-flow-large' style={{marginLeft: '50px'}}>
-          {(
-            <OutlinedIconButton>
-              <CloseRoundedIcon
-                sx={{
-                  height: '20px',
-                  width: '20px',
-                  color: 'var(--error-red-main)',
-                  stroke: 'var(--error-red-main)',
-                  strokeWidth: '2px',
-                }}
-                onClick={() => {
-                  // deleteVolunteerExperience(index);
-                  updateProfile(index);
-                  onClose();
-                }}
-              />
-            </OutlinedIconButton>
-          )}
         </div>
-      </div>
-    </Card>;
+      </Card>
+    )
   });
 
   return (
@@ -157,7 +158,7 @@ export default function VolunteerExperienceDeleteModal({onClose}) {
           flex: 1, flexWrap: 'wrap',
         }}
       >
-        Which volunteering experience would you like to delete?
+        Which job experience would you like to delete?
       </MuiBox>
       {jobTitleList}
 
@@ -177,7 +178,7 @@ export default function VolunteerExperienceDeleteModal({onClose}) {
               onClick={() => {
                 onClose();
               }}
-              aria-label='Volunteer Experience Delete Modal Cancel Button'
+              aria-label='Work Experience Delete Modal Cancel Button'
               color={'yellow'}
               variant={'themed'}
               sx={{

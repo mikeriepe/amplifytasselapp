@@ -14,7 +14,7 @@ import {DateInput2} from './Forms/DateInput2';
 import {CheckboxInput2} from './Forms/CheckboxInput2';
 import ThemedButton from './Themed/ThemedButton';
 import useAuth from '../util/AuthContext';
-import {sortWorkExperience} from './WorkExperienceForm';
+import {sortWorkExperience} from './WorkExperience/WorkExperienceForm';
 import useAnimation from '../util/AnimationContext';
 
 import { DataStore } from '@aws-amplify/datastore';

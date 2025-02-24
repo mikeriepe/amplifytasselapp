@@ -9,18 +9,18 @@ import {toast} from 'react-toastify';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 
-import {TextInput2} from './Forms/TextInput2';
-import {DateInput2} from './Forms/DateInput2';
-import {CheckboxInput2} from './Forms/CheckboxInput2';
-import ThemedButton from './Themed/ThemedButton';
-import useAuth from '../util/AuthContext';
-import {sortWorkExperience} from './WorkExperienceForm';
-import useAnimation from '../util/AnimationContext';
+import {TextInput2} from '../Forms/TextInput2';
+import {DateInput2} from '../Forms/DateInput2';
+import {CheckboxInput2} from '../Forms/CheckboxInput2';
+import ThemedButton from '../Themed/ThemedButton';
+import useAuth from '../../util/AuthContext';
+import {sortWorkExperience} from '../WorkExperience/WorkExperienceForm';
+import useAnimation from '../../util/AnimationContext';
 
 import { DataStore } from '@aws-amplify/datastore';
-import { Profile } from '../../models';
+import { Profile } from '../../../models';
 
-import { calculateIfUserLeveledUp } from '../util/PointsAddition';
+import { calculateIfUserLeveledUp } from '../../util/PointsAddition';
 
 
 /**

@@ -1,91 +1,50 @@
 import Box from '@mui/material/Box';
-import React, { useState } from 'react';
+import React from 'react';
 import {StepLabel} from '@mui/material';
 import Paper from '@mui/material/Paper';
 import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
 import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {useForm} from 'react-hook-form';
 import {toast} from 'react-toastify';
-import {yupResolver} from '@hookform/resolvers/yup';
-import * as Yup from 'yup';
 
-import {TextInput2} from './Forms/TextInput2';
-import {DateInput2} from './Forms/DateInput2';
-import {CheckboxInput2} from './Forms/CheckboxInput2';
-import ThemedButton from './Themed/ThemedButton';
-import useAuth from '../util/AuthContext';
-import useAnimation from '../util/AnimationContext';
+import {TextInput2} from '../Forms/TextInput2';
+import {DateInput2} from '../Forms/DateInput2';
+import {CheckboxInput2} from '../Forms/CheckboxInput2';
+import ThemedButton from '../Themed/ThemedButton';
+import useAuth from '../../util/AuthContext';
+import { DataStore } from 'aws-amplify';
+import { Profile } from '../../../models';
 
-import { DataStore } from '@aws-amplify/datastore';
-import { Profile } from '../../models';
-import { calculateIfUserLeveledUp } from '../util/PointsAddition';
-
-export const sortWorkExperience = (experience) => {
-  const experienceSorted = [...experience].sort((a, b) => (
-    new Date(a.start).getTime() < new Date(b.start).getTime() ? 1 : -1
-  ));
-  return experienceSorted;
-};
 
 /**
- * WorkExperienceForm
- * Work Experience Form Component
+ * WorkExperienceEditModal
+ * WorkExperienceEditModal
  * Displays form to collect data for new Work Experience
  * @param {Function} onClose
- * @return {HTML} WorkExperienceForm component
+ * @return {HTML} WorkExperienceEditModal component
  */
-export default function WorkExperienceForm({onClose}) {
+export default function WorkExperienceEditModal({onClose, index}) {
   const {userProfile, setUserProfile} = useAuth();
-  const [curPosition, setCurPosition] = useState(false);
 
-  // animations
-  const {
-    setShowConfettiAnimation,
-    setShowStarAnimation
-  } = useAnimation();
-
-  const handleCurPositionChange = (e) => {
-    const value = e.target.checked;
-    setCurPosition(value);
-  };
+  const existingLocation = userProfile.experience[index].location.split(', ');
 
   const formValues = {
-    jobtitle: '',
-    company: '',
-    jobcity: '',
-    jobstate: '',
-    description: '',
-    startdate: (new Date()),
-    enddate: null,
-    currentPosition: false,
+    jobtitle: userProfile.experience[index].title,
+    company: userProfile.experience[index].company,
+    jobcity: existingLocation[0],
+    jobstate: existingLocation[1],
+    description: userProfile.experience[index].description,
+    startdate: (new Date(userProfile.experience[index].start)),
+    enddate: userProfile.experience[index].end === '' ? '' :
+    (new Date(userProfile.experience[index].end)),
+    currentPosition: userProfile.experience[index].currentPosition,
   };
 
-  const validationSchema = Yup.object().shape({
-    jobtitle: Yup.string().required('Job title is required'),
-    company: Yup.string().required('Company name is required'),
-    jobcity: Yup.string().required('Job city is required'),
-    jobstate: Yup.string().required('Job state is required'),
-    description: Yup.string().notRequired(),
-    startdate: Yup
-        .date()
-        .required('Start date is required'),
-    enddate: Yup.date().when([], {
-      is: () => curPosition,
-      then: () => Yup.date().notRequired(),
-      otherwise: () => Yup.date().min(Yup.ref('startdate'), 'End date must be after start date').required('End date is required'),
-    })
-  });
-
-  const {
-    register,
-    control,
-    handleSubmit,
-  } = useForm({
-    resolver: yupResolver(validationSchema),
-    defaultValues: formValues,
-  });
+  const methods = useForm({defaultValues: formValues});
+  const {handleSubmit, control, register} = methods;
 
   const updateProfile = (data) => {
+    
     let startDate = '';
     if (data.startdate !== '') {
       startDate = data.startdate.toISOString().split('T')[0];
@@ -111,63 +70,43 @@ export default function WorkExperienceForm({onClose}) {
       newLocation = data.jobstate;
     }
     const newWorkExperience = {
-      end: data.enddate !== null ? endDate : '',
-      start: startDate,
       title: data.jobtitle,
       company: data.company,
       location: newLocation,
       description: data.description,
+      start: startDate,
+      end: data.enddate !== null ? endDate : '',
       currentPosition: data.currentPosition,
     };
 
-    // IFNULL
-    const experienceObj = (userProfile.experience ? [...(userProfile.experience)] : []);
-    console.log('experienceObj', experienceObj);
-    experienceObj.push(newWorkExperience);
-
-    const sortedExperience = sortWorkExperience(experienceObj);
-    console.log('sortedExperience', sortedExperience);
-    
-    let toasterStr = '';
-
+    console.log('gothere44');
     DataStore.query(Profile, userProfile.id)
-      .then((res) => {
-        DataStore.save(Profile.copyOf(res, updated => {
-          updated.experience = sortedExperience;
-          // Add 10 points everytime a work experience is added
-          updated.points += 10;
+      .then((profile) => {
+        // console.log(JSON.stringify(profile.experience));
+        DataStore.save(Profile.copyOf(profile, updated => {
+          updated.experience[index].title = newWorkExperience.title;
+          updated.experience[index].company = newWorkExperience.company;
+          updated.experience[index].location = newWorkExperience.location;
+          updated.experience[index].description = newWorkExperience.description;
+          updated.experience[index].start = newWorkExperience.start;
+          updated.experience[index].end = newWorkExperience.end;
+          updated.experience[index].currentPosition = newWorkExperience.currentPosition;
         }))
-        .then((updatedProfile) => {
-          console.log(updatedProfile);
-          setUserProfile(updatedProfile);
-        })
-        // Check if they leveled up
-        const isLevelUp = calculateIfUserLeveledUp(res.points, 10);
-        if (isLevelUp) {
-          // Display confetti animation
-          setShowConfettiAnimation(true);
-          toasterStr = 'and you leveled up!';
-        } else {
-          // Display star animation
-          setShowStarAnimation(true);
-          toasterStr = 'and you earned 10 points!';
-        }
-        
-      })
-      .then(() => {
-        console.log('experience updated');
-        // const userProfileCpy = {...userProfile};
-        // userProfileCpy.experience = sortedExperience;
-        // setUserProfile(userProfileCpy);
-        toast.success(`Account updated ${toasterStr}`, {
-          position: 'top-right',
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+          .then(() => {
+            DataStore.query(Profile, userProfile.id)
+              .then((profile) => {
+                setUserProfile(profile);
+                toast.success('Account updated', {
+                  position: 'top-right',
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                })
+              })
+          })
       })
       .catch((err) => {
         console.log(err);
@@ -200,7 +139,7 @@ export default function WorkExperienceForm({onClose}) {
           marginBottom: '10px',
         }}
       >
-        Add New Work Experience
+        Edit Work Experience
       </StepLabel>
 
       <Box
@@ -267,14 +206,12 @@ export default function WorkExperienceForm({onClose}) {
                   label='Start Date'
                   register={register}
                 />
-                {!curPosition &&
-                  <DateInput2
-                    name='enddate'
-                    control={control}
-                    label='End Date'
-                    register={register}
-                  />
-                }
+                <DateInput2
+                  name='enddate'
+                  control={control}
+                  label='End Date'
+                  register={register}
+                />
               </Box>
             </LocalizationProvider>
           </Box>
@@ -290,8 +227,8 @@ export default function WorkExperienceForm({onClose}) {
           <CheckboxInput2
             name='currentPosition'
             control={control}
+            defaultChecked={userProfile.experience[index].currentPosition}
             label='Current Position'
-            customOnChange={handleCurPositionChange}
           />
         </Box>
       </Box>
@@ -308,8 +245,10 @@ export default function WorkExperienceForm({onClose}) {
         <div className='grid-flow-small'>
           <div className='flex-flow-large'>
             <ThemedButton
-              onClick={onClose}
-              aria-label='Work Experience Form Cancel Button'
+              onClick={() => {
+                onClose();
+              }}
+              aria-label='Work Experience Edit Modal Cancel Button'
               color={'yellow'}
               variant={'themed'}
               sx={{

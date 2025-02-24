@@ -5,9 +5,9 @@ import Divider from '@mui/material/Divider';
 import MuiBox from '@mui/material/Box';
 import MuiCard from '@mui/material/Card';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
-import useAuth from '../util/AuthContext';
-import WorkExperienceEditModal from '../components/WorkExperienceEditModal';
-import WorkExperienceDeleteModal from '../components/WorkExperienceDeleteModal';
+import useAuth from '../../util/AuthContext';
+import WorkExperienceEditModal from './WorkExperienceEditModal';
+import WorkExperienceDeleteModal from './WorkExperienceDeleteModal';
 import {Modal} from '@mui/material';
 
 const Card = styled((props) => (

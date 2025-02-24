@@ -4,47 +4,48 @@ import {StepLabel} from '@mui/material';
 import Paper from '@mui/material/Paper';
 import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
 import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
+
 import {useForm} from 'react-hook-form';
 import {toast} from 'react-toastify';
 
-import {TextInput2} from './Forms/TextInput2';
-import {DateInput2} from './Forms/DateInput2';
-import {CheckboxInput2} from './Forms/CheckboxInput2';
-import ThemedButton from './Themed/ThemedButton';
-import useAuth from '../util/AuthContext';
+import {TextInput2} from '../Forms/TextInput2';
+import {DateInput2} from '../Forms/DateInput2';
+import {CheckboxInput2} from '../Forms/CheckboxInput2';
+import ThemedButton from '../Themed/ThemedButton';
+import useAuth from '../../util/AuthContext';
 import { DataStore } from 'aws-amplify';
-import { Profile } from '../../models';
+import { Profile } from '../../../models';
 
 
 /**
- * WorkExperienceEditModal
- * WorkExperienceEditModal
- * Displays form to collect data for new Work Experience
+ * VolunteerExperienceEditModal
+ * VolunteerExperienceEditModal
+ * Displays form to collect data for new Volunteer Experience
  * @param {Function} onClose
- * @return {HTML} WorkExperienceEditModal component
+ * @return {HTML} VolunteerExperienceEditModal component
  */
-export default function WorkExperienceEditModal({onClose, index}) {
+export default function VolunteerExperienceEditModal({onClose, index}) {
   const {userProfile, setUserProfile} = useAuth();
 
-  const existingLocation = userProfile.experience[index].location.split(', ');
+  const existingLocation =
+  userProfile.volunteerExperience[index].location.split(', ');
 
   const formValues = {
-    jobtitle: userProfile.experience[index].title,
-    company: userProfile.experience[index].company,
+    jobtitle: userProfile.volunteerExperience[index].title,
+    company: userProfile.volunteerExperience[index].company,
     jobcity: existingLocation[0],
     jobstate: existingLocation[1],
-    description: userProfile.experience[index].description,
-    startdate: (new Date(userProfile.experience[index].start)),
-    enddate: userProfile.experience[index].end === '' ? '' :
-    (new Date(userProfile.experience[index].end)),
-    currentPosition: userProfile.experience[index].currentPosition,
+    description: userProfile.volunteerExperience[index].description,
+    startdate: (new Date(userProfile.volunteerExperience[index].start)),
+    enddate: userProfile.volunteerExperience[index].end === '' ? '' :
+    (new Date(userProfile.volunteerExperience[index].end)),
+    currentPosition: userProfile.volunteerExperience[index].currentPosition,
   };
 
   const methods = useForm({defaultValues: formValues});
-  const {handleSubmit, control, register} = methods;
+  const {handleSubmit, control, register} = methods; 
 
-  const updateProfile = (data) => {
-    
+  const updateProfile = async (data) => {
     let startDate = '';
     if (data.startdate !== '') {
       startDate = data.startdate.toISOString().split('T')[0];
@@ -69,7 +70,10 @@ export default function WorkExperienceEditModal({onClose, index}) {
     } else {
       newLocation = data.jobstate;
     }
-    const newWorkExperience = {
+
+    console.log('data.currentPosition', data.currentPosition);
+
+    const newVolunteerExperience = {
       title: data.jobtitle,
       company: data.company,
       location: newLocation,
@@ -78,43 +82,29 @@ export default function WorkExperienceEditModal({onClose, index}) {
       end: data.enddate !== null ? endDate : '',
       currentPosition: data.currentPosition,
     };
-
-    console.log('gothere44');
-    DataStore.query(Profile, userProfile.id)
-      .then((profile) => {
-        // console.log(JSON.stringify(profile.experience));
-        DataStore.save(Profile.copyOf(profile, updated => {
-          updated.experience[index].title = newWorkExperience.title;
-          updated.experience[index].company = newWorkExperience.company;
-          updated.experience[index].location = newWorkExperience.location;
-          updated.experience[index].description = newWorkExperience.description;
-          updated.experience[index].start = newWorkExperience.start;
-          updated.experience[index].end = newWorkExperience.end;
-          updated.experience[index].currentPosition = newWorkExperience.currentPosition;
-        }))
-          .then(() => {
-            DataStore.query(Profile, userProfile.id)
-              .then((profile) => {
-                setUserProfile(profile);
-                toast.success('Account updated', {
-                  position: 'top-right',
-                  autoClose: 5000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-                })
-              })
-          })
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    
+    // userProfile.volunteerExperience[index] = newVolunteerExperience;
+    console.log('gothere69');
+    let profile = await DataStore.query(Profile, userProfile.id);
+    await DataStore.save(Profile.copyOf(profile, updated => {
+      updated.volunteerExperience[index] = newVolunteerExperience;
+    }));
+    profile = await DataStore.query(Profile, userProfile.id);
+    setUserProfile(profile);
+    toast.success('Account updated', {
+      position: 'top-right',
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
   };
 
-  const onSubmit = (data) => {
-    updateProfile(data);
+  const onSubmit = async (data) => {
+    // updateVolunteerExperience(data);
+    await updateProfile(data);
     onClose();
   };
 
@@ -139,7 +129,7 @@ export default function WorkExperienceEditModal({onClose, index}) {
           marginBottom: '10px',
         }}
       >
-        Edit Work Experience
+        Edit Volunteer Experience
       </StepLabel>
 
       <Box
@@ -161,7 +151,7 @@ export default function WorkExperienceEditModal({onClose, index}) {
           <TextInput2
             name='company'
             control={control}
-            label='Company'
+            label='Organization'
             register={register}
           />
 
@@ -227,7 +217,7 @@ export default function WorkExperienceEditModal({onClose, index}) {
           <CheckboxInput2
             name='currentPosition'
             control={control}
-            defaultChecked={userProfile.experience[index].currentPosition}
+            defaultChecked={userProfile.volunteerExperience[index].currentPosition}
             label='Current Position'
           />
         </Box>
@@ -248,7 +238,7 @@ export default function WorkExperienceEditModal({onClose, index}) {
               onClick={() => {
                 onClose();
               }}
-              aria-label='Work Experience Edit Modal Cancel Button'
+              aria-label='Volunteer Experience Edit Modal Cancel Button'
               color={'yellow'}
               variant={'themed'}
               sx={{

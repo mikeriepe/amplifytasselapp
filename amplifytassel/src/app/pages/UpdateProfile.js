@@ -11,16 +11,16 @@ import ThemedButton from "../components/Themed/ThemedButton";
 import { InputContext } from "../components/Themed/ThemedInput";
 import { MultiSelectContext } from "../components/CustomComponents/MultiSelect";
 import { Link } from "react-router-dom";
-import WorkExperienceList from "../components/WorkExperienceList";
+import WorkExperienceList from "../components/WorkExperience/WorkExperienceList";
 import ThemedDropdown from "../components/Themed/ThemedDropdown";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import ButtonBase from "@mui/material/ButtonBase";
-import WorkExperienceForm from "../components/WorkExperienceForm";
-import WorkExperienceDeleteModal from "../components/WorkExperienceDeleteModal";
-import VolunteerExperienceForm from "../components/VolunteerExperienceForm";
-import VolunteerExperienceDeleteModal from "../components/VolunteerExperienceDeleteModal";
-import VolunteerExperienceList from "../components/VolunteerExperienceList";
+import WorkExperienceForm from "../components/WorkExperience/WorkExperienceForm";
+import WorkExperienceDeleteModal from "../components/WorkExperience/WorkExperienceDeleteModal";
+import VolunteerExperienceForm from "../components/VolunteerExperience/VolunteerExperienceForm";
+import VolunteerExperienceDeleteModal from "../components/VolunteerExperience/VolunteerExperienceDeleteModal";
+import VolunteerExperienceList from "../components/VolunteerExperience/VolunteerExperienceList";
 import ProfileBanner from "../components/ProfileBanner";
 
 // Added by Kenny on 11/3/2024
