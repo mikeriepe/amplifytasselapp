@@ -6,21 +6,21 @@ import MuiBox from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
 import { toast } from "react-toastify";
 import useAuth from "../util/AuthContext";
-import ThemedInput from "../components/ThemedInput";
-import ThemedButton from "../components/ThemedButton";
-import { InputContext } from "../components/ThemedInput";
-import { MultiSelectContext } from "../components/MultiSelect";
+import ThemedInput from "../components/Themed/ThemedInput";
+import ThemedButton from "../components/Themed/ThemedButton";
+import { InputContext } from "../components/Themed/ThemedInput";
+import { MultiSelectContext } from "../components/CustomComponents/MultiSelect";
 import { Link } from "react-router-dom";
-import WorkExperienceList from "../components/WorkExperienceList";
-import ThemedDropdown from "../components/ThemedDropdown";
+import WorkExperienceList from "../components/WorkExperience/WorkExperienceList";
+import ThemedDropdown from "../components/Themed/ThemedDropdown";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import ButtonBase from "@mui/material/ButtonBase";
-import WorkExperienceForm from "../components/WorkExperienceForm";
-import WorkExperienceDeleteModal from "../components/WorkExperienceDeleteModal";
-import VolunteerExperienceForm from "../components/VolunteerExperienceForm";
-import VolunteerExperienceDeleteModal from "../components/VolunteerExperienceDeleteModal";
-import VolunteerExperienceList from "../components/VolunteerExperienceList";
+import WorkExperienceForm from "../components/WorkExperience/WorkExperienceForm";
+import WorkExperienceDeleteModal from "../components/WorkExperience/WorkExperienceDeleteModal";
+import VolunteerExperienceForm from "../components/VolunteerExperience/VolunteerExperienceForm";
+import VolunteerExperienceDeleteModal from "../components/VolunteerExperience/VolunteerExperienceDeleteModal";
+import VolunteerExperienceList from "../components/VolunteerExperience/VolunteerExperienceList";
 import ProfileBanner from "../components/ProfileBanner";
 
 // Added by Kenny on 11/3/2024
@@ -46,7 +46,7 @@ import {
   Major,
   ProfileMajor,
 } from "../../models";
-import MultiSelect from "../components/MultiSelect";
+import MultiSelect from "../components/CustomComponents/MultiSelect";
 import { Dataset } from "@mui/icons-material";
 import { PointsAddition } from "../util/PointsAddition";
 

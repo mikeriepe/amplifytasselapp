@@ -7,13 +7,13 @@ import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {useForm} from 'react-hook-form';
 import {toast} from 'react-toastify';
 
-import {TextInput2} from './TextInput2';
-import {DateInput2} from './DateInput2';
-import {CheckboxInput2} from './CheckboxInput2';
-import ThemedButton from './ThemedButton';
-import useAuth from '../util/AuthContext';
+import {TextInput2} from '../Forms/TextInput2';
+import {DateInput2} from '../Forms/DateInput2';
+import {CheckboxInput2} from '../Forms/CheckboxInput2';
+import ThemedButton from '../Themed/ThemedButton';
+import useAuth from '../../util/AuthContext';
 import { DataStore } from 'aws-amplify';
-import { Profile } from '../../models';
+import { Profile } from '../../../models';
 
 
 /**

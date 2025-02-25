@@ -31,7 +31,7 @@ import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import MuiCard from "@mui/material/Card"; 
-import PointsExplainationCard from "./PointsExplainationCard.js";
+import PointsExplainationCard from "./CustomComponents/PointsExplainationCard.js";
 
 import { DataStore } from "@aws-amplify/datastore";
 import { Storage } from "aws-amplify";
@@ -43,8 +43,8 @@ import {
   calculateXpBarPercentage,
   calculatePointsToNextLevel,
 } from "../util/PointsAddition.js";
-import ThemedButton from "./ThemedButton.js";
-import EmailDialog from "./EmailDialog.js";
+import ThemedButton from "./Themed/ThemedButton.js";
+import EmailDialog from "./CustomComponents/EmailDialog.js";
 
 const Header = styled((props) => <MuiPaper elevation={0} {...props} />)(() => ({
   position: "relative",

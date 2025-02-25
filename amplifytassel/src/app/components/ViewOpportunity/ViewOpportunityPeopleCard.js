@@ -2,8 +2,8 @@ import React from 'react';
 import MuiAvatar from '@mui/material/Avatar';
 import MuiBox from '@mui/material/Box';
 import MuiPaper from '@mui/material/Paper';
-import ThemedButton from './ThemedButton';
-import ExampleCover from '../assets/examplecover.png';
+import ThemedButton from '../Themed/ThemedButton';
+import ExampleCover from '../../assets/examplecover.png';
 
 const Item = ({handleCardClick, profileid, children}, props) => {
   return  <MuiPaper

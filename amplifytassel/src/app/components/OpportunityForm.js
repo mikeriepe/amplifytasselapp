@@ -24,12 +24,12 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { useForm } from "react-hook-form";
 
-import ThemedButton from "../components/ThemedButton";
-import { TextInput } from "./TextInput";
-import { TimeInput } from "./TimeInput.js";
-import { DropdownInput } from "./DropdownInput";
-import { CheckboxInput } from "./CheckboxInput";
-import { DateInput } from "./DateInput";
+import ThemedButton from "./Themed/ThemedButton";
+import { TextInput } from "./Forms/TextInput";
+import { TimeInput } from "./Forms/TimeInput.js";
+import { DropdownInput } from "./Forms/DropdownInput";
+import { CheckboxInput } from "./Forms/CheckboxInput";
+import { DateInput } from "./Forms/DateInput";
 import { DataStore, Storage } from "aws-amplify";
 import { Keyword, Major } from "../../models";
 import { Opportunity } from "../../models";

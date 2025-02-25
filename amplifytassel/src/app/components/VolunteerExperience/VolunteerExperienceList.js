@@ -2,7 +2,7 @@ import React from 'react';
 import {styled} from '@mui/material/styles';
 import MuiBox from '@mui/material/Box';
 import VolunteerExperienceCard from './VolunteerExperienceCard';
-import useAuth from '../util/AuthContext';
+import useAuth from '../../util/AuthContext';
 
 const Page = styled((props) => (
   <MuiBox {...props} />

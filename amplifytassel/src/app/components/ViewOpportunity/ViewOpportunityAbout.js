@@ -6,16 +6,16 @@ import MuiAccordionSummary from '@mui/material/AccordionSummary';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
 import MuiPaper from '@mui/material/Paper';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
-import ThemedButton from './ThemedButton';
-import RequestModal from './RequestOpportunityModal';
-import useAuth from '../util/AuthContext';
+import ThemedButton from '../Themed/ThemedButton';
+import RequestModal from '../CustomComponents/RequestOpportunityModal';
+import useAuth from '../../util/AuthContext';
 import {toast} from 'react-toastify';
 import Chip from '@mui/material/Chip';
 import { DataStore } from '@aws-amplify/datastore';
-import { Major, Request, Profile } from '../../models';
-import useAnimation from '../util/AnimationContext';
-import { calculateIfUserLeveledUp } from '../util/PointsAddition';
-import { PointsAddition } from '../util/PointsAddition';
+import { Major, Request, Profile } from '../../../models';
+import useAnimation from '../../util/AnimationContext';
+import { calculateIfUserLeveledUp } from '../../util/PointsAddition';
+import { PointsAddition } from '../../util/PointsAddition';
 
 /**
  * About tab for view opportunity

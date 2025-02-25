@@ -6,7 +6,7 @@ import TextField from "@mui/material/TextField";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import OpportunitiesCard from "./OpportunitiesCard";
 import OpportunitiesFilters from "./OpportunitiesFilters";
-import ThemedDropdown from "./ThemedDropdown";
+import ThemedDropdown from "./Themed/ThemedDropdown";
 import { Tooltip } from "@mui/material";
 import Fuse from "fuse.js";
 import useAuth from "../util/AuthContext";

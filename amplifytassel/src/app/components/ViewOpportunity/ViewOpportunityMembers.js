@@ -5,7 +5,7 @@ import MuiBox from '@mui/material/Box';
 import MuiAvatar from '@mui/material/Avatar';
 import MuiPaper from '@mui/material/Paper';
 import StarRoundedIcon from '@mui/icons-material/StarRounded';
-import { Profile, ProfileRole } from '../../models';
+import { Profile, ProfileRole } from '../../../models';
 import { DataStore } from '@aws-amplify/datastore';
 import { Storage } from 'aws-amplify';
 

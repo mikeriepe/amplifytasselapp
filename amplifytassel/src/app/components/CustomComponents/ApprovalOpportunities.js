@@ -21,7 +21,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormGroup from "@mui/material/FormGroup";
 import MuiBox from "@mui/material/Box";
 import Tooltip from "@mui/material/Tooltip";
-import ThemedButton from "./Themed/ThemedButton";
+import ThemedButton from "../Themed/ThemedButton";
 import IconButton from "@mui/material/IconButton";
 import { Tabs, Tab } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -41,20 +41,20 @@ import {
 import {
   opportunityStatusToText,
   opportunityStatusToColor,
-} from "../util/OpportunityStatus";
+} from "../../util/OpportunityStatus";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import { styled } from "@mui/material/styles";
 import { toast } from "react-toastify";
-import "../stylesheets/ApprovalTable.css";
+import "../../stylesheets/ApprovalTable.css";
 
 import { DataStore, Storage } from "aws-amplify";
-import { Opportunity, Profile, ChatRoom } from "./../../models";
+import { Opportunity, Profile, ChatRoom } from "../../../models";
 import {
   createNewChatRoom,
   findExistingInfoChatRoom,
-} from "../util/SocialChatRooms";
-import { sendMessage } from "../util/SocialChat";
-import useAuth from "../util/AuthContext";
+} from "../../util/SocialChatRooms";
+import { sendMessage } from "../../util/SocialChat";
+import useAuth from "../../util/AuthContext";
 import moment from "moment";
 import EmailDialog from "./EmailDialog";
 

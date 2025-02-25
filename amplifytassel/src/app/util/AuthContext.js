@@ -1,5 +1,5 @@
 import React, {useContext, createContext, useState, useEffect, useRef} from 'react';
-import Progress from '../components/Progress';
+import Progress from '../components/CustomComponents/Progress';
 
 import { Auth } from 'aws-amplify';
 import { DataStore } from '@aws-amplify/datastore';

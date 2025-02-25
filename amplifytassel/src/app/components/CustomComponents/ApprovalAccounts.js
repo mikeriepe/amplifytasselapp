@@ -1,33 +1,12 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
+import { useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import MuiPaper from "@mui/material/Paper";
 import MuiAvatar from "@mui/material/Avatar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Paper";
-// import TableFooter from '@mui/material/TableFooter';
-// import TablePagination from '@mui/material/TablePagination';
-import Collapse from "@mui/material/Collapse";
-import FilterListIcon from "@mui/icons-material/FilterList";
-import InputAdornment from "@mui/material/InputAdornment";
-import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormGroup from "@mui/material/FormGroup";
-import MuiBox from "@mui/material/Box";
-import Tooltip from "@mui/material/Tooltip";
-import ThemedButton from "./Themed/ThemedButton";
-import IconButton from "@mui/material/IconButton";
-import { Tabs, Tab } from "@mui/material";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import {
-  Grid,
   Box,
   CircularProgress,
   Table,
@@ -37,25 +16,26 @@ import {
   Checkbox,
   TableBody,
   TableSortLabel,
+  Tabs,
+  Tab,
 } from "@mui/material";
-import {
-  opportunityStatusToText,
-  opportunityStatusToColor,
-} from "../util/OpportunityStatus";
+import Collapse from "@mui/material/Collapse";
+import MuiBox from "@mui/material/Box";
+import Tooltip from "@mui/material/Tooltip";
+import InputAdornment from "@mui/material/InputAdornment";
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import ThemedButton from "../Themed/ThemedButton";
+import { profileStatusToColor } from "../../util/ProfileStatus";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import { styled } from "@mui/material/styles";
 import { toast } from "react-toastify";
-import "../stylesheets/ApprovalTable.css";
-
-import { DataStore, Storage } from "aws-amplify";
-import { Opportunity, Profile, ChatRoom } from "./../../models";
-import {
-  createNewChatRoom,
-  findExistingInfoChatRoom,
-} from "../util/SocialChatRooms";
-import { sendMessage } from "../util/SocialChat";
-import useAuth from "../util/AuthContext";
-import moment from "moment";
+import "../../stylesheets/ApprovalTable.css";
+import { DataStore } from "@aws-amplify/datastore";
+import { Profile, ChatRoom } from "../../../models";
+import { Storage } from "aws-amplify";
+import { createNewChatRoom } from "../../util/SocialChatRooms";
+import useAuth from "../../util/AuthContext";
+import { sendMessage } from "../../util/SocialChat";
 import EmailDialog from "./EmailDialog";
 
 const Page = styled((props) => <Box {...props} />)(() => ({
@@ -80,11 +60,11 @@ const Card = styled((props) => <MuiPaper elevation={0} {...props} />)(() => ({
   borderRadius: "10px",
 }));
 
-const Avatar = ({ image, handleAvatarClick }, props) => (
+const Avatar = ({ image, handleAvatarClick, profileid }, props) => (
   <MuiAvatar
     {...props}
     src={image}
-    onClick={handleAvatarClick}
+    onClick={() => handleAvatarClick(profileid)}
     sx={{
       height: "2.5rem",
       width: "2.5rem",
@@ -113,6 +93,23 @@ const Text = ({ children }, props) => (
   </MuiBox>
 );
 
+const TextRight = ({ children }, props) => (
+  <MuiBox
+    sx={{
+      display: "flex",
+      flexGrow: 1,
+      flexDirection: "column",
+      justifyContent: "center",
+      height: "100%",
+      lineHeight: 1.5,
+      marginLeft: "1rem",
+    }}
+    {...props}
+  >
+    {children}
+  </MuiBox>
+);
+
 const toastOptions = {
   position: "top-right",
   autoClose: 5000,
@@ -129,44 +126,40 @@ const toastOptions = {
  * @return {*} row object
  */
 function Row(props) {
-  const {
-    row,
-    handleSelect,
-    profile,
-    selectAllChecked,
-    selected,
-    profilePictures,
-  } = props;
+  const { row, handleSelect, selectAllChecked, selected } = props;
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+  const [profilePicture, setProfilePicture] = useState(null);
 
-  const [banner, setBanner] = useState(null);
-
-  const downloadFile = async () => {
-    const img = await Storage.get(row.bannerKey, {
-      level: "public",
-    });
-    setBanner(img);
+  const downloadProfilePicture = async () => {
+    if (row.picture !== null) {
+      const file = await Storage.get(row.picture, {
+        level: "public",
+      });
+      setProfilePicture(file);
+    } else {
+      setProfilePicture(
+        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+      );
+    }
   };
 
   useEffect(() => {
-    downloadFile();
-  }, []);
+    downloadProfilePicture();
+  }, [row]);
 
-  const navigateToOpportunity = () => {
-    window.open(`/Opportunity/${row.id}`, "_blank");
-  };
-
-  const navigateToProfile = () => {
-    if (profile?.id) window.open(`/Profile/${profile.id}`, "_blank");
-  };
+  function handleAvatarClick(profileid) {
+    window.open(`/Profile/${profileid}`, "_blank");
+    // navigate(`/Profile/${profileid}`);
+  }
 
   return (
     <React.Fragment>
       <TableRow>
         <TableCell className="data-cell" padding="checkbox">
           <Checkbox
-            checked={selectAllChecked || selected.includes(row.id)}
-            value={row.id}
+            checked={selectAllChecked || selected.includes(row.email)}
+            value={row.email}
             onChange={(event) => handleSelect(event, row)}
           />
         </TableCell>
@@ -182,39 +175,25 @@ function Row(props) {
           </IconButton>
         </TableCell> */}
         {/* eslint-disable-next-line max-len */}
-        <TableCell className="data-cell" scope="row">
-          <div style={{ display: "flex" }}>
-            <Avatar image={banner} handleAvatarClick={navigateToOpportunity} />
-            {/* eslint-disable-next-line max-len */}
-            <div className="text-center-vert">{`${row.eventName}`}</div>
-          </div>
-        </TableCell>
-        <TableCell className="data-cell">{row.description}</TableCell>
-        <TableCell className="data-cell">
-          {moment(row.startTime).format("MMMM Do YYYY, h:mm a")}
-        </TableCell>
-        <TableCell className="data-cell">
-          {moment.duration(moment(row.startTime).diff(row.endTime)).humanize()}
-        </TableCell>
         <TableCell className="data-cell" component="th" scope="row">
           <div style={{ display: "flex" }}>
             <Avatar
-              image={
-                profilePictures[profile?.id] ??
-                "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-              }
-              handleAvatarClick={navigateToProfile}
+              image={profilePicture}
+              handleAvatarClick={handleAvatarClick}
+              profileid={row.id}
             />
             {/* eslint-disable-next-line max-len */}
-            <div className="text-center-vert">{`${profile?.firstName} ${profile?.lastName}`}</div>
+            <div className="text-center-vert">{`${row.firstName} ${row.lastName}`}</div>
           </div>
         </TableCell>
+        <TableCell className="data-cell">{row.email}</TableCell>
+        <TableCell className="data-cell">{row.graduationYear}</TableCell>
         <TableCell className="data-cell">
           <div
             style={{
               display: "flex",
               flexDirection: "row",
-              color: opportunityStatusToColor(row.status),
+              color: profileStatusToColor(row.status),
             }}
           >
             <FiberManualRecordIcon
@@ -224,7 +203,7 @@ function Row(props) {
                 paddingRight: ".21rem",
               }}
             />
-            <div>{opportunityStatusToText(row.status)}</div>
+            <div>{row.status}</div>
           </div>
         </TableCell>
       </TableRow>
@@ -244,52 +223,98 @@ function Row(props) {
 }
 
 /**
- * creates opportunity approval content
- * @return {HTML} opportunity approval content
+ * creates account approval content
+ * @return {HTML} account approval content
  */
-export default function ApprovalOpportunities() {
-  const [opps, setOpps] = useState([]);
-  const [displayOpps, setDisplayOpps] = useState([]);
+export default function ApprovalAccounts() {
+  const [accounts, setAccounts] = useState([]);
+  const [displayAccounts, setDisplayAccounts] = useState([]);
   const [filters, setFilters] = useState({
+    admin: false,
     approved: false,
     denied: false,
     pending: true,
-    showPast: false,
     search: "",
   });
+  const [openFilter, setOpenFilter] = useState(false);
   const [selectedTab, setSelectedTab] = useState(0);
 
+  // useEffect(() => {
+  //   const { admin, approved, denied, pending, search } = filters;
+  //   setDisplayAccounts(
+  //     accounts.filter((account) => {
+  //       try {
+  //         if (search !== "") {
+  //           let ok = false;
+  //           [
+  //             account.graduationYear,
+  //             account.email,
+  //             account.firstName + " " + account.lastName,
+  //           ].forEach((field) => {
+  //             if (typeof field !== "string") return;
+  //             if (field.toLowerCase().includes(search.toLowerCase())) ok = true;
+  //           });
+  //           if (!ok) return false;
+  //         }
+  //         if (!admin && !approved && !denied && !pending) return true;
+  //         if (!admin && account.status === "ADMIN") return false;
+  //         if (!approved && account.status === "APPROVED") return false;
+  //         if (!denied && account.status === "DENIED") return false;
+  //         if (!pending && account.status === "PENDING") return false;
+  //         return true;
+  //       } catch (error) {
+  //         console.error(error);
+  //         return false;
+  //       }
+  //     })
+  //   );
+  // }, [accounts, filters]);
+
+  const [displayPending, setDisplayPending] = useState([]);
+  const [displayApproved, setDisplayApproved] = useState([]);
+  const [displayDenied, setDisplayDenied] = useState([]);
+  const [displayAdmin, setDisplayAdmin] = useState([]);
+  const displays = [
+    displayPending,
+    displayApproved,
+    displayDenied,
+    displayAdmin,
+  ];
+  const titles = [
+    "Pending Accounts",
+    "Approved Accounts",
+    "Denied Accounts",
+    "Admin Accounts",
+  ];
+  const subtitles = [
+    "Accounts waiting for approval",
+    "Accounts that have been approved",
+    "Accounts that have been denied",
+    "Accounts that have admin privileges",
+  ];
+
   useEffect(() => {
-    const { approved, denied, pending, showPast, search } = filters;
-    setDisplayOpps(
-      opps.filter((opportunity) => {
+    const { admin, approved, denied, pending, search } = filters;
+    setDisplayAccounts(
+      accounts.filter((account) => {
         try {
-          // Search filter
           if (search !== "") {
             let ok = false;
-            [opportunity.eventName, opportunity.description].forEach(
-              (field) => {
-                if (typeof field !== "string") return;
-                if (field.toLowerCase().includes(search.toLowerCase()))
-                  ok = true;
-              }
-            );
+            [
+              account.graduationYear,
+              account.email,
+              account.firstName + " " + account.lastName,
+            ].forEach((field) => {
+              if (typeof field !== "string") return;
+              if (field.toLowerCase().includes(search.toLowerCase())) ok = true;
+            });
             if (!ok) return false;
           }
-
-          // Past and future opportunities filter based on showPast
-          const isPastOpportunity = moment(opportunity.endTime).isBefore(
-            moment()
-          );
-          if (showPast && !isPastOpportunity) return false; // show only past opportunities when showPast is true
-          if (!showPast && isPastOpportunity) return false; // show only future opportunities when showPast is false
-
-          // Status filters
-          if (!approved && !denied && !pending) return true;
-          if (!approved && opportunity.status === "APPROVED") return false;
-          if (!denied && opportunity.status === "DENIED") return false;
-          if (!pending && opportunity.status === "PENDING") return false;
-
+          if (!admin && !approved && !denied && !pending) return true;
+          if (!admin && account.status === "ADMIN") return false;
+          if (!approved && account.status === "APPROVED") return false;
+          if (!denied && account.status === "DENIED") return false;
+          if (!pending && account.status === "PENDING") return false;
           return true;
         } catch (error) {
           console.error(error);
@@ -297,18 +322,15 @@ export default function ApprovalOpportunities() {
         }
       })
     );
-  }, [opps, filters]);
+  }, [accounts, filters]);
 
-  const [profiles, setProfiles] = useState([]);
   const [selected, setSelected] = useState([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [requestInfo, setRequestInfo] = useState("");
-  const [sortTitleOrder, setSortTitleOrder] = useState("");
-  const [sortDescriptionOrder, setSortDescriptionOrder] = useState("");
-  const [sortCreatorOrder, setSortCreatorOrder] = useState("");
-  const [sortDateOrder, setSortDateOrder] = useState("");
-  const [sortDurationOrder, setSortDurationOrder] = useState("");
+  const [sortNameOrder, setSortNameOrder] = useState("");
+  const [sortEmailOrder, setSortEmailOrder] = useState("");
+  const [sortYearOrder, setSortYearOrder] = useState("");
   const [sortStatusOrder, setSortStatusOrder] = useState("");
   const [selectAllChecked, setSelectAllChecked] = useState(false);
 
@@ -333,7 +355,7 @@ export default function ApprovalOpportunities() {
           pending: true,
           approved: false,
           denied: false,
-          showPast: false,
+          admin: false,
         });
 
         break;
@@ -343,7 +365,7 @@ export default function ApprovalOpportunities() {
           approved: true,
           pending: false,
           denied: false,
-          showPast: false,
+          admin: false,
         });
 
         break;
@@ -353,14 +375,14 @@ export default function ApprovalOpportunities() {
           denied: true,
           approved: false,
           pending: false,
-          showPast: false,
+          admin: false,
         });
 
         break;
-      case 3: // Completed
+      case 3: // Admin
         setFilters({
           ...filters,
-          showPast: true,
+          admin: true,
           approved: false,
           denied: false,
           pending: false,
@@ -384,62 +406,11 @@ export default function ApprovalOpportunities() {
     console.log(e.target.value);
   };
 
-  const handleDialogSubmit = () => {
-    const opportunities = selected.map((oppId) =>
-      opps.find((opp) => opp.id === oppId)
-    );
-
-    opportunities.forEach((opportunity) => {
-      const posterProfileID = opportunity.profileID;
-
-      // Set opportunities to REQUESTED
-      DataStore.save(
-        Opportunity.copyOf(opportunity, (updatedOpportunity) => {
-          updatedOpportunity.status = "REQUESTED";
-        })
-      )
-        .then(async (res) => {
-          // Create a chatroom with its poster or identify with only the admin and the poster
-          const allChatRooms = await DataStore.query(ChatRoom);
-
-          var chat = await findExistingInfoChatRoom(
-            userProfile,
-            [posterProfileID],
-            allChatRooms
-          );
-
-          if (chat === null) {
-            chat = await createNewChatRoom(userProfile, [posterProfileID]);
-          }
-
-          // Send info request as message
-          await sendMessage(
-            chat.id,
-            userProfile,
-            `Admin ${userProfile.firstName} ${userProfile.lastName} is requesting some information about your opportunity "${opportunity.eventName}": \n${requestInfo}`
-          );
-        })
-        .catch((err) => {
-          console.log("Error requesting info:", err);
-          alert("Error requesting info, please try again.");
-        });
-    });
-
-    // Include link to the particular opportunity in the message (in case one poster has many opportunities).
-
-    setRequestInfo("");
-    setDialogOpen(false);
-  };
-
-  const sortOpps = (json, sortBy, reset) => {
+  const sortAccounts = (json, sortBy, reset) => {
     if (reset === true) {
-      setOpps(
+      setAccounts(
         json.sort(function (a, b) {
-          /* eslint-disable-next-line max-len */
-          return opportunityStatusToText(a.status) >
-            opportunityStatusToText(b.status)
-            ? -1
-            : 1;
+          return a.status > b.status ? 1 : -1;
         })
       );
       setSortStatusOrder("asc");
@@ -447,229 +418,144 @@ export default function ApprovalOpportunities() {
     }
     if (sortBy === "status") {
       if (sortStatusOrder === "") {
-        setOpps(
+        setAccounts(
           json.sort(function (a, b) {
-            /* eslint-disable-next-line max-len */
-            return opportunityStatusToText(a.status) >
-              opportunityStatusToText(b.status)
-              ? -1
-              : 1;
+            return a.status > b.status ? 1 : -1;
           })
         );
         setSortStatusOrder("asc");
       } else if (sortStatusOrder === "asc") {
-        setOpps(
+        setAccounts(
           json.sort(function (a, b) {
-            /* eslint-disable-next-line max-len */
-            return opportunityStatusToText(a.status) >
-              opportunityStatusToText(b.status)
-              ? 1
-              : -1;
+            return a.status > b.status ? -1 : 1;
           })
         );
         setSortStatusOrder("desc");
       } else if (sortStatusOrder === "desc") {
-        setOpps(
+        setAccounts(
           json.sort(function (a, b) {
-            /* eslint-disable-next-line max-len */
-            return opportunityStatusToText(a.status) >
-              opportunityStatusToText(b.status)
-              ? -1
-              : 1;
+            return a.status > b.status ? 1 : -1;
           })
         );
         setSortStatusOrder("asc");
       }
     }
-    if (sortBy === "title") {
-      if (sortTitleOrder === "") {
-        setOpps(
+    if (sortBy === "name") {
+      if (sortNameOrder === "") {
+        setAccounts(
           json.sort(function (a, b) {
-            return a.eventName > b.eventName ? 1 : -1;
+            return a.firstName > b.firstName ? 1 : -1;
           })
         );
-        setSortTitleOrder("asc");
-      } else if (sortTitleOrder === "asc") {
-        setOpps(
+        setSortNameOrder("asc");
+      } else if (sortNameOrder === "asc") {
+        setAccounts(
           json.sort(function (a, b) {
-            return a.eventName > b.eventName ? -1 : 1;
+            return a.firstName > b.firstName ? -1 : 1;
           })
         );
-        setSortTitleOrder("desc");
-      } else if (sortTitleOrder === "desc") {
-        setOpps(
+        setSortNameOrder("desc");
+      } else if (sortNameOrder === "desc") {
+        setAccounts(
           json.sort(function (a, b) {
-            return a.eventName > b.eventName ? 1 : -1;
+            return a.firstName > b.firstName ? 1 : -1;
           })
         );
-        setSortTitleOrder("asc");
+        setSortNameOrder("asc");
       }
     }
-    if (sortBy === "description") {
-      if (sortDescriptionOrder === "") {
-        setOpps(
+    if (sortBy === "email") {
+      if (sortEmailOrder === "") {
+        setAccounts(
           json.sort(function (a, b) {
-            return a.description > b.description ? 1 : -1;
+            return a.email > b.email ? 1 : -1;
           })
         );
-        setSortDescriptionOrder("asc");
-      } else if (sortDescriptionOrder === "asc") {
-        setOpps(
+        setSortEmailOrder("asc");
+      } else if (sortEmailOrder === "asc") {
+        setAccounts(
           json.sort(function (a, b) {
-            return a.description > b.description ? -1 : 1;
+            return a.email > b.email ? -1 : 1;
           })
         );
-        setSortDescriptionOrder("desc");
-      } else if (sortDescriptionOrder === "desc") {
-        setOpps(
+        setSortEmailOrder("desc");
+      } else if (sortEmailOrder === "desc") {
+        setAccounts(
           json.sort(function (a, b) {
-            return a.description > b.description ? 1 : -1;
+            return a.email > b.email ? 1 : -1;
           })
         );
-        setSortDescriptionOrder("asc");
+        setSortEmailOrder("asc");
       }
     }
-    if (sortBy === "creator") {
-      if (sortCreatorOrder === "") {
-        setOpps(
+    if (sortBy === "year") {
+      if (sortYearOrder === "") {
+        setAccounts(
           json.sort(function (a, b) {
-            const first = profiles.find(
-              (profile) => profile.id === a.profileID
-            );
-            const second = profiles.find(
-              (profile) => profile.id === b.profileID
-            );
-            return first.firstName > second.firstName ? 1 : -1;
+            return a.graduationYear - b.graduationYear;
           })
         );
-        setSortCreatorOrder("asc");
-      } else if (sortCreatorOrder === "asc") {
-        setOpps(
+        setSortYearOrder("asc");
+      } else if (sortYearOrder === "asc") {
+        setAccounts(
           json.sort(function (a, b) {
-            const first = profiles.find(
-              (profile) => profile.id === a.profileID
-            );
-            const second = profiles.find(
-              (profile) => profile.id === b.profileID
-            );
-            return first.firstName > second.firstName ? -1 : 1;
+            return b.graduationYear - a.graduationYear;
           })
         );
-        setSortCreatorOrder("desc");
-      } else if (sortCreatorOrder === "desc") {
-        setOpps(
+        setSortYearOrder("desc");
+      } else if (sortYearOrder === "desc") {
+        setAccounts(
           json.sort(function (a, b) {
-            const first = profiles.find(
-              (profile) => profile.id === a.profileID
-            );
-            const second = profiles.find(
-              (profile) => profile.id === b.profileID
-            );
-            return first.firstName > second.firstName ? 1 : -1;
+            return a.graduationYear - b.graduationYear;
           })
         );
-        setSortCreatorOrder("asc");
-      }
-    }
-    if (sortBy === "date") {
-      if (sortDateOrder === "") {
-        setOpps(
-          json.sort(function (a, b) {
-            return moment(a.startTime).isBefore(moment(b.startTime)) ? 1 : -1;
-          })
-        );
-        setSortDateOrder("asc");
-      } else {
-        setOpps(
-          json.sort(function (a, b) {
-            return moment(a.startTime).isBefore(moment(b.startTime)) ? -1 : 1;
-          })
-        );
-        setSortDateOrder("");
-      }
-    }
-    if (sortBy === "duration") {
-      if (sortDurationOrder === "") {
-        setOpps(
-          json.sort(function (a, b) {
-            return moment
-              .duration(moment(a.startTime).diff(a.endTime))
-              .asSeconds() >
-              moment.duration(moment(b.startTime).diff(b.endTime)).asSeconds()
-              ? 1
-              : -1;
-          })
-        );
-        setSortDurationOrder("asc");
-      } else {
-        setOpps(
-          json.sort(function (a, b) {
-            return moment
-              .duration(moment(a.startTime).diff(a.endTime))
-              .asSeconds() >
-              moment.duration(moment(b.startTime).diff(b.endTime)).asSeconds()
-              ? -1
-              : 1;
-          })
-        );
-        setSortDurationOrder("");
+        setSortYearOrder("asc");
       }
     }
   };
 
-  const getOpps = (sortBy, reset) => {
-    DataStore.query(Opportunity)
-      .then((res) => {
-        sortOpps(res, sortBy, reset);
-        // console.log(res);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-        alert("Error retrieving opportunities, please try again");
-      });
-  };
-
-  const getProfiles = () => {
+  const getAccounts = (sortBy, reset) => {
     DataStore.query(Profile)
       .then((res) => {
+        // console.log('Profiles (' + res.length + '):');
+        // console.log(res.map((account) => account.email));
         res.forEach((account) => {
           downloadProfilePicture(account.id, account.picture);
         });
-        setProfiles(res);
+        sortAccounts(res, sortBy, reset);
+        setLoading(false);
       })
       .catch((err) => {
+        alert("Error retrieving profiles, please try again");
         console.log(err);
-        alert("Error retrieving profile, please try again");
       });
   };
 
   const handleSelectAll = () => {
     setSelectAllChecked(!selectAllChecked);
     if (!selectAllChecked) {
-      const newSelected = displayOpps.map((opps) => opps.id);
-      console.log(newSelected);
+      const newSelected = displayAccounts.map((user) => user.email);
+      // console.log("handleSelectAll newSelect:", newSelected);
       setSelected(newSelected);
     } else {
       setSelected([]);
-      console.log(selected);
     }
   };
 
-  const handleSelect = (event) => {
+  const handleSelect = (event, row) => {
     if (selectAllChecked) {
       setSelected([]);
     } else {
-      const eventname = event.target.value;
-      const currentIndex = selected.indexOf(eventname);
+      const email = event.target.value;
+      const currentIndex = selected.indexOf(email);
       const newSelected = [...selected];
 
       if (currentIndex === -1) {
-        newSelected.push(eventname);
+        newSelected.push(email);
       } else {
         newSelected.splice(currentIndex, 1);
       }
-      // console.log(newSelected);
+      // console.log("handleSelect newSelect:", newSelected);
       setSelected(newSelected);
     }
   };
@@ -695,26 +581,27 @@ export default function ApprovalOpportunities() {
         status = "PENDING";
         break;
     }
-    const opportunities = selected.map((opportunity) => {
-      const info = opps.find((opp) => opp.id === opportunity);
+    const profiles = selected.map((profile) => {
+      // console.log("Accounts:", accounts);
+      const info = accounts.find((account) => account.email === profile);
       return info;
     });
     setLoading(true);
     // eslint-disable-next-line guard-for-in
-    for (let index = 0; index < opportunities.length; index++) {
-      const opp = opportunities[index];
-      console.log(`saving opportunity ${opp.eventName} as status ${status}`);
+    for (let index = 0; index < profiles.length; index++) {
+      const profile = profiles[index];
       DataStore.save(
-        Opportunity.copyOf(opp, (updated) => {
+        Profile.copyOf(profile, (updated) => {
           updated.status = status;
         })
       )
         .then(async (res) => {
+          // console.log(res);
           setSelected([]);
-          getProfiles();
-          await new Promise((r) => setTimeout(r, 1000));
-          getOpps("status", true);
-          toast.success(`Opportunity status updated`, toastOptions);
+          await new Promise((r) => setTimeout(r, 300));
+          getAccounts("status", true);
+          // console.log(selected);
+          toast.success(`Account status updated`, toastOptions);
         })
         .catch((err) => {
           console.log(err);
@@ -722,53 +609,120 @@ export default function ApprovalOpportunities() {
             err.log ?? err.msg ?? err.name ?? err.message,
             toastOptions
           );
-          // alert("Error approving opportunity, please try again");
+          // alert('Error approving profiles, please try again');
         });
     }
   };
 
-  useEffect(() => {
-    getProfiles();
-    getOpps("status", true);
-    // eslint-disable-next-line
-  }, []);
+  const handleAdminPromotion = (event) => {
+    const profiles = selected.map((profile) => {
+      const info = accounts.find((account) => account.email === profile);
+      return info;
+    });
+    setLoading(true);
+    // eslint-disable-next-line guard-for-in
+    for (let index = 0; index < profiles.length; index++) {
+      const profile = profiles[index];
+      DataStore.save(
+        Profile.copyOf(profile, (updated) => {
+          updated.status = "ADMIN";
+        })
+      )
+        .then(async (res) => {
+          setSelected([]);
+          await new Promise((r) => setTimeout(r, 300));
+          getAccounts("status", true);
+          toast.success("Admin promoted successfully!", toastOptions);
+        })
+        .catch((err) => {
+          console.log(err);
+          toast.error(
+            err.log ?? err.msg ?? err.name ?? err.message,
+            toastOptions
+          );
+          // alert("Error creating admin, please try again");
+        });
+    }
+  };
+
+  const handleDialogSubmit = () => {
+    const status = "REQUESTED";
+    const profiles = selected.map((email) => {
+      const info = accounts.find((account) => account.email === email);
+      return info;
+    });
+
+    const selectedProfileIds = profiles.map((profile) => profile.id);
+
+    setLoading(true);
+    // eslint-disable-next-line guard-for-in
+    for (let index = 0; index < profiles.length; index++) {
+      const profile = profiles[index];
+      DataStore.save(
+        Profile.copyOf(profile, (updated) => {
+          updated.status = status;
+        })
+      )
+        .then(async (res) => {
+          // console.log(res);
+          setDialogOpen(false);
+          getAccounts("status", true);
+
+          // Create a new chatroom if they don't have one attached, otherwise get the existing one - can be done without a special field for the time being.
+          const allChatRooms = await DataStore.query(ChatRoom);
+
+          var chat = null; //await findExistingInfoChatRoom(userProfile, selectedProfileIds, allChatRooms);
+
+          if (chat === null) {
+            // console.log("Selected:", selected);
+            chat = await createNewChatRoom(userProfile, selected);
+          }
+
+          // console.log("Chatroom:", chat.id);
+          // console.log("User:", userProfile);
+
+          // Create a new message in the chatroom with the infoRequest as text
+          await sendMessage(chat.id, userProfile, requestInfo);
+        })
+        .catch((err) => {
+          console.log(err);
+          alert("Error requesting info, please try again");
+        });
+    }
+    setRequestInfo("");
+  };
 
   const handleSort = (rowId) => {
     setLoading(true);
-    if (rowId === "title") {
-      getOpps(rowId, false);
+    if (rowId === "name") {
+      getAccounts(rowId, false);
     }
-    if (rowId === "description") {
-      getOpps(rowId, false);
+    if (rowId === "email") {
+      getAccounts(rowId, false);
     }
-    if (rowId === "creator") {
-      // getOpps(rowId, false);
+    if (rowId === "year") {
+      getAccounts(rowId, false);
     }
     if (rowId === "status") {
-      getOpps(rowId, false);
-    }
-    if (rowId === "date") {
-      getOpps(rowId, false);
-    }
-    if (rowId === "duration") {
-      getOpps(rowId, false);
+      getAccounts(rowId, false);
     }
     setLoading(false);
   };
 
+  useEffect(() => {
+    getAccounts("status", true);
+    // eslint-disable-next-line
+  }, []);
+
   const getArrowDirection = (row) => {
-    if (row === "title") {
-      return sortTitleOrder;
-    } else if (row === "description") {
-      return sortDescriptionOrder;
-    } else if (row === "creator") {
-      return sortCreatorOrder;
+    if (row === "name") {
+      return sortNameOrder;
+    } else if (row === "email") {
+      return sortEmailOrder;
+    } else if (row === "year") {
+      return sortYearOrder;
     } else if (row === "status") {
       return sortStatusOrder;
-    } else if (row === "date") {
-      return sortDateOrder;
-    } else if (row === "duration") {
-      return sortDurationOrder;
     }
   };
 
@@ -776,29 +730,19 @@ export default function ApprovalOpportunities() {
   // https://mui.com/material-ui/react-table/#sorting-amp-selecting
   const headCells = [
     {
-      id: "title",
+      id: "name",
       disablePadding: false,
-      label: "Opportunity",
+      label: "Name",
     },
     {
-      id: "description",
+      id: "email",
       disablePadding: false,
-      label: "Description",
+      label: "Email",
     },
     {
-      id: "date",
+      id: "year",
       disablePadding: false,
-      label: "Start Date",
-    },
-    {
-      id: "duration",
-      disablePadding: false,
-      label: "Duration",
-    },
-    {
-      id: "creator",
-      disablePadding: false,
-      label: "Creator",
+      label: "Grad Yr",
     },
     {
       id: "status",
@@ -806,27 +750,6 @@ export default function ApprovalOpportunities() {
       label: "Status",
     },
   ];
-
-  const [selectedEmails, setSelectedEmails] = useState([]);
-
-  useEffect(() => {
-    const emails = selected.map((oppId) => {
-      try {
-        const opp = opps.find((opp) => opp.id === oppId);
-        const profile = profiles.find(
-          (profile) => profile.id === opp.profileID
-        );
-        return profile.email;
-      } catch (error) {
-        console.log(error);
-        return null;
-      }
-    });
-    const uniqueEmails = emails.filter(
-      (email, index) => email != null && emails.indexOf(email) === index
-    );
-    setSelectedEmails(uniqueEmails);
-  }, [selected, opps, profiles]);
 
   const [profilePictures, setProfilePictures] = useState({});
   const downloadProfilePicture = async (profileId, picture) => {
@@ -839,6 +762,7 @@ export default function ApprovalOpportunities() {
 
   return (
     <Page>
+      {/* Top Bar */}
       <Card style={{ padding: ".5rem" }}>
         <Toolbar>
           <Box
@@ -867,7 +791,7 @@ export default function ApprovalOpportunities() {
                   height: "auto",
                 }}
               >
-                <Tooltip title="View Pending Opportunities" arrow>
+                <Tooltip title="View Pending Accounts" arrow>
                   <Tab
                     label="Pending"
                     sx={{
@@ -877,7 +801,7 @@ export default function ApprovalOpportunities() {
                     }}
                   />
                 </Tooltip>
-                <Tooltip title="View Approved Opportunities" arrow>
+                <Tooltip title="View Approved Accounts" arrow>
                   <Tab
                     label="Approved"
                     sx={{
@@ -887,7 +811,7 @@ export default function ApprovalOpportunities() {
                     }}
                   />
                 </Tooltip>
-                <Tooltip title="View Denied Opportunities" arrow>
+                <Tooltip title="View Denied Accounts" arrow>
                   <Tab
                     label="Denied"
                     sx={{
@@ -897,9 +821,9 @@ export default function ApprovalOpportunities() {
                     }}
                   />
                 </Tooltip>
-                <Tooltip title="View Completed Opportunities" arrow>
+                <Tooltip title="View Admin Accounts" arrow>
                   <Tab
-                    label="Completed"
+                    label="Admin"
                     sx={{
                       "&:hover": {
                         color: "#00c2ff",
@@ -920,10 +844,12 @@ export default function ApprovalOpportunities() {
             >
               {selectedTab === 0 && (
                 <ThemedButton
-                  color="blue"
-                  variant="themed"
-                  type="submit"
-                  style={{ fontSize: "0.875rem" }}
+                  color={"blue"}
+                  variant={"themed"}
+                  type={"submit"}
+                  style={{
+                    fontSize: "0.875rem",
+                  }}
                   onClick={handleDialogOpen}
                 >
                   Request More Info
@@ -931,13 +857,12 @@ export default function ApprovalOpportunities() {
               )}
 
               <EmailDialog
-                emails={selectedEmails}
-                accounts={profiles}
+                emails={selected}
+                accounts={accounts}
                 profilePictures={profilePictures}
                 open={dialogOpen}
                 setClose={handleDialogClose}
               />
-
               {(selectedTab === 0 || selectedTab === 2) && (
                 <ThemedButton
                   color="green"
@@ -950,7 +875,21 @@ export default function ApprovalOpportunities() {
                 </ThemedButton>
               )}
 
-              {(selectedTab === 0 || selectedTab === 1) && (
+              {selectedTab === 1 && (
+                <ThemedButton
+                  color={"yellow"}
+                  variant={"gradient"}
+                  type={"submit"}
+                  style={{
+                    fontSize: "0.875rem",
+                  }}
+                  onClick={handleAdminPromotion}
+                >
+                  Promote Admin
+                </ThemedButton>
+              )}
+
+              {selectedTab !== 2 && (
                 <ThemedButton
                   color="red"
                   variant="themed"
@@ -1006,7 +945,7 @@ export default function ApprovalOpportunities() {
         }}
       >
         {loading ? (
-          <Box sx={{ display: "flex" }} style={{ padding: "2rem" }}>
+          <Box sx={{ display: "flex", padding: "2rem" }}>
             <CircularProgress />
           </Box>
         ) : (
@@ -1016,11 +955,19 @@ export default function ApprovalOpportunities() {
               overflowY: "auto",
               maxHeight: "calc(100% - 16px)",
               borderRadius: 3,
-              overflowX: "auto", // Allow horizontal scrolling on mobile
             }}
           >
-            <Table style={{ backgroundColor: "white", minWidth: 650 }}>
-              <TableHead aria-label="Opportunities Table Head">
+            <Table style={{ backgroundColor: "white" }}>
+              <TableHead
+                aria-label="Accounts Table Head"
+                sx={{
+                  position: "sticky",
+                  top: 0,
+                  zIndex: 1,
+                  backgroundColor: "white",
+                  borderBottom: "2px solid rgba(0, 0, 0, 0.15)",
+                }}
+              >
                 <TableRow>
                   <TableCell padding="checkbox">
                     <Checkbox
@@ -1047,18 +994,14 @@ export default function ApprovalOpportunities() {
                   ))}
                 </TableRow>
               </TableHead>
-              <TableBody aria-label="Opportunities Table Body">
-                {displayOpps.map((opp) => (
+              <TableBody aria-label="Accounts Table Body">
+                {displayAccounts.map((account) => (
                   <Row
-                    key={opp.id}
-                    row={opp}
-                    profile={profiles.find(
-                      (profile) => profile.id === opp.profileID
-                    )}
+                    key={account.id}
+                    row={account}
                     handleSelect={handleSelect}
                     selectAllChecked={selectAllChecked}
                     selected={selected}
-                    profilePictures={profilePictures}
                   />
                 ))}
               </TableBody>

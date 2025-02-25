@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import ThemedButton from "../components/ThemedButton";
+import ThemedButton from "../components/Themed/ThemedButton";
 import VolunteerImage from "../assets/Volunteer.jpeg";
 import level from "../assets/level10-icon.png";
 import sample1 from "../assets/sample1.PNG";
