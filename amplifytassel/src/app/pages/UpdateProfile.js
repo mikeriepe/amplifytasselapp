@@ -21,12 +21,12 @@ import WorkExperienceDeleteModal from "../components/WorkExperience/WorkExperien
 import VolunteerExperienceForm from "../components/VolunteerExperience/VolunteerExperienceForm";
 import VolunteerExperienceDeleteModal from "../components/VolunteerExperience/VolunteerExperienceDeleteModal";
 import VolunteerExperienceList from "../components/VolunteerExperience/VolunteerExperienceList";
-import ProfileBanner from "../components/ProfileBanner";
+import ProfileBanner from "../components/Profile/ProfileBanner";
 
 // Added by Kenny on 11/3/2024
-import OrganizationExperienceForm from "../components/OrganizationExperienceForm";
-import OrganizationExperienceDeleteModal from "../components/OrganizationExperienceDeleteModal";
-import OrganizationExperienceList from "../components/OrganizationExperienceList";
+import OrganizationExperienceForm from "../components/Organization/OrganizationExperienceForm";
+import OrganizationExperienceDeleteModal from "../components/Organization/OrganizationExperienceDeleteModal";
+import OrganizationExperienceList from "../components/Organization/OrganizationExperienceList";
 
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
