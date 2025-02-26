@@ -1,7 +1,7 @@
 import React from "react";
 import { styled } from "@mui/material";
 import MuiPaper from "@mui/material/Paper";
-import LinkedInLogo from "../assets/linkedinLogo.png";
+import LinkedInLogo from "../../assets/linkedinLogo.png";
 import { Link } from "react-router-dom";
 import { he } from "date-fns/locale";
 

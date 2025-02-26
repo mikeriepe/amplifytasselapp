@@ -33,7 +33,7 @@ import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import {styled} from '@mui/material/styles';
 import {toast} from 'react-toastify';
 import Fuse from 'fuse.js';
-import '../stylesheets/ApprovalTable.css';
+import '../../stylesheets/ApprovalTable.css';
 
 import { DataStore } from '@aws-amplify/datastore';
 import { FriendRequest, Profile, Friend, ChatRoom, Message } from '../../../models';

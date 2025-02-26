@@ -12,7 +12,7 @@ import WarningIcon from '@mui/icons-material/Warning';
 import InfoIcon from '@mui/icons-material/Info';
 import ErrorIcon from '@mui/icons-material/Error';
 import useAuth from '../../util/AuthContext';
-import '../stylesheets/ProfileAlert.css';
+import '../../stylesheets/ProfileAlert.css';
 
 import { ProfileStatus } from '../../../models';
 import { Profile } from '../../../models';

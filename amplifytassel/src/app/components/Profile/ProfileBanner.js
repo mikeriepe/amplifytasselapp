@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import MuiBox from "@mui/material/Box";
-import ExampleCover from "../assets/examplecover.png";
+import ExampleCover from "../../assets/examplecover.png";
 import { v4 as uuidv4 } from "uuid";
 import { DataStore } from "@aws-amplify/datastore";
 import { Storage } from "aws-amplify";

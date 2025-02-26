@@ -30,7 +30,7 @@ import {styled} from '@mui/material/styles';
 import {toast} from 'react-toastify';
 import Fuse from 'fuse.js';
 import useAuth from '../../util/AuthContext';
-import '../stylesheets/ApprovalTable.css';
+import '../../stylesheets/ApprovalTable.css';
 import { DataStore } from '@aws-amplify/datastore';
 import { FriendRequest, Profile, Friend } from '../../../models';
 import { Storage } from 'aws-amplify';
