@@ -18,22 +18,29 @@ import TableBody from '@mui/material/TableBody';
 import InputAdornment from '@mui/material/InputAdornment';
 import Collapse from '@mui/material/Collapse';
 import Checkbox from '@mui/material/Checkbox';
-import ThemedButton from './Themed/ThemedButton';
+import ThemedButton from '../Themed/ThemedButton';
 import IconButton from '@mui/material/IconButton';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import {profileStatusToColor} from '../util/ProfileStatus';
+import {profileStatusToColor} from '../../util/ProfileStatus';
 import CircularProgress from '@mui/material/CircularProgress';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import {styled} from '@mui/material/styles';
 import {toast} from 'react-toastify';
 import Fuse from 'fuse.js';
-import useAuth from '../util/AuthContext';
+import useAuth from '../../util/AuthContext';
 import '../stylesheets/ApprovalTable.css';
+import SocialChatBox from './SocialChatBox'; // Import the SocialChatBox component
+
+
+
 import { DataStore } from '@aws-amplify/datastore';
-import { FriendRequest, Profile, Friend } from './../../models';
+import { Profile, Friend, ChatRoom, ProfileChatRoom } from '../../../models';
 import { Storage } from 'aws-amplify';
+import { Chat, Dataset } from '@mui/icons-material';
+
+import { createNewChatRoom, findExistingChatRoom } from '../../util/SocialChatRooms';
 
 const Page = styled((props) => (
   <Box {...props} />
@@ -155,18 +162,54 @@ function Row(props) {
   );
 }
 
+const formatTimestamp = (timestamp) => {
+  const options = { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
+  return new Date(timestamp).toLocaleString(undefined, options);
+}; 
+
 /**
  * creates account approval content
  * @return {HTML} account approval content
  */
-export default function SocialOutgoingRequests() {
+export default function SocialFriends() {
   const {userProfile} = useAuth();
   const [accounts, setAccounts] = useState([]);
-  const [displayFriendRequests, setDisplayFriendRequests] = useState([]);
+  const [displayFriends, setDisplayFriends] = useState([]);
   const [selected, setSelected] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [selectAllChecked, setSelectAllChecked] = useState(false);
+  const [isChatModalOpen, setChatModalOpen] = useState(false);
+  const [selectedChatroomid, setSelectedChatroomid] = useState('');
+  const [selectedChatroomName, setselectedChatroomName] = useState('');
+  const [chatroomMessages, setChatroomMessages] = useState([]);
+
+  const handleOpenChatModal = async (chatroom) => {
+    chatroom = await Promise.resolve(chatroom);
+    const messageAsyncCollection = chatroom.Messages;
+    const messages = await messageAsyncCollection.values;
+    const sortedMessages = messages.sort((a, b) => new Date(a.Time) - new Date(b.Time));
+
+    // updates the objects with a sender name
+    const updatedMessages = await Promise.all(
+      sortedMessages.map(async (msg) => {
+        const senderProfile = await DataStore.query(Profile, (p) => p.id.eq(msg.Sender));
+        const senderName = `${senderProfile[0].firstName} ${senderProfile[0].lastName}`;
+        return { ...msg, senderName: senderName };
+      })
+    );
+
+    // Format timestamps
+    const formattedMessages = updatedMessages.map((msg) => ({
+      ...msg,
+      Time: formatTimestamp(msg.Time),
+    }));
+      
+    setselectedChatroomName(chatroom.ChatName);
+    setSelectedChatroomid(chatroom.id);
+    setChatroomMessages(formattedMessages);
+    setChatModalOpen(true);
+  };
 
   const getAccounts = (sortBy, reset) => {
     DataStore.query(Profile)
@@ -183,14 +226,12 @@ export default function SocialOutgoingRequests() {
   const handleSelectAll = () => {
     setSelectAllChecked(!selectAllChecked);
     if (!selectAllChecked) {
-      const newSelected = displayFriendRequests.map((user) => user.email);
-      console.log(newSelected);
+      const newSelected = displayFriends.map((user) => user.email);
       setSelected(newSelected);
     } else {
       setSelected([]);
     }
   };
-
 
   const handleSelect = (event, row) => {
     if (selectAllChecked) {
@@ -205,11 +246,10 @@ export default function SocialOutgoingRequests() {
       } else {
         newSelected.splice(currentIndex, 1);
       }
-      console.log(newSelected);
       setSelected(newSelected);
     }
   };
-  
+
   const handleDeleteAction = async (event) => {
     if (selected.length === 0) {
       toast.error('Select at least one user to send friend requests.');
@@ -224,53 +264,93 @@ export default function SocialOutgoingRequests() {
           toProfileIDs.push(matchingProfile.id);
         }
       }
-      console.log(toProfileIDs);
+      // fetches Friend model that matches
       for (const toProfileID of toProfileIDs){
         try{
-          // fetches incoming friend requests
-          const friendRequestToDelete = await DataStore.query(FriendRequest, (c) => c.and(c => [
-            c.Sender.eq(userProfile.id),
-            c.Receiver.eq(toProfileID)
+          const friendToDelete1 = await DataStore.query(Friend, (c) => c.and(c => [
+            c.profileID.eq(toProfileID),
+            c.Friend.eq(userProfile.id)
           ]));
-          console.log(friendRequestToDelete);
-          DataStore.delete(friendRequestToDelete[0]);
+
+          if(friendToDelete1.length){
+            DataStore.delete(friendToDelete1[0]);
+          }
+          else{
+            const friendToDelete2 = await DataStore.query(Friend, (c) => c.and(c => [
+              c.profileID.eq(userProfile.id),
+              c.Friend.eq(toProfileID)
+            ]));
+            DataStore.delete(friendToDelete2[0]);
+          }
         } catch (error){
-          console.error("Error finding friend request:", error);
+          console.error("Error finding Friend", error);
         }
       }
-      setTimeout(() => {
-        window.location.reload();
-      }, 500);
+      reloadPageAfterDelay();
     } catch (error) {
-      console.error("Error denying friend request:", error);
+      console.error("Error deleting friend", error);
     }
   }
+    
+  const reloadPageAfterDelay = () => {
+    setTimeout(() => {
+      window.location.reload();
+    }, 500);
+  };
+
+  const handleMessageAction = async (event) => {
+    const profileIDs = [userProfile.id];
+    selected.forEach(async(email) => {
+      const profile = await DataStore.query(Profile, p => p.email.eq(email));
+      profileIDs.push(profile[0].id);
+    });
+    const allChatRooms = await DataStore.query(ChatRoom);
+    const existingChatRoom = await findExistingChatRoom(allChatRooms, profileIDs);
+    if(existingChatRoom == null){
+      const newChatroom = createNewChatRoom(userProfile, selected);
+      handleOpenChatModal(newChatroom);
+    }
+    else{
+      handleOpenChatModal(existingChatRoom);
+    }
+  };
 
   // Taken from Approvals, searches admin/approved accounts based on query
-  const searchFriendRequests = async (query) => {
-    console.log(userProfile.id);
+  const searchFriends = async (query) => {
     if (!query) {
-      setDisplayFriendRequests([]);
+      setDisplayFriends([]);
       return;
     }
-    var finalResult = [];
+  
     try {
-      // Fetches all friend Requests that are going to the current user
-      const friendRequests = await DataStore.query(FriendRequest, f => f.Sender.eq(userProfile.id));
-      const profilePromises = friendRequests.map(async (item) => {
-        try {
-          // Fetches all profiles of users who have sent a friend request to the current user
-          const profile = await DataStore.query(Profile, p => p.id.eq(item.Receiver));
-          console.log("profile", profile);
-          return profile[0];
-        } catch (error) {
-          console.log("Error trying to fetch profile", error);
-        }
+      const friendIDs = [];
+      const profileResults = [];
+  
+      // Fetch all friends with friend and profileID equal to the user's id
+      const friends1 = await DataStore.query(Friend, f => f.Friend.eq(userProfile.id));
+      const friends2 = await DataStore.query(Friend, f => f.profileID.eq(userProfile.id));
+      
+      // push matching ids
+      friends1.forEach((item) => {
+        friendIDs.push(item.profileID);
       });
-      const friendRequestProfiles = await Promise.all(profilePromises);
-      const filteredProfiles = friendRequestProfiles.filter(profile => profile !== null);
-      console.log("filtered Profiles", filteredProfiles);
-      const fuse = new Fuse(filteredProfiles, {
+  
+      friends2.forEach((item) => {
+        friendIDs.push(item.Friend);
+      });
+      
+      // fetch profiles of friendIDs
+      const profilePromises = friendIDs.map(async (item) => {
+        const profile = await DataStore.query(Profile, p => p.id.eq(item));
+        if (profile.length > 0) {
+          return profile[0];
+        }
+        return null;
+      });
+  
+      const profiles = await Promise.all(profilePromises);
+      console.log("profiles",profiles);
+      const fuse = new Fuse(profiles, {
         keys: ['firstName', 'email', 'graduationYear'],
         threshold: 0.3,
       });
@@ -278,16 +358,16 @@ export default function SocialOutgoingRequests() {
       // Need to push items again since fuse added refIndex
       const result = fuse.search(query);
       result.forEach((item) => {
-        finalResult.push(item.item);
+        profileResults.push(item.item);
       });
-      console.log("finalResult", finalResult);
-      setDisplayFriendRequests(finalResult);
+      setDisplayFriends(profileResults);
     } catch (error) {
-      console.error("Error while fetching friend requests", error);
-      setDisplayFriendRequests([]);
+      console.error("Error displaying friends", error);
     }
   };
   
+
+
   useEffect(() => {
     getAccounts('status', true);
     // eslint-disable-next-line
@@ -330,24 +410,25 @@ export default function SocialOutgoingRequests() {
             }}
           >
             <ThemedButton
-              color={'gray'}
-              variant={'themed'}
+              color={'green'}
+              variant={'gradient'}
               type={'submit'}
               style={{
                 fontSize: '0.875rem',
                 marginRight: '2rem',
               }}
-              onClick={handleDeleteAction}
+              onClick={handleMessageAction}
             >
-                Delete
+                Message
             </ThemedButton>
             <TextField
             placeholder='Search'
             size='small'
-            onChange={(e) => searchFriendRequests(e.target.value)}
+            onChange={(e) => searchFriends(e.target.value)}
             InputProps={{
               style: {
                 marginTop: "0.1rem",
+                marginRight: "5rem",
                 fontSize: '0.9rem',
                 backgroundColor: 'white',
                 borderRadius: '10px',
@@ -368,6 +449,18 @@ export default function SocialOutgoingRequests() {
               },
             }}
           />
+          <ThemedButton
+              color={'gray'}
+              variant={'themed'}
+              type={'submit'}
+              style={{
+                fontSize: '0.875rem',
+                marginLeft: '54rem', // Move the Delete button to the very right
+              }}
+              onClick={handleDeleteAction}
+            >
+                Delete
+            </ThemedButton>
           </Box>
           {/* <Typography variant='h4'>Search Bar</Typography> */}
         </Toolbar>
@@ -389,7 +482,7 @@ export default function SocialOutgoingRequests() {
                   <Checkbox
                       checked={selectAllChecked}
                       onChange={handleSelectAll}
-                  />
+                    />
                 </TableCell>
                 <TableCell padding='checkbox'/>
                 {headCells.map((headCell) => (
@@ -405,7 +498,7 @@ export default function SocialOutgoingRequests() {
             </TableHead>
             <TableBody aria-label='Accounts Table Body'>
               {
-                displayFriendRequests.map((account) => {
+                displayFriends.map((account) => {
                   return (
                     <Row
                       key={account.id}
@@ -452,6 +545,14 @@ export default function SocialOutgoingRequests() {
           </Table>
         }
       </Card>
+      {isChatModalOpen && (
+      <SocialChatBox
+        open={isChatModalOpen}
+        handleClose={() => setChatModalOpen(false)}
+        chatroomName={selectedChatroomName}
+        chatroomID={selectedChatroomid} // Pass the chatroom name here
+        chatroomMessages={chatroomMessages}
+      />)}
     </Page>
   );
 }

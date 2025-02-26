@@ -5,12 +5,12 @@ import Paper from '@mui/material/Paper';
 import {styled} from '@mui/material/styles';
 import {toast} from 'react-toastify';
 
-import ThemedButton from './Themed/ThemedButton';
-import useAuth from '../util/AuthContext';
+import ThemedButton from '../Themed/ThemedButton';
+import useAuth from '../../util/AuthContext';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import ButtonBase from '@mui/material/ButtonBase';
 import MuiCard from '@mui/material/Card';
-import { Profile } from '../../models';
+import { Profile } from '../../../models';
 import { DataStore } from 'aws-amplify';
 
 const Card = styled((props) => (

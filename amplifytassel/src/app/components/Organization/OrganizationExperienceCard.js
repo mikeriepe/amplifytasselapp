@@ -5,7 +5,7 @@ import Divider from '@mui/material/Divider';
 import MuiBox from '@mui/material/Box';
 import MuiCard from '@mui/material/Card';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
-import useAuth from '../util/AuthContext';
+import useAuth from '../../util/AuthContext';
 
 import OrganizationExperienceEditModal from './OrganizationExperienceEditModal';
 import OrganizationExperienceDeleteModal from './OrganizationExperienceDeleteModal';

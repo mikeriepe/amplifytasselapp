@@ -10,7 +10,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { Link } from "react-router-dom";
 import ProfileBanner from "./ProfileBanner.js";
-import useAuth from "../util/AuthContext.js";
+import useAuth from "../../util/AuthContext.js";
 //import level1 from '../assets/level1.png';
 import {
   level1,
@@ -23,7 +23,7 @@ import {
   level8,
   level9,
   level10,
-} from "../util/LevelsIndex.js";
+} from "../../util/LevelsIndex.js";
 import LinearProgressWithLabel from "@mui/material/LinearProgress";
 import Typography from "@mui/material/Typography";
 
@@ -31,20 +31,20 @@ import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import MuiCard from "@mui/material/Card"; 
-import PointsExplainationCard from "./CustomComponents/PointsExplainationCard.js";
+import PointsExplainationCard from "../CustomComponents/PointsExplainationCard.js";
 
 import { DataStore } from "@aws-amplify/datastore";
 import { Storage } from "aws-amplify";
-import { Profile } from "../../models";
+import { Profile } from "../../../models/index.js";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "react-toastify";
 import {
   calculateUserLevel,
   calculateXpBarPercentage,
   calculatePointsToNextLevel,
-} from "../util/PointsAddition.js";
-import ThemedButton from "./Themed/ThemedButton.js";
-import EmailDialog from "./CustomComponents/EmailDialog.js";
+} from "../../util/PointsAddition.js";
+import ThemedButton from "../Themed/ThemedButton.js";
+import EmailDialog from "../CustomComponents/EmailDialog.js";
 
 const Header = styled((props) => <MuiPaper elevation={0} {...props} />)(() => ({
   position: "relative",
