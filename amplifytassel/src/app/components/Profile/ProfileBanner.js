@@ -4,7 +4,7 @@ import ExampleCover from "../assets/examplecover.png";
 import { v4 as uuidv4 } from "uuid";
 import { DataStore } from "@aws-amplify/datastore";
 import { Storage } from "aws-amplify";
-import { Profile } from "../../models";
+import { Profile } from "../../../models";
 import { toast } from "react-toastify";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";

@@ -3,11 +3,11 @@ import MuiBox from '@mui/material/Box';
 import {styled} from '@mui/material/styles';
 import PageHeader from '../components/CustomComponents/PageHeader';
 import CompressedTabBar from '../components/CustomComponents/CompressedTabBar';
-import SocialUsers from '../components/SocialUsers'
-import SocialFriends from '../components/SocialFriends'
-import SocialIncomingRequests from '../components/SocialIncomingRequests';
-import SocialOutgoingRequests from '../components/SocialOutgoingRequests';
-import SocialMessages from '../components/SocialMessages';
+import SocialUsers from '../components/Social/SocialUsers'
+import SocialFriends from '../components/Social/SocialChatBox'
+import SocialIncomingRequests from '../components/Social/SocialIncomingRequests';
+import SocialOutgoingRequests from '../components/Social/SocialOutgoingRequests';
+import SocialMessages from '../components/Social/SocialMessages';
 import useAuth from '../util/AuthContext';
 
 const Page = styled((props) => (

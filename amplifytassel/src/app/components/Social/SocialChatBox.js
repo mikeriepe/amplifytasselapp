@@ -4,10 +4,10 @@ import CloseIcon from '@mui/icons-material/Close';
 import {styled} from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
-import useAuth from '../util/AuthContext';
-import {sendMessage} from "../util/SocialChat";
+import useAuth from '../../util/AuthContext';
+import {sendMessage} from "../../util/SocialChat";
 import { DataStore, Predicates } from 'aws-amplify';
-import { Message, Profile } from './../../models';
+import { Message, Profile } from '../../../models';
 import Filter from 'bad-words';
 
 const filter = new Filter();

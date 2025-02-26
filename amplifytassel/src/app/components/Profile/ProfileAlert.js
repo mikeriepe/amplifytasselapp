@@ -11,11 +11,11 @@ import CheckIcon from '@mui/icons-material/Check';
 import WarningIcon from '@mui/icons-material/Warning';
 import InfoIcon from '@mui/icons-material/Info';
 import ErrorIcon from '@mui/icons-material/Error';
-import useAuth from '../util/AuthContext';
+import useAuth from '../../util/AuthContext';
 import '../stylesheets/ProfileAlert.css';
 
-import { ProfileStatus } from '../../models';
-import { Profile } from '../../models';
+import { ProfileStatus } from '../../../models';
+import { Profile } from '../../../models';
 import { DataStore } from '@aws-amplify/datastore';
 import {useNavigate} from "react-router-dom"
 

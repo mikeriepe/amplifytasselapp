@@ -13,18 +13,18 @@ import TableSortLabel from "@mui/material/TableSortLabel";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableBody from "@mui/material/TableBody";
-import useAuth from "../util/AuthContext";
+import useAuth from "../../util/AuthContext";
 // import TableFooter from '@mui/material/TableFooter';
 // import TablePagination from '@mui/material/TablePagination';
 import InputAdornment from "@mui/material/InputAdornment";
 import Collapse from "@mui/material/Collapse";
 import Checkbox from "@mui/material/Checkbox";
-import ThemedButton from "./Themed/ThemedButton";
+import ThemedButton from "../Themed/ThemedButton";
 import IconButton from "@mui/material/IconButton";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import { profileStatusToColor } from "../util/ProfileStatus";
+import { profileStatusToColor } from "../../util/ProfileStatus";
 import CircularProgress from "@mui/material/CircularProgress";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import { styled } from "@mui/material/styles";
@@ -33,7 +33,7 @@ import Fuse from "fuse.js";
 import "../stylesheets/ApprovalTable.css";
 
 import { DataStore } from "@aws-amplify/datastore";
-import { FriendRequest, Profile, Friend } from "./../../models";
+import { FriendRequest, Profile, Friend } from "../../../models";
 import { Storage } from "aws-amplify";
 
 const Page = styled((props) => <Box {...props} />)(() => ({
