@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { DataStore, Storage } from "aws-amplify";
-import { Request } from "./../../models";
+import { Request } from "../../../models";
 import MuiBox from "@mui/material/Box";
 import { Grid } from "@mui/material";
 import EventNoteRoundedIcon from "@mui/icons-material/EventNoteRounded";

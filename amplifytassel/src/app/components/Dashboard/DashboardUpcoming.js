@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import MuiBox from "@mui/material/Box";
-import useAuth from "../util/AuthContext";
+import useAuth from "../../util/AuthContext.js";
 import { Link } from "react-router-dom";
 import { Grid } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -9,8 +9,8 @@ import Box from "@mui/material/Box";
 import DashboardOppThumbnail from "./DashboardOppThumbnail";
 
 import { DataStore } from "@aws-amplify/datastore";
-import { Opportunity } from "./../../models";
-import { useTabIndex } from "../context/TabIndexContext.js";
+import { Opportunity } from "../../../models/index.js";
+import { useTabIndex } from "../../context/TabIndexContext.js";
 
 const UpcomingSection = ({ children }, props) => (
   <MuiBox

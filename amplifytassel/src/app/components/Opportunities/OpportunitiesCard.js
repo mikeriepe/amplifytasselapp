@@ -19,11 +19,11 @@ import { Modal, Tooltip } from "@mui/material";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 
-import useAuth from "../util/AuthContext";
-import RequestModal from "./CustomComponents/RequestOpportunityModal";
+import useAuth from "../../util/AuthContext";
+import RequestModal from "../CustomComponents/RequestOpportunityModal";
 import OpportunityForm from "./OpportunityForm";
-import ThemedButton from "./Themed/ThemedButton";
-import { PointsAddition } from "../util/PointsAddition";
+import ThemedButton from "../Themed/ThemedButton";
+import { PointsAddition } from "../../util/PointsAddition";
 import { DataStore } from "aws-amplify";
 import {
   Opportunity,
@@ -35,10 +35,10 @@ import {
   OpportunityProfile,
   Keyword,
   KeywordOpportunity,
-} from "../../models";
+} from "../../../models";
 import { Storage } from "aws-amplify";
-import useAnimation from "../util/AnimationContext";
-import { calculateIfUserLeveledUp } from "../util/PointsAddition";
+import useAnimation from "../../util/AnimationContext";
+import { calculateIfUserLeveledUp } from "../../util/PointsAddition";
 import { v4 as uuidv4 } from "uuid";
 
 const IconStyling = {

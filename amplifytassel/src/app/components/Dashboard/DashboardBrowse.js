@@ -6,7 +6,7 @@ import Box from "@mui/material/Box";
 import MuiCard from "@mui/material/Card";
 import SearchIcon from "@mui/icons-material/Search";
 import Button from "@mui/material/Button";
-import { useTabIndex } from "../context/TabIndexContext.js";
+import { useTabIndex } from "../../context/TabIndexContext.js";
 
 const Display = styled((props) => <MuiCard elevation={0} {...props} />)(() => ({
   display: "flex",

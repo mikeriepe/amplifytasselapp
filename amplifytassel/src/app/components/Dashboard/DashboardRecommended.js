@@ -1,10 +1,10 @@
 import React from "react";
-import { useRecommendations } from "../context/RecommendationsContext";
+import { useRecommendations } from "../../context/RecommendationsContext";
 import { Link } from "react-router-dom";
 import { Grid, CircularProgress, Box } from "@mui/material";
 import DashboardOppThumbnail from "./DashboardOppThumbnail";
 import MuiBox from "@mui/material/Box";
-import { useTabIndex } from "../context/TabIndexContext";
+import { useTabIndex } from "../../context/TabIndexContext";
 
 const UpcomingSection = ({ children }, props) => (
   <MuiBox

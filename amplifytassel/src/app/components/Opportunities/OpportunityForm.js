@@ -17,22 +17,22 @@ import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
 import { v4 as uuidv4 } from "uuid";
-import "../stylesheets/OpportunityForm.css";
+import "../../stylesheets/OpportunityForm.css";
 // import Stack from '@mui/material/Stack';
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { useForm } from "react-hook-form";
 
-import ThemedButton from "./Themed/ThemedButton";
-import { TextInput } from "./Forms/TextInput";
-import { TimeInput } from "./Forms/TimeInput.js";
-import { DropdownInput } from "./Forms/DropdownInput";
-import { CheckboxInput } from "./Forms/CheckboxInput";
-import { DateInput } from "./Forms/DateInput";
+import ThemedButton from "../Themed/ThemedButton.js";
+import { TextInput } from "../Forms/TextInput.js";
+import { TimeInput } from "../Forms/TimeInput.js";
+import { DropdownInput } from "../Forms/DropdownInput.js";
+import { CheckboxInput } from "../Forms/CheckboxInput.js";
+import { DateInput } from "../Forms/DateInput.js";
 import { DataStore, Storage } from "aws-amplify";
-import { Keyword, Major } from "../../models";
-import { Opportunity } from "../../models";
+import { Keyword, Major } from "../../../models/index.js";
+import { Opportunity } from "../../../models/index.js";
 
 const Banner = ({ image }, props) => {
   return (

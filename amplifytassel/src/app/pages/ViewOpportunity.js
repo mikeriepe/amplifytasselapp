@@ -12,7 +12,7 @@ import ViewOpportunityMembers from "../components/ViewOpportunity/ViewOpportunit
 import ViewOpportunityRequests from "../components/ViewOpportunity/ViewOpportunityRequests";
 import ViewOpportunityFindPeople from "../components/ViewOpportunity/ViewOpportunityPeople";
 import useAuth from "../util/AuthContext";
-import OpportunityForm from "../components/OpportunityForm";
+import OpportunityForm from "../components/Opportunities/OpportunityForm";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import RequestModal from "../components/CustomComponents/RequestOpportunityModal";

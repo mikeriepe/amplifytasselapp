@@ -6,13 +6,13 @@ import TextField from "@mui/material/TextField";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import OpportunitiesCard from "./OpportunitiesCard";
 import OpportunitiesFilters from "./OpportunitiesFilters";
-import ThemedDropdown from "./Themed/ThemedDropdown";
+import ThemedDropdown from "../Themed/ThemedDropdown";
 import { Tooltip } from "@mui/material";
 import Fuse from "fuse.js";
-import useAuth from "../util/AuthContext";
+import useAuth from "../../util/AuthContext";
 import { Grid, CircularProgress } from "@mui/material";
-import { handleSort } from "../util/RecommendationAlgorithm";
-import { useRecommendations } from "../context/RecommendationsContext";
+import { handleSort } from "../../util/RecommendationAlgorithm";
+import { useRecommendations } from "../../context/RecommendationsContext";
 
 const Page = styled((props) => <MuiBox {...props} />)(() => ({
   display: "flex",

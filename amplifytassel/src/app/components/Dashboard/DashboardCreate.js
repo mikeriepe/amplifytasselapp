@@ -4,18 +4,18 @@ import MuiBox from "@mui/material/Box";
 import MuiCard from "@mui/material/Card";
 import AddIcon from "@mui/icons-material/Add";
 import Button from "@mui/material/Button";
-import OpportunityForm from "../components/OpportunityForm";
+import OpportunityForm from "../Opportunities/OpportunityForm";
 import { Modal } from "@mui/material";
-import useAuth from "../util/AuthContext";
+import useAuth from "../../util/AuthContext";
 import { toast } from "react-toastify";
-import useAnimation from "../util/AnimationContext";
-import { calculateIfUserLeveledUp } from "../util/PointsAddition";
+import useAnimation from "../../util/AnimationContext";
+import { calculateIfUserLeveledUp } from "../../util/PointsAddition";
 
 import { DataStore, Storage } from "aws-amplify";
-import { Opportunity } from "../../models";
-import { Role } from "../../models";
-import { OpportunityStatus } from "../../models";
-import { PointsAddition } from "../util/PointsAddition";
+import { Opportunity } from "../../../models";
+import { Role } from "../../../models";
+import { OpportunityStatus } from "../../../models";
+import { PointsAddition } from "../../util/PointsAddition";
 import { v4 as uuidv4 } from "uuid";
 
 const Display = styled((props) => <MuiCard elevation={0} {...props} />)(() => ({

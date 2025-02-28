@@ -26,13 +26,13 @@ import NotificationsRoundedIcon from "@mui/icons-material/NotificationsRounded";
 import SettingsIcon from "@mui/icons-material/Settings";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import SchoolIcon from "@mui/icons-material/School";
-import UCSCIcon from "../assets/ucsc-logo.jpg";
-import Notification from "./CustomComponents/Notification";
-import ThemedButton from "./Themed/ThemedButton";
-import useAuth from "../util/AuthContext";
+import UCSCIcon from "../../assets/ucsc-logo.jpg";
+import Notification from "../CustomComponents/Notification.js";
+import ThemedButton from "../Themed/ThemedButton.js";
+import useAuth from "../../util/AuthContext.js";
 import * as Nav from "./NavBarComponents";
 import { Storage } from "aws-amplify";
-import { useTabIndex } from "../context/TabIndexContext.js";
+import { useTabIndex } from "../../context/TabIndexContext.js";
 
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";

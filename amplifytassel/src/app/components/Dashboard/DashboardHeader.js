@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import MuiBox from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
-import useAuth from "../util/AuthContext";
+import useAuth from "../../util/AuthContext";
 
 import { DataStore } from "@aws-amplify/datastore";
-import { Opportunity } from "./../../models";
+import { Opportunity } from "../../../models";
 
 const Header = ({ children }, props) => (
   <MuiBox

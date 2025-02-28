@@ -5,9 +5,9 @@ import MuiAvatar from '@mui/material/Avatar';
 import MuiBox from '@mui/material/Box';
 import MuiPaper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
-import ThemedButton from './Themed/ThemedButton';
+import ThemedButton from '../Themed/ThemedButton';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
-import useAuth from '../util/AuthContext';
+import useAuth from '../../util/AuthContext';
 import { Storage } from 'aws-amplify';
 
 const Paper = styled((props) => (

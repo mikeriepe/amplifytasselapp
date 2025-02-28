@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import MuiBox from "@mui/material/Box";
-import useAuth from "../util/AuthContext";
+import useAuth from "../../util/AuthContext";
 
 import { Typography, Box, List } from "@mui/material";
-import DashboardCreate from "../components/DashboardCreate";
+import DashboardCreate from "./DashboardCreate";
 import DashboardPendingReqCard from "./DashboardPendingReqCard";
 import { DataStore } from "@aws-amplify/datastore";
-import { Opportunity } from "./../../models";
+import { Opportunity } from "../../../models";
 
 const PendingSection = ({ children }, props) => (
   <MuiBox

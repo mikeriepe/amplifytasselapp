@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
-import ThemedButton from "./Themed/ThemedButton";
+import ThemedButton from "../Themed/ThemedButton";
 import PersonIcon from "@mui/icons-material/Person";
 import SchoolIcon from "@mui/icons-material/School";
 import * as Nav from "./NavBarComponents";
@@ -52,7 +52,7 @@ export default function NavBarLoggedOut() {
             }}
           >
             <img
-              src={require("../assets/ucsc-logo.jpg")}
+              src={require("../../assets/ucsc-logo.jpg")}
               alt="UCSC Logo"
               style={{ height: "50px", width: "auto" }}
             />
