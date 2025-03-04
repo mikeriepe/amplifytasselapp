@@ -136,37 +136,31 @@ export default function FetchWrapper() {
         alert("Error retrieving past joined opportunities");
       });
   };
-
-  const getPendingOpportunities = () => {
+  const getPendingOpportunities = async () => {
     console.log("Getting pending...");
-    DataStore.query(Opportunity, (o) =>
-      o.and((o) => [
-        o.Requests.profileID.eq(userProfile.id),
-        //o.Requests.status.eq('PENDING')
-      ])
-    )
-      .then((res) => {
-        console.log(res);
-        const pendingOpps = [];
-        for (let i = 0; i < res.length; i++) {
-          const p = Promise.resolve(res[i].Requests.values);
-          p.then((value) => {
-            for (let j = 0; j < value.length; j++) {
-              if (
-                value[j].profileID === userProfile.id &&
-                value[j].status === "PENDING"
-              ) {
+    try {
+      const res = await DataStore.query(Opportunity, (o) =>
+          o.and((o) => [o.Requests.profileID.eq(userProfile.id)])
+      );
+      console.log(res);
+      const pendingOpps = [];
+      for (let i = 0; i < res.length; i++) {
+          const values = await Promise.resolve(res[i].Requests.values);
+          for (let j = 0; j < values.length; j++) {
+            if (
+                values[j].profileID === userProfile.id &&
+                values[j].status === "PENDING"
+            ) {
                 pendingOpps.push(res[i]);
-              }
+                break;
             }
-          });
-        }
-        setPendingOpportunities(pendingOpps);
-      })
-      .catch((err) => {
-        console.log(err);
-        alert("Error retrieving pending opportunities");
-      });
+          }
+      }
+      setPendingOpportunities(pendingOpps);
+    } catch (err) {
+      console.log(err);
+      alert("Error retrieving pending opportunities");
+    }
   };
 
   const getAllOpportunities = () => {
