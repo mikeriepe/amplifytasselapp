@@ -96,7 +96,7 @@ export default function OrganizationExperienceDeleteModal({onClose}) {
     console.log('updateProfile called');
   };
 
-  const organizationTitleList = userProfile.organizationExperience.map((organization, index)=>{
+  const organizationTitleList = userProfile.organizationExperience?.map((organization, index)=>{
     return <Card className='clickable' key = {index}>
       <div
         className='flex-space-between flex-align-center'

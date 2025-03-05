@@ -96,7 +96,7 @@ export default function VolunteerExperienceDeleteModal({onClose}) {
     console.log('updateProfile called');
   };
 
-  const jobTitleList = userProfile.volunteerExperience.map((job, index)=>{
+  const jobTitleList = userProfile.volunteerExperience?.map((job, index)=>{
     return <Card className='clickable' key = {index}>
       <div
         className='flex-space-between flex-align-center'

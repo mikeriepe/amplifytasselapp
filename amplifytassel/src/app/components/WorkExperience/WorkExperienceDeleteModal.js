@@ -96,7 +96,7 @@ export default function WorkExperienceDeleteModal({onClose}) {
     return;
   };
 
-  const jobTitleList = userProfile.experience.map((job, index) => {
+  const jobTitleList = userProfile.experience?.map((job, index) => {
     return (
       <Card className='clickable' key={index}>
         <div
