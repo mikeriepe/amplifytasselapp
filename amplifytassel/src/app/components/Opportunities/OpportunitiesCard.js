@@ -761,7 +761,7 @@ export default function OpportunitiesCard({
     <>
       {opportunity && (
         <Card
-          sx={{ width: 500, borderRadius: 4, boxShadow: 3 }}
+          sx={{ width: '100%', borderRadius: 4, boxShadow: 3 }}
           className="clickable"
         >
           <div
