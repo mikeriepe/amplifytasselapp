@@ -191,7 +191,13 @@ export default function OpportunitiesList({
     if (dropdownSelect === "Recommended") {
       if (recommendedOpps && recommendedOpps.length > 0) {
         // Use cached recommendations if available
-        filteredOpps = recommendedOpps;
+        filteredOpps = recommendedOpps.filter((opp) =>
+          locationFilterLower.length === 0
+            ? true
+            : opp.locationType
+            ? locationFilterLower.includes(opp.locationType.toLowerCase())
+            : false
+        );
       } else {
         // Re-run recommendation algorithm if recommendations are empty
         filteredOpps = await handleSort(
