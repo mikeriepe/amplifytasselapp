@@ -222,7 +222,7 @@ export default function PageHeader({
             {type === "viewopportunity" ? (
               <h3 className="text-dark">{title}</h3>
             ) : (
-              <h2 className="text-bold text-dark">{title}</h2>
+              <h2 className="text-dark ellipsis text-medium">{title}</h2>
             )}
             <p className="text-bold" aria-label="Page Header Host">
               {`${subtitle}`}
