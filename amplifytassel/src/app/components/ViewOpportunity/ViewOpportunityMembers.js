@@ -79,22 +79,19 @@ export default function ViewOpportunityMembers({
     navigate(`/Profile/${profileid}`);
   };
 
-  useEffect(() => {
-    const fetchProfiles = async () => {
-      let profilesWithRoles = [];
-      // a for loop to get what profiles are in each role
-      for (let i = 0; i < roles.length; i++) {
-        // will return the profiles in roles[i]
-        const profilesInRole = await DataStore.query(Profile, (p) => p.Roles.roleId.eq(roles[i].id));
-        for (let j = 0; j < profilesInRole.length; j++) {
-          let temp = {...profilesInRole[j]};
-          temp.roleName = roles[i].name;
-          profilesWithRoles.push(temp);
-        }
+  useEffect(() => async () => {
+    let profilesWithRoles = [];
+    // a for loop to get what profiles are in each role
+    for (let i = 0; i < roles.length; i++) {
+      // will return the profiles in roles[i]
+      const profilesInRole = await DataStore.query(Profile, (p) => p.Roles.roleId.eq(roles[i].id));
+      for (let j = 0; j < profilesInRole.length; j++) {
+        let temp = {...profilesInRole[j]};
+        temp.roleName = roles[i].name;
+        profilesWithRoles.push(temp);
       }
-      setProfiles([...profilesWithRoles]);
     }
-    fetchProfiles();
+    setProfiles([...profilesWithRoles]);
   }, [members]);
 
   return (
