@@ -4,8 +4,8 @@ import { DataStore } from '@aws-amplify/datastore';
 import { KeywordProfile } from '../../models';
 
 // Animation Libraries
-import AnimationStarFlying from '../components/AnimationStarFlying';
-import AnimationConfetti from '../components/AnimationConfetti';
+import AnimationStarFlying from '../components/Animations/AnimationStarFlying';
+import AnimationConfetti from '../components/Animations/AnimationConfetti';
 /**
  * creates settings page
  * @return {HTML} settings page

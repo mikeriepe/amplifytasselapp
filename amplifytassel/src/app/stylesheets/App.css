@@ -311,7 +311,7 @@ a:active {
 }
 
 .ellipsis {
-  white-space: nowrap;
+  white-space: wrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
