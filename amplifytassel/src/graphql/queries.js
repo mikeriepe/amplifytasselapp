@@ -1056,6 +1056,18 @@ export const getProfile = /* GraphQL */ `
       dateOfBirth
       collegeAffiliation
       pronouns
+      username
+      organizationExperience {
+        end
+        start
+        role
+        organization
+        school
+        location
+        description
+        currentPosition
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -1096,6 +1108,7 @@ export const listProfiles = /* GraphQL */ `
         dateOfBirth
         collegeAffiliation
         pronouns
+        username
         createdAt
         updatedAt
         _version
@@ -1146,6 +1159,7 @@ export const syncProfiles = /* GraphQL */ `
         dateOfBirth
         collegeAffiliation
         pronouns
+        username
         createdAt
         updatedAt
         _version
@@ -2059,6 +2073,7 @@ export const getProfileChatRoom = /* GraphQL */ `
         dateOfBirth
         collegeAffiliation
         pronouns
+        username
         createdAt
         updatedAt
         _version
@@ -2237,6 +2252,7 @@ export const getKeywordProfile = /* GraphQL */ `
         dateOfBirth
         collegeAffiliation
         pronouns
+        username
         createdAt
         updatedAt
         _version
@@ -2745,6 +2761,7 @@ export const getProfileRole = /* GraphQL */ `
         dateOfBirth
         collegeAffiliation
         pronouns
+        username
         createdAt
         updatedAt
         _version
@@ -2919,6 +2936,7 @@ export const getProfileMajor = /* GraphQL */ `
         dateOfBirth
         collegeAffiliation
         pronouns
+        username
         createdAt
         updatedAt
         _version
@@ -3083,6 +3101,7 @@ export const getOpportunityProfile = /* GraphQL */ `
         dateOfBirth
         collegeAffiliation
         pronouns
+        username
         createdAt
         updatedAt
         _version

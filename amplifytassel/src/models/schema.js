@@ -1267,6 +1267,23 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
+                "username": {
+                    "name": "username",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "organizationExperience": {
+                    "name": "organizationExperience",
+                    "isArray": true,
+                    "type": {
+                        "nonModel": "WorkHistory"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -3214,5 +3231,5 @@ export const schema = {
         }
     },
     "codegenVersion": "3.4.4",
-    "version": "8322db4afaf8dd9c2de554ec445e59f3"
+    "version": "0e068e7495eded99112107af9f07103c"
 };

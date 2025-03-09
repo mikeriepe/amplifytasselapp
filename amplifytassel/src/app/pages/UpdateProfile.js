@@ -126,7 +126,7 @@ export default function UpdateProfile() {
       linkedin: userProfile.linkedin,
       // Added by Kenny Losier 11/3/2024:
       username: userProfile.username,
-      college: userProfile.college,
+      collegeAffiliation: userProfile.collegeAffiliation,
       firstName: userProfile.firstName || "",
       lastName: userProfile.lastName || "",
     },
@@ -179,7 +179,7 @@ export default function UpdateProfile() {
     }
 
     // Check college - added by Kenny 11/3/2024
-    if (userProfile.college === null && selctdVals[1].college !== null) {
+    if (userProfile.collegeAffiliation === null && selctdVals[1].college !== null) {
       pointsToBeAdded += 20;
     }
 
@@ -295,7 +295,7 @@ export default function UpdateProfile() {
         updated.about = values[1].about;
         updated.linkedin = values[1].linkedin;
         updated.username = values[1].username;
-        updated.college = values[1].college;
+        updated.collegeAffiliation = values[1].college;
         updated.firstName = values[1].firstName;
         updated.lastName = values[1].lastName;
       })
@@ -331,7 +331,7 @@ export default function UpdateProfile() {
             keywords: keywords,
             linkedin: userProfile.linkedin,
             username: userProfile.username,
-            college: userProfile.college,
+            college: userProfile.collegeAffiliation,
             firstName: userProfile.firstName,
             lastName: userProfile.lastName,
           },
