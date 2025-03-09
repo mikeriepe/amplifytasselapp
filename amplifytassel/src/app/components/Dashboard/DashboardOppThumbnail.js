@@ -82,7 +82,7 @@ const CustomCard = ({ opportunity }) => {
           {/* Subtitle or Extra Information */}
           <Typography
             variant="body2"
-            class="text-light text-lightgray title-margin"
+            class="text-bold title-margin"
             gutterBottom
           >
             <div className="flex-horizontal flex-flow-large flex-align-center">
@@ -91,7 +91,7 @@ const CustomCard = ({ opportunity }) => {
             </div>
           </Typography>
           {/* Date and Location Information */}
-          <Typography variant="body1" class="text-bold text-dark">
+          <Typography variant="body1" class="text-bold">
             <div className="flex-horizontal flex-flow-large flex-align-center">
               <EventNoteRoundedIcon sx={{ fontSize: "0.9rem" }} />
               <p className="text-bold ellipsis">
