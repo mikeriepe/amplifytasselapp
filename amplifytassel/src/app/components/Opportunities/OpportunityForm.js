@@ -469,6 +469,13 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
     return tagsObject;
   };
 
+  const roundToNextHour = () => {
+    const now = new Date();
+    now.setMinutes(0, 0, 0);
+    now.setHours(now.getHours() + 1);
+    return now;
+  };
+
   return (
     <Paper
       sx={{
@@ -827,6 +834,7 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
                 control={control}
                 label="Start Time"
                 register={register}
+                defaultValue={roundToNextHour()}
               />
               <TimeInput
                 name="endtime"
