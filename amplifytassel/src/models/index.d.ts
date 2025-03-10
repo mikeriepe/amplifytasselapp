@@ -467,6 +467,8 @@ type EagerProfile = {
   readonly dateOfBirth?: string | null;
   readonly collegeAffiliation?: string | null;
   readonly pronouns?: string | null;
+  readonly username?: string | null;
+  readonly organizationExperience?: (WorkHistory | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly profileAnalyticsId?: string | null;
@@ -516,6 +518,8 @@ type LazyProfile = {
   readonly dateOfBirth?: string | null;
   readonly collegeAffiliation?: string | null;
   readonly pronouns?: string | null;
+  readonly username?: string | null;
+  readonly organizationExperience?: (WorkHistory | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly profileAnalyticsId?: string | null;

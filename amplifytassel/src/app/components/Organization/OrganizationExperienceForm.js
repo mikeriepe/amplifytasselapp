@@ -138,13 +138,16 @@ export default function OrganizationExperienceForm({onClose}) {
     }
 
     let newLocation = '';
-    if (data.jobcity !== '' && data.jobstate !== '') {
-      newLocation = data.jobcity + ', ' + data.jobstate;
-    } else if (data.jobstate === '') {
-      newLocation = data.jobcity;
+    if (data.organizationcity !== '' && data.organizationstate !== '') {
+      newLocation = data.organizationcity + ', ' + data.organizationstate;
+    } else if (data.organizationstate === '') {
+      newLocation = data.organizationcity;
     } else {
-      newLocation = data.jobstate;
+      newLocation = data.organizationstate;
     }
+
+    console.log(newLocation);
+
     const newOrganizationExperience = {
       end: data.enddate !== null ? endDate : '',
       start: startDate,

@@ -25,7 +25,7 @@ export default function ProfileCollege({data}) {
   return (
     <College>
       <h4 className='text-dark'>College Affiliation</h4>
-      {data.college? <p aria-label='Profile College'>{data.college}</p> : <p>None</p>}
+      {data.collegeAffiliation? <p aria-label='Profile College'>{data.collegeAffiliation}</p> : <p>None</p>}
     </College>
   );
 }

@@ -706,6 +706,17 @@ export const onCreateProfile = /* GraphQL */ `
       dateOfBirth
       collegeAffiliation
       pronouns
+      username
+      organizationExperience {
+        end
+        start
+        title
+        company
+        location
+        description
+        currentPosition
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -846,6 +857,17 @@ export const onUpdateProfile = /* GraphQL */ `
       dateOfBirth
       collegeAffiliation
       pronouns
+      username
+      organizationExperience {
+        end
+        start
+        title
+        company
+        location
+        description
+        currentPosition
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -986,6 +1008,17 @@ export const onDeleteProfile = /* GraphQL */ `
       dateOfBirth
       collegeAffiliation
       pronouns
+      username
+      organizationExperience {
+        end
+        start
+        title
+        company
+        location
+        description
+        currentPosition
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -1616,6 +1649,7 @@ export const onCreateProfileChatRoom = /* GraphQL */ `
         dateOfBirth
         collegeAffiliation
         pronouns
+        username
         createdAt
         updatedAt
         _version
@@ -1674,6 +1708,7 @@ export const onUpdateProfileChatRoom = /* GraphQL */ `
         dateOfBirth
         collegeAffiliation
         pronouns
+        username
         createdAt
         updatedAt
         _version
@@ -1732,6 +1767,7 @@ export const onDeleteProfileChatRoom = /* GraphQL */ `
         dateOfBirth
         collegeAffiliation
         pronouns
+        username
         createdAt
         updatedAt
         _version
@@ -1790,6 +1826,7 @@ export const onCreateKeywordProfile = /* GraphQL */ `
         dateOfBirth
         collegeAffiliation
         pronouns
+        username
         createdAt
         updatedAt
         _version
@@ -1848,6 +1885,7 @@ export const onUpdateKeywordProfile = /* GraphQL */ `
         dateOfBirth
         collegeAffiliation
         pronouns
+        username
         createdAt
         updatedAt
         _version
@@ -1906,6 +1944,7 @@ export const onDeleteKeywordProfile = /* GraphQL */ `
         dateOfBirth
         collegeAffiliation
         pronouns
+        username
         createdAt
         updatedAt
         _version
@@ -2248,6 +2287,7 @@ export const onCreateProfileRole = /* GraphQL */ `
         dateOfBirth
         collegeAffiliation
         pronouns
+        username
         createdAt
         updatedAt
         _version
@@ -2311,6 +2351,7 @@ export const onUpdateProfileRole = /* GraphQL */ `
         dateOfBirth
         collegeAffiliation
         pronouns
+        username
         createdAt
         updatedAt
         _version
@@ -2374,6 +2415,7 @@ export const onDeleteProfileRole = /* GraphQL */ `
         dateOfBirth
         collegeAffiliation
         pronouns
+        username
         createdAt
         updatedAt
         _version
@@ -2432,6 +2474,7 @@ export const onCreateProfileMajor = /* GraphQL */ `
         dateOfBirth
         collegeAffiliation
         pronouns
+        username
         createdAt
         updatedAt
         _version
@@ -2490,6 +2533,7 @@ export const onUpdateProfileMajor = /* GraphQL */ `
         dateOfBirth
         collegeAffiliation
         pronouns
+        username
         createdAt
         updatedAt
         _version
@@ -2548,6 +2592,7 @@ export const onDeleteProfileMajor = /* GraphQL */ `
         dateOfBirth
         collegeAffiliation
         pronouns
+        username
         createdAt
         updatedAt
         _version
@@ -2596,6 +2641,7 @@ export const onCreateOpportunityProfile = /* GraphQL */ `
         dateOfBirth
         collegeAffiliation
         pronouns
+        username
         createdAt
         updatedAt
         _version
@@ -2668,6 +2714,7 @@ export const onUpdateOpportunityProfile = /* GraphQL */ `
         dateOfBirth
         collegeAffiliation
         pronouns
+        username
         createdAt
         updatedAt
         _version
@@ -2740,6 +2787,7 @@ export const onDeleteOpportunityProfile = /* GraphQL */ `
         dateOfBirth
         collegeAffiliation
         pronouns
+        username
         createdAt
         updatedAt
         _version
