@@ -74,7 +74,7 @@ const CustomCard = ({ opportunity }) => {
           <Typography
             variant="h5"
             component="div"
-            class="text-medium text-dark text-xbold title-margin"
+            className="text-medium text-dark text-xbold title-margin"
             gutterBottom
           >
             {opportunity.eventName}
@@ -82,7 +82,7 @@ const CustomCard = ({ opportunity }) => {
           {/* Subtitle or Extra Information */}
           <Typography
             variant="body2"
-            class="text-bold title-margin"
+            className="text-bold title-margin"
             gutterBottom
           >
             <div className="flex-horizontal flex-flow-large flex-align-center">
@@ -91,7 +91,7 @@ const CustomCard = ({ opportunity }) => {
             </div>
           </Typography>
           {/* Date and Location Information */}
-          <Typography variant="body1" class="text-bold">
+          <Typography variant="body1" className="text-bold">
             <div className="flex-horizontal flex-flow-large flex-align-center">
               <EventNoteRoundedIcon sx={{ fontSize: "0.9rem" }} />
               <p className="text-bold ellipsis">
