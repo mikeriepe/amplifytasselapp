@@ -632,7 +632,7 @@ function SignupStepThree({
             step={step}
             error={isUserPasswordBad}
           />
-          <p class="text-bold text-warning">
+          <p className="text-bold text-warning">
             Note: Your login to Tassel currently does not use a UCSC Gold
             Password, but we will hopefully transition to this in due course.
           </p>
