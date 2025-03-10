@@ -120,6 +120,32 @@ export declare type WorkHistory = LazyLoading extends LazyLoadingDisabled ? Eage
 
 export declare const WorkHistory: (new (init: ModelInit<WorkHistory>) => WorkHistory)
 
+type EagerOrganizationHistory = {
+  readonly end?: string | null;
+  readonly start?: string | null;
+  readonly role?: string | null;
+  readonly organization?: string | null;
+  readonly school?: string | null;
+  readonly location?: string | null;
+  readonly description?: string | null;
+  readonly currentPosition?: boolean | null;
+}
+
+type LazyOrganizationHistory = {
+  readonly end?: string | null;
+  readonly start?: string | null;
+  readonly role?: string | null;
+  readonly organization?: string | null;
+  readonly school?: string | null;
+  readonly location?: string | null;
+  readonly description?: string | null;
+  readonly currentPosition?: boolean | null;
+}
+
+export declare type OrganizationHistory = LazyLoading extends LazyLoadingDisabled ? EagerOrganizationHistory : LazyOrganizationHistory
+
+export declare const OrganizationHistory: (new (init: ModelInit<OrganizationHistory>) => OrganizationHistory)
+
 type EagerMessage = {
   readonly [__modelMeta__]: {
     identifier: ManagedIdentifier<Message, 'id'>;
@@ -468,7 +494,7 @@ type EagerProfile = {
   readonly collegeAffiliation?: string | null;
   readonly pronouns?: string | null;
   readonly username?: string | null;
-  readonly organizationExperience?: (WorkHistory | null)[] | null;
+  readonly organizationExperience?: (OrganizationHistory | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly profileAnalyticsId?: string | null;
@@ -519,7 +545,7 @@ type LazyProfile = {
   readonly collegeAffiliation?: string | null;
   readonly pronouns?: string | null;
   readonly username?: string | null;
-  readonly organizationExperience?: (WorkHistory | null)[] | null;
+  readonly organizationExperience?: (OrganizationHistory | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly profileAnalyticsId?: string | null;

@@ -710,8 +710,9 @@ export const onCreateProfile = /* GraphQL */ `
       organizationExperience {
         end
         start
-        title
-        company
+        role
+        organization
+        school
         location
         description
         currentPosition
@@ -861,8 +862,9 @@ export const onUpdateProfile = /* GraphQL */ `
       organizationExperience {
         end
         start
-        title
-        company
+        role
+        organization
+        school
         location
         description
         currentPosition
@@ -1012,8 +1014,9 @@ export const onDeleteProfile = /* GraphQL */ `
       organizationExperience {
         end
         start
-        title
-        company
+        role
+        organization
+        school
         location
         description
         currentPosition

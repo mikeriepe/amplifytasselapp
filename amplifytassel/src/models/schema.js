@@ -1278,7 +1278,7 @@ export const schema = {
                     "name": "organizationExperience",
                     "isArray": true,
                     "type": {
-                        "nonModel": "WorkHistory"
+                        "nonModel": "OrganizationHistory"
                     },
                     "isRequired": false,
                     "attributes": [],
@@ -3228,8 +3228,69 @@ export const schema = {
                     "attributes": []
                 }
             }
+        },
+        "OrganizationHistory": {
+            "name": "OrganizationHistory",
+            "fields": {
+                "end": {
+                    "name": "end",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "start": {
+                    "name": "start",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "role": {
+                    "name": "role",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "organization": {
+                    "name": "organization",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "school": {
+                    "name": "school",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "location": {
+                    "name": "location",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "description": {
+                    "name": "description",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "currentPosition": {
+                    "name": "currentPosition",
+                    "isArray": false,
+                    "type": "Boolean",
+                    "isRequired": false,
+                    "attributes": []
+                }
+            }
         }
     },
     "codegenVersion": "3.4.4",
-    "version": "0e068e7495eded99112107af9f07103c"
+    "version": "13d3d1cd39d48660a55a54264465e88a"
 };

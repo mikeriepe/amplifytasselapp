@@ -39,6 +39,7 @@ export default function NewForm1(props) {
     dateOfBirth: "",
     collegeAffiliation: "",
     pronouns: "",
+    username: "",
   };
   const [about, setAbout] = React.useState(initialValues.about);
   const [location, setLocation] = React.useState(initialValues.location);
@@ -56,6 +57,7 @@ export default function NewForm1(props) {
     initialValues.collegeAffiliation
   );
   const [pronouns, setPronouns] = React.useState(initialValues.pronouns);
+  const [username, setUsername] = React.useState(initialValues.username);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     const cleanValues = profileRecord
@@ -71,6 +73,7 @@ export default function NewForm1(props) {
     setDateOfBirth(cleanValues.dateOfBirth);
     setCollegeAffiliation(cleanValues.collegeAffiliation);
     setPronouns(cleanValues.pronouns);
+    setUsername(cleanValues.username);
     setErrors({});
   };
   const [profileRecord, setProfileRecord] = React.useState(profileModelProp);
@@ -95,6 +98,7 @@ export default function NewForm1(props) {
     dateOfBirth: [],
     collegeAffiliation: [],
     pronouns: [],
+    username: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -132,6 +136,7 @@ export default function NewForm1(props) {
           dateOfBirth,
           collegeAffiliation,
           pronouns,
+          username,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -171,6 +176,7 @@ export default function NewForm1(props) {
             dateOfBirth: modelFields.dateOfBirth,
             collegeAffiliation: modelFields.collegeAffiliation,
             pronouns: modelFields.pronouns,
+            username: modelFields.username,
           };
           await DataStore.save(
             Profile.copyOf(profileRecord, (updated) => {
@@ -208,6 +214,7 @@ export default function NewForm1(props) {
               dateOfBirth,
               collegeAffiliation,
               pronouns,
+              username,
             };
             const result = onChange(modelFields);
             value = result?.about ?? value;
@@ -241,6 +248,7 @@ export default function NewForm1(props) {
               dateOfBirth,
               collegeAffiliation,
               pronouns,
+              username,
             };
             const result = onChange(modelFields);
             value = result?.location ?? value;
@@ -274,6 +282,7 @@ export default function NewForm1(props) {
               dateOfBirth,
               collegeAffiliation,
               pronouns,
+              username,
             };
             const result = onChange(modelFields);
             value = result?.graduationYear ?? value;
@@ -306,6 +315,7 @@ export default function NewForm1(props) {
               dateOfBirth,
               collegeAffiliation,
               pronouns,
+              username,
             };
             const result = onChange(modelFields);
             value = result?.Field0 ?? value;
@@ -355,6 +365,7 @@ export default function NewForm1(props) {
               dateOfBirth,
               collegeAffiliation,
               pronouns,
+              username,
             };
             const result = onChange(modelFields);
             value = result?.banner ?? value;
@@ -392,6 +403,7 @@ export default function NewForm1(props) {
               dateOfBirth,
               collegeAffiliation,
               pronouns,
+              username,
             };
             const result = onChange(modelFields);
             value = result?.points ?? value;
@@ -425,6 +437,7 @@ export default function NewForm1(props) {
               dateOfBirth,
               collegeAffiliation,
               pronouns,
+              username,
             };
             const result = onChange(modelFields);
             value = result?.linkedin ?? value;
@@ -459,6 +472,7 @@ export default function NewForm1(props) {
               dateOfBirth: value,
               collegeAffiliation,
               pronouns,
+              username,
             };
             const result = onChange(modelFields);
             value = result?.dateOfBirth ?? value;
@@ -492,6 +506,7 @@ export default function NewForm1(props) {
               dateOfBirth,
               collegeAffiliation: value,
               pronouns,
+              username,
             };
             const result = onChange(modelFields);
             value = result?.collegeAffiliation ?? value;
@@ -527,6 +542,7 @@ export default function NewForm1(props) {
               dateOfBirth,
               collegeAffiliation,
               pronouns: value,
+              username,
             };
             const result = onChange(modelFields);
             value = result?.pronouns ?? value;
@@ -540,6 +556,40 @@ export default function NewForm1(props) {
         errorMessage={errors.pronouns?.errorMessage}
         hasError={errors.pronouns?.hasError}
         {...getOverrideProps(overrides, "pronouns")}
+      ></TextField>
+      <TextField
+        label="Username"
+        isRequired={false}
+        isReadOnly={false}
+        value={username}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              about,
+              location,
+              graduationYear,
+              Field0,
+              banner,
+              points,
+              linkedin,
+              dateOfBirth,
+              collegeAffiliation,
+              pronouns,
+              username: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.username ?? value;
+          }
+          if (errors.username?.hasError) {
+            runValidationTasks("username", value);
+          }
+          setUsername(value);
+        }}
+        onBlur={() => runValidationTasks("username", username)}
+        errorMessage={errors.username?.errorMessage}
+        hasError={errors.username?.hasError}
+        {...getOverrideProps(overrides, "username")}
       ></TextField>
       <Flex
         justifyContent="space-between"
