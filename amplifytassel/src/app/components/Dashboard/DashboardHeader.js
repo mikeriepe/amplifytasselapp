@@ -64,7 +64,7 @@ export default function DashboardHeader({ data }) {
       >
         Welcome back, {data.firstName}!
       </h2>
-      <h5 className="text-bold ellipsis" aria-label="Dashboard Header Count">
+      <h5 className="text-lightgray text-bold ellipsis" aria-label="Dashboard Header Count">
         You have
         <span className="text-bold text-blue ellipsis"> {numOpps} </span>
         upcoming opportunit{numOpps === 1 ? "y" : "ies"}
