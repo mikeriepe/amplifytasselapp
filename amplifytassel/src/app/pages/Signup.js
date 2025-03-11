@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { InputContext, useInputContext } from "../components/ThemedInput";
+import { InputContext, useInputContext } from "../components/Themed/ThemedInput";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
-import ThemedButton from "../components/ThemedButton";
-import ThemedInput from "../components/ThemedInput";
-import ThemedStepper from "../components/ThemedStepper";
+import ThemedButton from "../components/Themed/ThemedButton";
+import ThemedInput from "../components/Themed/ThemedInput";
+import ThemedStepper from "../components/Themed/ThemedStepper";
 import SignupBanner from "../assets/sammy-ocean.png";
 import "../stylesheets/LoginSignup.css";
 import { Auth } from "aws-amplify";
@@ -632,7 +632,7 @@ function SignupStepThree({
             step={step}
             error={isUserPasswordBad}
           />
-          <p class="text-bold text-warning">
+          <p className="text-bold text-warning">
             Note: Your login to Tassel currently does not use a UCSC Gold
             Password, but we will hopefully transition to this in due course.
           </p>

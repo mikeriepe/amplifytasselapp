@@ -1,10 +1,10 @@
 import * as React from 'react';
 import MuiBox from '@mui/material/Box';
 import {styled} from '@mui/material/styles';
-import PageHeader from '../components/PageHeader';
-import CompressedTabBar from '../components/CompressedTabBar';
-import ApprovalAccounts from '../components/ApprovalAccounts';
-import ApprovalOpportunities from '../components/ApprovalOpportunities';
+import PageHeader from '../components/CustomComponents/PageHeader';
+import CompressedTabBar from '../components/CustomComponents/CompressedTabBar';
+import ApprovalAccounts from '../components/CustomComponents/ApprovalAccounts';
+import ApprovalOpportunities from '../components/CustomComponents/ApprovalOpportunities';
 
 const Page = styled((props) => (
   <MuiBox {...props} />

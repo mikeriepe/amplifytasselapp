@@ -6,27 +6,27 @@ import MuiBox from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
 import { toast } from "react-toastify";
 import useAuth from "../util/AuthContext";
-import ThemedInput from "../components/ThemedInput";
-import ThemedButton from "../components/ThemedButton";
-import { InputContext } from "../components/ThemedInput";
-import { MultiSelectContext } from "../components/MultiSelect";
+import ThemedInput from "../components/Themed/ThemedInput";
+import ThemedButton from "../components/Themed/ThemedButton";
+import { InputContext } from "../components/Themed/ThemedInput";
+import { MultiSelectContext } from "../components/CustomComponents/MultiSelect";
 import { Link } from "react-router-dom";
-import WorkExperienceList from "../components/WorkExperienceList";
-import ThemedDropdown from "../components/ThemedDropdown";
+import WorkExperienceList from "../components/WorkExperience/WorkExperienceList";
+import ThemedDropdown from "../components/Themed/ThemedDropdown";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import ButtonBase from "@mui/material/ButtonBase";
-import WorkExperienceForm from "../components/WorkExperienceForm";
-import WorkExperienceDeleteModal from "../components/WorkExperienceDeleteModal";
-import VolunteerExperienceForm from "../components/VolunteerExperienceForm";
-import VolunteerExperienceDeleteModal from "../components/VolunteerExperienceDeleteModal";
-import VolunteerExperienceList from "../components/VolunteerExperienceList";
-import ProfileBanner from "../components/ProfileBanner";
+import WorkExperienceForm from "../components/WorkExperience/WorkExperienceForm";
+import WorkExperienceDeleteModal from "../components/WorkExperience/WorkExperienceDeleteModal";
+import VolunteerExperienceForm from "../components/VolunteerExperience/VolunteerExperienceForm";
+import VolunteerExperienceDeleteModal from "../components/VolunteerExperience/VolunteerExperienceDeleteModal";
+import VolunteerExperienceList from "../components/VolunteerExperience/VolunteerExperienceList";
+import ProfileBanner from "../components/Profile/ProfileBanner";
 
 // Added by Kenny on 11/3/2024
-import OrganizationExperienceForm from "../components/OrganizationExperienceForm";
-import OrganizationExperienceDeleteModal from "../components/OrganizationExperienceDeleteModal";
-import OrganizationExperienceList from "../components/OrganizationExperienceList";
+import OrganizationExperienceForm from "../components/Organization/OrganizationExperienceForm";
+import OrganizationExperienceDeleteModal from "../components/Organization/OrganizationExperienceDeleteModal";
+import OrganizationExperienceList from "../components/Organization/OrganizationExperienceList";
 
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -46,7 +46,7 @@ import {
   Major,
   ProfileMajor,
 } from "../../models";
-import MultiSelect from "../components/MultiSelect";
+import MultiSelect from "../components/CustomComponents/MultiSelect";
 import { Dataset } from "@mui/icons-material";
 import { PointsAddition } from "../util/PointsAddition";
 
@@ -126,7 +126,7 @@ export default function UpdateProfile() {
       linkedin: userProfile.linkedin,
       // Added by Kenny Losier 11/3/2024:
       username: userProfile.username,
-      college: userProfile.college,
+      collegeAffiliation: userProfile.collegeAffiliation,
       firstName: userProfile.firstName || "",
       lastName: userProfile.lastName || "",
     },
@@ -179,7 +179,7 @@ export default function UpdateProfile() {
     }
 
     // Check college - added by Kenny 11/3/2024
-    if (userProfile.college === null && selctdVals[1].college !== null) {
+    if (userProfile.collegeAffiliation === null && selctdVals[1].college !== null) {
       pointsToBeAdded += 20;
     }
 
@@ -295,7 +295,7 @@ export default function UpdateProfile() {
         updated.about = values[1].about;
         updated.linkedin = values[1].linkedin;
         updated.username = values[1].username;
-        updated.college = values[1].college;
+        updated.collegeAffiliation = values[1].college;
         updated.firstName = values[1].firstName;
         updated.lastName = values[1].lastName;
       })
@@ -331,7 +331,7 @@ export default function UpdateProfile() {
             keywords: keywords,
             linkedin: userProfile.linkedin,
             username: userProfile.username,
-            college: userProfile.college,
+            college: userProfile.collegeAffiliation,
             firstName: userProfile.firstName,
             lastName: userProfile.lastName,
           },

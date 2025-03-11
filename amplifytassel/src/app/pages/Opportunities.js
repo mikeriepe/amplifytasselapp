@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import MuiBox from "@mui/material/Box";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import CompressedTabBar from "../components/CompressedTabBar";
-import OpportunitiesList from "../components/OpportunitiesList";
-import PageHeader from "../components/PageHeader";
+import CompressedTabBar from "../components/CustomComponents/CompressedTabBar";
+import OpportunitiesList from "../components/Opportunities/OpportunitiesList";
+import PageHeader from "../components/CustomComponents/PageHeader";
 import useAuth from "../util/AuthContext";
-import OpportunityForm from "../components/OpportunityForm";
+import OpportunityForm from "../components/Opportunities/OpportunityForm";
 import { Modal } from "@mui/material";
 import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
@@ -136,37 +136,31 @@ export default function FetchWrapper() {
         alert("Error retrieving past joined opportunities");
       });
   };
-
-  const getPendingOpportunities = () => {
+  const getPendingOpportunities = async () => {
     console.log("Getting pending...");
-    DataStore.query(Opportunity, (o) =>
-      o.and((o) => [
-        o.Requests.profileID.eq(userProfile.id),
-        //o.Requests.status.eq('PENDING')
-      ])
-    )
-      .then((res) => {
-        console.log(res);
-        const pendingOpps = [];
-        for (let i = 0; i < res.length; i++) {
-          const p = Promise.resolve(res[i].Requests.values);
-          p.then((value) => {
-            for (let j = 0; j < value.length; j++) {
-              if (
-                value[j].profileID === userProfile.id &&
-                value[j].status === "PENDING"
-              ) {
+    try {
+      const res = await DataStore.query(Opportunity, (o) =>
+          o.and((o) => [o.Requests.profileID.eq(userProfile.id)])
+      );
+      console.log(res);
+      const pendingOpps = [];
+      for (let i = 0; i < res.length; i++) {
+          const values = await Promise.resolve(res[i].Requests.values);
+          for (let j = 0; j < values.length; j++) {
+            if (
+                values[j].profileID === userProfile.id &&
+                values[j].status === "PENDING"
+            ) {
                 pendingOpps.push(res[i]);
-              }
+                break;
             }
-          });
-        }
-        setPendingOpportunities(pendingOpps);
-      })
-      .catch((err) => {
-        console.log(err);
-        alert("Error retrieving pending opportunities");
-      });
+          }
+      }
+      setPendingOpportunities(pendingOpps);
+    } catch (err) {
+      console.log(err);
+      alert("Error retrieving pending opportunities");
+    }
   };
 
   const getAllOpportunities = () => {
@@ -367,36 +361,65 @@ function Opportunities(
     },
   ];
 
-  const formValues = {
-    name: "",
-    isNewOpp: true,
-    locationType: "in-person",
-    location: {
-      address: "",
-      state: "",
-      city: "",
-      zip: "",
-    },
-    recurringEventOptions: "None",
-    frequencyOptions: "1",
-    sponsortype: "user sponsor",
-    zoomLink: "",
-    //organization: [],
-    description: "",
-    eventData: "",
-    startdate: new Date(),
-    enddate: new Date(),
-    //organizationtype: '',
-    //opportunitytype: '',
-    starttime: new Date(),
-    endtime: new Date(),
-    subject: "",
-    eventdata: "",
-    eventBanner:
-      "https://www.places4students.com/P4SFiles/sliders/119_ucsc-02-main-entrance-sign.jpg",
-    bannerKey: "",
-    //keywords: [allKeywords],
-  };
+  const [formValues, setFormValues] = useState({
+      name: "",
+      isNewOpp: true,
+      locationType: "in-person",
+      location: {
+        address: "",
+        state: "",
+        city: "",
+        zip: "",
+      },
+      recurringEventOptions: "None",
+      frequencyOptions: "1",
+      sponsortype: "user sponsor",
+      zoomLink: "",
+      //organization: [],
+      description: "",
+      eventData: "",
+      startdate: new Date(),
+      enddate: new Date(),
+      //organizationtype: '',
+      //opportunitytype: '',
+      starttime: new Date(),
+      endtime: new Date(),
+      subject: "",
+      eventdata: "",
+      eventBanner:
+        "https://www.places4students.com/P4SFiles/sliders/119_ucsc-02-main-entrance-sign.jpg",
+      bannerKey: "",
+      //keywords: [allKeywords],
+    });
+  
+    const roundToNextHour = () => {
+      const now = new Date();
+      now.setMinutes(0, 0, 0);
+      now.setHours(now.getHours() + 1);
+      return now;
+    };
+  
+    const handleModalOpen = () => {
+      setFormValues({
+        name: "",
+        isNewOpp: true,
+        locationType: "in-person",
+        location: { address: "", state: "", city: "", zip: "" },
+        sponsortype: "user sponsor",
+        zoomLink: "",
+        description: "",
+        eventData: "",
+        startdate: new Date(),
+        enddate: new Date(),
+        starttime: roundToNextHour(),
+        endtime: roundToNextHour(),
+        subject: "",
+        eventdata: "",
+        eventBanner: "https://www.places4students.com/P4SFiles/sliders/119_ucsc-02-main-entrance-sign.jpg",
+        bannerKey: "",
+      });
+      setShowOppForm(true);
+    };
 
   const handleModalClose = () => {
     setShowOppForm(!showOppForm);
@@ -652,7 +675,7 @@ function Opportunities(
         title="Opportunities"
         subtitle="View and join opportunities"
         tabs={<CompressedTabBar data={tabs} tab={tab} setTab={setTab} />}
-        components={<AddButton onClick={() => setShowOppForm(true)} />}
+        components={<AddButton onClick={handleModalOpen} />}
       />
       <Modal
         open={showOppForm}

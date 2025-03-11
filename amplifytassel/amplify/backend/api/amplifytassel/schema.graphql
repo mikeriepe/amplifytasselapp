@@ -116,6 +116,8 @@ type Profile @model @auth(rules: [{allow: public}]) {
   dateOfBirth: AWSDate
   collegeAffiliation: String
   pronouns: String
+  username: String
+  organizationExperience: [OrganizationHistory]
 }
 
 type SiteAnalytics @model @auth(rules: [{allow: public}]) {
@@ -248,5 +250,16 @@ type Note @model @auth(rules: [{allow: public}]) {
   id: ID!
   name: String!
   description: String
+}
+
+type OrganizationHistory {
+  end: String
+  start: String
+  role: String
+  organization: String
+  school: String
+  location: String
+  description: String
+  currentPosition: Boolean
 }
  
