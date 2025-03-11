@@ -573,7 +573,7 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
             <Box
               sx={{
                 marginBottom: "5px",
-                display: "grid",
+                display: "flex",
                 gridAutoFlow: "column",
                 gridGap: "5px",
               }}
