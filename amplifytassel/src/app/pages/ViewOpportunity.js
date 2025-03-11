@@ -121,7 +121,7 @@ export default function FetchWrapper() {
   return (
     <>
       {fetchedData && fetchedData.profileID && (
-        <ViewOpportunity opportunity={fetchedData} />
+        <ViewOpportunity opportunity={fetchedData}/>
       )}
     </>
   );
@@ -142,6 +142,280 @@ function ViewOpportunity({ opportunity }) {
   const [showReqForm, setshowReqForm] = React.useState(false);
   const [requestMessage, setRequestMessage] = React.useState("");
   const [requestedRole, setRequestedRole] = React.useState("");
+
+
+  // NEW CODE FOR EDIT OPP BUTTON
+const [showEditForm,setShowEditForm] = useState(false)
+const [editOppValues,setEditOppValues] = useState({})
+// assume roles and keywords are fetched if not empty lists
+const oppRoles = useState(false);
+const oppKeywords = useState(false);
+
+// opens edit modal with default values
+const handleEditModalOpen = () => {
+  //Default Values for edit Form
+  const editOppFormValues = {
+    oppId: opportunity.id,
+    starttime: new Date(opportunity.startTime),
+    startdate: new Date(opportunity.startTime),
+    endtime: new Date(opportunity.endTime),
+    enddate: new Date(opportunity.endTime),
+    //organization: [],
+    zoomLink: opportunity.zoomLink,
+    organizations: opportunity.organizations,
+    description: opportunity.description,
+    //eventBanner : opportunity.eventBanner,
+    name: opportunity.eventName,
+    startTime: opportunity.startTime,
+    endTime: opportunity.endTime,
+    locationType: opportunity.locationType,
+    location: opportunity.location,
+    eventdata: opportunity.eventData,
+    subject: opportunity.subject,
+    preferences: opportunity.preferences,
+    profileID: opportunity.profileID,
+    status: opportunity.status,
+    Roles: oppRoles,
+    keywords: oppKeywords,
+    bannerKey: opportunity.bannerKey,
+  };
+
+  setEditOppValues(editOppFormValues)
+  setShowEditForm(true)
+
+}
+
+// closes edit modal
+const handleEditModalClose = () => {
+  setShowEditForm(false)
+}
+
+  const handleEditOpp = async (data) => {
+    if (oppRoles.length > data.roles.length) {
+      for (let i = 1; i < data.roles.length; i++) {
+        if (oppRoles[i] === data.roles[i]) {
+          //keep
+        } else {
+          DataStore.delete(Role, (r) =>
+            r.and((r) => [
+              r.name.eq(oppRoles[i].name),
+              r.opportunityID.eq(opportunity.id),
+            ])
+          );
+          DataStore.save(
+            new Role({
+              name: data.roles[i],
+              opportunityID: opportunity.id,
+            })
+          );
+        }
+      }
+      for (let i = data.roles.length; i < oppRoles.length; i++) {
+        DataStore.delete(Role, (r) =>
+          r.and((r) => [
+            r.name.eq(oppRoles[i].name),
+            r.opportunityID.eq(opportunity.id),
+          ])
+        );
+      }
+    } else if (oppRoles.length < data.roles.length) {
+      console.log("data.roles.length is longer...");
+      for (let i = 1; i < oppRoles.length; i++) {
+        if (oppRoles[i] === data.roles[i]) {
+          //keep
+        } else {
+          DataStore.delete(Role, (r) =>
+            r.and((r) => [
+              r.name.eq(oppRoles[i].name),
+              r.opportunityID.eq(opportunity.id),
+            ])
+          );
+          DataStore.save(
+            new Role({
+              name: data.roles[i],
+              opportunityID: opportunity.id,
+            })
+          );
+        }
+      }
+      for (let i = oppRoles.length; i < data.roles.length; i++) {
+        DataStore.save(
+          new Role({
+            name: data.roles[i],
+            opportunityID: opportunity.id,
+          })
+        );
+      }
+    } else {
+      console.log("same length...");
+      for (let i = 1; i < oppRoles.length; i++) {
+        if (oppRoles[i] === data.roles[i]) {
+          //keep
+        } else {
+          DataStore.delete(Role, (r) =>
+            r.and((r) => [
+              r.name.eq(oppRoles[i].name),
+              r.opportunityID.eq(opportunity.id),
+            ])
+          );
+          DataStore.save(
+            new Role({
+              name: data.roles[i],
+              opportunityID: opportunity.id,
+            })
+          );
+        }
+      }
+    }
+
+    let allKeywords = [];
+    const keywordsToUpdate = [];
+    DataStore.query(Keyword)
+      .then((res) => {
+        allKeywords = res;
+        allKeywords.sort();
+        for (let i = 0; i < res.length; i++) {
+          for (let j = 0; j < Object.keys(data.keywords).length; j++) {
+            if (data.keywords[`keyword${j}`] === res[i].name) {
+              keywordsToUpdate.push(res[i]);
+            }
+          }
+        }
+      })
+      .then((res) => {
+        if (keywordsToUpdate.length > oppKeywords.length) {
+          console.log("Need to add keyword relation");
+          DataStore.query(KeywordOpportunity).then((res) => {
+            let relationshipExists = false;
+            for (let j = 0; j < keywordsToUpdate.length; j++) {
+              for (let i = 0; i < res.length; i++) {
+                if (
+                  res[i].keywordId === keywordsToUpdate[j].id &&
+                  res[i].opportunityId === opportunity.id
+                ) {
+                  relationshipExists = true;
+                }
+              }
+              if (relationshipExists === false) {
+                DataStore.save(
+                  new KeywordOpportunity({
+                    keywordId: keywordsToUpdate[j].id,
+                    opportunityId: opportunity.id,
+                  })
+                );
+              }
+              relationshipExists = false;
+            }
+          });
+        } else if (keywordsToUpdate.length < oppKeywords.length) {
+          console.log("Need to delete keyword relation");
+          let needToRemove = true;
+          for (let i = 0; i < oppKeywords.length; i++) {
+            for (let j = 0; j < keywordsToUpdate.length; j++) {
+              if (oppKeywords[i] === keywordsToUpdate[j].name) {
+                needToRemove = false;
+              }
+            }
+            if (needToRemove === true) {
+              let idToRemove = "";
+              for (let n = 0; n < allKeywords.length; n++) {
+                if (allKeywords[n].name === oppKeywords[i]) {
+                  idToRemove = allKeywords[n].id;
+                }
+              }
+              DataStore.delete(KeywordOpportunity, (k) =>
+                k.and((k) => [
+                  k.keywordId.eq(idToRemove),
+                  k.opportunityId.eq(opportunity.id),
+                ])
+              );
+            }
+            needToRemove = true;
+          }
+        } else {
+          console.log("No action needed on keyword relations");
+        }
+      })
+      .then(async (res) => {
+        if (data.imgData == null) {
+          const image = await Storage.get(opportunity.bannerkey, {
+            level: "public",
+          });
+          DataStore.save(
+            Opportunity.copyOf(opportunity, (updated) => {
+              updated.eventName = data.name;
+              updated.description = data.description;
+              updated.eventData = data.eventdata;
+              updated.startTime = data.startTime.toISOString();
+              updated.endTime = data.endTime.toISOString();
+              updated.locationType = data.locationType;
+              updated.location = data.location;
+              updated.organizations = data.organizations;
+              updated.subject = data.subject;
+              updated.bannerKey = opportunity.bannerKey;
+              updated.eventBanner = image;
+            })
+          ).then((res) => {
+            handleEditModalClose();
+            console.log(res);
+          });
+        } else {
+          if (data.imgData.name != "sc.jpg") {
+            Storage.put(uuidv4() + "-" + data.imgData.name, data.imgData, {
+              contentType: data.imgData.type,
+            }).then(async (res2) => {
+              const image = await Storage.get(res2.key, {
+                level: "public",
+              });
+              if (opportunity.bannerKey != "sc.jpg") {
+                await Storage.remove(opportunity.bannerKey);
+              }
+              //console.log(data.bannerKey);
+              DataStore.save(
+                Opportunity.copyOf(opportunity, (updated) => {
+                  updated.eventName = data.name;
+                  updated.description = data.description;
+                  updated.eventData = data.eventdata;
+                  updated.startTime = data.startTime.toISOString();
+                  updated.endTime = data.endTime.toISOString();
+                  updated.locationType = data.locationType;
+                  updated.location = data.location;
+                  updated.organizations = data.organizations;
+                  updated.subject = data.subject;
+                  updated.bannerKey = res2.key;
+                  updated.eventBanner = image;
+                })
+              ).then((res) => {
+                handleEditModalClose();
+                console.log(res);
+              });
+            });
+          } else {
+            const image = await Storage.get(opportunity.bannerkey, {
+              level: "public",
+            });
+            DataStore.save(
+              Opportunity.copyOf(opportunity, (updated) => {
+                updated.eventName = data.name;
+                updated.description = data.description;
+                updated.eventData = data.eventdata;
+                updated.startTime = data.startTime.toISOString();
+                updated.endTime = data.endTime.toISOString();
+                updated.locationType = data.locationType;
+                updated.location = data.location;
+                updated.organizations = data.organizations;
+                updated.subject = data.subject;
+                updated.bannerKey = opportunity.bannerKey;
+                updated.eventBanner = image;
+              })
+            ).then((res) => {
+              handleEditModalClose();
+              console.log(res);
+            });
+          }
+        }
+      });
+  };
 
   const navigate = useNavigate();
 
@@ -458,7 +732,37 @@ function ViewOpportunity({ opportunity }) {
                         </MuiBox>
                       </Paper>
                     </Modal>
+                    <OutlinedIconButton onClick={handleEditModalOpen}>
+                        <Tooltip title="Edit">
+                            <EditRoundedIcon
+                                aria-label={`Edit ${opportunity.eventName}`}
+                                sx={{
+                                    height: "20px",
+                                    width: "20px",
+                                    color: "var(--secondary-gray-main)",
+                                }}
+                            />
+                        </Tooltip>
+                    </OutlinedIconButton>
+                    {/* Edit Modal */}
+                    <Modal
+                        open={showEditForm}
+                        onBackdropClick={handleEditModalClose}
+                        onClose={handleEditModalClose}
+                        sx={{ overflow: "scroll" }}
+                    >
+                        <OpportunityForm
+                            onClose={handleEditModalClose}
+                            defaultValues={editOppValues}
+                            onSubmit={(data) => {
+                                // Handle the submission logic here
+                                console.log('Updated Opportunity Data:', data);
+                                handleEditModalClose();
+                            }}
+                        />
+                    </Modal>
                   </MuiBox>
+
                 ) : (
                   <ThemedButton
                     aria-label="Request to Join Opportunity"
