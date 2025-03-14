@@ -121,7 +121,7 @@ export default function FetchWrapper() {
   return (
     <>
       {fetchedData && fetchedData.profileID && (
-        <ViewOpportunity opportunity={fetchedData} />
+        <ViewOpportunity opportunity={fetchedData}/>
       )}
     </>
   );
@@ -143,6 +143,19 @@ function ViewOpportunity({ opportunity }) {
   const [requestMessage, setRequestMessage] = React.useState("");
   const [requestedRole, setRequestedRole] = React.useState("");
 
+  const [showOppForm, setShowOppForm] = useState(false);
+  const [oppRoles, setOppRoles] = useState(false);
+  const [oppKeywords, setOppKeywords] = useState(false);
+
+
+  const handleOppModalClose = () => {
+    setShowOppForm(false);
+  };
+
+  const handleOppModalOpen = () => {
+    setShowOppForm(true);
+  };
+
   const navigate = useNavigate();
 
   const { setShowConfettiAnimation, setShowStarAnimation } = useAnimation();
@@ -152,7 +165,11 @@ function ViewOpportunity({ opportunity }) {
   useState(opportunity);
 
   // list of assigned roles in the opportunity
-  // console.log(opportunity);
+  console.log(opportunity);
+  console.log(opportunity.keywords)
+  console.log(opportunity.roles)
+  console.log(opportunity.roles.values)
+
   const [members, setMembers] = useState(opportunity?.profilesJoined);
 
   const updateMembers = (newMembers) => {
@@ -175,6 +192,225 @@ function ViewOpportunity({ opportunity }) {
 
   const handleDeleteModalOpen = () => {
     setShowDeleteForm(true);
+  };
+  
+
+  const handleEditOpp = async (data) => {
+    // get the opportunity model as this page does not get it correctly somehow?
+    const oppModel = await DataStore.query(Opportunity, opportunity.id);
+    if (!oppModel) {
+      console.error("Opportunity not found");
+      return;
+    }
+  
+    if (oppRoles.length > data.roles.length) {
+      for (let i = 1; i < data.roles.length; i++) {
+        if (oppRoles[i].name !== data.roles[i]) {
+          await DataStore.delete(Role, (r) =>
+            r.and((r) => [
+              r.name.eq(oppRoles[i].name),
+              r.opportunityID.eq(oppModel.id),
+            ])
+          );
+          await DataStore.save(
+            new Role({
+              name: data.roles[i],
+              opportunityID: oppModel.id,
+            })
+          );
+        }
+      }
+      for (let i = data.roles.length; i < oppRoles.length; i++) {
+        await DataStore.delete(Role, (r) =>
+          r.and((r) => [
+            r.name.eq(oppRoles[i].name),
+            r.opportunityID.eq(oppModel.id),
+          ])
+        );
+      }
+    } else if (oppRoles.length < data.roles.length) {
+      for (let i = 1; i < oppRoles.length; i++) {
+        if (oppRoles[i].name !== data.roles[i]) {
+          await DataStore.delete(Role, (r) =>
+            r.and((r) => [
+              r.name.eq(oppRoles[i].name),
+              r.opportunityID.eq(oppModel.id),
+            ])
+          );
+          await DataStore.save(
+            new Role({
+              name: data.roles[i],
+              opportunityID: oppModel.id,
+            })
+          );
+        }
+      }
+      for (let i = oppRoles.length; i < data.roles.length; i++) {
+        await DataStore.save(
+          new Role({
+            name: data.roles[i],
+            opportunityID: oppModel.id,
+          })
+        );
+      }
+    } else {
+      for (let i = 1; i < oppRoles.length; i++) {
+        if (oppRoles[i].name !== data.roles[i]) {
+          await DataStore.delete(Role, (r) =>
+            r.and((r) => [
+              r.name.eq(oppRoles[i].name),
+              r.opportunityID.eq(oppModel.id),
+            ])
+          );
+          await DataStore.save(
+            new Role({
+              name: data.roles[i],
+              opportunityID: oppModel.id,
+            })
+          );
+        }
+      }
+    }
+  
+    let allKeywords = await DataStore.query(Keyword);
+    allKeywords.sort((a, b) => a.name.localeCompare(b.name));
+  
+    const keywordsToUpdate = [];
+    const numKeywords = Object.keys(data.keywords).length;
+    for (let i = 0; i < numKeywords; i++) {
+      const keywordVal = data.keywords[`keyword${i}`];
+      const found = allKeywords.find((k) => k.name === keywordVal);
+      if (found) {
+        keywordsToUpdate.push(found);
+      }
+    }
+  
+    if (keywordsToUpdate.length > oppKeywords.length) {
+      const existingRelations = await DataStore.query(KeywordOpportunity);
+      for (let j = 0; j < keywordsToUpdate.length; j++) {
+        let relationshipExists = false;
+        for (let i = 0; i < existingRelations.length; i++) {
+          if (
+            existingRelations[i].keywordId === keywordsToUpdate[j].id &&
+            existingRelations[i].opportunityId === oppModel.id
+          ) {
+            relationshipExists = true;
+            break;
+          }
+        }
+        if (!relationshipExists) {
+          await DataStore.save(
+            new KeywordOpportunity({
+              keywordId: keywordsToUpdate[j].id,
+              opportunityId: oppModel.id,
+            })
+          );
+        }
+      }
+    } else if (keywordsToUpdate.length < oppKeywords.length) {
+      for (let i = 0; i < oppKeywords.length; i++) {
+        let needToRemove = true;
+        for (let j = 0; j < keywordsToUpdate.length; j++) {
+          if (oppKeywords[i] === keywordsToUpdate[j].name) {
+            needToRemove = false;
+            break;
+          }
+        }
+        if (needToRemove) {
+          let idToRemove = "";
+          for (let n = 0; n < allKeywords.length; n++) {
+            if (allKeywords[n].name === oppKeywords[i]) {
+              idToRemove = allKeywords[n].id;
+              break;
+            }
+          }
+          await DataStore.delete(KeywordOpportunity, (k) =>
+            k.and((k) => [
+              k.keywordId.eq(idToRemove),
+              k.opportunityId.eq(oppModel.id),
+            ])
+          );
+        }
+      }
+    } else {
+      console.log("No change to keyword relations required.");
+    }
+  
+    if (data.imgData == null) {
+      const image = await Storage.get(oppModel.bannerKey, { level: "public" });
+      await DataStore.save(
+        Opportunity.copyOf(oppModel, (updated) => {
+          updated.eventName = data.name;
+          updated.description = data.description;
+          updated.eventData = data.eventdata;
+          updated.startTime = data.startTime.toISOString();
+          updated.endTime = data.endTime.toISOString();
+          updated.locationType = data.locationType;
+          updated.location = data.location;
+          updated.organizations = data.organizations;
+          updated.subject = data.subject;
+          updated.bannerKey = oppModel.bannerKey;
+          updated.eventBanner = image;
+        })
+      ).then((res) => {
+        handleOppModalClose();
+        console.log("Opportunity updated:", res);
+        window.location.reload();
+
+      });
+    } else {
+      if (data.imgData.name !== "sc.jpg") {
+        const res2 = await Storage.put(
+          uuidv4() + "-" + data.imgData.name,
+          data.imgData,
+          { contentType: data.imgData.type }
+        );
+        const image = await Storage.get(res2.key, { level: "public" });
+        if (oppModel.bannerKey !== "sc.jpg") {
+          await Storage.remove(oppModel.bannerKey);
+        }
+        await DataStore.save(
+          Opportunity.copyOf(oppModel, (updated) => {
+            updated.eventName = data.name;
+            updated.description = data.description;
+            updated.eventData = data.eventdata;
+            updated.startTime = data.startTime.toISOString();
+            updated.endTime = data.endTime.toISOString();
+            updated.locationType = data.locationType;
+            updated.location = data.location;
+            updated.organizations = data.organizations;
+            updated.subject = data.subject;
+            updated.bannerKey = res2.key;
+            updated.eventBanner = image;
+          })
+        ).then((res) => {
+          handleOppModalClose();
+          console.log("Opportunity updated with new image:", res);
+          window.location.reload();
+        });
+      } else {
+        const image = await Storage.get(oppModel.bannerKey, { level: "public" });
+        await DataStore.save(
+          Opportunity.copyOf(oppModel, (updated) => {
+            updated.eventName = data.name;
+            updated.description = data.description;
+            updated.eventData = data.eventdata;
+            updated.startTime = data.startTime.toISOString();
+            updated.endTime = data.endTime.toISOString();
+            updated.locationType = data.locationType;
+            updated.location = data.location;
+            updated.organizations = data.organizations;
+            updated.subject = data.subject;
+            updated.bannerKey = oppModel.bannerKey;
+            updated.eventBanner = image;
+          })
+        ).then((res) => {
+          handleOppModalClose();
+          console.log("Opportunity updated:", res);
+          window.location.reload();
+        });
+      }
+    }
   };
 
   const handleDeleteOpp = async (opportunity) => {
@@ -365,6 +601,61 @@ function ViewOpportunity({ opportunity }) {
     downloadFile();
   }, []);
 
+  
+  // function to extract roles 
+  const extractRoles = async () => {
+    // if none its empty
+    const rolesArray = opportunity.roles?.values || [];
+    const resolvedRoles = await Promise.all(rolesArray.map((role) => Promise.resolve(role)));
+    setOppRoles(resolvedRoles);
+  };
+
+  // function to extract keywords
+  const extractKeywords = async () => {
+    // Get the keywords array from the opportunity object if none its empty
+    const keywordsArray = opportunity.keywords?.values || [];
+    const resolvedKeywords = await Promise.all(
+      keywordsArray.map((kwObj) =>
+        Promise.resolve(kwObj).then((obj) => obj.keyword.name)
+      )
+    );
+    resolvedKeywords.sort();
+    setOppKeywords(resolvedKeywords);
+  };
+
+  // copied over fromn opp card
+  const editOppFormValues = {
+    oppId: opportunity.id,
+    starttime: new Date(opportunity.startTime),
+    startdate: new Date(opportunity.startTime),
+    endtime: new Date(opportunity.endTime),
+    enddate: new Date(opportunity.endTime),
+    //organization: [],
+    zoomLink: opportunity.zoomLink,
+    organizations: opportunity.organizations,
+    description: opportunity.description,
+    //eventBanner : opportunity.eventBanner,
+    name: opportunity.eventName,
+    startTime: opportunity.startTime,
+    endTime: opportunity.endTime,
+    locationType: opportunity.locationType,
+    location: opportunity.location,
+    eventdata: opportunity.eventData,
+    subject: opportunity.subject,
+    preferences: opportunity.preferences,
+    profileID: opportunity.profileID,
+    status: opportunity.status,
+    Roles: oppRoles,
+    keywords: oppKeywords,
+    bannerKey: opportunity.bannerKey,
+  };
+
+  useEffect(() => {
+    extractRoles();
+    extractKeywords();
+  }, [opportunity]);
+  
+
   return (
     <Page>
       {opportunity && creator && (
@@ -384,6 +675,33 @@ function ViewOpportunity({ opportunity }) {
               components={
                 isCreator ? (
                   <MuiBox>
+                    {/* Add the Edit button */}
+                    <OutlinedIconButton onClick={handleOppModalOpen}>
+                      <Tooltip title="Edit">
+                        <EditRoundedIcon
+                          data-test-id={`Edit Opportunity Form ${opportunity.id}`}
+                          sx={{
+                            height: "20px",
+                            width: "20px",
+                            color: "var(--tertiary-gray-main)",
+                          }}
+                        />
+                      </Tooltip>
+                    </OutlinedIconButton>
+                    {/* EDIT OPP FORM */}
+                    <Modal
+                      aria-label={"Opportunity Form"}
+                      open={showOppForm}
+                      onBackdropClick={() => setShowOppForm(false)}
+                      onClose={() => setShowOppForm(false)}
+                      sx={{ overflow: "scroll" }}
+                    >
+                      <OpportunityForm
+                        onClose={handleOppModalClose}
+                        defaultValues={editOppFormValues}
+                        onSubmit={handleEditOpp}
+                      />
+                    </Modal>
                     <OutlinedIconButton onClick={handleDeleteModalOpen}>
                       <Tooltip title="Delete">
                         <CloseRoundedIcon
@@ -459,6 +777,7 @@ function ViewOpportunity({ opportunity }) {
                       </Paper>
                     </Modal>
                   </MuiBox>
+                  
                 ) : (
                   <ThemedButton
                     aria-label="Request to Join Opportunity"
