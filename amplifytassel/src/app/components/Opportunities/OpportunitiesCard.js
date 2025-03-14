@@ -602,7 +602,7 @@ export default function OpportunitiesCard({
     ).then((res) => {
       DataStore.query(Request, (r) =>
         r.and((r) => [
-          r.roleID.eq(res.id),
+          // r.roleID.eq(res.id), 
           r.opportunityID.eq(requestData.opportunityid),
           r.profileID.eq(requestData.requester),
         ])
@@ -655,7 +655,17 @@ export default function OpportunitiesCard({
             getAllOpportunities();
           });
         } else {
+          let toasterStr = "";
           console.log("You have already applied to this opportunity.");
+          toast.error(`You have already applied to ${opportunity.eventName} ${toasterStr}`, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
         }
       });
     });
