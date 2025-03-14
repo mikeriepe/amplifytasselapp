@@ -657,7 +657,7 @@ export default function OpportunitiesCard({
         } else {
           let toasterStr = "";
           console.log("You have already applied to this opportunity.");
-          toast.error(`Failed to apply to ${opportunity.eventName} ${toasterStr}`, {
+          toast.error(`You have already applied to ${opportunity.eventName} ${toasterStr}`, {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
