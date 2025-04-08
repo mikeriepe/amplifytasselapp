@@ -94,16 +94,43 @@ export const handler: Handler = async (event: S3Event, context: Context) => {
   const opportunities = response.data.data.listOpportunities.items;
   console.log('Profiles created today:', JSON.stringify(profiles));
   console.log('Opportunities created today:', JSON.stringify(opportunities));
+  // Send an email for each new opportunity
+  for (const opp of opportunities) {
+    const receiver = 'msuharittest@gmail.com'; // This is the email of whoever's getting notified
+    const subject = `New Opportunity Created: ${opp.eventName}`;
+    const body = `
+      A new opportunity has been created.
+
+      Event Name: ${opp.eventName}
+      Description: ${opp.description}
+      Start Time: ${opp.startTime}
+      Status: ${opp.status}
+      Created At: ${opp.createdAt}
+      Opportunity ID: ${opp.id}`
+      ;
+    try {
+      await sendEmail(receiver, subject, body);
+      console.log(`Email sent for opportunity: ${opp.id}`);
+    } catch (err) {
+      console.error(`Failed to send email for opportunity ${opp.id}:`, err);
+    }
+  }
 
   return {
-      statusCode: 200,
+    statusCode: 200,
+    body: JSON.stringify('Emails sent for new opportunities'),
+  };
+
+  // Old Code
+  // return {
+  //    statusCode: 200,
   //  Uncomment below to enable CORS requests
   //  headers: {
   //      "Access-Control-Allow-Origin": "*",
   //      "Access-Control-Allow-Headers": "*"
   //  },
-      body: JSON.stringify('Hello from Lambda!'),
-  };
+  //    body: JSON.stringify('Hello from Lambda!'),
+  //};
 }
 
 async function sendEmail(to, subject, body) {
@@ -121,7 +148,7 @@ async function sendEmail(to, subject, body) {
         Data: subject
       }
     },
-    Source: 'dawichan@ucsc.edu'
+    Source: 'msuharittest@gmail.com' // Whoever sends the notification email
   };
   return await ses.sendEmail(eParams).promise();
 }

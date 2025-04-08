@@ -51,19 +51,19 @@ query Query($date: String!) {
  * Always run 'tsc' or 'amplify mock function dailySummaryEmail' before amplify push. (Transpile this TS to JS)
  *
  * @links
- * Using Node.js ES Modules and top-level await in AWS Lambda
+ * Using ES Modules and top-level await in Lambda
  * https://aws.amazon.com/blogs/compute/using-node-js-es-modules-and-top-level-await-in-aws-lambda/
  *
- * Eventbridge Scheduler to invoke Lambda function on timezone-specific recurring schedule
+ * Eventbridge Scheduler to invoke on timezone-specific recurring schedule
  * https://docs.aws.amazon.com/lambda/latest/dg/with-eventbridge-scheduler.html
  *
  * TypeScript setup
  * https://github.com/aws-amplify/amplify-cli/issues/10432#issuecomment-1239878449
  *
- * Types for Lambda function handler
+ * Types for Lambda handler
  * https://docs.aws.amazon.com/lambda/latest/dg/typescript-handler.html#event-types
  *
- * Context properties
+ * Context properties (optional)
  * https://docs.aws.amazon.com/lambda/latest/dg/typescript-context.html
  */
 const handler = async (event, context) => {
@@ -90,15 +90,41 @@ const handler = async (event, context) => {
     const opportunities = response.data.data.listOpportunities.items;
     console.log('Profiles created today:', JSON.stringify(profiles));
     console.log('Opportunities created today:', JSON.stringify(opportunities));
+    // Send an email for each new opportunity
+    for (const opp of opportunities) {
+        const receiver = 'msuharittest@gmail.com'; // This is the email of whoever's getting notified
+        const subject = `New Opportunity Created: ${opp.eventName}`;
+        const body = `
+      A new opportunity has been created.
+
+      Event Name: ${opp.eventName}
+      Description: ${opp.description}
+      Start Time: ${opp.startTime}
+      Status: ${opp.status}
+      Created At: ${opp.createdAt}
+      Opportunity ID: ${opp.id}`;
+        try {
+            await sendEmail(receiver, subject, body);
+            console.log(`Email sent for opportunity: ${opp.id}`);
+        }
+        catch (err) {
+            console.error(`Failed to send email for opportunity ${opp.id}:`, err);
+        }
+    }
     return {
         statusCode: 200,
-        //  Uncomment below to enable CORS requests
-        //  headers: {
-        //      "Access-Control-Allow-Origin": "*",
-        //      "Access-Control-Allow-Headers": "*"
-        //  },
-        body: JSON.stringify('Hello from Lambda!'),
+        body: JSON.stringify('Emails sent for new opportunities'),
     };
+    // Old Code
+    // return {
+    //    statusCode: 200,
+    //  Uncomment below to enable CORS requests
+    //  headers: {
+    //      "Access-Control-Allow-Origin": "*",
+    //      "Access-Control-Allow-Headers": "*"
+    //  },
+    //    body: JSON.stringify('Hello from Lambda!'),
+    //};
 };
 exports.handler = handler;
 async function sendEmail(to, subject, body) {
@@ -116,7 +142,7 @@ async function sendEmail(to, subject, body) {
                 Data: subject
             }
         },
-        Source: 'dawichan@ucsc.edu'
+        Source: 'msuharittest@gmail.com' // Whoever sends the notification email
     };
     return await ses.sendEmail(eParams).promise();
 }
