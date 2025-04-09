@@ -27,34 +27,6 @@ const Display = styled((props) => <MuiCard elevation={0} {...props} />)(() => ({
   // borderBottom: "1px solid #e0e0e0",
 }));
 
-const formValues = {
-  name: "",
-  isNewOpp: true,
-  locationType: "in-person",
-  location: {
-    address: "",
-    state: "",
-    city: "",
-    zip: "",
-  },
-  sponsortype: "user sponsor",
-  zoomLink: "",
-  //organization: [],
-  description: "",
-  eventData: "",
-  startdate: new Date(),
-  enddate: new Date(),
-  //organizationtype: '',
-  //opportunitytype: '',
-  starttime: new Date(),
-  endtime: new Date(),
-  subject: "",
-  eventdata: "",
-  eventBanner:
-    "https://www.places4students.com/P4SFiles/sliders/119_ucsc-02-main-entrance-sign.jpg",
-  bannerKey: "",
-  //keywords: [allKeywords],
-};
 
 /**
  * creates Dashboard header
@@ -65,6 +37,64 @@ export default function DashboardCreate({ getCreatedOpportunities }) {
   const [showOppForm, setShowOppForm] = useState(false);
 
   const { setShowConfettiAnimation, setShowStarAnimation } = useAnimation();
+
+  const [formValues, setFormValues] = useState({
+    name: "",
+    isNewOpp: true,
+    locationType: "in-person",
+    location: {
+      address: "",
+      state: "",
+      city: "",
+      zip: "",
+    },
+    sponsortype: "user sponsor",
+    zoomLink: "",
+    //organization: [],
+    description: "",
+    eventData: "",
+    startdate: new Date(),
+    enddate: new Date(),
+    //organizationtype: '',
+    //opportunitytype: '',
+    starttime: new Date(),
+    endtime: new Date(),
+    subject: "",
+    eventdata: "",
+    eventBanner:
+      "https://www.places4students.com/P4SFiles/sliders/119_ucsc-02-main-entrance-sign.jpg",
+    bannerKey: "",
+    //keywords: [allKeywords],
+  });
+
+  const roundToNextHour = () => {
+    const now = new Date();
+    now.setMinutes(0, 0, 0);
+    now.setHours(now.getHours() + 1);
+    return now;
+  };
+
+  const handleModalOpen = () => {
+    setFormValues({
+      name: "",
+      isNewOpp: true,
+      locationType: "in-person",
+      location: { address: "", state: "", city: "", zip: "" },
+      sponsortype: "user sponsor",
+      zoomLink: "",
+      description: "",
+      eventData: "",
+      startdate: new Date(),
+      enddate: new Date(),
+      starttime: roundToNextHour(),
+      endtime: roundToNextHour(),
+      subject: "",
+      eventdata: "",
+      eventBanner: "https://www.places4students.com/P4SFiles/sliders/119_ucsc-02-main-entrance-sign.jpg",
+      bannerKey: "",
+    });
+    setShowOppForm(true);
+  };
 
   const handleModalClose = () => {
     setShowOppForm(!showOppForm);
@@ -276,7 +306,7 @@ export default function DashboardCreate({ getCreatedOpportunities }) {
   return (
     <Display>
       <Button
-        onClick={() => setShowOppForm(true)}
+        onClick={handleModalOpen}
         sx={{
           color: "var(--info-lightblue-main)",
           width: "100%",

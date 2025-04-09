@@ -361,36 +361,65 @@ function Opportunities(
     },
   ];
 
-  const formValues = {
-    name: "",
-    isNewOpp: true,
-    locationType: "in-person",
-    location: {
-      address: "",
-      state: "",
-      city: "",
-      zip: "",
-    },
-    recurringEventOptions: "None",
-    frequencyOptions: "1",
-    sponsortype: "user sponsor",
-    zoomLink: "",
-    //organization: [],
-    description: "",
-    eventData: "",
-    startdate: new Date(),
-    enddate: new Date(),
-    //organizationtype: '',
-    //opportunitytype: '',
-    starttime: new Date(),
-    endtime: new Date(),
-    subject: "",
-    eventdata: "",
-    eventBanner:
-      "https://www.places4students.com/P4SFiles/sliders/119_ucsc-02-main-entrance-sign.jpg",
-    bannerKey: "",
-    //keywords: [allKeywords],
-  };
+  const [formValues, setFormValues] = useState({
+      name: "",
+      isNewOpp: true,
+      locationType: "in-person",
+      location: {
+        address: "",
+        state: "",
+        city: "",
+        zip: "",
+      },
+      recurringEventOptions: "None",
+      frequencyOptions: "1",
+      sponsortype: "user sponsor",
+      zoomLink: "",
+      //organization: [],
+      description: "",
+      eventData: "",
+      startdate: new Date(),
+      enddate: new Date(),
+      //organizationtype: '',
+      //opportunitytype: '',
+      starttime: new Date(),
+      endtime: new Date(),
+      subject: "",
+      eventdata: "",
+      eventBanner:
+        "https://www.places4students.com/P4SFiles/sliders/119_ucsc-02-main-entrance-sign.jpg",
+      bannerKey: "",
+      //keywords: [allKeywords],
+    });
+  
+    const roundToNextHour = () => {
+      const now = new Date();
+      now.setMinutes(0, 0, 0);
+      now.setHours(now.getHours() + 1);
+      return now;
+    };
+  
+    const handleModalOpen = () => {
+      setFormValues({
+        name: "",
+        isNewOpp: true,
+        locationType: "in-person",
+        location: { address: "", state: "", city: "", zip: "" },
+        sponsortype: "user sponsor",
+        zoomLink: "",
+        description: "",
+        eventData: "",
+        startdate: new Date(),
+        enddate: new Date(),
+        starttime: roundToNextHour(),
+        endtime: roundToNextHour(),
+        subject: "",
+        eventdata: "",
+        eventBanner: "https://www.places4students.com/P4SFiles/sliders/119_ucsc-02-main-entrance-sign.jpg",
+        bannerKey: "",
+      });
+      setShowOppForm(true);
+    };
 
   const handleModalClose = () => {
     setShowOppForm(!showOppForm);
@@ -646,7 +675,7 @@ function Opportunities(
         title="Opportunities"
         subtitle="View and join opportunities"
         tabs={<CompressedTabBar data={tabs} tab={tab} setTab={setTab} />}
-        components={<AddButton onClick={() => setShowOppForm(true)} />}
+        components={<AddButton onClick={handleModalOpen} />}
       />
       <Modal
         open={showOppForm}

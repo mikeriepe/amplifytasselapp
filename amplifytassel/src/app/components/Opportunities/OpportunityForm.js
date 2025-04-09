@@ -358,7 +358,7 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
     },
   ];
 
-  const { register, control, handleSubmit, getValues, setValue } = useForm({
+  const { register, control, handleSubmit, getValues, setValue, watch} = useForm({
     resolver: yupResolver(validationSchema),
     defaultValues: defaultValues,
   });
@@ -468,6 +468,33 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
     console.log(tagsObject);
     return tagsObject;
   };
+
+  const isSameDay = (start, end) => {
+    return (
+      start.getFullYear() === end.getFullYear() &&
+      start.getMonth() === end.getMonth() &&
+      start.getDate() === end.getDate()
+    );
+  }
+
+  const watchStart = watch("starttime");
+  const watchEnd = watch("endtime");
+  const watchStartDate = watch("startdate");
+  const watchEndDate = watch("enddate");
+  useEffect(() => {
+    if (isSameDay(watchStartDate, watchEndDate) && watchStart >= watchEnd) {
+      const newEndTime = new Date(watchStart);
+      setValue("endtime", newEndTime);
+    }
+  }, [watchStart]);
+
+  useEffect(() => {
+    if (watchStartDate >= watchEndDate) {
+      const newEndDate = new Date(watchStartDate);
+      setValue("enddate", newEndDate);
+      setValue("endtime", new Date(watchStart));
+    }
+  }, [watchStartDate]);
 
   return (
     <Paper
