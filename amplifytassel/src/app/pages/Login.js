@@ -91,6 +91,24 @@ export default function Login() {
   const [isPasswordBad, setIsPasswordBad] = useState(null);
   useEffect(() => setIsPasswordBad(null), [values, stepPage]);
 
+  /* 
+  Initialize data store early for edge case where user logins for first time
+  */
+  useEffect(() => {
+  const initializeDataStore = async () => {
+    try {
+      await DataStore.start(); 
+      await DataStore.observeReady(); 
+      console.log("DataStore is ready! Now safe to query.");
+    } catch (e) {
+      console.error("Error initializing DataStore", e);
+    }
+  };
+
+  // Call the async function
+  initializeDataStore();
+}, []); 
+
   // Called when the user clicks 'Login'
   // 1) If the user's email or password is incorrect, then display an error message
   // 2) If the user's email is not verified, then redirect to the verification page
@@ -101,16 +119,6 @@ export default function Login() {
 
 
 
-    /* 
-    Initialize data store early for edge case where user logins for first time
-    */
-    try {
-      await DataStore.start(); 
-      await DataStore.observeReady(); 
-      console.log("DataStore is ready! Now safe to query.");
-    } catch (e) {
-      console.error("Error initializing DataStore", e);
-    }
 
     Auth.signIn(values["login"].useremail, values["login"].userpassword)
       .then((user) => {
