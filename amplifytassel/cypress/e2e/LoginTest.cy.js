@@ -9,8 +9,8 @@ describe('Sign In:', () => {
   it('allows a user to signin', () => {
     // Step 2: Take an action (Sign in)
     cy.get(selectors.logInButtonOnLandingPage).contains('Login').click();
-    cy.get(selectors.LoginEmailInput).type("ulekhtsi+1@ucsc.edu");
-    cy.get(selectors.LoginPasswordInput).type("Abcd1234");
+    cy.get(selectors.LoginEmailInput).type("jiqle@ucsc.edu");
+    cy.get(selectors.LoginPasswordInput).type("coolCat2025@");
     cy.get(selectors.LoginButton).contains('Login').click();
 
     cy.wait(4000);

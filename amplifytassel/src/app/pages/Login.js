@@ -51,6 +51,7 @@ export default function Login() {
   const { setLoadingAuth } = useAuth();
 
   const [stepPage, setStepPage] = useState("login");
+  const [isDataStoreReady, setIsDataStoreReady] = useState(false);
   const [values, setValues] = useState({
     login: {
       useremail: "",
@@ -98,8 +99,8 @@ export default function Login() {
   const initializeDataStore = async () => {
     try {
       await DataStore.start(); 
-      await DataStore.observeReady(); 
       console.log("DataStore is ready! Now safe to query.");
+      setIsDataStoreReady(true); 
     } catch (e) {
       console.error("Error initializing DataStore", e);
     }
