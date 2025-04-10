@@ -11,6 +11,7 @@ import ThemedInput from "../components/Themed/ThemedInput";
 import LoginBanner from "../assets/sammy-ocean.png";
 import useAuth from "../util/AuthContext";
 import "../stylesheets/LoginSignup.css";
+import { DataStore } from "aws-amplify";
 import { Auth } from "aws-amplify";
 
 const PaperStyling = {
@@ -97,6 +98,20 @@ export default function Login() {
   const login = async () => {
     //const keepLoggedIn = document.getElementById('keepLoggedIn').checked;
     setIsBackendLoading(true);
+
+
+
+    /* 
+    Initialize data store early for edge case where user logins for first time
+    */
+    try {
+      await DataStore.start(); 
+      await DataStore.observeReady(); 
+      console.log("DataStore is ready! Now safe to query.");
+    } catch (e) {
+      console.error("Error initializing DataStore", e);
+    }
+
     Auth.signIn(values["login"].useremail, values["login"].userpassword)
       .then((user) => {
         if (user.challengeName === "NEW_PASSWORD_REQUIRED") {
