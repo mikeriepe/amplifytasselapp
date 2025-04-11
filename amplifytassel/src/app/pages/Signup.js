@@ -46,7 +46,6 @@ export default function Signup() {
       lastname: "",
     },
     1: {
-      schoolemail: "",
       graduationyear: "",
     },
     2: {
@@ -66,7 +65,7 @@ export default function Signup() {
   /*
     When the user clicks 'Create Account',
     this array will be filled with all bad inputs.
-    Ex: errors = ['firstname', 'schoolemail', 'userpassword']
+    Ex: errors = ['firstname', 'userpassword']
   */
   const [errors, setErrors] = useState([]);
   useEffect(() => {
@@ -126,7 +125,6 @@ export default function Signup() {
         DataStore.save(
           new Profile({
             email: email,
-            schoolEmail: values[1].schoolemail,
             firstName: values[0].firstname,
             lastName: values[0].lastname,
             status: ProfileStatus.PENDING,
@@ -141,7 +139,6 @@ export default function Signup() {
         toast.success("Account created", toastOptions);
         setCreatedProfileData({
           email: email,
-          schoolEmail: values[1].schoolemail,
           firstName: values[0].firstname,
           lastName: values[0].lastname,
           status: ProfileStatus.PENDING,
@@ -175,10 +172,6 @@ export default function Signup() {
   const isInputValid = (input, type) => {
     let regex;
     switch (type) {
-      case "schoolemail":
-        regex = /^\S+@ucsc.edu$/;
-        return regex.test(input);
-
       case "graduationyear":
         const today = new Date();
         const beforeToday = today.getFullYear() - 50;
@@ -201,11 +194,6 @@ export default function Signup() {
     let err = [];
     if (values[0].firstname.length === 0) err.push("firstname");
     if (values[0].lastname.length === 0) err.push("lastname");
-    if (
-      values[1].schoolemail.length > 0 &&
-      !isInputValid(values[1].schoolemail, "schoolemail")
-    )
-      err.push("schoolemail");
     if (!isInputValid(values[1].graduationyear, "graduationyear"))
       err.push("graduationyear");
     if (!isInputValid(values[2].useremail, "useremail")) err.push("useremail");
@@ -445,10 +433,6 @@ function SignupStepTwo({ active, step, handleNextStep, isInputValid }) {
   const value = useInputContext();
   const [values] = value;
   const errors = useInputContext()[2] ?? [];
-  const isSchoolEmailBad =
-    errors.includes("schoolemail") ||
-    (values[1].schoolemail.length > 0 &&
-      !isInputValid(values[1].schoolemail, "schoolemail"));
   const isGraduationYearBad =
     errors.includes("graduationyear") ||
     (values[1].graduationyear.length > 0 &&
@@ -467,25 +451,6 @@ function SignupStepTwo({ active, step, handleNextStep, isInputValid }) {
         </p>
       </div>
       <div className="grid-flow-large">
-        <div className="grid-flow-small">
-          <div className="flex-space-between text-bold">
-            <p>School Email</p>
-            <p
-              className="text-warning"
-              style={{ opacity: isSchoolEmailBad ? 1 : 0 }}
-            >
-              Invalid UCSC email
-            </p>
-          </div>
-          <ThemedInput
-            placeholder={"bobsmith@ucsc.edu"}
-            type={"text"}
-            index={"schoolemail"}
-            step={step}
-            fill={"email"}
-            error={isSchoolEmailBad}
-          />
-        </div>
         <div className="grid-flow-small">
           <div className="flex-space-between text-bold">
             <p>
