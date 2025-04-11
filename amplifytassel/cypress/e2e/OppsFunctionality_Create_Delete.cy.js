@@ -33,6 +33,10 @@ describe('Verify Opportunity Create/Delete Lifecycle', () => {
     cy.wait(1000);
 
   });
+
+
+
+
   /*
   it('Create New Opp', { scrollBehavior: false }, () => {
     cy.get(selectors.OppsCreateNewButton).click();
