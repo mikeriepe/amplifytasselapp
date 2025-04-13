@@ -109,4 +109,7 @@ export const selectors = {
     DeleteRequests: '[aria-label="Delete Banana Throwing Party"]',
     OpportunityCardTitle6: '[aria-label="Opportunity Card Title Banana Throwing Party"]',
     OpportunityCardHost6: '[aria-label="Opportunity Card Host Banana Throwing Party"]',
+    OppsFormRecurringEventDropdown: '[name="recurringEventOptions"]',
+    OppsFormFrequencyOptionsDropdown: '[name="frequencyOptions"]',
+    NavBarOpportunityButton: '[aria-label="nav-bar-button-Opportunities"]',
 }

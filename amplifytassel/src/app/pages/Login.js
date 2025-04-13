@@ -11,6 +11,7 @@ import ThemedInput from "../components/Themed/ThemedInput";
 import LoginBanner from "../assets/sammy-ocean.png";
 import useAuth from "../util/AuthContext";
 import "../stylesheets/LoginSignup.css";
+import { DataStore } from "aws-amplify";
 import { Auth } from "aws-amplify";
 
 const PaperStyling = {
@@ -90,6 +91,23 @@ export default function Login() {
   const [isPasswordBad, setIsPasswordBad] = useState(null);
   useEffect(() => setIsPasswordBad(null), [values, stepPage]);
 
+  /* 
+  Initialize data store early for edge case where user logins for first time
+  */
+  useEffect(() => {
+  const initializeDataStore = async () => {
+    try {
+      await DataStore.start(); 
+      console.log("DataStore is ready");
+    } catch (e) {
+      console.error("Error initializing DataStore", e);
+    }
+  };
+
+  // Call the async function
+  initializeDataStore();
+}, []); 
+
   // Called when the user clicks 'Login'
   // 1) If the user's email or password is incorrect, then display an error message
   // 2) If the user's email is not verified, then redirect to the verification page
@@ -97,6 +115,10 @@ export default function Login() {
   const login = async () => {
     //const keepLoggedIn = document.getElementById('keepLoggedIn').checked;
     setIsBackendLoading(true);
+
+
+
+
     Auth.signIn(values["login"].useremail, values["login"].userpassword)
       .then((user) => {
         if (user.challengeName === "NEW_PASSWORD_REQUIRED") {
