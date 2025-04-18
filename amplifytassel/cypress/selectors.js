@@ -111,5 +111,5 @@ export const selectors = {
     OpportunityCardHost6: '[aria-label="Opportunity Card Host Banana Throwing Party"]',
     OppsFormRecurringEventDropdown: '[name="recurringEventOptions"]',
     OppsFormFrequencyOptionsDropdown: '[name="frequencyOptions"]',
-    NavBarOpportunityButton: '[aria-label="nav-bar-button-Opportunities"]',
+    NavBarOpportunityButton: '[aria-label="Opportunities"]',
 }
