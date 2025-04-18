@@ -375,13 +375,7 @@ export default function UpdateProfile() {
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent the default form behavior
 
-    // Validate required fields
-    if (!values[1].username.trim()) {
-      toast.error(`Username is required`, toastOptions);
-      return;
-    }
-
-    if (values[1].username.length > 20) {
+    if (values[1].username && values[1].username.length > 20) {
       toast.error(`Username is too long`, toastOptions);
       return;
     }
