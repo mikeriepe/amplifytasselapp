@@ -532,7 +532,7 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
           <TextInput
             name="name"
             control={control}
-            label="Opportunity Title"
+            label="Opportunity Title*"
             register={register}
           />
 
@@ -591,7 +591,7 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
           <TextInput
             name="description"
             control={control}
-            label="Enter Description"
+            label="Enter Description*"
             multi={true}
             register={register}
           />
@@ -874,7 +874,7 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
             <DropdownInput
               name="recurringEventOptions"
               control={control}
-              label="Recurring Events"
+              label="Recurring Events*"
               options={recurringEventOptions}
               defaultValue="None"
               customOnChange={handleRecurringEventsChange}
@@ -884,7 +884,7 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
               <DropdownInput
               name="frequencyOptions"
               control={control}
-              label="Occurences"
+              label="Occurences*"
               defaultValue = "1"
               options={frequencyOptionsList}
               register={register}
@@ -898,13 +898,13 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
               <TextInput
                 name="location.address"
                 control={control}
-                label="Enter Street Address"
+                label="Enter Street Address*"
                 register={register}
               />
               <TextInput
                 name="location.city"
                 control={control}
-                label="Enter City"
+                label="Enter City*"
                 register={register}
               />
 
@@ -918,13 +918,13 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
                 <TextInput
                   name="location.state"
                   control={control}
-                  label="Enter State/Province"
+                  label="Enter State/Province*"
                   register={register}
                 />
                 <TextInput
                   name="location.zip"
                   control={control}
-                  label="Enter Zipcode"
+                  label="Enter Zipcode*"
                   register={register}
                 />
               </Box>
@@ -944,14 +944,14 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
           <DropdownInput
             name="subject"
             control={control}
-            label="Subject"
+            label="Subject*"
             options={totalMajors}
             register={register}
           />
           <TextInput
             name="eventdata"
             control={control}
-            label="Other details"
+            label="Other details*"
             register={register}
           />
         </Box>
