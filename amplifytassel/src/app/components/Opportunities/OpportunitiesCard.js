@@ -98,6 +98,7 @@ const OutlinedIconButton = (
     getPendingOpportunities,
     getAllOpportunities,
     getJoinedOpportunities,
+    isMyOpportunity
   },
   props
 ) => (
@@ -241,6 +242,7 @@ export default function OpportunitiesCard({
   getCreatedOpportunities,
   getJoinedOpportunities,
   getAllOpportunities,
+  isMyOpportunity,
 }) {
   const [creator, setCreator] = useState("");
   const [profilePicture, setProfilePicture] = useState(null);
@@ -772,7 +774,12 @@ export default function OpportunitiesCard({
     <>
       {opportunity && (
         <Card
-          sx={{ width: '100%', borderRadius: 4, boxShadow: 3 }}
+          sx={{
+            width: '100%',
+            borderRadius: 4,
+            boxShadow: 3,
+            backgroundColor: isMyOpportunity ? 'grey.200' : 'white',
+          }}
           className="clickable"
         >
           <div
@@ -801,7 +808,7 @@ export default function OpportunitiesCard({
                       className="text-blue"
                       aria-label={`Opportunity Card Host ${opportunity.eventName}`}
                     >
-                      {`${creator.firstName} ${creator.lastName}`}
+                      {!isMyOpportunity ? `${creator.firstName} ${creator.lastName}` : 'Me'}
                     </span>
                   </p>
                 </div>
@@ -929,7 +936,7 @@ export default function OpportunitiesCard({
               )}
 
               {/* Apply button */}
-              {type === "all" && (
+              {(type === "all" && isMyOpportunity === false) && (
                 <OutlinedButton handleModalOpen={handleReqModalOpen}>
                   <p
                     className="text-xbold text-white"
