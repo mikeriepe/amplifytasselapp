@@ -175,7 +175,7 @@ export default function FetchWrapper() {
           firstList = firstList.filter((opp) => !res.includes(opp));
           const timeBoxedList = [];
           for (let i = 0; i < firstList.length; i++) {
-            if (new Date(firstList[i].startTime) > Date.now()) {
+            if (new Date(firstList[i].endTime) > Date.now()) {
               timeBoxedList.push(firstList[i]);
             }
           }
