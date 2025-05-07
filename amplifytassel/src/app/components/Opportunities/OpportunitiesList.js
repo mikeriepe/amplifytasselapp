@@ -13,7 +13,6 @@ import useAuth from "../../util/AuthContext";
 import { Grid, CircularProgress } from "@mui/material";
 import { handleSort } from "../../util/RecommendationAlgorithm";
 import { useRecommendations } from "../../context/RecommendationsContext";
-import OpportunityGreyCard from "./OpportunityGreyCard";
 
 const Page = styled((props) => <MuiBox {...props} />)(() => ({
   display: "flex",
