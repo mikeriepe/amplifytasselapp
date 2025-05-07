@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { styled } from "@mui/material/styles";
+import EventBusyIcon from '@mui/icons-material/EventBusy';
 import ButtonBase from "@mui/material/ButtonBase";
 import CardActionArea from "@mui/material/CardActionArea";
 import Divider from "@mui/material/Divider";
@@ -806,6 +807,7 @@ export default function OpportunitiesCard({
                 </div>
               </MuiBox>
             </CardActionArea>
+            {/* Lower area */}
             <div className="flex-flow-large" style={{ marginLeft: "50px" }}>
               {(type === "upcoming" ||
                 type === "created" ||
@@ -963,10 +965,18 @@ export default function OpportunitiesCard({
                   <p className="text-bold ellipsis">
                     {formatDate(opportunity.startTime)}
                   </p>
-                  {/* <ArrowForwardRoundedIcon sx={IconStyling} />
+                </div>
+                <div
+                  className="flex-horizontal flex-flow-large flex-align-center"
+                  style={{
+                    paddingInline: "2em",
+                    marginRight: "0.25em",
+                  }}
+                >
+                  <EventBusyIcon sx={IconStyling} />
                   <p className="text-bold ellipsis">
                     {formatDate(opportunity.endTime)}
-                  </p> */}
+                  </p>
                 </div>
                 <div
                   className="flex-horizontal flex-flow-large flex-align-center"
