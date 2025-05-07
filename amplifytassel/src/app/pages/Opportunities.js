@@ -165,7 +165,7 @@ export default function FetchWrapper() {
 
   const getAllOpportunities = () => {
     DataStore.query(Opportunity, (o) =>
-      o.and((o) => [o.status.eq("APPROVED"), o.profileID.ne(userProfile.id)])
+      o.and((o) => [o.status.eq("APPROVED")])
     )
       .then((res) => {
         var firstList = res;

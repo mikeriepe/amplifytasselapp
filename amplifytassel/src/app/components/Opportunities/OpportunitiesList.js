@@ -13,6 +13,7 @@ import useAuth from "../../util/AuthContext";
 import { Grid, CircularProgress } from "@mui/material";
 import { handleSort } from "../../util/RecommendationAlgorithm";
 import { useRecommendations } from "../../context/RecommendationsContext";
+import OpportunityGreyCard from "./OpportunityGreyCard";
 
 const Page = styled((props) => <MuiBox {...props} />)(() => ({
   display: "flex",
@@ -374,6 +375,15 @@ export default function OpportunitiesList({
                 key={`opportunity-${index}`}
                 sx={{ display: "flex", padding: 2 }}
               >
+                {/* Conditional renderiing to greyout card if browse tab contains a users created opportunity */}
+                { opportunity.profileID === (userProfile.id) ? <OpportunityGreyCard
+                  type={type}
+                  opportunity={opportunity}
+                  getPendingOpportunities={getPendingOpportunities}
+                  getCreatedOpportunities={getCreatedOpportunities}
+                  getAllOpportunities={getAllOpportunities}
+                  getJoinedOpportunities={getJoinedOpportunities}
+                /> : 
                 <OpportunitiesCard
                   type={type}
                   opportunity={opportunity}
@@ -382,6 +392,7 @@ export default function OpportunitiesList({
                   getAllOpportunities={getAllOpportunities}
                   getJoinedOpportunities={getJoinedOpportunities}
                 />
+                }
               </Grid>
             ))}
           </Grid>
