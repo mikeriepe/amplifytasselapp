@@ -4,13 +4,16 @@ import { styled } from "@mui/material/styles";
 import CardActionArea from "@mui/material/CardActionArea";
 import { Storage } from "aws-amplify";
 import { Card, CardContent, CardMedia, Typography, Box } from "@mui/material";
+import Chip from "@mui/material/Chip";
 import FmdGoodOutlinedIcon from "@mui/icons-material/FmdGoodOutlined";
 import DevicesOutlinedIcon from "@mui/icons-material/DevicesOutlined";
 import AccessibilityRoundedIcon from "@mui/icons-material/AccessibilityRounded";
 import EventNoteRoundedIcon from "@mui/icons-material/EventNoteRounded";
+import PeopleIcon from "@mui/icons-material/People";
 
 const CustomCard = ({ opportunity }) => {
   const [banner, setBanner] = useState(null);
+  const [participants, setParticipants] = useState(0);
 
   const downloadFile = async () => {
     const img = await Storage.get(opportunity.bannerKey, {
@@ -22,6 +25,15 @@ const CustomCard = ({ opportunity }) => {
   useEffect(() => {
     downloadFile();
   }, []);
+
+  useEffect(() => {
+    if (opportunity?.profilesJoined?.values) {
+      opportunity.profilesJoined.values
+        .then((result) => {
+          setParticipants(result.length);
+        })
+    }
+  }, [opportunity]);
 
   const formatDate = (startTime) => {
     const dateOptions = {
@@ -75,10 +87,13 @@ const CustomCard = ({ opportunity }) => {
             variant="h6"
             component="div"
             className="title-margin"
-            gutterBottom
           >
             <p className="text-dark text-xbold">{opportunity.eventName}</p>
           </Typography>
+
+          <Box sx={{ display: "inline-flex", marginBottom: "5px" }}>
+            <Chip label={participants} icon={<PeopleIcon />} size="small" />
+          </Box>          
           {/* Subtitle or Extra Information */}
           <Typography
             variant="body2"
