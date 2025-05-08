@@ -16,9 +16,11 @@ import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import EventNoteRoundedIcon from "@mui/icons-material/EventNoteRounded";
 import FmdGoodOutlinedIcon from "@mui/icons-material/FmdGoodOutlined";
 import TimerOutlinedIcon from "@mui/icons-material/TimerOutlined";
+import PeopleIcon from '@mui/icons-material/People';
 import { Modal, Tooltip } from "@mui/material";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
+import Chip from "@mui/material/Chip";
 
 import useAuth from "../../util/AuthContext";
 import RequestModal from "../CustomComponents/RequestOpportunityModal";
@@ -257,6 +259,7 @@ export default function OpportunitiesCard({
   const [fileData, setFileData] = useState(null);
   const [fileDataURL, setFileDataURL] = useState(null);
   const { userProfile, setUserProfile } = useAuth();
+  const [participants, setParticipants] = useState(0);
 
   const { setShowConfettiAnimation, setShowStarAnimation } = useAnimation();
 
@@ -761,6 +764,12 @@ export default function OpportunitiesCard({
     getOpportunityCreator(opportunity);
     extractRoles(opportunity);
     extractKeywords(opportunity);
+    if (opportunity?.profilesJoined?.values) {
+      opportunity.profilesJoined.values
+        .then((result) => {
+          setParticipants(result.length);
+        })
+    }
   }, [opportunity]);
 
   useEffect(() => {
@@ -791,12 +800,16 @@ export default function OpportunitiesCard({
               to={`/Opportunity/${opportunity.id}`}
             >
               <MuiBox>
-                <h4
-                  className="text-dark ellipsis"
-                  aria-label={`Opportunity Card Title ${opportunity.eventName}`}
-                >
-                  {opportunity.eventName}
-                </h4>
+                <MuiBox sx={{ display: "flex" }}>
+                  <h4
+                    className="text-dark ellipsis"
+                    aria-label={`Opportunity Card Title ${opportunity.eventName}`}
+                    style={{ marginRight: "10px" }}
+                  >
+                    {opportunity.eventName}
+                  </h4>
+                  <Chip label={participants} icon={<PeopleIcon />} size="small" />
+                </MuiBox>
                 <div
                   className="flex-flow-large flex-align-center"
                   style={{ paddingTop: "0.5em" }}
