@@ -374,6 +374,16 @@ export default function OpportunitiesList({
                 key={`opportunity-${index}`}
                 sx={{ display: "flex", padding: 2 }}
               >
+                {/* Conditional renderiing to greyout card if browse tab contains a users created opportunity */}
+                { opportunity.profileID === (userProfile.id) ? <OpportunitiesCard
+                  type={type}
+                  opportunity={opportunity}
+                  getPendingOpportunities={getPendingOpportunities}
+                  getCreatedOpportunities={getCreatedOpportunities}
+                  getAllOpportunities={getAllOpportunities}
+                  getJoinedOpportunities={getJoinedOpportunities}
+                  isMyOpportunity = {true}
+                /> : 
                 <OpportunitiesCard
                   type={type}
                   opportunity={opportunity}
@@ -381,7 +391,9 @@ export default function OpportunitiesList({
                   getCreatedOpportunities={getCreatedOpportunities}
                   getAllOpportunities={getAllOpportunities}
                   getJoinedOpportunities={getJoinedOpportunities}
+                  isMyOpportunity = {false}
                 />
+                }
               </Grid>
             ))}
           </Grid>

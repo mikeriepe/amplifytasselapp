@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { styled } from "@mui/material/styles";
+import EventBusyIcon from '@mui/icons-material/EventBusy';
 import ButtonBase from "@mui/material/ButtonBase";
 import CardActionArea from "@mui/material/CardActionArea";
 import Divider from "@mui/material/Divider";
@@ -97,6 +98,7 @@ const OutlinedIconButton = (
     getPendingOpportunities,
     getAllOpportunities,
     getJoinedOpportunities,
+    isMyOpportunity
   },
   props
 ) => (
@@ -240,6 +242,7 @@ export default function OpportunitiesCard({
   getCreatedOpportunities,
   getJoinedOpportunities,
   getAllOpportunities,
+  isMyOpportunity,
 }) {
   const [creator, setCreator] = useState("");
   const [profilePicture, setProfilePicture] = useState(null);
@@ -771,7 +774,12 @@ export default function OpportunitiesCard({
     <>
       {opportunity && (
         <Card
-          sx={{ width: '100%', borderRadius: 4, boxShadow: 3 }}
+          sx={{
+            width: '100%',
+            borderRadius: 4,
+            boxShadow: 3,
+            backgroundColor: isMyOpportunity ? 'grey.200' : 'white',
+          }}
           className="clickable"
         >
           <div
@@ -800,12 +808,13 @@ export default function OpportunitiesCard({
                       className="text-blue"
                       aria-label={`Opportunity Card Host ${opportunity.eventName}`}
                     >
-                      {`${creator.firstName} ${creator.lastName}`}
+                      {!isMyOpportunity ? `${creator.firstName} ${creator.lastName}` : 'Me'}
                     </span>
                   </p>
                 </div>
               </MuiBox>
             </CardActionArea>
+            {/* Lower area */}
             <div className="flex-flow-large" style={{ marginLeft: "50px" }}>
               {(type === "upcoming" ||
                 type === "created" ||
@@ -927,7 +936,7 @@ export default function OpportunitiesCard({
               )}
 
               {/* Apply button */}
-              {type === "all" && (
+              {(type === "all" && isMyOpportunity === false) && (
                 <OutlinedButton handleModalOpen={handleReqModalOpen}>
                   <p
                     className="text-xbold text-white"
@@ -963,10 +972,18 @@ export default function OpportunitiesCard({
                   <p className="text-bold ellipsis">
                     {formatDate(opportunity.startTime)}
                   </p>
-                  {/* <ArrowForwardRoundedIcon sx={IconStyling} />
+                </div>
+                <div
+                  className="flex-horizontal flex-flow-large flex-align-center"
+                  style={{
+                    paddingInline: "2em",
+                    marginRight: "0.25em",
+                  }}
+                >
+                  <EventBusyIcon sx={IconStyling} />
                   <p className="text-bold ellipsis">
                     {formatDate(opportunity.endTime)}
-                  </p> */}
+                  </p>
                 </div>
                 <div
                   className="flex-horizontal flex-flow-large flex-align-center"
