@@ -69,6 +69,7 @@ const AddButton = (props) => (
  * @return {JSX}
  */
 export default function FetchWrapper() {
+  const location = useLocation();
   const { userProfile } = useAuth();
   const [joinedOpportunities, setJoinedOpportunities] = useState([]);
   const [createdOpportunities, setCreatedOpportunities] = useState([]);
@@ -197,6 +198,8 @@ export default function FetchWrapper() {
     getAllKeywords();
   }, []);
 
+  const creatorOrVolunteer = location.pathname.includes("/creator") ? "creators" : "volunteers";
+
   return (
     <>
       {joinedOpportunities &&
@@ -206,6 +209,7 @@ export default function FetchWrapper() {
         allOpportunities &&
         allKeywords && (
           <Opportunities
+            page={creatorOrVolunteer}
             getPendingOpportunities={getPendingOpportunities}
             joinedOpportunities={joinedOpportunities}
             createdOpportunities={createdOpportunities}
@@ -229,6 +233,7 @@ export default function FetchWrapper() {
  */
 function Opportunities(
   {
+    page,
     joinedOpportunities,
     createdOpportunities,
     pastOpportunities,
@@ -265,7 +270,29 @@ function Opportunities(
   const [orgTypeFilter, setOrgTypeFilter] = useState([]);
   const [showOppForm, setShowOppForm] = useState(false);
   // const [bKey, setBKey] = useState("");
-  const tabs = [
+  const creatorTabs = [
+    {
+      name: "Created",
+      description: "See opportunities you created",
+      component: (
+        <OpportunitiesList
+          aria-label="Opportunities Tab Created"
+          key="created"
+          type="created"
+          opportunities={createdOpportunities}
+          locationFilter={locationFilter}
+          setLocationFilter={setLocationFilter}
+          oppTypeFilter={oppTypeFilter}
+          setOppTypeFilter={setOppTypeFilter}
+          orgTypeFilter={orgTypeFilter}
+          setOrgTypeFilter={setOrgTypeFilter}
+          getCreatedOpportunities={getCreatedOpportunities}
+        />
+      ),
+    }
+  ];
+  
+  const volunteerTabs = [
     {
       name: "Browse",
       description: "Browse available opportunities",
@@ -305,25 +332,6 @@ function Opportunities(
       ),
     },
     {
-      name: "Created",
-      description: "See opportunities you created",
-      component: (
-        <OpportunitiesList
-          aria-label="Opportunities Tab Created"
-          key="created"
-          type="created"
-          opportunities={createdOpportunities}
-          locationFilter={locationFilter}
-          setLocationFilter={setLocationFilter}
-          oppTypeFilter={oppTypeFilter}
-          setOppTypeFilter={setOppTypeFilter}
-          orgTypeFilter={orgTypeFilter}
-          setOrgTypeFilter={setOrgTypeFilter}
-          getCreatedOpportunities={getCreatedOpportunities}
-        />
-      ),
-    },
-    {
       name: "Pending",
       description: "Your pending applications",
       component: (
@@ -359,7 +367,7 @@ function Opportunities(
         />
       ),
     },
-  ];
+  ]
 
   const [formValues, setFormValues] = useState({
       name: "",
@@ -669,13 +677,23 @@ function Opportunities(
     //setOrgTypeFilter([]);
   }, [tab]);
 
+  const tabs = page === "creators" ? creatorTabs : volunteerTabs;
+
   return (
     <Page>
       <PageHeader
-        title="Opportunities"
-        subtitle="View and join opportunities"
+        title={
+          page === "creators" ?
+          "Opportunity Hosts" :
+          "Opportunity Volunteers"
+        }
+        subtitle={
+          page === "creators" ?
+          "Create opportunities and find alumni to fill your roles!" :
+          "Browse and join opportunities!"
+        }
         tabs={<CompressedTabBar data={tabs} tab={tab} setTab={setTab} />}
-        components={<AddButton onClick={handleModalOpen} />}
+        components={page === "creators" ? <AddButton onClick={handleModalOpen} /> : null}
       />
       <Modal
         open={showOppForm}
