@@ -126,9 +126,9 @@ export default function DashboardUpcoming({ data }) {
               <Link
                 className="text-bold text-blue ellipsis text-small
             hover-highlight-link"
-                to="/opportunities"
+                to="/opportunities/volunteers"
                 state={{ defaultTab: "upcoming" }}
-                onClick={() => setTabIndex("/opportunities")}
+                onClick={() => setTabIndex("/opportunities/volunteers")}
               >
                 {linkText}
               </Link>
