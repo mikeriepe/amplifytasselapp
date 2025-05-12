@@ -293,7 +293,7 @@ export default function UpdateProfile() {
         updated.graduationYear = values[1].graduationYear;
         updated.location = values[1].location;
         updated.about = values[1].about;
-        updated.linkedin = values[1].linkedin;
+        updated.linkedin = values[1].linkedin?.trim() || null;
         updated.username = values[1].username;
         updated.collegeAffiliation = values[1].college;
         updated.firstName = values[1].firstName;
@@ -380,8 +380,30 @@ export default function UpdateProfile() {
       return;
     }
 
+    if (!values[1].firstName?.trim()) {
+      toast.error("First name is required", toastOptions);
+      return;
+    }
+
+    if (!values[1].lastName?.trim()) {
+      toast.error("Last name is required", toastOptions);
+      return;
+    }
+    
+    if (!values[1].username?.trim()) {
+      toast.error("Username is required", toastOptions);
+      return;
+    }
+
     if (!values[1].graduationYear.trim()) {
       toast.error(`Gradutaion Year is required`, toastOptions);
+      return;
+    }
+    // validate linked in 
+    const linkedInPattern = /^(https?:\/\/)?(www\.)?linkedin\.com\/in\/[a-zA-Z0-9-_.]+\/?$/;
+
+    if (values[1].linkedin && !linkedInPattern.test(values[1].linkedin.trim())) {
+      toast.error("Please enter a valid LinkedIn profile URL", toastOptions);
       return;
     }
 
@@ -443,7 +465,7 @@ export default function UpdateProfile() {
                       </Tooltip> */}
                     </p>
                     <ThemedInput
-                      placeholder={"First Name"}
+                      placeholder={"First Name*"}
                       type={"text"}
                       index={"firstName"}
                       step={1}
@@ -464,7 +486,7 @@ export default function UpdateProfile() {
                   <div style = {{ flex: "1" }}>
                     <p className="text-bold">Real Last Name</p>
                     <ThemedInput
-                      placeholder={"Last Name"}
+                      placeholder={"Last Name*"}
                       type={"text"}
                       index={"lastName"}
                       step={1}
@@ -494,7 +516,7 @@ export default function UpdateProfile() {
                       </Tooltip> */}
                     </p>
                     <ThemedInput
-                      placeholder={"e.g., Bobsmith1"}
+                      placeholder={"e.g., Bobsmith1*"}
                       type={"text"}
                       index={"username"}
                       step={1}
@@ -553,7 +575,7 @@ export default function UpdateProfile() {
                       </Tooltip> */}
                     </p>
                     <ThemedInput
-                      placeholder={"Enter your graduation year"}
+                      placeholder={"Enter your graduation year*"}
                       type={"text"}
                       index={"graduationYear"}
                       step={1}
@@ -602,13 +624,13 @@ export default function UpdateProfile() {
                     aria-label={"Update Socials"}
                   >
                     <p className="text-bold">
-                      Socials
+                      LinkedIn
                       {/* <Tooltip title="Fill out this field to get 10 points" arrow>
                         <HelpIcon fontSize="small" style={{ cursor: 'pointer', marginLeft: '5px' , marginBottom: '-5px', color:'gray' }} />
                       </Tooltip> */}
                     </p>
                     <ThemedInput
-                      placeholder={"LinkedIn Link"}
+                      placeholder={"linkedin.com/in/firstName-lastName/"}
                       type={"text"}
                       index={"linkedin"}
                       step={1}
