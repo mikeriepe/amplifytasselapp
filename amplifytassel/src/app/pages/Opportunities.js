@@ -289,7 +289,26 @@ function Opportunities(
           getCreatedOpportunities={getCreatedOpportunities}
         />
       ),
-    }
+    },
+    {
+      name: "Upcoming",
+      description: "Browse your upcoming opportunities",
+      component: (
+        <OpportunitiesList
+          key="upcoming"
+          type="upcoming"
+          opportunities={joinedOpportunities}
+          locationFilter={locationFilter}
+          setLocationFilter={setLocationFilter}
+          oppTypeFilter={oppTypeFilter}
+          setOppTypeFilter={setOppTypeFilter}
+          orgTypeFilter={orgTypeFilter}
+          setOrgTypeFilter={setOrgTypeFilter}
+          getJoinedOpportunities={getJoinedOpportunities}
+          getAllOpportunities={getAllOpportunities}
+        />
+      ),
+    },
   ];
   
   const volunteerTabs = [
