@@ -978,11 +978,10 @@ export default function OpportunitiesCard({
                   className="flex-horizontal flex-flow-large flex-align-center"
                   style={{
                     paddingInline: "2em",
-                    marginRight: "0.25em",
                   }}
                 >
                   <EventNoteRoundedIcon sx={IconStyling} />
-                  <p className="text-bold ellipsis">
+                  <p className="text-bold ellipsis text-small">
                     {formatDate(opportunity.startTime)}
                   </p>
                 </div>
@@ -990,11 +989,10 @@ export default function OpportunitiesCard({
                   className="flex-horizontal flex-flow-large flex-align-center"
                   style={{
                     paddingInline: "2em",
-                    marginRight: "0.25em",
                   }}
                 >
                   <EventBusyIcon sx={IconStyling} />
-                  <p className="text-bold ellipsis">
+                  <p className="text-bold ellipsis text-small">
                     {formatDate(opportunity.endTime)}
                   </p>
                 </div>
@@ -1003,7 +1001,7 @@ export default function OpportunitiesCard({
                   style={{ paddingInline: "2em", marginTop: "0.25em" }}
                 >
                   <TimerOutlinedIcon sx={IconStyling} />
-                  <p className="text-bold ellipsis">
+                  <p className="text-bold ellipsis text-small">
                     {calculateDuration(
                       opportunity.startTime,
                       opportunity.endTime
@@ -1019,7 +1017,7 @@ export default function OpportunitiesCard({
                   }}
                 >
                   <AccessibilityRoundedIcon sx={IconStyling} />
-                  <p className="text-bold ellipsis">
+                  <p className="text-bold ellipsis  text-small">
                     {opportunity.locationType}
                   </p>
                 </div>
@@ -1035,11 +1033,11 @@ export default function OpportunitiesCard({
                       style={{
                         paddingInline: "2em",
                         marginTop: "0.25em",
-                        marginRight: "0.25em",
+                        marginRight: "0em",
                       }}
                     >
                       <FmdGoodOutlinedIcon sx={IconStyling} />
-                      <p className="text-bold">
+                      <p className="text-bold  text-small">
                         {`
                         ${opportunity.location.address}
                         ${opportunity.location.city},
