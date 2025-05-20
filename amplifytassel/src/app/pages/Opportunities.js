@@ -74,6 +74,7 @@ export default function FetchWrapper() {
   const [joinedOpportunities, setJoinedOpportunities] = useState([]);
   const [createdOpportunities, setCreatedOpportunities] = useState([]);
   const [pastOpportunities, setPastOpportunities] = useState([]);
+  const [creatorPastOpportunities, setCreatorPastOpportunities] = useState([]);
   const [pendingOpportunities, setPendingOpportunities] = useState([]);
   const [creatorPendingOpportunities, setCreatorPendingOpportunities] = useState([]);
   const [allOpportunities, setAllOpportunities] = useState([]);
@@ -136,6 +137,23 @@ export default function FetchWrapper() {
       .catch((err) => {
         console.log(err);
         alert("Error retrieving past joined opportunities");
+      });
+  };
+  const getCreatorPastOpportunities = () => {
+    console.log("Getting past (creators)...");
+    const currTime = new Date().toISOString();
+    DataStore.query(Opportunity, (o) =>
+      o.and((o) => [
+        o.profileID.eq(userProfile.id),
+        o.endTime.lt(currTime),
+      ])
+    )
+      .then((res) => {
+        setCreatorPastOpportunities(res);
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("Error retrieving past created opportunities");
       });
   };
   const getPendingOpportunities = async () => {
@@ -210,6 +228,7 @@ export default function FetchWrapper() {
     getJoinedOpportunities();
     getCreatedOpportunities();
     getPastOpportunities();
+    getCreatorPastOpportunities();
     getPendingOpportunities();
     getCreatorPendingOpportunities();
     getAllOpportunities();
@@ -223,6 +242,7 @@ export default function FetchWrapper() {
       {joinedOpportunities &&
         createdOpportunities &&
         pastOpportunities &&
+        creatorPastOpportunities &&
         pendingOpportunities &&
         creatorPendingOpportunities &&
         allOpportunities &&
@@ -234,6 +254,7 @@ export default function FetchWrapper() {
             joinedOpportunities={joinedOpportunities}
             createdOpportunities={createdOpportunities}
             pastOpportunities={pastOpportunities}
+            creatorPastOpportunities={creatorPastOpportunities}
             pendingOpportunities={pendingOpportunities}
             creatorPendingOpportunities={creatorPendingOpportunities}
             allOpportunities={allOpportunities}
@@ -258,6 +279,7 @@ function Opportunities(
     joinedOpportunities,
     createdOpportunities,
     pastOpportunities,
+    creatorPastOpportunities,
     pendingOpportunities,
     creatorPendingOpportunities,
     allOpportunities,
@@ -329,6 +351,23 @@ function Opportunities(
           setOrgTypeFilter={setOrgTypeFilter}
           getJoinedOpportunities={getJoinedOpportunities}
           getAllOpportunities={getAllOpportunities}
+        />
+      ),
+    },
+    {
+      name: "Completed",
+      description: "Your created opportunities that have completed",
+      component: (
+        <OpportunitiesList
+          key="completed"
+          type="completed"
+          opportunities={creatorPastOpportunities}
+          locationFilter={locationFilter}
+          setLocationFilter={setLocationFilter}
+          oppTypeFilter={oppTypeFilter}
+          setOppTypeFilter={setOppTypeFilter}
+          orgTypeFilter={orgTypeFilter}
+          setOrgTypeFilter={setOrgTypeFilter}
         />
       ),
     },
