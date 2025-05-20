@@ -75,6 +75,7 @@ export default function FetchWrapper() {
   const [createdOpportunities, setCreatedOpportunities] = useState([]);
   const [pastOpportunities, setPastOpportunities] = useState([]);
   const [pendingOpportunities, setPendingOpportunities] = useState([]);
+  const [creatorPendingOpportunities, setCreatorPendingOpportunities] = useState([]);
   const [allOpportunities, setAllOpportunities] = useState([]);
   const [allKeywords, setAllKeywords] = useState([]);
 
@@ -163,6 +164,22 @@ export default function FetchWrapper() {
       alert("Error retrieving pending opportunities");
     }
   };
+  const getCreatorPendingOpportunities = async () => {
+    console.log("Getting creator pending opportunities...");
+    try {
+      const res = await DataStore.query(Opportunity, (o) =>
+        o.and((o) => [
+          o.profileID.eq(userProfile.id),  // opportunities created by this user
+          o.status.eq("PENDING")           // that are pending admin approval
+        ])
+      );
+      console.log('Res: ', res);
+      setCreatorPendingOpportunities(res);
+    } catch (err) {
+      console.log(err);
+      alert("Error retrieving pending opportunities");
+    }
+  };
 
   const getAllOpportunities = () => {
     DataStore.query(Opportunity, (o) =>
@@ -194,6 +211,7 @@ export default function FetchWrapper() {
     getCreatedOpportunities();
     getPastOpportunities();
     getPendingOpportunities();
+    getCreatorPendingOpportunities();
     getAllOpportunities();
     getAllKeywords();
   }, []);
@@ -206,15 +224,18 @@ export default function FetchWrapper() {
         createdOpportunities &&
         pastOpportunities &&
         pendingOpportunities &&
+        creatorPendingOpportunities &&
         allOpportunities &&
         allKeywords && (
           <Opportunities
             page={creatorOrVolunteer}
             getPendingOpportunities={getPendingOpportunities}
+            getCreatorPendingOpportunities={getCreatorPendingOpportunities}
             joinedOpportunities={joinedOpportunities}
             createdOpportunities={createdOpportunities}
             pastOpportunities={pastOpportunities}
             pendingOpportunities={pendingOpportunities}
+            creatorPendingOpportunities={creatorPendingOpportunities}
             allOpportunities={allOpportunities}
             getAllOpportunities={getAllOpportunities}
             getCreatedOpportunities={getCreatedOpportunities}
@@ -238,9 +259,11 @@ function Opportunities(
     createdOpportunities,
     pastOpportunities,
     pendingOpportunities,
+    creatorPendingOpportunities,
     allOpportunities,
     allKeywords,
     getPendingOpportunities,
+    getCreatorPendingOpportunities,
     getAllOpportunities,
     getCreatedOpportunities,
     getAllKeywords,
@@ -273,7 +296,7 @@ function Opportunities(
   const creatorTabs = [
     {
       name: "Created",
-      description: "See opportunities you created",
+      description: "All the opportunities you have created",
       component: (
         <OpportunitiesList
           aria-label="Opportunities Tab Created"
@@ -291,13 +314,13 @@ function Opportunities(
       ),
     },
     {
-      name: "Upcoming",
-      description: "Browse your upcoming opportunities",
+      name: "Pending",
+      description: "Your created opportunities pending admin approval",
       component: (
         <OpportunitiesList
-          key="upcoming"
-          type="upcoming"
-          opportunities={joinedOpportunities}
+          key="created"
+          type="created"
+          opportunities={creatorPendingOpportunities}
           locationFilter={locationFilter}
           setLocationFilter={setLocationFilter}
           oppTypeFilter={oppTypeFilter}
