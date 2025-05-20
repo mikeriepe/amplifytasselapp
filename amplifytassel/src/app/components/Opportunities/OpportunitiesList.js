@@ -39,6 +39,8 @@ export default function OpportunitiesList({
   setOrgTypeFilter,
   getPendingOpportunities,
   getCreatedOpportunities,
+  getCreatorPendingOpportunities,
+  getCreatorPastOpportunities,
   getAllOpportunities,
   getJoinedOpportunities,
 }) {
@@ -379,6 +381,8 @@ export default function OpportunitiesList({
                   opportunity={opportunity}
                   getPendingOpportunities={getPendingOpportunities}
                   getCreatedOpportunities={getCreatedOpportunities}
+                  getCreatorPendingOpportunities={getCreatorPendingOpportunities}
+                  getCreatorPastOpportunities={getCreatorPastOpportunities}
                   getAllOpportunities={getAllOpportunities}
                   getJoinedOpportunities={getJoinedOpportunities}
                 />

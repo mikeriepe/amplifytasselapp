@@ -238,6 +238,8 @@ export default function OpportunitiesCard({
   opportunity,
   getPendingOpportunities,
   getCreatedOpportunities,
+  getCreatorPendingOpportunities,
+  getCreatorPastOpportunities,
   getJoinedOpportunities,
   getAllOpportunities,
 }) {
@@ -589,8 +591,17 @@ export default function OpportunitiesCard({
     DataStore.delete(modelToDelete)
     if (getCreatedOpportunities) {
       getCreatedOpportunities()
-      handleDeleteModalClose()
     }
+
+    if (getCreatorPendingOpportunities) {
+      getCreatorPendingOpportunities()
+    }
+
+    if (getCreatorPastOpportunities) {
+      getCreatorPastOpportunities()
+    }
+
+    handleDeleteModalClose()
   }
 
   const postRequestToOpportunity = (requestData) => {

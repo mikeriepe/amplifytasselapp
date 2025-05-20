@@ -251,6 +251,7 @@ export default function FetchWrapper() {
             page={creatorOrVolunteer}
             getPendingOpportunities={getPendingOpportunities}
             getCreatorPendingOpportunities={getCreatorPendingOpportunities}
+            getCreatorPastOpportunities={getCreatorPastOpportunities}
             joinedOpportunities={joinedOpportunities}
             createdOpportunities={createdOpportunities}
             pastOpportunities={pastOpportunities}
@@ -286,6 +287,7 @@ function Opportunities(
     allKeywords,
     getPendingOpportunities,
     getCreatorPendingOpportunities,
+    getCreatorPastOpportunities,
     getAllOpportunities,
     getCreatedOpportunities,
     getAllKeywords,
@@ -332,6 +334,8 @@ function Opportunities(
           orgTypeFilter={orgTypeFilter}
           setOrgTypeFilter={setOrgTypeFilter}
           getCreatedOpportunities={getCreatedOpportunities}
+          getCreatorPendingOpportunities={getCreatorPendingOpportunities}
+          getCreatorPastOpportunities={getCreatorPastOpportunities}
         />
       ),
     },
@@ -351,6 +355,9 @@ function Opportunities(
           setOrgTypeFilter={setOrgTypeFilter}
           getJoinedOpportunities={getJoinedOpportunities}
           getAllOpportunities={getAllOpportunities}
+          getCreatedOpportunities={getCreatedOpportunities}
+          getCreatorPendingOpportunities={getCreatorPendingOpportunities}
+          getCreatorPastOpportunities={getCreatorPastOpportunities}
         />
       ),
     },
@@ -368,6 +375,9 @@ function Opportunities(
           setOppTypeFilter={setOppTypeFilter}
           orgTypeFilter={orgTypeFilter}
           setOrgTypeFilter={setOrgTypeFilter}
+          getCreatedOpportunities={getCreatedOpportunities}
+          getCreatorPendingOpportunities={getCreatorPendingOpportunities}
+          getCreatorPastOpportunities={getCreatorPastOpportunities}
         />
       ),
     },
