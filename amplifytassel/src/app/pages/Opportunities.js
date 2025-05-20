@@ -198,7 +198,7 @@ export default function FetchWrapper() {
     getAllKeywords();
   }, []);
 
-  const creatorOrVolunteer = location.pathname.includes("/creator") ? "creators" : "volunteers";
+  const creatorOrVolunteer = location.pathname.includes("/creators") ? "creators" : "volunteers";
 
   return (
     <>
