@@ -779,6 +779,10 @@ export default function OpportunitiesCard({
     downloadFile();
   }, [creator]);
 
+
+  // MARK: Bookmark
+ 
+
   return (
     <>
       {opportunity && (
@@ -822,9 +826,14 @@ export default function OpportunitiesCard({
                       aria-label={`Opportunity Card Host ${opportunity.eventName}`}
                     >
                       {!isMyOpportunity ? `${creator.firstName} ${creator.lastName}` : 'Me'}
+
                     </span>
                   </p>
+                      
                 </div>
+                      {isMyOpportunity && (
+                  <p className="text-bold text-disabled">{opportunity.status.charAt(0).toUpperCase() + opportunity.status.slice(1).toLowerCase()}</p>
+)}
               </MuiBox>
             </CardActionArea>
             {/* Lower area */}
