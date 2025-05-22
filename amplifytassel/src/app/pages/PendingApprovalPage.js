@@ -15,7 +15,7 @@ export default function PendingApproval() {
   return (
     <div>
         <Alert
-          style={{width: '800px', marginTop: '20px'}}
+          style={{width: '800px', position: 'absolute', top: '150px', left: '375px'}}
           severity="warning"
           icon={<WarningIcon fontSize="inherit" className='icon' />}
         >
