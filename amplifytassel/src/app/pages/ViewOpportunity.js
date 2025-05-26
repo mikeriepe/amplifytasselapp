@@ -148,6 +148,19 @@ function ViewOpportunity({ opportunity }) {
   const [oppKeywords, setOppKeywords] = useState(false);
 
 
+  // for if opp has limit and if full
+  const maxApplicants = 0; // Temporary hardcoded cap
+  const [participants, setParticipants] = useState(0);
+
+  useEffect(() => {
+    if (opportunity?.profilesJoined) {
+      setParticipants(opportunity.profilesJoined.length);
+    }
+    console.log("Participants = ", participants)
+  }, [opportunity]);
+
+  const isFull = participants >= maxApplicants;
+  
   const handleOppModalClose = () => {
     setShowOppForm(false);
   };
@@ -777,20 +790,31 @@ function ViewOpportunity({ opportunity }) {
                       </Paper>
                     </Modal>
                   </MuiBox>
-                  
                 ) : (
-                  <ThemedButton
-                    aria-label="Request to Join Opportunity"
-                    variant="gradient"
-                    color="yellow"
-                    size="small"
-                    onClick={() => {
-                      handleModalOpen("General Participant");
-                    }}
-                  >
-                    Request to Join
-                  </ThemedButton>
-                )
+                    isFull ? (
+                      <ThemedButton
+                        aria-label="Opportunity Full"
+                        variant="cancel"
+                        color="gray"
+                        size="small"
+                        disabled
+                      >
+                        Full
+                      </ThemedButton>
+                    ) : (
+                      <ThemedButton
+                        aria-label="Request to Join Opportunity"
+                        variant="gradient"
+                        color="yellow"
+                        size="small"
+                        onClick={() => {
+                          handleModalOpen("General Participant");
+                        }}
+                      >
+                        Request to Join
+                      </ThemedButton>
+                    )
+                  )
               }
               tabs={
                 isCreator ? (

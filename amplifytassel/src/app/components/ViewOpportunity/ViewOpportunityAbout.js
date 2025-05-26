@@ -190,6 +190,10 @@ function RolesCard({
   const [showReqForm, setshowReqForm] = React.useState(false);
   const [requestMessage, setRequestMessage] = React.useState('');
   const [requestedRole, setRequestedRole] = React.useState(null);
+  const maxApplicants = 0; // test value
+  const [participants, setParticipants] = React.useState(0);
+  const isFull = participants >= maxApplicants;
+
 
   const {
     setShowConfettiAnimation,
@@ -347,20 +351,33 @@ function RolesCard({
                   </p>
                 </Box>
                 {
-                  !isCreator &&
-                  <ThemedButton
-                    aria-label={`Request ${role.name}`}
-                    variant='themed'
-                    color='yellow'
-                    size='small'
-                    onClick={(e) => {
-                      handleModalOpen(role);
-                      e.stopPropagation();
-                      e.preventDefault();
-                    }}
-                  >
-                    Request Role
-                  </ThemedButton>
+                  !isCreator && (
+                    isFull ? (
+                      <ThemedButton
+                        variant='cancel'
+                        color='gray'
+                        size='small'
+                        disabled
+                        aria-label='Participant Cap Reached'
+                      >
+                        Full
+                      </ThemedButton>
+                    ) : (
+                      <ThemedButton
+                        aria-label={`Request ${role.name}`}
+                        variant='themed'
+                        color='yellow'
+                        size='small'
+                        onClick={(e) => {
+                          handleModalOpen(role);
+                          e.stopPropagation();
+                          e.preventDefault();
+                        }}
+                      >
+                        Request Role
+                      </ThemedButton>
+                    )
+                  )
                 }
               </AccordionSummary>
               <AccordionDetails
