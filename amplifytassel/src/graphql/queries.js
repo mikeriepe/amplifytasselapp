@@ -1831,6 +1831,7 @@ export const getOpportunity = /* GraphQL */ `
         _lastChangedAt
         __typename
       }
+      maxApplicants
       createdAt
       updatedAt
       _version
@@ -1864,6 +1865,7 @@ export const listOpportunities = /* GraphQL */ `
         profileID
         status
         bannerKey
+        maxApplicants
         createdAt
         updatedAt
         _version
@@ -1907,6 +1909,7 @@ export const syncOpportunities = /* GraphQL */ `
         profileID
         status
         bannerKey
+        maxApplicants
         createdAt
         updatedAt
         _version
@@ -1952,6 +1955,7 @@ export const opportunitiesByProfileID = /* GraphQL */ `
         profileID
         status
         bannerKey
+        maxApplicants
         createdAt
         updatedAt
         _version
@@ -2421,6 +2425,7 @@ export const getKeywordOpportunity = /* GraphQL */ `
         profileID
         status
         bannerKey
+        maxApplicants
         createdAt
         updatedAt
         _version
@@ -3127,6 +3132,7 @@ export const getOpportunityProfile = /* GraphQL */ `
         profileID
         status
         bannerKey
+        maxApplicants
         createdAt
         updatedAt
         _version

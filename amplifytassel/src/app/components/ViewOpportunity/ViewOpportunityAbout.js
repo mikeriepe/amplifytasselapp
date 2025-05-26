@@ -16,6 +16,9 @@ import { Major, Request, Profile } from '../../../models';
 import useAnimation from '../../util/AnimationContext';
 import { calculateIfUserLeveledUp } from '../../util/PointsAddition';
 import { PointsAddition } from '../../util/PointsAddition';
+import { Opportunity } from '../../../models';
+import MuiBox from "@mui/material/Box";
+import PeopleIcon from '@mui/icons-material/People';
 
 /**
  * About tab for view opportunity
@@ -29,6 +32,9 @@ export default function ViewOpportunityAbout({
   creator,
   opportunityid,
   tags,
+  participants,
+  maxApplicants,
+  setParticipants,
 }) {
   return (
     <>
@@ -39,6 +45,9 @@ export default function ViewOpportunityAbout({
         opportunityName={opportunityName}
         creator={creator}
         opportunityid={opportunityid}
+        participants={participants}
+        maxApplicants={maxApplicants}
+        setParticipants={setParticipants}
       />
       <TagsCard
         tags={tags}
@@ -182,6 +191,9 @@ function RolesCard({
   opportunityName,
   opportunityid,
   creator,
+  participants,
+  maxApplicants,
+  setParticipants,
 }) {
   const [expanded, setExpanded] = React.useState(null);
   const [majors, setMajors] = React.useState([]);
@@ -190,10 +202,7 @@ function RolesCard({
   const [showReqForm, setshowReqForm] = React.useState(false);
   const [requestMessage, setRequestMessage] = React.useState('');
   const [requestedRole, setRequestedRole] = React.useState(null);
-  const maxApplicants = 0; // test value
-  const [participants, setParticipants] = React.useState(0);
   const isFull = participants >= maxApplicants;
-
 
   const {
     setShowConfettiAnimation,
@@ -270,6 +279,7 @@ function RolesCard({
           profileID: requestData.requester,
         })
       );
+      setParticipants((prev) => prev + 1);
       // toast notification
       toast.success(`Applied to ${opportunityName} ${toasterStr}`, {
         position: 'top-right',
@@ -314,6 +324,7 @@ function RolesCard({
         });
     */
   };
+  
 
   useEffect(() => {
     getMajors();
@@ -321,9 +332,32 @@ function RolesCard({
 
   return (
     <Roles>
-      <h4 className='text-dark' style={{padding: '1.5em 2em 1.5em 2em'}}>
-        Roles
-      </h4>
+      <MuiBox sx={{ padding: '1.5em 2em 0 2em' }}>
+        <MuiBox
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          <h4
+            className="text-dark ellipsis"
+            aria-label="Opportunity Roles Header"
+          >
+            Roles
+          </h4>
+
+          <Chip
+            label={
+              !maxApplicants || maxApplicants === Infinity
+                ? `Applicants: ${participants}`
+                : `Applicants: ${participants}/${maxApplicants}`
+            }
+            icon={<PeopleIcon />}
+            size="medium"
+          />
+        </MuiBox>
+      </MuiBox>
       <Box aria-label='View Opportunity Roles'>
         {
           roles && roles.map((role, index) => (

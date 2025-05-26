@@ -261,8 +261,9 @@ export default function OpportunitiesCard({
   const { userProfile, setUserProfile } = useAuth();
   const [participants, setParticipants] = useState(0);
 
-
-  const maxApplicants = 1; // Temporary hardcoded cap
+  // if no maxApplicants set to infinity so there is no limit
+  const maxApplicants = opportunity?.maxApplicants ?? Infinity;
+  
   const isFull = participants >= maxApplicants;
 
 
