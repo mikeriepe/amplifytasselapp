@@ -530,6 +530,8 @@ export default function OpportunitiesCard({
               updated.subject = data.subject;
               updated.bannerKey = opportunity.bannerKey;
               updated.eventBanner = image;
+              updated.maxApplicants = data.maxApplicants === "" ? null : parseInt(data.maxApplicants);
+
             })
           ).then((res) => {
             handleOppModalClose();
@@ -764,6 +766,8 @@ export default function OpportunitiesCard({
     Roles: oppRoles,
     keywords: oppKeywords,
     bannerKey: opportunity.bannerKey,
+    maxApplicants: opportunity.maxApplicants ?? "",
+
   };
 
   useEffect(() => {
