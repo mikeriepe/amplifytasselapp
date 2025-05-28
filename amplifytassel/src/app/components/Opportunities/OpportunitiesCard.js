@@ -274,7 +274,11 @@ export default function OpportunitiesCard({
   };
 
   const handleReqModalOpen = () => {
-    setshowReqForm(true);
+    if (!isFull) {
+      setshowReqForm(true);
+    } else {
+      toast.warn("This opportunity is full and no longer accepting requests.");
+    }
   };
 
   const handleOppModalClose = () => {

@@ -199,6 +199,10 @@ function ViewOpportunity({ opportunity }) {
   };
 
   const handleModalOpen = (role) => {
+    if (isFull) {
+      toast.error("This opportunity is full.");
+      return;
+    }
     setRequestedRole(role);
     setshowReqForm(true);
   };
