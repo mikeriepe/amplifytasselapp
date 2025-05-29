@@ -193,6 +193,13 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
     }),
     subject: Yup.string().required("Subject is required"),
     keywords: Yup.object().notRequired(),
+    maxApplicants: Yup.number()
+      .nullable()
+      .transform((value, originalValue) =>
+        String(originalValue).trim() === "" ? null : value
+      )
+      .min(1, "Must be at least 1")
+      .typeError("Must be a number"),
   });
   /*
   const getOpportunityTypes = () => {
@@ -685,6 +692,12 @@ export default function OpportunityForm({ onClose, defaultValues, onSubmit }) {
               ))}
             <FormHelperText sx={{ color: "red" }}>{roleError}</FormHelperText>
           </Box>
+          <TextInput
+            name="maxApplicants"
+            control={control}
+            label="Max Number of Roles (leave blank for no limit)"
+            register={register}
+          />
           <FormLabel
             value="keywords"
             sx={{

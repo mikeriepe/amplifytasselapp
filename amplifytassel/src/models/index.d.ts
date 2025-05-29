@@ -771,6 +771,7 @@ type EagerOpportunity = {
   readonly status?: OpportunityStatus | keyof typeof OpportunityStatus | null;
   readonly bannerKey?: string | null;
   readonly Analytics?: OpportunityAnalytics | null;
+  readonly maxApplicants?: number | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly opportunityAnalyticsId?: string | null;
@@ -803,6 +804,7 @@ type LazyOpportunity = {
   readonly status?: OpportunityStatus | keyof typeof OpportunityStatus | null;
   readonly bannerKey?: string | null;
   readonly Analytics: AsyncItem<OpportunityAnalytics | undefined>;
+  readonly maxApplicants?: number | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly opportunityAnalyticsId?: string | null;

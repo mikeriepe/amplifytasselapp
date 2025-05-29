@@ -261,6 +261,12 @@ export default function OpportunitiesCard({
   const { userProfile, setUserProfile } = useAuth();
   const [participants, setParticipants] = useState(0);
 
+  // if no maxApplicants set to infinity so there is no limit
+  const maxApplicants = opportunity?.maxApplicants ?? Infinity;
+  
+  const isFull = participants >= maxApplicants;
+
+
   const { setShowConfettiAnimation, setShowStarAnimation } = useAnimation();
 
   const handleReqModalClose = () => {
@@ -268,7 +274,11 @@ export default function OpportunitiesCard({
   };
 
   const handleReqModalOpen = () => {
-    setshowReqForm(true);
+    if (!isFull) {
+      setshowReqForm(true);
+    } else {
+      toast.warn("This opportunity is full and no longer accepting requests.");
+    }
   };
 
   const handleOppModalClose = () => {
@@ -524,6 +534,8 @@ export default function OpportunitiesCard({
               updated.subject = data.subject;
               updated.bannerKey = opportunity.bannerKey;
               updated.eventBanner = image;
+              updated.maxApplicants = data.maxApplicants === "" ? null : parseInt(data.maxApplicants);
+
             })
           ).then((res) => {
             handleOppModalClose();
@@ -758,6 +770,8 @@ export default function OpportunitiesCard({
     Roles: oppRoles,
     keywords: oppKeywords,
     bannerKey: opportunity.bannerKey,
+    maxApplicants: opportunity.maxApplicants ?? "",
+
   };
 
   useEffect(() => {
@@ -958,15 +972,35 @@ export default function OpportunitiesCard({
               )}
 
               {/* Apply button */}
-              {(type === "all" && isMyOpportunity === false) && (
-                <OutlinedButton handleModalOpen={handleReqModalOpen}>
-                  <p
-                    className="text-xbold text-white"
-                    aria-label={`Apply ${opportunity.eventName}`}
+              {type === "all" && !isMyOpportunity && (
+                isFull ? (
+                  <ButtonBase
+                    component="div"
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      height: "40px",
+                      width: "80px",
+                      padding: 0,
+                      background: "lightgray",
+                      border: "0.5px solid rgba(0, 0, 0, 0.15)",
+                      borderRadius: "5px",
+                      cursor: "not-allowed",
+                    }}
                   >
-                    Apply
-                  </p>
-                </OutlinedButton>
+                    <p className="text-xbold text-dark">Full</p>
+                  </ButtonBase>
+                ) : (
+                  <OutlinedButton handleModalOpen={handleReqModalOpen}>
+                    <p
+                      className="text-xbold text-white"
+                      aria-label={`Apply ${opportunity.eventName}`}
+                    >
+                      Apply
+                    </p>
+                  </OutlinedButton>
+                )
               )}
             </div>
           </div>

@@ -1407,6 +1407,7 @@ export const onCreateOpportunity = /* GraphQL */ `
         _lastChangedAt
         __typename
       }
+      maxApplicants
       createdAt
       updatedAt
       _version
@@ -1482,6 +1483,7 @@ export const onUpdateOpportunity = /* GraphQL */ `
         _lastChangedAt
         __typename
       }
+      maxApplicants
       createdAt
       updatedAt
       _version
@@ -1557,6 +1559,7 @@ export const onDeleteOpportunity = /* GraphQL */ `
         _lastChangedAt
         __typename
       }
+      maxApplicants
       createdAt
       updatedAt
       _version
@@ -2000,6 +2003,7 @@ export const onCreateKeywordOpportunity = /* GraphQL */ `
         profileID
         status
         bannerKey
+        maxApplicants
         createdAt
         updatedAt
         _version
@@ -2051,6 +2055,7 @@ export const onUpdateKeywordOpportunity = /* GraphQL */ `
         profileID
         status
         bannerKey
+        maxApplicants
         createdAt
         updatedAt
         _version
@@ -2102,6 +2107,7 @@ export const onDeleteKeywordOpportunity = /* GraphQL */ `
         profileID
         status
         bannerKey
+        maxApplicants
         createdAt
         updatedAt
         _version
@@ -2670,6 +2676,7 @@ export const onCreateOpportunityProfile = /* GraphQL */ `
         profileID
         status
         bannerKey
+        maxApplicants
         createdAt
         updatedAt
         _version
@@ -2743,6 +2750,7 @@ export const onUpdateOpportunityProfile = /* GraphQL */ `
         profileID
         status
         bannerKey
+        maxApplicants
         createdAt
         updatedAt
         _version
@@ -2816,6 +2824,7 @@ export const onDeleteOpportunityProfile = /* GraphQL */ `
         profileID
         status
         bannerKey
+        maxApplicants
         createdAt
         updatedAt
         _version
