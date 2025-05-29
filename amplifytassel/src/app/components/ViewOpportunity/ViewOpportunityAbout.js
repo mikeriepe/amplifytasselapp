@@ -342,6 +342,7 @@ function RolesCard({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
+            marginBottom: '20px'
           }}
         >
           <h4
