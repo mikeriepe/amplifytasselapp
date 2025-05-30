@@ -705,7 +705,6 @@ function ViewOpportunity({ opportunity }) {
     extractRoles();
     extractKeywords();
   }, [opportunity]);
-  
 
   return (
     <Page>
@@ -721,7 +720,7 @@ function ViewOpportunity({ opportunity }) {
               hostprofileid={creator?.id}
               avatar={creator?.picture}
               banner={banner}
-              backUrl={location.state?.source === "creators" ? "/opportunities/hosts" : "/opportunities/volunteers"}
+              backUrl={location.state?.source === "hosts" ? "/opportunities/hosts" : "/opportunities/volunteers"}
               data={opportunity}
               components={
                 isCreator ? (

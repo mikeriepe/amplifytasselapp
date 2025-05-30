@@ -73,6 +73,8 @@ export default function FetchWrapper() {
   const { userProfile } = useAuth();
   const [joinedOpportunities, setJoinedOpportunities] = useState([]);
   const [createdOpportunities, setCreatedOpportunities] = useState([]);
+  const [acceptedHostOpportunities, setAcceptedHostOpportunities] = useState([]);
+  const [rejectedHostOpportunities, setRejectedHostOpportunities] = useState([]);
   const [pastOpportunities, setPastOpportunities] = useState([]);
   const [hostPastOpportunities, setHostPastOpportunities] = useState([]);
   const [pendingOpportunities, setPendingOpportunities] = useState([]);
@@ -89,6 +91,84 @@ export default function FetchWrapper() {
       .catch((err) => {
         console.log(err);
         alert("Error retrieving keywords");
+      });
+  };
+
+  const getCreatedOpportunities = () => {
+    console.log("Getting created...");
+    DataStore.query(Opportunity, (o) => o.profileID.eq(userProfile.id))
+      .then((res) => {
+        setCreatedOpportunities(res);
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("Error retrieving created opportunities");
+      });
+  };
+  const getHostPendingOpportunities = async () => {
+    console.log("Getting host pending opportunities...");
+    try {
+      const res = await DataStore.query(Opportunity, (o) =>
+        o.and((o) => [
+          o.profileID.eq(userProfile.id),  // opportunities created by this user
+          o.status.eq("PENDING")           // that are pending admin approval
+        ])
+      );
+      console.log('Res: ', res);
+      setHostPendingOpportunities(res);
+    } catch (err) {
+      console.log(err);
+      alert("Error retrieving pending opportunities");
+    }
+  };
+  const getAcceptedHostOpportunities = async () => {
+    console.log("Getting host accepted opportunities...");
+    try {
+      const currTime = new Date().toISOString();
+      const res = await DataStore.query(Opportunity, (o) =>
+        o.and((o) => [
+          o.profileID.eq(userProfile.id),  // opportunities created by this user
+          o.endTime.gt(currTime),
+          o.status.eq("APPROVED")          // that have been approved
+        ])
+      );
+      setAcceptedHostOpportunities(res);
+    } catch (err) {
+      console.log(err);
+      alert("Error retrieving accepted opportunities");
+    }
+  };
+  const getRejectedHostOpportunities = async () => {
+    console.log("Getting host rejected opportunities...");
+    try {
+      const res = await DataStore.query(Opportunity, (o) =>
+        o.and((o) => [
+          o.profileID.eq(userProfile.id),  // opportunities created by this user
+          o.status.eq("DENIED")          // that have been rejected
+        ])
+      );
+      setRejectedHostOpportunities(res);
+    } catch (err) {
+      console.log(err);
+      alert("Error retrieving rejected opportunities");
+    }
+  };
+  const getHostPastOpportunities = () => {
+    console.log("Getting past (hosts)...");
+    const currTime = new Date().toISOString();
+    DataStore.query(Opportunity, (o) =>
+      o.and((o) => [
+        o.profileID.eq(userProfile.id),
+        o.endTime.lt(currTime),
+        o.status.eq("APPROVED")     // Only show approved events as non-approved would not have occurred
+      ])
+    )
+      .then((res) => {
+        setHostPastOpportunities(res);
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("Error retrieving past created opportunities");
       });
   };
 
@@ -109,19 +189,6 @@ export default function FetchWrapper() {
         alert("Error retrieving joined opportunities");
       });
   };
-
-  const getCreatedOpportunities = () => {
-    console.log("Getting created...");
-    DataStore.query(Opportunity, (o) => o.profileID.eq(userProfile.id))
-      .then((res) => {
-        setCreatedOpportunities(res);
-      })
-      .catch((err) => {
-        console.log(err);
-        alert("Error retrieving created opportunities");
-      });
-  };
-
   const getPastOpportunities = () => {
     console.log("Getting past...");
     const currTime = new Date().toISOString();
@@ -137,23 +204,6 @@ export default function FetchWrapper() {
       .catch((err) => {
         console.log(err);
         alert("Error retrieving past joined opportunities");
-      });
-  };
-  const getHostPastOpportunities = () => {
-    console.log("Getting past (hosts)...");
-    const currTime = new Date().toISOString();
-    DataStore.query(Opportunity, (o) =>
-      o.and((o) => [
-        o.profileID.eq(userProfile.id),
-        o.endTime.lt(currTime),
-      ])
-    )
-      .then((res) => {
-        setHostPastOpportunities(res);
-      })
-      .catch((err) => {
-        console.log(err);
-        alert("Error retrieving past created opportunities");
       });
   };
   const getPendingOpportunities = async () => {
@@ -182,23 +232,6 @@ export default function FetchWrapper() {
       alert("Error retrieving pending opportunities");
     }
   };
-  const getHostPendingOpportunities = async () => {
-    console.log("Getting host pending opportunities...");
-    try {
-      const res = await DataStore.query(Opportunity, (o) =>
-        o.and((o) => [
-          o.profileID.eq(userProfile.id),  // opportunities created by this user
-          o.status.eq("PENDING")           // that are pending admin approval
-        ])
-      );
-      console.log('Res: ', res);
-      setHostPendingOpportunities(res);
-    } catch (err) {
-      console.log(err);
-      alert("Error retrieving pending opportunities");
-    }
-  };
-
   const getAllOpportunities = () => {
     DataStore.query(Opportunity, (o) =>
       o.and((o) => [o.status.eq("APPROVED")])
@@ -227,6 +260,8 @@ export default function FetchWrapper() {
   useEffect(() => {
     getJoinedOpportunities();
     getCreatedOpportunities();
+    getAcceptedHostOpportunities();
+    getRejectedHostOpportunities();
     getPastOpportunities();
     getHostPastOpportunities();
     getPendingOpportunities();
@@ -241,6 +276,8 @@ export default function FetchWrapper() {
     <>
       {joinedOpportunities &&
         createdOpportunities &&
+        acceptedHostOpportunities &&
+        rejectedHostOpportunities &&
         pastOpportunities &&
         hostPastOpportunities &&
         pendingOpportunities &&
@@ -252,8 +289,12 @@ export default function FetchWrapper() {
             getPendingOpportunities={getPendingOpportunities}
             getHostPendingOpportunities={getHostPendingOpportunities}
             getHostPastOpportunities={getHostPastOpportunities}
+            getAcceptedHostOpportunities={getAcceptedHostOpportunities}
+            getRejectedHostOpportunities={getRejectedHostOpportunities}
             joinedOpportunities={joinedOpportunities}
             createdOpportunities={createdOpportunities}
+            acceptedHostOpportunities={acceptedHostOpportunities}
+            rejectedHostOpportunities={rejectedHostOpportunities}
             pastOpportunities={pastOpportunities}
             hostPastOpportunities={hostPastOpportunities}
             pendingOpportunities={pendingOpportunities}
@@ -279,6 +320,8 @@ function Opportunities(
     page,
     joinedOpportunities,
     createdOpportunities,
+    acceptedHostOpportunities,
+    rejectedHostOpportunities,
     pastOpportunities,
     hostPastOpportunities,
     pendingOpportunities,
@@ -286,6 +329,8 @@ function Opportunities(
     allOpportunities,
     allKeywords,
     getPendingOpportunities,
+    getAcceptedHostOpportunities,
+    getRejectedHostOpportunities,
     getHostPendingOpportunities,
     getHostPastOpportunities,
     getAllOpportunities,
@@ -319,20 +364,21 @@ function Opportunities(
   // const [bKey, setBKey] = useState("");
   const hostTabs = [
     {
-      name: "Created",
-      description: "All the opportunities you have created",
+      name: "Pending",
+      description: "Your created opportunities pending admin approval",
       component: (
         <OpportunitiesList
-          aria-label="Opportunities Tab Created"
-          key="created"
-          type="created"
-          opportunities={createdOpportunities}
+          key="pending"
+          type="pending"
+          opportunities={hostPendingOpportunities}
           locationFilter={locationFilter}
           setLocationFilter={setLocationFilter}
           oppTypeFilter={oppTypeFilter}
           setOppTypeFilter={setOppTypeFilter}
           orgTypeFilter={orgTypeFilter}
           setOrgTypeFilter={setOrgTypeFilter}
+          getJoinedOpportunities={getJoinedOpportunities}
+          getAllOpportunities={getAllOpportunities}
           getCreatedOpportunities={getCreatedOpportunities}
           getHostPendingOpportunities={getHostPendingOpportunities}
           getHostPastOpportunities={getHostPastOpportunities}
@@ -340,13 +386,34 @@ function Opportunities(
       ),
     },
     {
-      name: "Pending",
-      description: "Your created opportunities pending admin approval",
+      name: "Accepted",
+      description: "Your hosted opportunities approved by admins",
       component: (
         <OpportunitiesList
-          key="created"
-          type="created"
-          opportunities={hostPendingOpportunities}
+          aria-label="Opportunities Tab Accepted"
+          key="accepted"
+          type="accepted"
+          opportunities={acceptedHostOpportunities}
+          locationFilter={locationFilter}
+          setLocationFilter={setLocationFilter}
+          oppTypeFilter={oppTypeFilter}
+          setOppTypeFilter={setOppTypeFilter}
+          orgTypeFilter={orgTypeFilter}
+          setOrgTypeFilter={setOrgTypeFilter}
+          getCreatedOpportunities={getAcceptedHostOpportunities}
+          getHostPendingOpportunities={getHostPendingOpportunities}
+          getHostPastOpportunities={getHostPastOpportunities}
+        />
+      ),
+    },
+    {
+      name: "Rejected",
+      description: "Your created opportunities rejected by admins",
+      component: (
+        <OpportunitiesList
+          key="rejected"
+          type="rejected"
+          opportunities={rejectedHostOpportunities}
           locationFilter={locationFilter}
           setLocationFilter={setLocationFilter}
           oppTypeFilter={oppTypeFilter}
@@ -428,7 +495,7 @@ function Opportunities(
       component: (
         <OpportunitiesList
           key="pending"
-          type="pending"
+          type="pending-volunteer"
           opportunities={pendingOpportunities}
           locationFilter={locationFilter}
           setLocationFilter={setLocationFilter}
@@ -447,7 +514,7 @@ function Opportunities(
       component: (
         <OpportunitiesList
           key="completed"
-          type="completed"
+          type="completed-volunteer"
           opportunities={pastOpportunities}
           locationFilter={locationFilter}
           setLocationFilter={setLocationFilter}

@@ -1,33 +1,33 @@
-import React, { useEffect, useState } from "react";
-import { Link as RouterLink } from "react-router-dom";
-import { styled } from "@mui/material/styles";
-import EventBusyIcon from '@mui/icons-material/EventBusy';
-import ButtonBase from "@mui/material/ButtonBase";
-import CardActionArea from "@mui/material/CardActionArea";
-import Divider from "@mui/material/Divider";
-import MuiAvatar from "@mui/material/Avatar";
-import MuiBox from "@mui/material/Box";
-import MuiCard from "@mui/material/Card";
-import { toast } from "react-toastify";
-import AccessibilityRoundedIcon from "@mui/icons-material/AccessibilityRounded";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import DevicesOutlinedIcon from "@mui/icons-material/DevicesOutlined";
-import EditRoundedIcon from "@mui/icons-material/EditRounded";
-import EventNoteRoundedIcon from "@mui/icons-material/EventNoteRounded";
-import FmdGoodOutlinedIcon from "@mui/icons-material/FmdGoodOutlined";
-import TimerOutlinedIcon from "@mui/icons-material/TimerOutlined";
-import PeopleIcon from '@mui/icons-material/People';
-import { Modal, Tooltip } from "@mui/material";
-import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
-import Chip from "@mui/material/Chip";
+import React, { useEffect, useState } from 'react'
+import { Link as RouterLink } from 'react-router-dom'
+import { styled } from '@mui/material/styles'
+import EventBusyIcon from '@mui/icons-material/EventBusy'
+import ButtonBase from '@mui/material/ButtonBase'
+import CardActionArea from '@mui/material/CardActionArea'
+import Divider from '@mui/material/Divider'
+import MuiAvatar from '@mui/material/Avatar'
+import MuiBox from '@mui/material/Box'
+import MuiCard from '@mui/material/Card'
+import { toast } from 'react-toastify'
+import AccessibilityRoundedIcon from '@mui/icons-material/AccessibilityRounded'
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
+import DevicesOutlinedIcon from '@mui/icons-material/DevicesOutlined'
+import EditRoundedIcon from '@mui/icons-material/EditRounded'
+import EventNoteRoundedIcon from '@mui/icons-material/EventNoteRounded'
+import FmdGoodOutlinedIcon from '@mui/icons-material/FmdGoodOutlined'
+import TimerOutlinedIcon from '@mui/icons-material/TimerOutlined'
+import PeopleIcon from '@mui/icons-material/People'
+import { Modal, Tooltip } from '@mui/material'
+import Box from '@mui/material/Box'
+import Paper from '@mui/material/Paper'
+import Chip from '@mui/material/Chip'
 
-import useAuth from "../../util/AuthContext"
-import RequestModal from "../CustomComponents/RequestOpportunityModal"
-import OpportunityForm from "./OpportunityForm"
-import ThemedButton from "../Themed/ThemedButton"
-import { PointsAddition } from "../../util/PointsAddition"
-import { DataStore } from "aws-amplify"
+import useAuth from '../../util/AuthContext'
+import RequestModal from '../CustomComponents/RequestOpportunityModal'
+import OpportunityForm from './OpportunityForm'
+import ThemedButton from '../Themed/ThemedButton'
+import { PointsAddition } from '../../util/PointsAddition'
+import { DataStore } from 'aws-amplify'
 import {
   Opportunity,
   Profile,
@@ -38,26 +38,26 @@ import {
   OpportunityProfile,
   Keyword,
   KeywordOpportunity,
-} from "../../../models"
-import { Storage } from "aws-amplify"
-import useAnimation from "../../util/AnimationContext"
-import { calculateIfUserLeveledUp } from "../../util/PointsAddition"
-import { v4 as uuidv4 } from "uuid"
+} from '../../../models'
+import { Storage } from 'aws-amplify'
+import useAnimation from '../../util/AnimationContext'
+import { calculateIfUserLeveledUp } from '../../util/PointsAddition'
+import { v4 as uuidv4 } from 'uuid'
 
 const IconStyling = {
-  fontSize: "0.9rem",
+  fontSize: '0.9rem',
 }
 
 const Card = styled((props) => <MuiCard elevation={0} {...props} />)(() => ({
-  display: "flex",
-  flexDirection: "column",
-  height: "auto",
-  width: "100%",
-  background: "white",
-  boxShadow: "0px 4px 50px -15px rgba(0, 86, 166, 0.15)",
-  border: "0.5px solid rgba(0, 0, 0, 0.15)",
-  borderRadius: "10px",
-  marginTop: "1rem",
+  display: 'flex',
+  flexDirection: 'column',
+  height: 'auto',
+  width: '100%',
+  background: 'white',
+  boxShadow: '0px 4px 50px -15px rgba(0, 86, 166, 0.15)',
+  border: '0.5px solid rgba(0, 0, 0, 0.15)',
+  borderRadius: '10px',
+  marginTop: '1rem',
 }))
 
 const Avatar = ({ image }, props) => (
@@ -65,25 +65,25 @@ const Avatar = ({ image }, props) => (
     {...props}
     src={image}
     sx={{
-      height: "25px",
-      width: "25px",
-      border: "0.5px solid rgba(0, 0, 0, 0.15)",
+      height: '25px',
+      width: '25px',
+      border: '0.5px solid rgba(0, 0, 0, 0.15)',
     }}
   />
 )
 
 const Banner = ({ image }, props) => {
   return (
-    <MuiBox sx={{ height: "130px", width: "130px" }} {...props}>
+    <MuiBox sx={{ height: '130px', width: '130px' }} {...props}>
       <img
         src={image}
         style={{
-          height: "100%",
-          width: "100%",
-          objectFit: "cover",
-          border: "0.5px solid rgba(0, 0, 0, 0.15)",
-          borderRadius: "10px",
-          marginRight: "8rem",
+          height: '100%',
+          width: '100%',
+          objectFit: 'cover',
+          border: '0.5px solid rgba(0, 0, 0, 0.15)',
+          borderRadius: '10px',
+          marginRight: '8rem',
         }}
       />
     </MuiBox>
@@ -100,7 +100,7 @@ const OutlinedIconButton = (
     getPendingOpportunities,
     getAllOpportunities,
     getJoinedOpportunities,
-    isMyOpportunity
+    isMyOpportunity,
   },
   props
 ) => (
@@ -115,12 +115,12 @@ const OutlinedIconButton = (
         : async (e) => {
             e.stopPropagation()
             e.preventDefault()
-            if (type === "pending") {
+            if (type === 'pending') {
               // A user can only have 1 request to an opportunity at a time
               // So we can assume the fetched request will be the pending one
               DataStore.query(Request, (r) =>
                 r.and((r) => [
-                  r.status.eq("PENDING"),
+                  r.status.eq('PENDING'),
                   r.profileID.eq(profileid),
                   r.opportunityID.eq(opportunityid),
                 ])
@@ -135,15 +135,15 @@ const OutlinedIconButton = (
                 })
                 .catch((err) => {
                   console.log(err)
-                  alert("Error deleting the pending request")
+                  alert('Error deleting the pending request')
                 })
-            } else if (type === "upcoming") {
-              console.log("upcoming delete button is clicked")
+            } else if (type === 'upcoming') {
+              console.log('upcoming delete button is clicked')
               // A user can only have 1 request to an opportunity at a time
               // So we can assume the fetched request will be the pending one
               const req = await DataStore.query(Request, (r) =>
                 r.and((r) => [
-                  r.status.eq("APPROVED"),
+                  r.status.eq('APPROVED'),
                   r.profileID.eq(profileid),
                   r.opportunityID.eq(opportunityid),
                 ])
@@ -178,21 +178,21 @@ const OutlinedIconButton = (
                 })
                 .catch((err) => {
                   console.log(err)
-                  alert("Error deleting the upcoming opportunity")
+                  alert('Error deleting the upcoming opportunity')
                 })
             }
           }
     }
     sx={{
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      height: "40px",
-      width: "40px",
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '40px',
+      width: '40px',
       padding: 0,
-      background: "transparent",
-      border: "0.5px solid rgba(0, 0, 0, 0.15)",
-      borderRadius: "5px",
+      background: 'transparent',
+      border: '0.5px solid rgba(0, 0, 0, 0.15)',
+      borderRadius: '5px',
     }}
     {...props}
   >
@@ -214,16 +214,16 @@ const OutlinedButton = (props) => {
         e.preventDefault()
       }}
       sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "40px",
-        width: "80px",
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '40px',
+        width: '80px',
         padding: 0,
-        background: "var(--secondary-yellow-main)",
-        "&:hover": { backgroundColor: "var(--secondary-yellow-dark)" },
-        border: "0.5px solid rgba(0, 0, 0, 0.15)",
-        borderRadius: "5px",
+        background: 'var(--secondary-yellow-main)',
+        '&:hover': { backgroundColor: 'var(--secondary-yellow-dark)' },
+        border: '0.5px solid rgba(0, 0, 0, 0.15)',
+        borderRadius: '5px',
       }}
       {...rest}
     >
@@ -248,26 +248,25 @@ export default function OpportunitiesCard({
   getAllOpportunities,
   isMyOpportunity,
 }) {
-  const [creator, setCreator] = useState("");
-  const [profilePicture, setProfilePicture] = useState(null);
-  const [banner, setBanner] = useState(null);
-  const [bKey, setBKey] = useState(null);
-  const [showReqForm, setshowReqForm] = useState(false);
-  const [showOppForm, setShowOppForm] = useState(false);
-  const [showDeleteForm, setShowDeleteForm] = useState(false);
-  const [requestMessage, setRequestMessage] = React.useState("");
-  const [oppRoles, setOppRoles] = useState(false);
-  const [oppKeywords, setOppKeywords] = useState(false);
-  const [fileData, setFileData] = useState(null);
-  const [fileDataURL, setFileDataURL] = useState(null);
-  const { userProfile, setUserProfile } = useAuth();
-  const [participants, setParticipants] = useState(0);
+  const [creator, setCreator] = useState('')
+  const [profilePicture, setProfilePicture] = useState(null)
+  const [banner, setBanner] = useState(null)
+  const [bKey, setBKey] = useState(null)
+  const [showReqForm, setshowReqForm] = useState(false)
+  const [showOppForm, setShowOppForm] = useState(false)
+  const [showDeleteForm, setShowDeleteForm] = useState(false)
+  const [requestMessage, setRequestMessage] = React.useState('')
+  const [oppRoles, setOppRoles] = useState(false)
+  const [oppKeywords, setOppKeywords] = useState(false)
+  const [fileData, setFileData] = useState(null)
+  const [fileDataURL, setFileDataURL] = useState(null)
+  const { userProfile, setUserProfile } = useAuth()
+  const [participants, setParticipants] = useState(0)
 
   // if no maxApplicants set to infinity so there is no limit
-  const maxApplicants = opportunity?.maxApplicants ?? Infinity;
-  
-  const isFull = participants >= maxApplicants;
+  const maxApplicants = opportunity?.maxApplicants ?? Infinity
 
+  const isFull = participants >= maxApplicants
 
   const { setShowConfettiAnimation, setShowStarAnimation } = useAnimation()
 
@@ -277,11 +276,11 @@ export default function OpportunitiesCard({
 
   const handleReqModalOpen = () => {
     if (!isFull) {
-      setshowReqForm(true);
+      setshowReqForm(true)
     } else {
-      toast.warn("This opportunity is full and no longer accepting requests.");
+      toast.warn('This opportunity is full and no longer accepting requests.')
     }
-  };
+  }
 
   const handleOppModalClose = () => {
     setShowOppForm(false)
@@ -306,12 +305,12 @@ export default function OpportunitiesCard({
   const downloadProfilePicture = async () => {
     if (creator.picture !== null) {
       const file = await Storage.get(creator.picture, {
-        level: "public",
+        level: 'public',
       })
       setProfilePicture(file)
     } else {
       setProfilePicture(
-        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+        'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'
       )
     }
   }
@@ -319,7 +318,7 @@ export default function OpportunitiesCard({
   const downloadFile = async () => {
     //console.log(opportunity.bannerKey);
     const img = await Storage.get(opportunity.bannerKey, {
-      level: "public",
+      level: 'public',
     })
     setFileDataURL(img)
   }
@@ -362,13 +361,13 @@ export default function OpportunitiesCard({
       requester: userProfile.id,
       requestmessage: requestMessage,
       opportunityid: opportunity.id,
-      role: "",
+      role: '',
       toevent: true,
     }
     console.log(requestData)
     postRequestToOpportunity(requestData)
     setshowReqForm(false)
-    setRequestMessage("")
+    setRequestMessage('')
     extractRoles()
   }
 
@@ -401,7 +400,7 @@ export default function OpportunitiesCard({
         )
       }
     } else if (oppRoles.length < data.roles.length) {
-      console.log("data.roles.length is longer...")
+      console.log('data.roles.length is longer...')
       for (let i = 1; i < oppRoles.length; i++) {
         if (oppRoles[i] === data.roles[i]) {
           //keep
@@ -429,7 +428,7 @@ export default function OpportunitiesCard({
         )
       }
     } else {
-      console.log("same length...")
+      console.log('same length...')
       for (let i = 1; i < oppRoles.length; i++) {
         if (oppRoles[i] === data.roles[i]) {
           //keep
@@ -466,7 +465,7 @@ export default function OpportunitiesCard({
       })
       .then((res) => {
         if (keywordsToUpdate.length > oppKeywords.length) {
-          console.log("Need to add keyword relation")
+          console.log('Need to add keyword relation')
           DataStore.query(KeywordOpportunity).then((res) => {
             let relationshipExists = false
             for (let j = 0; j < keywordsToUpdate.length; j++) {
@@ -490,7 +489,7 @@ export default function OpportunitiesCard({
             }
           })
         } else if (keywordsToUpdate.length < oppKeywords.length) {
-          console.log("Need to delete keyword relation")
+          console.log('Need to delete keyword relation')
           let needToRemove = true
           for (let i = 0; i < oppKeywords.length; i++) {
             for (let j = 0; j < keywordsToUpdate.length; j++) {
@@ -499,7 +498,7 @@ export default function OpportunitiesCard({
               }
             }
             if (needToRemove === true) {
-              let idToRemove = ""
+              let idToRemove = ''
               for (let n = 0; n < allKeywords.length; n++) {
                 if (allKeywords[n].name === oppKeywords[i]) {
                   idToRemove = allKeywords[n].id
@@ -515,29 +514,29 @@ export default function OpportunitiesCard({
             needToRemove = true
           }
         } else {
-          console.log("No action needed on keyword relations")
+          console.log('No action needed on keyword relations')
         }
       })
       .then(async (res) => {
         if (data.imgData == null) {
           const image = await Storage.get(opportunity.bannerkey, {
-            level: "public",
+            level: 'public',
           })
           DataStore.save(
             Opportunity.copyOf(opportunity, (updated) => {
-              updated.eventName = data.name;
-              updated.description = data.description;
-              updated.eventData = data.eventdata;
-              updated.startTime = data.startTime.toISOString();
-              updated.endTime = data.endTime.toISOString();
-              updated.locationType = data.locationType;
-              updated.location = data.location;
-              updated.organizations = data.organizations;
-              updated.subject = data.subject;
-              updated.bannerKey = opportunity.bannerKey;
-              updated.eventBanner = image;
-              updated.maxApplicants = data.maxApplicants === "" ? null : parseInt(data.maxApplicants);
-
+              updated.eventName = data.name
+              updated.description = data.description
+              updated.eventData = data.eventdata
+              updated.startTime = data.startTime.toISOString()
+              updated.endTime = data.endTime.toISOString()
+              updated.locationType = data.locationType
+              updated.location = data.location
+              updated.organizations = data.organizations
+              updated.subject = data.subject
+              updated.bannerKey = opportunity.bannerKey
+              updated.eventBanner = image
+              updated.maxApplicants =
+                data.maxApplicants === '' ? null : parseInt(data.maxApplicants)
             })
           ).then((res) => {
             handleOppModalClose()
@@ -545,14 +544,14 @@ export default function OpportunitiesCard({
             console.log(res)
           })
         } else {
-          if (data.imgData.name != "sc.jpg") {
-            Storage.put(uuidv4() + "-" + data.imgData.name, data.imgData, {
+          if (data.imgData.name != 'sc.jpg') {
+            Storage.put(uuidv4() + '-' + data.imgData.name, data.imgData, {
               contentType: data.imgData.type,
             }).then(async (res2) => {
               const image = await Storage.get(res2.key, {
-                level: "public",
+                level: 'public',
               })
-              if (opportunity.bannerKey != "sc.jpg") {
+              if (opportunity.bannerKey != 'sc.jpg') {
                 await Storage.remove(opportunity.bannerKey)
               }
               //console.log(data.bannerKey);
@@ -578,7 +577,7 @@ export default function OpportunitiesCard({
             })
           } else {
             const image = await Storage.get(opportunity.bannerkey, {
-              level: "public",
+              level: 'public',
             })
             DataStore.save(
               Opportunity.copyOf(opportunity, (updated) => {
@@ -637,22 +636,22 @@ export default function OpportunitiesCard({
         ])
       ).then((json) => {
         if (json.length == 0) {
-          let toasterStr = ""
+          let toasterStr = ''
           const oldPoints = userProfile.points
           const isLevelUp = calculateIfUserLeveledUp(oldPoints, 25)
           if (isLevelUp) {
             // Display confetti animation
             setShowConfettiAnimation(true)
-            toasterStr = "and you leveled up!"
+            toasterStr = 'and you leveled up!'
           } else {
             // Display star animation
             setShowStarAnimation(true)
-            toasterStr = "and you earned 25 points!"
+            toasterStr = 'and you earned 25 points!'
           }
           PointsAddition(25, userProfile.id, setUserProfile)
           // toast notification
           toast.success(`Applied to ${opportunity.eventName} ${toasterStr}`, {
-            position: "top-right",
+            position: 'top-right',
             autoClose: 5000,
             hideProgressBar: false,
             closeOnClick: true,
@@ -663,7 +662,7 @@ export default function OpportunitiesCard({
 
           let rid
           for (let i = 0; i < oppRoles.length; i++) {
-            if (oppRoles[i].name == "General Participant") {
+            if (oppRoles[i].name == 'General Participant') {
               rid = oppRoles[i].id
               break
             }
@@ -671,7 +670,7 @@ export default function OpportunitiesCard({
           DataStore.save(
             new Request({
               status: RequestStatus.PENDING,
-              responseMessage: " ",
+              responseMessage: ' ',
               requestTime: new Date().toISOString(),
               responseTime: new Date().toISOString(),
               requestMessage: requestData.requestmessage,
@@ -684,12 +683,12 @@ export default function OpportunitiesCard({
             getAllOpportunities()
           })
         } else {
-          let toasterStr = ""
-          console.log("You have already applied to this opportunity.")
+          let toasterStr = ''
+          console.log('You have already applied to this opportunity.')
           toast.error(
             `You have already applied to ${opportunity.eventName} ${toasterStr}`,
             {
-              position: "top-right",
+              position: 'top-right',
               autoClose: 5000,
               hideProgressBar: false,
               closeOnClick: true,
@@ -705,14 +704,14 @@ export default function OpportunitiesCard({
 
   const formatDate = (time) => {
     const dateOptions = {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
     }
 
     const timeOptions = {
-      hour: "numeric",
-      minute: "2-digit",
+      hour: 'numeric',
+      minute: '2-digit',
     }
 
     const convertDate = new Date(time).toLocaleDateString([], dateOptions)
@@ -728,7 +727,7 @@ export default function OpportunitiesCard({
     const compare = Math.abs(convertDate1 - convertDate2)
 
     if (compare == 0) {
-      return "No Duration"
+      return 'No Duration'
     }
 
     const compareInMinutes = Math.floor(compare / (1000 * 60))
@@ -742,7 +741,7 @@ export default function OpportunitiesCard({
     if (minutes) return `${compareInMinutes} Minutes`
     if (hours) return `${compareInHours} Hours`
     if (days) return `${compareInDays} Days`
-    return "Error calculating dates"
+    return 'Error calculating dates'
   }
 
   const getOpportunityCreator = async () => {
@@ -752,7 +751,7 @@ export default function OpportunitiesCard({
       })
       .catch((err) => {
         console.log(err)
-        alert("Error retrieving opportunity creators profile")
+        alert('Error retrieving opportunity creators profile')
       })
   }
 
@@ -784,20 +783,19 @@ export default function OpportunitiesCard({
     Roles: oppRoles,
     keywords: oppKeywords,
     bannerKey: opportunity.bannerKey,
-    maxApplicants: opportunity.maxApplicants ?? "",
-  };
+    maxApplicants: opportunity.maxApplicants ?? '',
+  }
 
   useEffect(() => {
-    getOpportunityCreator(opportunity);
-    extractRoles(opportunity);
-    extractKeywords(opportunity);
+    getOpportunityCreator(opportunity)
+    extractRoles(opportunity)
+    extractKeywords(opportunity)
     if (opportunity?.profilesJoined?.values) {
-      opportunity.profilesJoined.values
-        .then((result) => {
-          setParticipants(result.length);
-        })
+      opportunity.profilesJoined.values.then((result) => {
+        setParticipants(result.length)
+      })
     }
-  }, [opportunity]);
+  }, [opportunity])
 
   useEffect(() => {
     if (creator) {
@@ -806,9 +804,7 @@ export default function OpportunitiesCard({
     downloadFile()
   }, [creator])
 
-
   // MARK: Bookmark
- 
 
   return (
     <>
@@ -824,27 +820,39 @@ export default function OpportunitiesCard({
         >
           <div
             className="flex-space-between flex-align-center"
-            style={{ padding: "1.5em" }}
+            style={{ padding: '1.5em' }}
           >
             <CardActionArea
               component={RouterLink}
               to={`/Opportunity/${opportunity.id}`}
-              state={{ source: type === "created" ? "creators" : "volunteers" }}
+              state={{
+                source:
+                  type === 'pending' ||
+                  type === 'accepted' ||
+                  type === 'rejected' ||
+                  type === 'completed'
+                    ? 'hosts'
+                    : 'volunteers',
+              }}
             >
               <MuiBox>
-                <MuiBox sx={{ display: "flex" }}>
+                <MuiBox sx={{ display: 'flex' }}>
                   <h4
                     className="text-dark ellipsis"
                     aria-label={`Opportunity Card Title ${opportunity.eventName}`}
-                    style={{ marginRight: "10px" }}
+                    style={{ marginRight: '10px' }}
                   >
                     {opportunity.eventName}
                   </h4>
-                  <Chip label={participants} icon={<PeopleIcon />} size="small" />
+                  <Chip
+                    label={participants}
+                    icon={<PeopleIcon />}
+                    size="small"
+                  />
                 </MuiBox>
                 <div
                   className="flex-flow-large flex-align-center"
-                  style={{ paddingTop: "0.5em" }}
+                  style={{ paddingTop: '0.5em' }}
                 >
                   <Avatar image={profilePicture} />
                   <p className="text-bold text-disabled">
@@ -853,22 +861,25 @@ export default function OpportunitiesCard({
                       className="text-blue"
                       aria-label={`Opportunity Card Host ${opportunity.eventName}`}
                     >
-                      {!isMyOpportunity ? `${creator.firstName} ${creator.lastName}` : 'Me'}
-
+                      {!isMyOpportunity
+                        ? `${creator.firstName} ${creator.lastName}`
+                        : 'Me'}
                     </span>
                   </p>
-                      
                 </div>
-                      {isMyOpportunity && (
-                  <p className="text-bold text-disabled">{opportunity.status.charAt(0).toUpperCase() + opportunity.status.slice(1).toLowerCase()}</p>
-)}
+                {isMyOpportunity && (
+                  <p className="text-bold text-disabled">
+                    {opportunity.status.charAt(0).toUpperCase() +
+                      opportunity.status.slice(1).toLowerCase()}
+                  </p>
+                )}
               </MuiBox>
             </CardActionArea>
             {/* Lower area */}
-            <div className="flex-flow-large" style={{ marginLeft: "50px" }}>
-              {(type === "upcoming" ||
-                type === "created" ||
-                type === "pending") && (
+            <div className="flex-flow-large" style={{ marginLeft: '50px' }}>
+              {(type === 'upcoming' ||
+                type === 'created' ||
+                type === 'pending') && (
                 <Box>
                   <OutlinedIconButton
                     type={type}
@@ -877,17 +888,17 @@ export default function OpportunitiesCard({
                     getPendingOpportunities={getPendingOpportunities}
                     getAllOpportunities={getAllOpportunities}
                     getJoinedOpportunities={getJoinedOpportunities}
-                    onClick={type === "created" ? handleDeleteModalOpen : null}
+                    onClick={type === 'created' ? handleDeleteModalOpen : null}
                   >
                     <Tooltip title="Delete">
                       <CloseRoundedIcon
                         aria-label={`Delete ${opportunity.eventName}`}
                         sx={{
-                          height: "20px",
-                          width: "20px",
-                          color: "var(--error-red-main)",
-                          stroke: "var(--error-red-main)",
-                          strokeWidth: "2px",
+                          height: '20px',
+                          width: '20px',
+                          color: 'var(--error-red-main)',
+                          stroke: 'var(--error-red-main)',
+                          strokeWidth: '2px',
                         }}
                       />
                     </Tooltip>
@@ -898,53 +909,53 @@ export default function OpportunitiesCard({
                     onBackdropClick={handleDeleteModalClose}
                     onClose={handleDeleteModalClose}
                     sx={{
-                      overflow: "scroll",
-                      display: "grid",
-                      justifyContent: "center",
+                      overflow: 'scroll',
+                      display: 'grid',
+                      justifyContent: 'center',
                     }}
                   >
                     <Paper
                       sx={{
-                        backgroundColor: "rgb(240, 240, 240)",
-                        zIndex: "10",
-                        boxShadow: "-3px 5px 8px 0px rgba(84, 84, 84, 0.81)",
-                        borderRadius: "10px",
-                        margin: "3rem",
-                        padding: "2rem",
-                        display: "grid",
-                        gridGap: "5px",
-                        justifyContent: "center",
-                        height: "fit-content",
+                        backgroundColor: 'rgb(240, 240, 240)',
+                        zIndex: '10',
+                        boxShadow: '-3px 5px 8px 0px rgba(84, 84, 84, 0.81)',
+                        borderRadius: '10px',
+                        margin: '3rem',
+                        padding: '2rem',
+                        display: 'grid',
+                        gridGap: '5px',
+                        justifyContent: 'center',
+                        height: 'fit-content',
                       }}
                     >
                       <Box>
-                        Are you sure you would like to delete{" "}
+                        Are you sure you would like to delete{' '}
                         {opportunity.eventName}?
                       </Box>
                       <Box
                         sx={{
-                          display: "grid",
-                          gridAutoFlow: "column",
-                          gridGap: "10px",
+                          display: 'grid',
+                          gridAutoFlow: 'column',
+                          gridGap: '10px',
                         }}
                       >
                         <ThemedButton
-                          color={"blue"}
-                          variant={"themed"}
+                          color={'blue'}
+                          variant={'themed'}
                           onClick={handleDeleteModalClose}
                           sx={{
-                            height: "fit-content",
+                            height: 'fit-content',
                           }}
                         >
                           Back
                         </ThemedButton>
                         <ThemedButton
-                          aria-label={"Delete Opp"}
-                          color={"gray"}
-                          variant={"cancel"}
+                          aria-label={'Delete Opp'}
+                          color={'gray'}
+                          variant={'cancel'}
                           onClick={() => handleDeleteOpp(opportunity)}
                           sx={{
-                            height: "fit-content",
+                            height: 'fit-content',
                           }}
                         >
                           Delete
@@ -954,27 +965,27 @@ export default function OpportunitiesCard({
                   </Modal>
                 </Box>
               )}
-              {type === "created" && (
+              {type === 'created' && (
                 <Box>
                   <OutlinedIconButton type={type} onClick={handleOppModalOpen}>
                     <Tooltip title="Edit">
                       <EditRoundedIcon
                         data-test-id={`Edit Opportunity Form ${opportunity.id}`}
                         sx={{
-                          height: "20px",
-                          width: "20px",
-                          color: "var(--tertiary-gray-main)",
+                          height: '20px',
+                          width: '20px',
+                          color: 'var(--tertiary-gray-main)',
                         }}
                       />
                     </Tooltip>
                   </OutlinedIconButton>
                   {/* EDIT OPP FORM */}
                   <Modal
-                    aria-label={"Opportunity Form"}
+                    aria-label={'Opportunity Form'}
                     open={showOppForm}
                     onBackdropClick={() => setShowOppForm(false)}
                     onClose={() => setShowOppForm(false)}
-                    sx={{ overflow: "scroll" }}
+                    sx={{ overflow: 'scroll' }}
                   >
                     <OpportunityForm
                       onClose={handleOppModalClose}
@@ -986,21 +997,22 @@ export default function OpportunitiesCard({
               )}
 
               {/* Apply button */}
-              {type === "all" && !isMyOpportunity && (
-                isFull ? (
+              {type === 'all' &&
+                !isMyOpportunity &&
+                (isFull ? (
                   <ButtonBase
                     component="div"
                     sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      height: "40px",
-                      width: "80px",
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      height: '40px',
+                      width: '80px',
                       padding: 0,
-                      background: "lightgray",
-                      border: "0.5px solid rgba(0, 0, 0, 0.15)",
-                      borderRadius: "5px",
-                      cursor: "not-allowed",
+                      background: 'lightgray',
+                      border: '0.5px solid rgba(0, 0, 0, 0.15)',
+                      borderRadius: '5px',
+                      cursor: 'not-allowed',
                     }}
                   >
                     <p className="text-xbold text-dark">Full</p>
@@ -1014,8 +1026,7 @@ export default function OpportunitiesCard({
                       Apply
                     </p>
                   </OutlinedButton>
-                )
-              )}
+                ))}
             </div>
           </div>
 
@@ -1023,19 +1034,24 @@ export default function OpportunitiesCard({
           <CardActionArea
             component={RouterLink}
             to={`/Opportunity/${opportunity.id}`}
-            state={{ source: type === "created" ? "creators" : "volunteers" }}
+            state={{
+              source:
+                type === 'pending' || type === 'accepted' || type === 'rejected' || type === 'completed'
+                  ? 'hosts'
+                  : 'volunteers',
+            }}
           >
-            <Divider sx={{ borderBottom: "0.5px solid rgba(0, 0, 0, 0.15)" }} />
+            <Divider sx={{ borderBottom: '0.5px solid rgba(0, 0, 0, 0.15)' }} />
             <div
               className="flex-horizontal flex-align-center "
-              style={{ padding: "1.5em" }}
+              style={{ padding: '1.5em' }}
             >
               <Banner image={fileDataURL} />
-              <div className="flex-vertical" style={{ maxWidth: "350px" }}>
+              <div className="flex-vertical" style={{ maxWidth: '350px' }}>
                 <div
                   className="flex-horizontal flex-flow-large flex-align-center"
                   style={{
-                    paddingInline: "2em",
+                    paddingInline: '2em',
                   }}
                 >
                   <EventNoteRoundedIcon sx={IconStyling} />
@@ -1046,7 +1062,7 @@ export default function OpportunitiesCard({
                 <div
                   className="flex-horizontal flex-flow-large flex-align-center"
                   style={{
-                    paddingInline: "2em",
+                    paddingInline: '2em',
                   }}
                 >
                   <EventBusyIcon sx={IconStyling} />
@@ -1056,7 +1072,7 @@ export default function OpportunitiesCard({
                 </div>
                 <div
                   className="flex-horizontal flex-flow-large flex-align-center"
-                  style={{ paddingInline: "2em", marginTop: "0.25em" }}
+                  style={{ paddingInline: '2em', marginTop: '0.25em' }}
                 >
                   <TimerOutlinedIcon sx={IconStyling} />
                   <p className="text-bold ellipsis text-small">
@@ -1069,9 +1085,9 @@ export default function OpportunitiesCard({
                 <div
                   className="flex-horizontal flex-flow-large flex-align-center"
                   style={{
-                    paddingInline: "2em",
-                    marginTop: "0.25em",
-                    marginRight: "0.25em",
+                    paddingInline: '2em',
+                    marginTop: '0.25em',
+                    marginRight: '0.25em',
                   }}
                 >
                   <AccessibilityRoundedIcon sx={IconStyling} />
@@ -1080,8 +1096,8 @@ export default function OpportunitiesCard({
                   </p>
                 </div>
                 {opportunity.locationType &&
-                  (opportunity.locationType === "in-person" ||
-                    opportunity.locationType === "hybrid") && (
+                  (opportunity.locationType === 'in-person' ||
+                    opportunity.locationType === 'hybrid') && (
                     <div
                       className="
                       flex-horizontal
@@ -1089,9 +1105,9 @@ export default function OpportunitiesCard({
                       flex-align-center
                     "
                       style={{
-                        paddingInline: "2em",
-                        marginTop: "0.25em",
-                        marginRight: "0em",
+                        paddingInline: '2em',
+                        marginTop: '0.25em',
+                        marginRight: '0em',
                       }}
                     >
                       <FmdGoodOutlinedIcon sx={IconStyling} />
@@ -1106,8 +1122,8 @@ export default function OpportunitiesCard({
                     </div>
                   )}
                 {opportunity.locationType &&
-                  (opportunity.locationType === "remote" ||
-                    opportunity.locationType === "hybrid") && (
+                  (opportunity.locationType === 'remote' ||
+                    opportunity.locationType === 'hybrid') && (
                     <div
                       className="
                       flex-horizontal
@@ -1115,9 +1131,9 @@ export default function OpportunitiesCard({
                       flex-align-center
                     "
                       style={{
-                        paddingInline: "2em",
-                        marginTop: "0.25em",
-                        marginRight: "0.25em",
+                        paddingInline: '2em',
+                        marginTop: '0.25em',
+                        marginRight: '0.25em',
                       }}
                     >
                       <DevicesOutlinedIcon sx={IconStyling} />
