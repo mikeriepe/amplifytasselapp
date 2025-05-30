@@ -34,6 +34,8 @@ import awsExports from "../aws-exports";
 import useAnimation from "./util/AnimationContext";
 
 import { Navigate, Outlet } from "react-router-dom";
+import ProfileAlert from "./components/Profile/ProfileAlert";
+import PendingApproval from "./pages/PendingApprovalPage";
 
 Amplify.configure(awsExports);
 
@@ -65,7 +67,7 @@ const ApprovedLayout = (props) => {
   if (!user) return <Navigate to="/login" replace />;
   if (userProfile?.status === "ADMIN" || userProfile?.status === "APPROVED")
     return <Outlet />;
-  return <Navigate to="/dashboard" replace />;
+  return <Navigate to="/pendingapproval" replace />; // or another route they can access
 };
 
 /**
@@ -153,6 +155,7 @@ const App = () => {
                 }
               >
                 <Route path="/myprofile" element={<MyProfile />} />
+                <Route path="/pendingapproval" element={<PendingApproval/>} />
                 <Route path="/updateprofile" element={<UpdateProfile />} />
                 <Route path="/social" element={<Socials />} />
                 <Route path="/social/:chatroomid" element={<ViewMessages />} />

@@ -8,7 +8,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Paper from "@mui/material/Paper";
 import ThemedButton from "../components/Themed/ThemedButton";
 import ThemedInput from "../components/Themed/ThemedInput";
-import LoginBanner from "../assets/sammy-ocean.png";
+import LoginBanner from "../assets/sammy-grad.png";
 import useAuth from "../util/AuthContext";
 import "../stylesheets/LoginSignup.css";
 import { DataStore } from "aws-amplify";

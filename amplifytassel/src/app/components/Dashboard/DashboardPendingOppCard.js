@@ -6,6 +6,7 @@ import {
   Box,
   ListItem,
 } from "@mui/material";
+import Chip from "@mui/material/Chip";
 import { useNavigate } from "react-router-dom";
 import { DataStore, Storage } from "aws-amplify";
 import { Request } from "../../../models";
@@ -13,10 +14,12 @@ import MuiBox from "@mui/material/Box";
 import { Grid } from "@mui/material";
 import EventNoteRoundedIcon from "@mui/icons-material/EventNoteRounded";
 import AccessibilityRoundedIcon from "@mui/icons-material/AccessibilityRounded";
+import PeopleIcon from "@mui/icons-material/People";
 
 export default function DashboardPendingOppCard({ opportunity }) {
   const [requests, setRequests] = useState([]);
   const [banner, setBanner] = useState(null);
+  const [participants, setParticipants] = useState(0);
   const navigate = useNavigate();
 
   const navigateToOpp = (oppid) => {
@@ -47,6 +50,12 @@ export default function DashboardPendingOppCard({ opportunity }) {
     setRequests([]);
     getPendingRequestsReceived();
     downloadFile();
+    if (opportunity?.profilesJoined?.values) {
+      opportunity.profilesJoined.values
+        .then((result) => {
+          setParticipants(result.length);
+        })
+    }
   }, [opportunity]);
 
   const formatDate = (date) => {
@@ -174,13 +183,16 @@ export default function DashboardPendingOppCard({ opportunity }) {
             height: "100%",
           }}
         >
-          <Typography
-            variant="body1"
-            fontWeight="bold"
-            sx={{ color: "var(--text-dark)" }}
-          >
-            {opportunity?.eventName}
-          </Typography>
+          <MuiBox sx={{ display: "flex" }}>
+            <Typography
+              variant="body1"
+              fontWeight="bold"
+              sx={{ color: "var(--text-dark)", marginRight: "10px" }}
+            >
+              {opportunity?.eventName}
+            </Typography>
+            <Chip label={participants} icon={<PeopleIcon />} size="small" />
+          </MuiBox>
           <Typography variant="body2" color="var(--text-gray)">
             <div className="flex-horizontal flex-flow-large flex-align-center">
               <EventNoteRoundedIcon sx={{ fontSize: "0.9rem" }} />

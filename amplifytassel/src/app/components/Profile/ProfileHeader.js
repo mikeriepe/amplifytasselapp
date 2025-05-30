@@ -45,6 +45,7 @@ import {
 } from "../../util/PointsAddition.js";
 import ThemedButton from "../Themed/ThemedButton.js";
 import EmailDialog from "../CustomComponents/EmailDialog.js";
+import { Button } from "../../../../node_modules/@mui/material/index.js";
 
 const Header = styled((props) => <MuiPaper elevation={0} {...props} />)(() => ({
   position: "relative",
@@ -130,13 +131,14 @@ const MoreIcon = ({
       position: "relative",
     }}
   >
-    <IconButton
+    <Button
       aria-label="more"
       id="long-button"
       aria-controls={open ? "long-menu" : undefined}
       aria-expanded={open ? "true" : undefined}
       aria-haspopup="true"
       onClick={handleClick}
+      variant="outlined"
       sx={{
         //marginTop: "1em", // Adjust to 50px if you want it further down
         position: "relative",
@@ -145,12 +147,8 @@ const MoreIcon = ({
         transform: "translateY(5%)", // Fine-tune vertical alignment if needed
       }}
     >
-      <MoreHorizIcon fontSize="large" 
-        sx={{
-          fontSize: "3rem", // Makes it 1.5 times bigger (default size for "large" is 1.5rem)
-        }}
-      />
-    </IconButton>
+      Edit Info
+    </Button>
     <Menu
       id="long-menu"
       MenuListProps={{

@@ -2078,6 +2078,13 @@ export const schema = {
                         ]
                     }
                 },
+                "maxApplicants": {
+                    "name": "maxApplicants",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -3292,5 +3299,5 @@ export const schema = {
         }
     },
     "codegenVersion": "3.4.4",
-    "version": "13d3d1cd39d48660a55a54264465e88a"
+    "version": "292e9187d68de123f110055ed8b48ad1"
 };

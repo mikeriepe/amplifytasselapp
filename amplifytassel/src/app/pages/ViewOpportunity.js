@@ -149,6 +149,23 @@ function ViewOpportunity({ opportunity }) {
   const [oppKeywords, setOppKeywords] = useState(false);
 
 
+  // for if opp has limit and if full
+  const maxApplicants = opportunity?.maxApplicants ?? Infinity;
+  const [participants, setParticipants] = useState(0);
+
+  useEffect(() => {
+    const getParticipantCount = async () => {
+      if (!opportunity?.id) return;
+      const allJoins = await DataStore.query(OpportunityProfile, (op) =>
+        op.opportunityId.eq(opportunity.id)
+      );
+      setParticipants(allJoins.length);
+    };
+    getParticipantCount();
+  }, [opportunity]);
+
+  const isFull = participants >= maxApplicants;
+  
   const handleOppModalClose = () => {
     setShowOppForm(false);
   };
@@ -166,10 +183,10 @@ function ViewOpportunity({ opportunity }) {
   useState(opportunity);
 
   // list of assigned roles in the opportunity
-  console.log(opportunity);
-  console.log(opportunity.keywords)
-  console.log(opportunity.roles)
-  console.log(opportunity.roles.values)
+  //console.log(opportunity);
+  //console.log(opportunity.keywords)
+  //console.log(opportunity.roles)
+  //console.log(opportunity.roles.values)
 
   const [members, setMembers] = useState(opportunity?.profilesJoined);
 
@@ -183,6 +200,10 @@ function ViewOpportunity({ opportunity }) {
   };
 
   const handleModalOpen = (role) => {
+    if (isFull) {
+      toast.error("This opportunity is full.");
+      return;
+    }
     setRequestedRole(role);
     setshowReqForm(true);
   };
@@ -352,6 +373,11 @@ function ViewOpportunity({ opportunity }) {
           updated.subject = data.subject;
           updated.bannerKey = oppModel.bannerKey;
           updated.eventBanner = image;
+          console.log("Saving maxApplicants:", data.maxApplicants, typeof data.maxApplicants);
+          updated.maxApplicants =
+            data.maxApplicants && !isNaN(data.maxApplicants)
+              ? parseInt(data.maxApplicants, 10)
+              : Infinity; // or a default number if preferred
         })
       ).then((res) => {
         handleOppModalClose();
@@ -383,6 +409,12 @@ function ViewOpportunity({ opportunity }) {
             updated.subject = data.subject;
             updated.bannerKey = res2.key;
             updated.eventBanner = image;
+            console.log("Saving maxApplicants:", data.maxApplicants, typeof data.maxApplicants);
+
+            updated.maxApplicants =
+              data.maxApplicants && !isNaN(data.maxApplicants)
+                ? parseInt(data.maxApplicants, 10)
+                : Infinity; // or a default number if preferred
           })
         ).then((res) => {
           handleOppModalClose();
@@ -404,6 +436,12 @@ function ViewOpportunity({ opportunity }) {
             updated.subject = data.subject;
             updated.bannerKey = oppModel.bannerKey;
             updated.eventBanner = image;
+            console.log("Saving maxApplicants:", data.maxApplicants, typeof data.maxApplicants);
+
+            updated.maxApplicants =
+              data.maxApplicants && !isNaN(data.maxApplicants)
+                ? parseInt(data.maxApplicants, 10)
+                : Infinity; // or a default number if preferred
           })
         ).then((res) => {
           handleOppModalClose();
@@ -518,6 +556,10 @@ function ViewOpportunity({ opportunity }) {
           opportunityid={opportunity?.id}
           creator={creator}
           tags={opportunity?.keywords}
+          participants={participants} 
+          maxApplicants={maxApplicants}
+          setParticipants={setParticipants}
+
         />
       ),
     },
@@ -536,6 +578,9 @@ function ViewOpportunity({ opportunity }) {
           description={opportunity?.description}
           roles={opportunity?.roles}
           tags={opportunity?.keywords}
+          maxApplicants={maxApplicants}
+          participants={participants}
+          setParticipants={setParticipants}
         />
       ),
     },
@@ -606,7 +651,9 @@ function ViewOpportunity({ opportunity }) {
   // function to extract roles 
   const extractRoles = async () => {
     // if none its empty
-    const rolesArray = opportunity.roles?.values || [];
+    const rolesArray = Array.isArray(opportunity.roles)
+      ? opportunity.roles
+      : await opportunity.roles?.values?.();
     const resolvedRoles = await Promise.all(rolesArray.map((role) => Promise.resolve(role)));
     setOppRoles(resolvedRoles);
   };
@@ -614,7 +661,9 @@ function ViewOpportunity({ opportunity }) {
   // function to extract keywords
   const extractKeywords = async () => {
     // Get the keywords array from the opportunity object if none its empty
-    const keywordsArray = opportunity.keywords?.values || [];
+    const keywordsArray = Array.isArray(opportunity.keywords)
+      ? opportunity.keywords
+      : await opportunity.keywords?.values?.();
     const resolvedKeywords = await Promise.all(
       keywordsArray.map((kwObj) =>
         Promise.resolve(kwObj).then((obj) => obj.keyword.name)
@@ -649,6 +698,7 @@ function ViewOpportunity({ opportunity }) {
     Roles: oppRoles,
     keywords: oppKeywords,
     bannerKey: opportunity.bannerKey,
+    maxApplicants: opportunity.maxApplicants ?? "",
   };
 
   useEffect(() => {
@@ -778,20 +828,31 @@ function ViewOpportunity({ opportunity }) {
                       </Paper>
                     </Modal>
                   </MuiBox>
-                  
                 ) : (
-                  <ThemedButton
-                    aria-label="Request to Join Opportunity"
-                    variant="gradient"
-                    color="yellow"
-                    size="small"
-                    onClick={() => {
-                      handleModalOpen("General Participant");
-                    }}
-                  >
-                    Request to Join
-                  </ThemedButton>
-                )
+                    isFull ? (
+                      <ThemedButton
+                        aria-label="Opportunity Full"
+                        variant="cancel"
+                        color="gray"
+                        size="small"
+                        disabled
+                      >
+                        Full
+                      </ThemedButton>
+                    ) : (
+                      <ThemedButton
+                        aria-label="Request to Join Opportunity"
+                        variant="gradient"
+                        color="yellow"
+                        size="small"
+                        onClick={() => {
+                          handleModalOpen("General Participant");
+                        }}
+                      >
+                        Request to Join
+                      </ThemedButton>
+                    )
+                  )
               }
               tabs={
                 isCreator ? (
