@@ -417,6 +417,7 @@ function Opportunities(
         eventdata: "",
         eventBanner: "https://www.places4students.com/P4SFiles/sliders/119_ucsc-02-main-entrance-sign.jpg",
         bannerKey: "",
+        maxApplicants: "",
       });
       setShowOppForm(true);
     };
@@ -437,6 +438,7 @@ function Opportunities(
       profileID: userProfile.id,
       Requests: {},
       ...data,
+      maxApplicants: data.maxApplicants === "" ? null : parseInt(data.maxApplicants),
     };
 
     let toasterStr = "";
@@ -488,6 +490,8 @@ function Opportunities(
                   keywords: newOpportunity.keywords,
                   status: newOpportunity.status,
                   bannerKey: res.key,
+                  maxApplicants: newOpportunity.maxApplicants,
+
                 })
               )
                 .then((res) => {
@@ -578,6 +582,7 @@ function Opportunities(
                 keywords: newOpportunity.keywords,
                 status: newOpportunity.status,
                 bannerKey: "sc.jpg",
+                maxApplicants: newOpportunity.maxApplicants,
               })
             )
               .then((res) => {

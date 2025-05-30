@@ -92,6 +92,7 @@ export default function DashboardCreate({ getCreatedOpportunities }) {
       eventdata: "",
       eventBanner: "https://www.places4students.com/P4SFiles/sliders/119_ucsc-02-main-entrance-sign.jpg",
       bannerKey: "",
+      maxApplicants: "",
     });
     setShowOppForm(true);
   };
@@ -161,6 +162,7 @@ export default function DashboardCreate({ getCreatedOpportunities }) {
               keywords: newOpportunity.keywords,
               status: newOpportunity.status,
               bannerKey: res.key,
+              maxApplicants: data.maxApplicants === "" ? null : parseInt(data.maxApplicants),
             })
           )
             .then((res) => {
@@ -245,6 +247,7 @@ export default function DashboardCreate({ getCreatedOpportunities }) {
             keywords: newOpportunity.keywords,
             status: newOpportunity.status,
             bannerKey: "sc.jpg",
+            maxApplicants: data.maxApplicants === "" ? null : parseInt(data.maxApplicants),
           })
         )
           .then((res) => {
