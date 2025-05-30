@@ -36,13 +36,17 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "set \"ESLINT_USE_FLAT_CONFIG=false\" && eslint ./src"
   },
   "eslintConfig": {
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "rules": {
+      "no-unused-vars": "warn"
+    }
   },
   "browserslist": {
     "production": [
@@ -57,6 +61,11 @@
     ]
   },
   "devDependencies": {
-    "cypress": "^12.11.0"
+    "@eslint/js": "^9.25.1",
+    "cypress": "^12.11.0",
+    "eslint": "^8.57.1",
+    "eslint-config-google": "^0.14.0",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^16.0.0"
   }
 }
