@@ -456,7 +456,7 @@ function ViewOpportunity({ opportunity }) {
     const modelToDelete = await DataStore.query(Opportunity, opportunity.id);
     DataStore.delete(modelToDelete);
     handleDeleteModalClose();
-    navigate("/opportunities/creators");
+    navigate("/opportunities/hosts");
   };
 
   const handleRequestMessage = (e) => {
@@ -721,7 +721,7 @@ function ViewOpportunity({ opportunity }) {
               hostprofileid={creator?.id}
               avatar={creator?.picture}
               banner={banner}
-              backUrl={location.state?.source === "creators" ? "/opportunities/creators" : "/opportunities/volunteers"}
+              backUrl={location.state?.source === "creators" ? "/opportunities/hosts" : "/opportunities/volunteers"}
               data={opportunity}
               components={
                 isCreator ? (

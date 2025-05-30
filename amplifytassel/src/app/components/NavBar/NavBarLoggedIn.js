@@ -102,7 +102,7 @@ export default function NavBarLoggedIn() {
     ["Dashboard", "/dashboard", <GridViewRoundedIcon key="Dashboard" />],
     ["Opportunities", null, <EventIcon key="Opportunities" />,
       [
-        ["Create", "/opportunities/creators", <EditCalendarIcon key="Create" />],
+        ["Host", "/opportunities/hosts", <EditCalendarIcon key="Host" />],
         ["Volunteer", "/opportunities/volunteers", <VolunteerActivismIcon key="Volunteer" />],
       ]
     ],

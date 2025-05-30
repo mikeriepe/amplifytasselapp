@@ -74,9 +74,9 @@ export default function FetchWrapper() {
   const [joinedOpportunities, setJoinedOpportunities] = useState([]);
   const [createdOpportunities, setCreatedOpportunities] = useState([]);
   const [pastOpportunities, setPastOpportunities] = useState([]);
-  const [creatorPastOpportunities, setCreatorPastOpportunities] = useState([]);
+  const [hostPastOpportunities, setHostPastOpportunities] = useState([]);
   const [pendingOpportunities, setPendingOpportunities] = useState([]);
-  const [creatorPendingOpportunities, setCreatorPendingOpportunities] = useState([]);
+  const [hostPendingOpportunities, setHostPendingOpportunities] = useState([]);
   const [allOpportunities, setAllOpportunities] = useState([]);
   const [allKeywords, setAllKeywords] = useState([]);
 
@@ -139,8 +139,8 @@ export default function FetchWrapper() {
         alert("Error retrieving past joined opportunities");
       });
   };
-  const getCreatorPastOpportunities = () => {
-    console.log("Getting past (creators)...");
+  const getHostPastOpportunities = () => {
+    console.log("Getting past (hosts)...");
     const currTime = new Date().toISOString();
     DataStore.query(Opportunity, (o) =>
       o.and((o) => [
@@ -149,7 +149,7 @@ export default function FetchWrapper() {
       ])
     )
       .then((res) => {
-        setCreatorPastOpportunities(res);
+        setHostPastOpportunities(res);
       })
       .catch((err) => {
         console.log(err);
@@ -182,8 +182,8 @@ export default function FetchWrapper() {
       alert("Error retrieving pending opportunities");
     }
   };
-  const getCreatorPendingOpportunities = async () => {
-    console.log("Getting creator pending opportunities...");
+  const getHostPendingOpportunities = async () => {
+    console.log("Getting host pending opportunities...");
     try {
       const res = await DataStore.query(Opportunity, (o) =>
         o.and((o) => [
@@ -192,7 +192,7 @@ export default function FetchWrapper() {
         ])
       );
       console.log('Res: ', res);
-      setCreatorPendingOpportunities(res);
+      setHostPendingOpportunities(res);
     } catch (err) {
       console.log(err);
       alert("Error retrieving pending opportunities");
@@ -228,36 +228,36 @@ export default function FetchWrapper() {
     getJoinedOpportunities();
     getCreatedOpportunities();
     getPastOpportunities();
-    getCreatorPastOpportunities();
+    getHostPastOpportunities();
     getPendingOpportunities();
-    getCreatorPendingOpportunities();
+    getHostPendingOpportunities();
     getAllOpportunities();
     getAllKeywords();
   }, []);
 
-  const creatorOrVolunteer = location.pathname.includes("/creators") ? "creators" : "volunteers";
+  const hostOrVolunteer = location.pathname.includes("/hosts") ? "hosts" : "volunteers";
 
   return (
     <>
       {joinedOpportunities &&
         createdOpportunities &&
         pastOpportunities &&
-        creatorPastOpportunities &&
+        hostPastOpportunities &&
         pendingOpportunities &&
-        creatorPendingOpportunities &&
+        hostPendingOpportunities &&
         allOpportunities &&
         allKeywords && (
           <Opportunities
-            page={creatorOrVolunteer}
+            page={hostOrVolunteer}
             getPendingOpportunities={getPendingOpportunities}
-            getCreatorPendingOpportunities={getCreatorPendingOpportunities}
-            getCreatorPastOpportunities={getCreatorPastOpportunities}
+            getHostPendingOpportunities={getHostPendingOpportunities}
+            getHostPastOpportunities={getHostPastOpportunities}
             joinedOpportunities={joinedOpportunities}
             createdOpportunities={createdOpportunities}
             pastOpportunities={pastOpportunities}
-            creatorPastOpportunities={creatorPastOpportunities}
+            hostPastOpportunities={hostPastOpportunities}
             pendingOpportunities={pendingOpportunities}
-            creatorPendingOpportunities={creatorPendingOpportunities}
+            hostPendingOpportunities={hostPendingOpportunities}
             allOpportunities={allOpportunities}
             getAllOpportunities={getAllOpportunities}
             getCreatedOpportunities={getCreatedOpportunities}
@@ -280,14 +280,14 @@ function Opportunities(
     joinedOpportunities,
     createdOpportunities,
     pastOpportunities,
-    creatorPastOpportunities,
+    hostPastOpportunities,
     pendingOpportunities,
-    creatorPendingOpportunities,
+    hostPendingOpportunities,
     allOpportunities,
     allKeywords,
     getPendingOpportunities,
-    getCreatorPendingOpportunities,
-    getCreatorPastOpportunities,
+    getHostPendingOpportunities,
+    getHostPastOpportunities,
     getAllOpportunities,
     getCreatedOpportunities,
     getAllKeywords,
@@ -317,7 +317,7 @@ function Opportunities(
   const [orgTypeFilter, setOrgTypeFilter] = useState([]);
   const [showOppForm, setShowOppForm] = useState(false);
   // const [bKey, setBKey] = useState("");
-  const creatorTabs = [
+  const hostTabs = [
     {
       name: "Created",
       description: "All the opportunities you have created",
@@ -334,8 +334,8 @@ function Opportunities(
           orgTypeFilter={orgTypeFilter}
           setOrgTypeFilter={setOrgTypeFilter}
           getCreatedOpportunities={getCreatedOpportunities}
-          getCreatorPendingOpportunities={getCreatorPendingOpportunities}
-          getCreatorPastOpportunities={getCreatorPastOpportunities}
+          getHostPendingOpportunities={getHostPendingOpportunities}
+          getHostPastOpportunities={getHostPastOpportunities}
         />
       ),
     },
@@ -346,7 +346,7 @@ function Opportunities(
         <OpportunitiesList
           key="created"
           type="created"
-          opportunities={creatorPendingOpportunities}
+          opportunities={hostPendingOpportunities}
           locationFilter={locationFilter}
           setLocationFilter={setLocationFilter}
           oppTypeFilter={oppTypeFilter}
@@ -356,8 +356,8 @@ function Opportunities(
           getJoinedOpportunities={getJoinedOpportunities}
           getAllOpportunities={getAllOpportunities}
           getCreatedOpportunities={getCreatedOpportunities}
-          getCreatorPendingOpportunities={getCreatorPendingOpportunities}
-          getCreatorPastOpportunities={getCreatorPastOpportunities}
+          getHostPendingOpportunities={getHostPendingOpportunities}
+          getHostPastOpportunities={getHostPastOpportunities}
         />
       ),
     },
@@ -368,7 +368,7 @@ function Opportunities(
         <OpportunitiesList
           key="completed"
           type="completed"
-          opportunities={creatorPastOpportunities}
+          opportunities={hostPastOpportunities}
           locationFilter={locationFilter}
           setLocationFilter={setLocationFilter}
           oppTypeFilter={oppTypeFilter}
@@ -376,8 +376,8 @@ function Opportunities(
           orgTypeFilter={orgTypeFilter}
           setOrgTypeFilter={setOrgTypeFilter}
           getCreatedOpportunities={getCreatedOpportunities}
-          getCreatorPendingOpportunities={getCreatorPendingOpportunities}
-          getCreatorPastOpportunities={getCreatorPastOpportunities}
+          getHostPendingOpportunities={getHostPendingOpportunities}
+          getHostPastOpportunities={getHostPastOpportunities}
         />
       ),
     },
@@ -768,23 +768,23 @@ function Opportunities(
     //setOrgTypeFilter([]);
   }, [tab]);
 
-  const tabs = page === "creators" ? creatorTabs : volunteerTabs;
+  const tabs = page === "hosts" ? hostTabs : volunteerTabs;
 
   return (
     <Page>
       <PageHeader
         title={
-          page === "creators" ?
+          page === "hosts" ?
           "Opportunity Hosts" :
           "Opportunity Volunteers"
         }
         subtitle={
-          page === "creators" ?
+          page === "hosts" ?
           "Create opportunities and find alumni to fill your roles!" :
           "Browse and join opportunities!"
         }
         tabs={<CompressedTabBar data={tabs} tab={tab} setTab={setTab} />}
-        components={page === "creators" ? <AddButton onClick={handleModalOpen} /> : null}
+        components={page === "hosts" ? <AddButton onClick={handleModalOpen} /> : null}
       />
       <Modal
         open={showOppForm}
