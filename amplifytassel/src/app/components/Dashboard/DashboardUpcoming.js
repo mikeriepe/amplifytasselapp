@@ -11,6 +11,7 @@ import DashboardOppThumbnail from "./DashboardOppThumbnail";
 import { DataStore } from "@aws-amplify/datastore";
 import { Opportunity } from "../../../models/index.js";
 import { useTabIndex } from "../../context/TabIndexContext.js";
+import { Paper } from "../../../../node_modules/@mui/material/index.js";
 
 const UpcomingSection = ({ children }, props) => (
   <MuiBox
@@ -126,9 +127,9 @@ export default function DashboardUpcoming({ data }) {
               <Link
                 className="text-bold text-blue ellipsis text-small
             hover-highlight-link"
-                to="/opportunities"
+                to="/opportunities/volunteers"
                 state={{ defaultTab: "upcoming" }}
-                onClick={() => setTabIndex("/opportunities")}
+                onClick={() => setTabIndex("/opportunities/volunteers")}
               >
                 {linkText}
               </Link>
@@ -154,6 +155,7 @@ export default function DashboardUpcoming({ data }) {
               ))}
             </Grid>
           ) : (
+                <Paper>
             <Box sx={{ display: "flex" }} style={{ padding: "2rem" }}>
               <Text>
                 <h2
@@ -164,6 +166,7 @@ export default function DashboardUpcoming({ data }) {
                 </h2>
               </Text>
             </Box>
+                </Paper>
           )}
         </UpcomingSection>
       )}

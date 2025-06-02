@@ -39,6 +39,8 @@ export default function OpportunitiesList({
   setOrgTypeFilter,
   getPendingOpportunities,
   getCreatedOpportunities,
+  getCreatorPendingOpportunities,
+  getCreatorPastOpportunities,
   getAllOpportunities,
   getJoinedOpportunities,
 }) {
@@ -374,14 +376,28 @@ export default function OpportunitiesList({
                 key={`opportunity-${index}`}
                 sx={{ display: "flex", padding: 2 }}
               >
-                <OpportunitiesCard
+                {/* Conditional renderiing to greyout card if browse tab contains a users created opportunity */}
+                { opportunity.profileID === (userProfile.id) ? <OpportunitiesCard
                   type={type}
                   opportunity={opportunity}
                   getPendingOpportunities={getPendingOpportunities}
                   getCreatedOpportunities={getCreatedOpportunities}
                   getAllOpportunities={getAllOpportunities}
                   getJoinedOpportunities={getJoinedOpportunities}
+                  isMyOpportunity = {true}
+                /> : 
+                <OpportunitiesCard
+                  type={type}
+                  opportunity={opportunity}
+                  getPendingOpportunities={getPendingOpportunities}
+                  getCreatedOpportunities={getCreatedOpportunities}
+                  getCreatorPendingOpportunities={getCreatorPendingOpportunities}
+                  getCreatorPastOpportunities={getCreatorPastOpportunities}
+                  getAllOpportunities={getAllOpportunities}
+                  getJoinedOpportunities={getJoinedOpportunities}
+                  isMyOpportunity = {false}
                 />
+                }
               </Grid>
             ))}
           </Grid>

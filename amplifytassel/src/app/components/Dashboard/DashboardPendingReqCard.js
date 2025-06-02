@@ -7,6 +7,7 @@ import Chip from "@mui/material/Chip";
 import { Storage } from "aws-amplify";
 import EventNoteRoundedIcon from "@mui/icons-material/EventNoteRounded";
 import AccessibilityRoundedIcon from "@mui/icons-material/AccessibilityRounded";
+import PeopleIcon from "@mui/icons-material/People";
 
 import {
   CardContent,
@@ -21,6 +22,7 @@ import {
  */
 export default function DashboardPendingReqCard({ opportunity }) {
   const [banner, setBanner] = useState(null);
+  const [participants, setParticipants] = useState(0);
 
   const downloadFile = async () => {
     const img = await Storage.get(opportunity.bannerKey, {
@@ -32,6 +34,15 @@ export default function DashboardPendingReqCard({ opportunity }) {
   useEffect(() => {
     downloadFile();
   }, []);
+
+  useEffect(() => {
+    if (opportunity?.profilesJoined?.values) {
+      opportunity.profilesJoined.values
+        .then((result) => {
+          setParticipants(result.length);
+        })
+    }
+  }, [opportunity]);
 
   const navigate = useNavigate();
   const navigateToOpp = (oppid) => {
@@ -56,50 +67,6 @@ export default function DashboardPendingReqCard({ opportunity }) {
     return `${convertDate} at ${convertTime}`;
   };
 
-  const Banner = ({ image }, props) => {
-    return (
-      <MuiBox
-        sx={{
-          height: "60px",
-          width: "60px",
-          flexDirection: "row",
-          justifyContent: "center",
-          padding: "1em",
-        }}
-        {...props}
-      >
-        <img
-          src={image}
-          style={{
-            height: "100%",
-            width: "100%",
-            objectFit: "cover",
-            border: "0.5px solid rgba(0, 0, 0, 0.15)",
-            borderRadius: "10px",
-          }}
-        />
-      </MuiBox>
-    );
-  };
-
-  const EventTitleText = ({ children }, props) => (
-    <MuiBox
-      sx={{
-        display: "flex",
-        flexGrow: 1,
-        flexDirection: "column",
-        justifyContent: "center",
-        height: "100%",
-        lineHeight: 1.5,
-        fontWeight: "bold",
-        fontSize: "0.9rem",
-        color: "var(--secondary-yellow-main)",
-      }}
-      {...props}
-    >
-      {children}
-    </MuiBox>
-  );
 
   return (
     <ListItem
@@ -137,13 +104,16 @@ export default function DashboardPendingReqCard({ opportunity }) {
             height: "100%",
           }}
         >
-          <Typography
-            variant="body1"
-            fontWeight="bold"
-            sx={{ color: "var(--text-dark)" }}
-          >
-            {opportunity?.eventName}
-          </Typography>
+          <MuiBox sx={{ display: "flex" }}>
+            <Typography
+              variant="body1"
+              fontWeight="bold"
+              sx={{ color: "var(--text-dark)", marginRight: "10px" }}
+            >
+              {opportunity?.eventName}
+            </Typography>
+            <Chip label={participants} icon={<PeopleIcon />} size="small" />
+          </MuiBox>
           <Typography variant="body2" color="var(--text-gray)">
             <div className="flex-horizontal flex-flow-large flex-align-center">
               <EventNoteRoundedIcon sx={{ fontSize: "0.9rem" }} />
