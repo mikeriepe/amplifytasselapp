@@ -706,7 +706,7 @@ function Opportunities(
                   console.log("Creating...");
                 })
                 .then(() => {
-                  getCreatedOpportunities();
+                  getHostPendingOpportunities();
                   resolve("resolved1");
                 });
             });
@@ -796,7 +796,7 @@ function Opportunities(
                 console.log("Creating...");
               })
               .then(() => {
-                getCreatedOpportunities();
+                getHostPendingOpportunities();
                 resolve("resolved2");
               });
           });

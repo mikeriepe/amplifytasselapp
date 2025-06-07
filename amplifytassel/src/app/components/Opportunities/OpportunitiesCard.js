@@ -888,7 +888,7 @@ export default function OpportunitiesCard({
                     getPendingOpportunities={getPendingOpportunities}
                     getAllOpportunities={getAllOpportunities}
                     getJoinedOpportunities={getJoinedOpportunities}
-                    onClick={type === 'created' ? handleDeleteModalOpen : null}
+                    onClick={type === 'pending' ? handleDeleteModalOpen : null}
                   >
                     <Tooltip title="Delete">
                       <CloseRoundedIcon
