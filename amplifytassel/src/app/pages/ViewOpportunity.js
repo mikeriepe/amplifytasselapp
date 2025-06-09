@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import MuiBox from "@mui/material/Box";
 import CompressedTabBar from "../components/CustomComponents/CompressedTabBar";
@@ -133,6 +133,7 @@ export default function FetchWrapper() {
  */
 function ViewOpportunity({ opportunity }) {
   const params = useParams();
+  const location = useLocation();
   const { userProfile, setUserProfile } = useAuth();
   const [isCreator, setIsCreator] = useState(false);
   const [creator, setCreator] = useState(null);
@@ -455,7 +456,7 @@ function ViewOpportunity({ opportunity }) {
     const modelToDelete = await DataStore.query(Opportunity, opportunity.id);
     DataStore.delete(modelToDelete);
     handleDeleteModalClose();
-    navigate("/opportunities");
+    navigate("/opportunities/hosts");
   };
 
   const handleRequestMessage = (e) => {
@@ -704,7 +705,6 @@ function ViewOpportunity({ opportunity }) {
     extractRoles();
     extractKeywords();
   }, [opportunity]);
-  
 
   return (
     <Page>
@@ -720,7 +720,7 @@ function ViewOpportunity({ opportunity }) {
               hostprofileid={creator?.id}
               avatar={creator?.picture}
               banner={banner}
-              backUrl={"/opportunities"}
+              backUrl={location.state?.source === "hosts" ? "/opportunities/hosts" : "/opportunities/volunteers"}
               data={opportunity}
               components={
                 isCreator ? (

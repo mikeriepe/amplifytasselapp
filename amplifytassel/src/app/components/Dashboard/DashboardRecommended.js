@@ -75,9 +75,9 @@ export default function DashboardRecommended() {
         <div className="flex-space-between flex-align-center">
           <Link
             className="text-bold text-blue ellipsis text-small hover-highlight-link"
-            to="/opportunities"
+            to="/opportunities/volunteers"
             state={{ defaultTab: "browse" }}
-            onClick={() => setTabIndex("/opportunities")}
+            onClick={() => setTabIndex("/opportunities/volunteers")}
           >
             {linkText}
           </Link>

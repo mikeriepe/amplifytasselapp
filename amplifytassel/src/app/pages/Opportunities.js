@@ -69,11 +69,16 @@ const AddButton = (props) => (
  * @return {JSX}
  */
 export default function FetchWrapper() {
+  const location = useLocation();
   const { userProfile } = useAuth();
   const [joinedOpportunities, setJoinedOpportunities] = useState([]);
   const [createdOpportunities, setCreatedOpportunities] = useState([]);
+  const [acceptedHostOpportunities, setAcceptedHostOpportunities] = useState([]);
+  const [rejectedHostOpportunities, setRejectedHostOpportunities] = useState([]);
   const [pastOpportunities, setPastOpportunities] = useState([]);
+  const [hostPastOpportunities, setHostPastOpportunities] = useState([]);
   const [pendingOpportunities, setPendingOpportunities] = useState([]);
+  const [hostPendingOpportunities, setHostPendingOpportunities] = useState([]);
   const [allOpportunities, setAllOpportunities] = useState([]);
   const [allKeywords, setAllKeywords] = useState([]);
 
@@ -86,6 +91,84 @@ export default function FetchWrapper() {
       .catch((err) => {
         console.log(err);
         alert("Error retrieving keywords");
+      });
+  };
+
+  const getCreatedOpportunities = () => {
+    console.log("Getting created...");
+    DataStore.query(Opportunity, (o) => o.profileID.eq(userProfile.id))
+      .then((res) => {
+        setCreatedOpportunities(res);
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("Error retrieving created opportunities");
+      });
+  };
+  const getHostPendingOpportunities = async () => {
+    console.log("Getting host pending opportunities...");
+    try {
+      const res = await DataStore.query(Opportunity, (o) =>
+        o.and((o) => [
+          o.profileID.eq(userProfile.id),  // opportunities created by this user
+          o.status.eq("PENDING")           // that are pending admin approval
+        ])
+      );
+      console.log('Res: ', res);
+      setHostPendingOpportunities(res);
+    } catch (err) {
+      console.log(err);
+      alert("Error retrieving pending opportunities");
+    }
+  };
+  const getAcceptedHostOpportunities = async () => {
+    console.log("Getting host accepted opportunities...");
+    try {
+      const currTime = new Date().toISOString();
+      const res = await DataStore.query(Opportunity, (o) =>
+        o.and((o) => [
+          o.profileID.eq(userProfile.id),  // opportunities created by this user
+          o.endTime.gt(currTime),
+          o.status.eq("APPROVED")          // that have been approved
+        ])
+      );
+      setAcceptedHostOpportunities(res);
+    } catch (err) {
+      console.log(err);
+      alert("Error retrieving accepted opportunities");
+    }
+  };
+  const getRejectedHostOpportunities = async () => {
+    console.log("Getting host rejected opportunities...");
+    try {
+      const res = await DataStore.query(Opportunity, (o) =>
+        o.and((o) => [
+          o.profileID.eq(userProfile.id),  // opportunities created by this user
+          o.status.eq("DENIED")          // that have been rejected
+        ])
+      );
+      setRejectedHostOpportunities(res);
+    } catch (err) {
+      console.log(err);
+      alert("Error retrieving rejected opportunities");
+    }
+  };
+  const getHostPastOpportunities = () => {
+    console.log("Getting past (hosts)...");
+    const currTime = new Date().toISOString();
+    DataStore.query(Opportunity, (o) =>
+      o.and((o) => [
+        o.profileID.eq(userProfile.id),
+        o.endTime.lt(currTime),
+        o.status.eq("APPROVED")     // Only show approved events as non-approved would not have occurred
+      ])
+    )
+      .then((res) => {
+        setHostPastOpportunities(res);
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("Error retrieving past created opportunities");
       });
   };
 
@@ -106,19 +189,6 @@ export default function FetchWrapper() {
         alert("Error retrieving joined opportunities");
       });
   };
-
-  const getCreatedOpportunities = () => {
-    console.log("Getting created...");
-    DataStore.query(Opportunity, (o) => o.profileID.eq(userProfile.id))
-      .then((res) => {
-        setCreatedOpportunities(res);
-      })
-      .catch((err) => {
-        console.log(err);
-        alert("Error retrieving created opportunities");
-      });
-  };
-
   const getPastOpportunities = () => {
     console.log("Getting past...");
     const currTime = new Date().toISOString();
@@ -162,7 +232,6 @@ export default function FetchWrapper() {
       alert("Error retrieving pending opportunities");
     }
   };
-
   const getAllOpportunities = () => {
     DataStore.query(Opportunity, (o) =>
       o.and((o) => [o.status.eq("APPROVED")])
@@ -191,26 +260,45 @@ export default function FetchWrapper() {
   useEffect(() => {
     getJoinedOpportunities();
     getCreatedOpportunities();
+    getAcceptedHostOpportunities();
+    getRejectedHostOpportunities();
     getPastOpportunities();
+    getHostPastOpportunities();
     getPendingOpportunities();
+    getHostPendingOpportunities();
     getAllOpportunities();
     getAllKeywords();
   }, []);
+
+  const hostOrVolunteer = location.pathname.includes("/hosts") ? "hosts" : "volunteers";
 
   return (
     <>
       {joinedOpportunities &&
         createdOpportunities &&
+        acceptedHostOpportunities &&
+        rejectedHostOpportunities &&
         pastOpportunities &&
+        hostPastOpportunities &&
         pendingOpportunities &&
+        hostPendingOpportunities &&
         allOpportunities &&
         allKeywords && (
           <Opportunities
+            page={hostOrVolunteer}
             getPendingOpportunities={getPendingOpportunities}
+            getHostPendingOpportunities={getHostPendingOpportunities}
+            getHostPastOpportunities={getHostPastOpportunities}
+            getAcceptedHostOpportunities={getAcceptedHostOpportunities}
+            getRejectedHostOpportunities={getRejectedHostOpportunities}
             joinedOpportunities={joinedOpportunities}
             createdOpportunities={createdOpportunities}
+            acceptedHostOpportunities={acceptedHostOpportunities}
+            rejectedHostOpportunities={rejectedHostOpportunities}
             pastOpportunities={pastOpportunities}
+            hostPastOpportunities={hostPastOpportunities}
             pendingOpportunities={pendingOpportunities}
+            hostPendingOpportunities={hostPendingOpportunities}
             allOpportunities={allOpportunities}
             getAllOpportunities={getAllOpportunities}
             getCreatedOpportunities={getCreatedOpportunities}
@@ -229,13 +317,22 @@ export default function FetchWrapper() {
  */
 function Opportunities(
   {
+    page,
     joinedOpportunities,
     createdOpportunities,
+    acceptedHostOpportunities,
+    rejectedHostOpportunities,
     pastOpportunities,
+    hostPastOpportunities,
     pendingOpportunities,
+    hostPendingOpportunities,
     allOpportunities,
     allKeywords,
     getPendingOpportunities,
+    getAcceptedHostOpportunities,
+    getRejectedHostOpportunities,
+    getHostPendingOpportunities,
+    getHostPastOpportunities,
     getAllOpportunities,
     getCreatedOpportunities,
     getAllKeywords,
@@ -265,7 +362,95 @@ function Opportunities(
   const [orgTypeFilter, setOrgTypeFilter] = useState([]);
   const [showOppForm, setShowOppForm] = useState(false);
   // const [bKey, setBKey] = useState("");
-  const tabs = [
+  const hostTabs = [
+    {
+      name: "Pending",
+      description: "Your created opportunities pending admin approval",
+      component: (
+        <OpportunitiesList
+          key="pending"
+          type="pending"
+          opportunities={hostPendingOpportunities}
+          locationFilter={locationFilter}
+          setLocationFilter={setLocationFilter}
+          oppTypeFilter={oppTypeFilter}
+          setOppTypeFilter={setOppTypeFilter}
+          orgTypeFilter={orgTypeFilter}
+          setOrgTypeFilter={setOrgTypeFilter}
+          getJoinedOpportunities={getJoinedOpportunities}
+          getAllOpportunities={getAllOpportunities}
+          getCreatedOpportunities={getCreatedOpportunities}
+          getHostPendingOpportunities={getHostPendingOpportunities}
+          getHostPastOpportunities={getHostPastOpportunities}
+        />
+      ),
+    },
+    {
+      name: "Accepted",
+      description: "Your hosted opportunities approved by admins",
+      component: (
+        <OpportunitiesList
+          aria-label="Opportunities Tab Accepted"
+          key="accepted"
+          type="accepted"
+          opportunities={acceptedHostOpportunities}
+          locationFilter={locationFilter}
+          setLocationFilter={setLocationFilter}
+          oppTypeFilter={oppTypeFilter}
+          setOppTypeFilter={setOppTypeFilter}
+          orgTypeFilter={orgTypeFilter}
+          setOrgTypeFilter={setOrgTypeFilter}
+          getCreatedOpportunities={getAcceptedHostOpportunities}
+          getHostPendingOpportunities={getHostPendingOpportunities}
+          getHostPastOpportunities={getHostPastOpportunities}
+        />
+      ),
+    },
+    {
+      name: "Rejected",
+      description: "Your created opportunities rejected by admins",
+      component: (
+        <OpportunitiesList
+          key="rejected"
+          type="rejected"
+          opportunities={rejectedHostOpportunities}
+          locationFilter={locationFilter}
+          setLocationFilter={setLocationFilter}
+          oppTypeFilter={oppTypeFilter}
+          setOppTypeFilter={setOppTypeFilter}
+          orgTypeFilter={orgTypeFilter}
+          setOrgTypeFilter={setOrgTypeFilter}
+          getJoinedOpportunities={getJoinedOpportunities}
+          getAllOpportunities={getAllOpportunities}
+          getCreatedOpportunities={getCreatedOpportunities}
+          getHostPendingOpportunities={getHostPendingOpportunities}
+          getHostPastOpportunities={getHostPastOpportunities}
+        />
+      ),
+    },
+    {
+      name: "Completed",
+      description: "Your created opportunities that have completed",
+      component: (
+        <OpportunitiesList
+          key="completed"
+          type="completed"
+          opportunities={hostPastOpportunities}
+          locationFilter={locationFilter}
+          setLocationFilter={setLocationFilter}
+          oppTypeFilter={oppTypeFilter}
+          setOppTypeFilter={setOppTypeFilter}
+          orgTypeFilter={orgTypeFilter}
+          setOrgTypeFilter={setOrgTypeFilter}
+          getCreatedOpportunities={getCreatedOpportunities}
+          getHostPendingOpportunities={getHostPendingOpportunities}
+          getHostPastOpportunities={getHostPastOpportunities}
+        />
+      ),
+    },
+  ];
+  
+  const volunteerTabs = [
     {
       name: "Browse",
       description: "Browse available opportunities",
@@ -305,31 +490,12 @@ function Opportunities(
       ),
     },
     {
-      name: "Created",
-      description: "See opportunities you created",
-      component: (
-        <OpportunitiesList
-          aria-label="Opportunities Tab Created"
-          key="created"
-          type="created"
-          opportunities={createdOpportunities}
-          locationFilter={locationFilter}
-          setLocationFilter={setLocationFilter}
-          oppTypeFilter={oppTypeFilter}
-          setOppTypeFilter={setOppTypeFilter}
-          orgTypeFilter={orgTypeFilter}
-          setOrgTypeFilter={setOrgTypeFilter}
-          getCreatedOpportunities={getCreatedOpportunities}
-        />
-      ),
-    },
-    {
       name: "Pending",
       description: "Your pending applications",
       component: (
         <OpportunitiesList
           key="pending"
-          type="pending"
+          type="pending-volunteer"
           opportunities={pendingOpportunities}
           locationFilter={locationFilter}
           setLocationFilter={setLocationFilter}
@@ -348,7 +514,7 @@ function Opportunities(
       component: (
         <OpportunitiesList
           key="completed"
-          type="completed"
+          type="completed-volunteer"
           opportunities={pastOpportunities}
           locationFilter={locationFilter}
           setLocationFilter={setLocationFilter}
@@ -359,7 +525,7 @@ function Opportunities(
         />
       ),
     },
-  ];
+  ]
 
   const [formValues, setFormValues] = useState({
       name: "",
@@ -544,7 +710,7 @@ function Opportunities(
                   console.log("Creating...");
                 })
                 .then(() => {
-                  getCreatedOpportunities();
+                  getHostPendingOpportunities();
                   resolve("resolved1");
                 });
             });
@@ -635,7 +801,7 @@ function Opportunities(
                 console.log("Creating...");
               })
               .then(() => {
-                getCreatedOpportunities();
+                getHostPendingOpportunities();
                 resolve("resolved2");
               });
           });
@@ -674,13 +840,23 @@ function Opportunities(
     //setOrgTypeFilter([]);
   }, [tab]);
 
+  const tabs = page === "hosts" ? hostTabs : volunteerTabs;
+
   return (
     <Page>
       <PageHeader
-        title="Opportunities"
-        subtitle="View and join opportunities"
+        title={
+          page === "hosts" ?
+          "Opportunity Hosts" :
+          "Opportunity Volunteers"
+        }
+        subtitle={
+          page === "hosts" ?
+          "Create opportunities and find alumni to fill your roles!" :
+          "Browse and join opportunities!"
+        }
         tabs={<CompressedTabBar data={tabs} tab={tab} setTab={setTab} />}
-        components={<AddButton onClick={handleModalOpen} />}
+        components={page === "hosts" ? <AddButton onClick={handleModalOpen} /> : null}
       />
       <Modal
         open={showOppForm}

@@ -10,6 +10,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Tooltip from "@mui/material/Tooltip";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import EditCalendarIcon from '@mui/icons-material/EditCalendar';
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import EventIcon from "@mui/icons-material/Event";
@@ -26,6 +27,7 @@ import NotificationsRoundedIcon from "@mui/icons-material/NotificationsRounded";
 import SettingsIcon from "@mui/icons-material/Settings";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import SchoolIcon from "@mui/icons-material/School";
+import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
 import UCSCIcon from "../../assets/ucsc-logo.jpg";
 import Notification from "../CustomComponents/Notification.js";
 import ThemedButton from "../Themed/ThemedButton.js";
@@ -98,7 +100,12 @@ export default function NavBarLoggedIn() {
 
   const pages = [
     ["Dashboard", "/dashboard", <GridViewRoundedIcon key="Dashboard" />],
-    ["Opportunities", "/opportunities", <EventIcon key="Opportunities" />],
+    ["Opportunities", null, <EventIcon key="Opportunities" />,
+      [
+        ["Host", "/opportunities/hosts", <EditCalendarIcon key="Host" />],
+        ["Volunteer", "/opportunities/volunteers", <VolunteerActivismIcon key="Volunteer" />],
+      ]
+    ],
     ["Help", "/help", <HelpOutlineIcon key="help" />],
   ];
   /* Settings and Social page deleted here, put back in array if needed back
@@ -113,6 +120,15 @@ export default function NavBarLoggedIn() {
       <AssignmentTurnedInIcon key="Approvals" />,
     ]);
   }
+
+  // NavBar Dropdowns -------------------------------------------------------------
+  const [expandedMenus, setExpandedMenus] = useState({});
+  const handleMenuToggle = (menu) => {
+    setExpandedMenus((prev) => ({
+      ...prev,
+      [menu]: !prev[menu],
+    }));
+  };
 
   // Notifications -------------------------------------------------------------
 
@@ -202,7 +218,87 @@ export default function NavBarLoggedIn() {
     return (
       <List>
         {pages.map((arr) => {
-          const [label, route, icon] = arr;
+          const [label, route, icon, subTabs] = arr;
+          if (subTabs) {
+            return (
+              <React.Fragment key={label}>
+                <ListItemButton
+                  onClick={() => handleMenuToggle(label)}
+                  sx={ListButtonStyling}
+                >
+                  <ListItemIcon
+                    sx={{
+                      ...ListIconStyling,
+                      mr: open ? 3 : "auto",
+                      color: "var(--tertiary-gray-main)",
+                    }}
+                  >
+                    {icon}
+                  </ListItemIcon>
+                  <ListItemText
+                    sx={{
+                      ...ListTextStyling,
+                      ".MuiTypography-root": {
+                        ...ListTextStyling[".MuiTypography-root"],
+                        color: "var(--tertiary-gray-main)",
+                      },
+                      opacity: open ? 1 : 0,
+                    }}
+                  >
+                    {label}
+                  </ListItemText>
+                  {expandedMenus[label] ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                </ListItemButton>
+                
+                {expandedMenus[label] && (
+                  <List component="div" disablePadding>
+                    {subTabs.map(([subLabel, subRoute, subIcon]) => (
+                      <Link key={subLabel} to={subRoute}>
+                        <Tooltip title={subLabel} placement="right">
+                          <ListItemButton
+                            onClick={() => handleTabClick(subRoute)}
+                            sx={{
+                              ...ListButtonStyling,
+                              pl: 4,
+                            }}
+                          >
+                            <ListItemIcon
+                              sx={{
+                                ...ListIconStyling,
+                                mr: open ? 3 : "auto",
+                                color:
+                                  subRoute === tabIndex
+                                    ? "var(--primary-blue-main)"
+                                    : "var(--tertiary-gray-main)",
+                              }}
+                            >
+                              {subIcon}
+                            </ListItemIcon>
+                            <ListItemText
+                              sx={{
+                                ...ListTextStyling,
+                                ".MuiTypography-root": {
+                                  ...ListTextStyling[".MuiTypography-root"],
+                                  color:
+                                    subRoute === tabIndex
+                                      ? "var(--primary-blue-main)"
+                                      : "var(--tertiary-gray-main)",
+                                },
+                                opacity: open ? 1 : 0,
+                              }}
+                            >
+                              {subLabel}
+                            </ListItemText>
+                          </ListItemButton>
+                        </Tooltip>
+                      </Link>
+                    ))}
+                  </List>
+                )}
+              </React.Fragment>
+            );
+          }
+      
           return (
             <Link key={label} to={route}>
               <Tooltip title={label} placement="right">
